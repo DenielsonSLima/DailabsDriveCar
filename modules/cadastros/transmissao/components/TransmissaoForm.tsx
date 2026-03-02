@@ -42,27 +42,27 @@ const TransmissaoForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSu
         <form onSubmit={handleSubmit} className="p-8 space-y-6">
           <div>
             <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Descrição</label>
-            <input 
+            <input
               autoFocus
               value={nome}
-              onChange={e => setNome(e.target.value)}
+              onChange={e => setNome(e.target.value.toUpperCase())}
               disabled={isSaving}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-bold outline-none focus:ring-2 focus:ring-indigo-500 transition-all disabled:opacity-50"
+              className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 font-bold text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all disabled:opacity-50"
               placeholder="Ex: Automática 6 Marchas, Manual, CVT..."
               required
             />
           </div>
           <div className="flex justify-end space-x-3 pt-4">
-            <button 
-              type="button" 
-              onClick={onClose} 
+            <button
+              type="button"
+              onClick={onClose}
               className="px-6 py-3 text-slate-500 font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 rounded-xl"
             >
               Cancelar
             </button>
-            <button 
-              type="submit" 
-              disabled={isSaving} 
+            <button
+              type="submit"
+              disabled={isSaving}
               className="px-8 py-3 bg-indigo-600 text-white rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg shadow-indigo-100 disabled:opacity-50 min-w-[140px] flex items-center justify-center"
             >
               {isSaving ? 'Salvando...' : 'Salvar'}

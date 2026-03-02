@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ContasReceberService } from './contas-receber.service';
 import { FinanceiroService } from '../../financeiro.service';
 import { ITituloReceber, ReceberTab, IReceberFiltros } from './contas-receber.types';
@@ -7,19 +8,14 @@ import ReceberList from './components/ReceberList';
 import ReceberKpis from './components/ReceberKpis';
 import ModalBaixa from '../components/ModalBaixa';
 import ConfirmModal from '../../../../components/ConfirmModal';
+import ReceberQuickView from './components/ReceberQuickView';
+
+const ITEMS_PER_PAGE = 10;
 
 const ContasReceberPage: React.FC = () => {
+  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<ReceberTab>('MES_ATUAL');
-
-  // Dados & Paginação
-  const [titulos, setTitulos] = useState<ITituloReceber[]>([]);
-  const [totalCount, setTotalCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const ITEMS_PER_PAGE = 10;
-
-  const [categorias, setCategorias] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
   const [groupBy, setGroupBy] = useState<'nenhum' | 'mes' | 'parceiro'>('nenhum');
 
   const [filtros, setFiltros] = useState<IReceberFiltros>({
@@ -31,47 +27,52 @@ const ContasReceberPage: React.FC = () => {
   });
 
   const [selectedTitulo, setSelectedTitulo] = useState<ITituloReceber | null>(null);
+  const [selectedQuickView, setSelectedQuickView] = useState<ITituloReceber | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
 
-  useEffect(() => {
-    loadData();
-    FinanceiroService.getCategorias().then(setCategorias);
-    const sub = ContasReceberService.subscribe(() => loadData(true));
-    return () => { sub.unsubscribe(); };
-  }, [activeTab, filtros, currentPage]);
+  // TanStack Query: Dados principais
+  const { data, isLoading } = useQuery({
+    queryKey: ['contas-receber', activeTab, filtros, currentPage],
+    queryFn: () => ContasReceberService.getAll(activeTab, {
+      ...filtros,
+      page: currentPage,
+      limit: ITEMS_PER_PAGE
+    }),
+    staleTime: 1000 * 60 * 5, // 5 minutos (Surgical Realtime handle invalidation)
+  });
 
-  // Reset pagination on filter/tab change (use functional ref to avoid double-load)
-  const prevTabRef = React.useRef(activeTab);
-  const prevFiltrosRef = React.useRef(filtros);
-  useEffect(() => {
-    if (prevTabRef.current !== activeTab || prevFiltrosRef.current !== filtros) {
-      prevTabRef.current = activeTab;
-      prevFiltrosRef.current = filtros;
-      if (currentPage !== 1) {
-        setCurrentPage(1);
-        return;
-      }
+  // Query: Categorias
+  const { data: categorias = [] } = useQuery({
+    queryKey: ['financeiro-categorias'],
+    queryFn: () => FinanceiroService.getCategorias(),
+    staleTime: 1000 * 60 * 30,
+  });
+
+  // Mutation: Exclusão
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => ContasReceberService.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['contas-receber'] });
+      setDeleteId(null);
     }
+  });
+
+  // Realtime subscription
+  useEffect(() => {
+    const sub = ContasReceberService.subscribe(() => {
+      queryClient.invalidateQueries({ queryKey: ['contas-receber'] });
+    });
+    return () => { sub.unsubscribe(); };
+  }, [queryClient]);
+
+  // Reset pagination on filter/tab change
+  useEffect(() => {
+    setCurrentPage(1);
   }, [activeTab, filtros]);
 
-  async function loadData(silent = false) {
-    if (!silent) setLoading(true);
-    try {
-      const response = await ContasReceberService.getAll(activeTab, {
-        ...filtros,
-        page: currentPage,
-        limit: ITEMS_PER_PAGE
-      });
-      setTitulos(response.data);
-      setTotalPages(response.totalPages);
-      setTotalCount(response.count);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      if (!silent) setLoading(false);
-    }
-  }
+  const titulos = data?.data || [];
+  const totalCount = data?.count || 0;
+  const totalPages = data?.totalPages || 1;
 
   const processedData = useMemo(() => {
     if (groupBy === 'nenhum') return titulos;
@@ -92,19 +93,13 @@ const ContasReceberPage: React.FC = () => {
   }, [titulos, groupBy]);
 
   const handleDelete = async () => {
-    if (!deleteId) return;
-    setIsDeleting(true);
-    try {
-      await ContasReceberService.delete(deleteId);
-      setDeleteId(null);
-      loadData(true);
-    } finally {
-      setIsDeleting(false);
+    if (deleteId) {
+      deleteMutation.mutate(deleteId);
     }
   };
 
   const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
+    if (page >= 1 && (data ? page <= data.totalPages : true)) {
       setCurrentPage(page);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -118,12 +113,7 @@ const ContasReceberPage: React.FC = () => {
           <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mt-2">Gestão de fluxo de caixa e entradas de faturamento</p>
         </div>
 
-        <button className="px-8 py-4 bg-emerald-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-xl active:scale-95 flex items-center">
-          <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-          </svg>
-          Novo Lançamento
-        </button>
+
       </div>
 
       <ReceberKpis titulos={titulos} />
@@ -146,14 +136,15 @@ const ContasReceberPage: React.FC = () => {
       <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden min-h-[400px]">
         <ReceberList
           items={processedData}
-          loading={loading}
+          loading={isLoading}
           isGrouped={groupBy !== 'nenhum'}
           onBaixa={(t) => setSelectedTitulo(t as any)}
           onDelete={setDeleteId}
+          onRowClick={(t) => setSelectedQuickView(t as any)}
         />
 
         {/* Pagination Controls */}
-        {!loading && totalPages > 1 && groupBy === 'nenhum' && (
+        {!isLoading && totalPages > 1 && groupBy === 'nenhum' && (
           <div className="flex items-center justify-between p-6 border-t border-slate-100 bg-slate-50/50">
             <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
               Página <span className="text-slate-900">{currentPage}</span> de <span className="text-slate-900">{totalPages}</span>
@@ -192,7 +183,15 @@ const ContasReceberPage: React.FC = () => {
         <ModalBaixa
           titulo={selectedTitulo as any}
           onClose={() => setSelectedTitulo(null)}
-          onSuccess={() => { setSelectedTitulo(null); loadData(true); }}
+          onSuccess={() => { setSelectedTitulo(null); queryClient.invalidateQueries({ queryKey: ['contas-receber'] }); }}
+        />
+      )}
+
+      {selectedQuickView && (
+        <ReceberQuickView
+          titulo={selectedQuickView as any}
+          isOpen={!!selectedQuickView}
+          onClose={() => setSelectedQuickView(null)}
         />
       )}
 
@@ -204,7 +203,7 @@ const ContasReceberPage: React.FC = () => {
         message="Deseja remover este registro de recebimento? Se ele for fruto de uma venda, o saldo a receber do pedido será reaberto."
         confirmText="Sim, Estornar"
         variant="danger"
-        isLoading={isDeleting}
+        isLoading={deleteMutation.isPending}
       />
     </div>
   );

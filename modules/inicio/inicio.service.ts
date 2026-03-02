@@ -1,6 +1,6 @@
 
 import { supabase } from '../../lib/supabase';
-import { IDashboardStats } from './inicio.types';
+import { IDashboardStats, IHistoryData } from './inicio.types';
 
 export const InicioService = {
   async getDashboardStats(): Promise<IDashboardStats> {
@@ -59,8 +59,13 @@ export const InicioService = {
       .select(`
         id, 
         placa, 
+        valor_venda,
+        ano_fabricacao,
+        ano_modelo,
+        km,
         montadora:cad_montadoras(nome, logo_url), 
         modelo:cad_modelos(nome),
+        versao:cad_versoes(nome),
         fotos
       `)
       .eq('status', 'DISPONIVEL')
@@ -68,5 +73,26 @@ export const InicioService = {
       .limit(3);
 
     return data || [];
+  },
+
+  async getHistoryData(months: number = 12): Promise<IHistoryData[]> {
+    const { data, error } = await supabase.rpc('get_dashboard_history', {
+      p_months_count: months
+    });
+
+    if (error) {
+      console.error('Erro ao buscar histórico do dashboard:', error);
+      throw error;
+    }
+
+    return data || [];
+  },
+
+  subscribe(callback: () => void) {
+    return supabase
+      .channel('inicio_changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'est_veiculos' }, callback)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'venda_pedidos' }, callback)
+      .subscribe();
   }
 };

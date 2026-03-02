@@ -13,6 +13,18 @@ const PhotoUpload: React.FC<Props> = ({ fotos, onChange, onNotification }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const MAX_PHOTOS = 10;
 
+  const generateUUID = () => {
+    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+      return crypto.randomUUID();
+    }
+    // Fallback para contextos não seguros (HTTP) ou navegadores antigos
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  };
+
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       // Fix: Explicitly typing selectedFiles as File[] to prevent inference issues
@@ -109,7 +121,7 @@ const PhotoUpload: React.FC<Props> = ({ fotos, onChange, onNotification }) => {
         if (base64Results.length > 0) {
           // Cria os objetos de foto
           const newPhotos: IVeiculoFoto[] = base64Results.map((url, index) => ({
-            id: Math.random().toString(36).substring(2, 15) + Date.now().toString(36),
+            id: generateUUID(),
             url: url,
             ordem: currentCount + index,
             // Se não havia fotos antes, a primeira do novo lote é a capa

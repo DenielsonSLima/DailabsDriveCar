@@ -13,8 +13,8 @@ import RetiradasSociosPage from './submodules/retiradas-socios/RetiradasSocios.p
 import TransferenciasPage from './submodules/transferencias/Transferencias.page';
 import ExtratoPage from './submodules/extrato/Extrato.page';
 
-type SubModule = 
-  | 'GERAL' | 'PAGAR' | 'RECEBER' | 'VARIAVEIS' | 'FIXAS' 
+type SubModule =
+  | 'GERAL' | 'PAGAR' | 'RECEBER' | 'VARIAVEIS' | 'FIXAS'
   | 'CREDITOS' | 'RETIRADAS' | 'TRANSF' | 'HISTORICO';
 
 const FinanceiroPage: React.FC = () => {
@@ -24,7 +24,7 @@ const FinanceiroPage: React.FC = () => {
 
   useEffect(() => {
     loadKpis();
-    const sub = FinanceiroService.subscribe(() => loadKpis(true));
+    const sub = FinanceiroService.subscribeToTable('fin_titulos', () => loadKpis(true));
     return () => { sub.unsubscribe(); };
   }, []);
 
@@ -38,7 +38,7 @@ const FinanceiroPage: React.FC = () => {
     }
   }
 
-  const formatCurrency = (val: number) => 
+  const formatCurrency = (val: number) =>
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
   // Definição do Menu conforme a ordem solicitada
@@ -61,11 +61,10 @@ const FinanceiroPage: React.FC = () => {
     <button
       key={item.id}
       onClick={() => setActiveSub(item.id)}
-      className={`flex items-center px-5 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${
-        activeSub === item.id 
-          ? 'bg-slate-900 text-white shadow-2xl scale-105 z-10' 
-          : 'bg-white text-slate-400 hover:text-slate-600 hover:bg-slate-50 border border-slate-200'
-      }`}
+      className={`flex items-center px-5 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${activeSub === item.id
+        ? 'bg-slate-900 text-white shadow-2xl scale-105 z-10'
+        : 'bg-white text-slate-400 hover:text-slate-600 hover:bg-slate-50 border border-slate-200'
+        }`}
     >
       <svg className={`w-4 h-4 mr-2 ${activeSub === item.id ? 'text-white' : `text-${item.color}-500`}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
@@ -76,25 +75,69 @@ const FinanceiroPage: React.FC = () => {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500 pb-20">
-      
-      {/* Dashboard de Liquidez Superior */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden group">
-           <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500 rounded-full blur-[80px] opacity-20"></div>
-           <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-1 relative z-10">Saldo Disponível</p>
-           <h3 className="text-3xl font-black tracking-tight relative z-10">{formatCurrency(kpis?.saldo_total || 0)}</h3>
+
+      {/* Dashboard de KPIs – 2 linhas x 3 colunas */}
+      <div className="space-y-3">
+        {/* Linha 1 */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {/* Saldo Disponível */}
+          <div className="bg-slate-900 rounded-2xl px-5 py-4 text-white shadow-lg relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-20 h-20 bg-indigo-500 rounded-full blur-[60px] opacity-20"></div>
+            <p className="text-[9px] font-black text-indigo-400 uppercase tracking-widest mb-0.5 relative z-10">Saldo Disponível</p>
+            {loading ? (
+              <div className="h-7 bg-slate-800 rounded animate-pulse w-32 relative z-10"></div>
+            ) : (
+              <h3 className="text-xl font-black tracking-tight relative z-10">{formatCurrency(kpis?.saldo_total || 0)}</h3>
+            )}
+          </div>
+          {/* Compra de Veículos */}
+          <div className="bg-white rounded-2xl px-5 py-4 border border-slate-200 shadow-sm">
+            <p className="text-[9px] font-black text-rose-500 uppercase tracking-widest mb-0.5">Compra de Veículos</p>
+            {loading ? (
+              <div className="h-7 bg-slate-200 rounded animate-pulse w-32"></div>
+            ) : (
+              <h3 className="text-xl font-black text-slate-900 tracking-tight">{formatCurrency(kpis?.compra_veiculos_mes || 0)}</h3>
+            )}
+          </div>
+          {/* Despesas Fixas do Mês */}
+          <div className="bg-white rounded-2xl px-5 py-4 border border-slate-200 shadow-sm">
+            <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-0.5">Despesas Fixas</p>
+            {loading ? (
+              <div className="h-7 bg-slate-200 rounded animate-pulse w-32"></div>
+            ) : (
+              <h3 className="text-xl font-black text-slate-900 tracking-tight">{formatCurrency(kpis?.despesas_fixas_mes || 0)}</h3>
+            )}
+          </div>
         </div>
-        <div className="bg-white rounded-[2.5rem] p-8 border border-slate-200 shadow-sm">
-           <p className="text-[10px] font-black text-rose-500 uppercase tracking-widest mb-1">A Pagar (Mês)</p>
-           <h3 className="text-3xl font-black text-slate-900 tracking-tight">{formatCurrency(kpis?.pagar_mes || 0)}</h3>
-        </div>
-        <div className="bg-white rounded-[2.5rem] p-8 border border-slate-200 shadow-sm">
-           <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1">A Receber (Mês)</p>
-           <h3 className="text-3xl font-black text-slate-900 tracking-tight">{formatCurrency(kpis?.receber_mes || 0)}</h3>
-        </div>
-        <div className="bg-white rounded-[2.5rem] p-8 border border-slate-200 shadow-sm">
-           <p className="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-1">Resultado Projetado</p>
-           <h3 className="text-3xl font-black text-slate-900 tracking-tight">{formatCurrency(kpis?.balanco_projetado || 0)}</h3>
+        {/* Linha 2 */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {/* Despesas Variáveis do Mês */}
+          <div className="bg-white rounded-2xl px-5 py-4 border border-slate-200 shadow-sm">
+            <p className="text-[9px] font-black text-orange-500 uppercase tracking-widest mb-0.5">Despesas Variáveis</p>
+            {loading ? (
+              <div className="h-7 bg-slate-200 rounded animate-pulse w-32"></div>
+            ) : (
+              <h3 className="text-xl font-black text-slate-900 tracking-tight">{formatCurrency(kpis?.despesas_variaveis_mes || 0)}</h3>
+            )}
+          </div>
+          {/* Outras Receitas */}
+          <div className="bg-white rounded-2xl px-5 py-4 border border-slate-200 shadow-sm">
+            <p className="text-[9px] font-black text-teal-500 uppercase tracking-widest mb-0.5">Outras Receitas</p>
+            {loading ? (
+              <div className="h-7 bg-slate-200 rounded animate-pulse w-32"></div>
+            ) : (
+              <h3 className="text-xl font-black text-slate-900 tracking-tight">{formatCurrency(kpis?.outras_receitas_mes || 0)}</h3>
+            )}
+          </div>
+          {/* Retiradas */}
+          <div className="bg-white rounded-2xl px-5 py-4 border border-slate-200 shadow-sm">
+            <p className="text-[9px] font-black text-amber-500 uppercase tracking-widest mb-0.5">Retiradas</p>
+            {loading ? (
+              <div className="h-7 bg-slate-200 rounded animate-pulse w-32"></div>
+            ) : (
+              <h3 className="text-xl font-black text-slate-900 tracking-tight">{formatCurrency(kpis?.retiradas_mes || 0)}</h3>
+            )}
+          </div>
         </div>
       </div>
 

@@ -1,4 +1,5 @@
-import { ITitulo } from '../../financeiro.types';
+import { z } from 'zod';
+import { ITitulo, TituloSchema } from '../../financeiro.types';
 
 export type PagarTab = 'MES_ATUAL' | 'ATRASADOS' | 'OUTROS';
 
@@ -12,15 +13,16 @@ export interface IPagarFiltros {
   limit?: number;
 }
 
-export interface IPagarResponse {
-  data: ITituloPagar[];
-  count: number;
-  currentPage: number;
-  totalPages: number;
-}
+export const TituloPagarSchema = TituloSchema.extend({
+  parceiro: z.object({
+    nome: z.string().optional().nullable(),
+    documento: z.string().optional().nullable(),
+  }).optional().nullable(),
+  categoria: z.object({
+    nome: z.string().optional().nullable(),
+  }).optional().nullable(),
+});
 
-// Fix: Interface 'ITituloPagar' incorrectly extends interface 'ITitulo' due to partial join objects.
-// Usando Omit para permitir a redefinição de 'parceiro' e 'categoria' com a estrutura simplificada vinda do Supabase .select().
 export interface ITituloPagar extends Omit<ITitulo, 'parceiro' | 'categoria'> {
   parceiro?: {
     nome: string;
@@ -30,3 +32,17 @@ export interface ITituloPagar extends Omit<ITitulo, 'parceiro' | 'categoria'> {
     nome: string;
   };
 }
+
+export interface IPagarResponse {
+  data: ITituloPagar[];
+  count: number;
+  currentPage: number;
+  totalPages: number;
+}
+
+export const PagarResponseSchema = z.object({
+  data: z.array(TituloPagarSchema),
+  count: z.number(),
+  currentPage: z.number(),
+  totalPages: z.number(),
+});

@@ -36,7 +36,7 @@ const ObservationsCard: React.FC<Props> = ({ observacoes = '', onSave, isSaving 
         </div>
 
         {!isEditing ? (
-          <button 
+          <button
             onClick={() => setIsEditing(true)}
             className="px-5 py-2.5 text-[10px] font-black uppercase tracking-widest text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-xl transition-all border border-indigo-100/50 flex items-center"
           >
@@ -45,13 +45,13 @@ const ObservationsCard: React.FC<Props> = ({ observacoes = '', onSave, isSaving 
           </button>
         ) : (
           <div className="flex gap-2">
-            <button 
+            <button
               onClick={() => { setValue(observacoes); setIsEditing(false); }}
               className="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:bg-slate-50 rounded-xl transition-all"
             >
               Cancelar
             </button>
-            <button 
+            <button
               onClick={handleConfirm}
               disabled={isSaving}
               className="px-6 py-2 text-[10px] font-black uppercase tracking-widest text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition-all shadow-lg shadow-emerald-100 flex items-center"
@@ -64,13 +64,13 @@ const ObservationsCard: React.FC<Props> = ({ observacoes = '', onSave, isSaving 
       </div>
 
       {isEditing ? (
-        <textarea 
+        <textarea
           autoFocus
           value={value}
           onChange={e => setValue(e.target.value)}
           rows={5}
           disabled={isSaving}
-          className="w-full bg-slate-50 border-2 border-indigo-100 rounded-[1.5rem] p-6 text-sm font-medium text-slate-700 outline-none focus:ring-4 focus:ring-indigo-500/5 transition-all resize-none shadow-inner"
+          className="w-full bg-white border-2 border-indigo-100 rounded-[1.5rem] p-6 text-sm font-medium text-slate-900 outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all resize-none shadow-sm hover:shadow-md"
           placeholder="Digite detalhes da negociação, brinde prometido, documentação pendente..."
         />
       ) : (

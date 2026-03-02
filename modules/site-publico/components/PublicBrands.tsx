@@ -16,7 +16,7 @@ const PublicBrands: React.FC<Props> = React.memo(({ montadoras }) => {
   };
 
   return (
-    <section className="py-16 bg-white overflow-hidden">
+    <section className="py-16 bg-white overflow-hidden animate-in fade-in duration-700">
       <div className="max-w-7xl mx-auto px-6">
         <div className="mb-12 flex items-baseline justify-between">
           <div>

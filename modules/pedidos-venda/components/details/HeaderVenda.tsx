@@ -8,11 +8,12 @@ interface Props {
   onEdit: () => void;
   onConfirm: () => void;
   onDelete: () => void;
+  onCancel?: () => void;
   loadingAction: boolean;
   canConfirm?: boolean;
 }
 
-const HeaderVenda: React.FC<Props> = ({ pedido, onBack, onEdit, onConfirm, onDelete, loadingAction, canConfirm }) => {
+const HeaderVenda: React.FC<Props> = ({ pedido, onBack, onEdit, onConfirm, onDelete, onCancel, loadingAction, canConfirm }) => {
   const isConcluido = pedido.status === 'CONCLUIDO';
 
   return (
@@ -35,8 +36,8 @@ const HeaderVenda: React.FC<Props> = ({ pedido, onBack, onEdit, onConfirm, onDel
               </span>
               <span className={`px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 ${isConcluido ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-amber-50 text-amber-600 border border-amber-100'
                 }`}>
-                <div className={`w-1.5 h-1.5 rounded-full ${isConcluido ? 'bg-emerald-500' : 'bg-amber-500 animate-pulse'}`}></div>
-                {isConcluido ? 'FATURADA' : 'RASCUNHO'}
+                <div className={`w-1.5 h-1.5 rounded-full ${isConcluido ? 'bg-emerald-500' : pedido.status === 'CANCELADO' ? 'bg-rose-500' : 'bg-amber-500 animate-pulse'}`}></div>
+                {isConcluido ? 'FATURADA' : pedido.status === 'CANCELADO' ? 'CANCELADA' : 'RASCUNHO'}
               </span>
             </div>
             <h1 className="text-3xl font-black text-slate-900 uppercase tracking-tighter leading-none">
@@ -77,10 +78,34 @@ const HeaderVenda: React.FC<Props> = ({ pedido, onBack, onEdit, onConfirm, onDel
           )}
 
           {isConcluido && (
-            <div className="px-8 py-4 bg-emerald-50 text-emerald-600 font-black text-xs uppercase tracking-widest rounded-xl border border-emerald-100 flex items-center">
-              <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M5 13l4 4L19 7" /></svg>
-              Venda Concluída
+            <div className="flex items-center gap-3">
+              <button
+                onClick={onCancel}
+                disabled={loadingAction}
+                className="px-6 py-4 text-rose-500 font-black text-xs uppercase tracking-widest rounded-xl hover:bg-rose-50 transition-all disabled:opacity-50"
+              >
+                Cancelar Venda
+              </button>
+              <div className="px-8 py-4 bg-emerald-50 text-emerald-600 font-black text-xs uppercase tracking-widest rounded-xl border border-emerald-100 flex items-center">
+                <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M5 13l4 4L19 7" /></svg>
+                Venda Concluída
+              </div>
             </div>
+          )}
+
+          {pedido.status === 'CANCELADO' && (
+            <>
+              <button
+                onClick={onDelete}
+                disabled={loadingAction}
+                className="px-6 py-4 text-rose-500 font-black text-xs uppercase tracking-widest rounded-xl hover:bg-rose-50 transition-all disabled:opacity-50"
+              >
+                Excluir Definitivamente
+              </button>
+              <div className="px-8 py-4 bg-rose-50 text-rose-600 font-black text-xs uppercase tracking-widest rounded-xl border border-rose-100 flex items-center text-center">
+                Venda Cancelada
+              </div>
+            </>
           )}
         </div>
       </div>

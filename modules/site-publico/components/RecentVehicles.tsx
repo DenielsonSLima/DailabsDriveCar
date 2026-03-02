@@ -8,7 +8,9 @@ interface Props {
 }
 
 const RecentVehicles: React.FC<Props> = React.memo(({ veiculos }) => {
-  if (!veiculos || veiculos.length === 0) return null;
+  const hasVeiculos = veiculos && veiculos.length > 0;
+
+  if (!hasVeiculos) return null;
 
   return (
     <section id="estoque" className="py-20 bg-slate-50">

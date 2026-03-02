@@ -194,12 +194,19 @@ const ExtratoTable: React.FC<Props> = ({ items, loading }) => {
 
               {/* Forma / Parcela */}
               <td className="px-6 py-4 text-center">
-                <span className="text-[10px] font-bold text-slate-500 bg-white px-2 py-1 rounded border border-slate-100 whitespace-nowrap">
-                  {h.forma_pagamento || 'DIRETO'}
-                </span>
-                {h.parcela_info && (
-                  <p className="text-[9px] text-slate-400 mt-1 font-mono">{h.parcela_info}</p>
-                )}
+                <div className="flex flex-col items-center">
+                  <span className="text-[10px] font-bold text-slate-500 bg-white px-2 py-1 rounded border border-slate-100 whitespace-nowrap">
+                    {h.forma_pagamento || 'DIRETO'}
+                  </span>
+                  {h.conta_nome && (
+                    <span className="text-[9px] text-indigo-600 font-black uppercase tracking-widest mt-1 bg-indigo-50/50 px-1.5 py-0.5 rounded leading-none">
+                      {h.conta_nome}
+                    </span>
+                  )}
+                  {h.parcela_info && (
+                    <p className="text-[9px] text-slate-400 mt-1 font-mono">{h.parcela_info}</p>
+                  )}
+                </div>
               </td>
 
               {/* Valor */}

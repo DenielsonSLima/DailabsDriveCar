@@ -15,11 +15,12 @@ const FormVendaClient: React.FC<Props> = ({ formData, parceiros, onChange, disab
   return (
     <div className="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm">
       <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-6">02. Comprador</h3>
-      <PartnerSelect 
-        parceiros={parceiros} 
-        selectedId={formData.cliente_id} 
-        onChange={(p) => onChange(p.id)} 
+      <PartnerSelect
+        parceiros={parceiros}
+        selectedId={formData.cliente_id}
+        onChange={(p) => onChange(p.id)}
         disabled={disabled}
+        label="Comprador *"
       />
     </div>
   );

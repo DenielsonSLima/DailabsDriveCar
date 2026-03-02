@@ -25,11 +25,11 @@ const RelatorioAuditoriaPage: React.FC = () => {
     setLoading(true);
     try {
       const logs = await LogsService.fetchLogs();
-      
+
       let filtered = logs || [];
       if (busca.trim()) {
         const termo = busca.toLowerCase();
-        filtered = filtered.filter((l: any) => 
+        filtered = filtered.filter((l: any) =>
           (l.acao || l.action || '').toLowerCase().includes(termo) ||
           (l.usuario || l.user_email || '').toLowerCase().includes(termo) ||
           (l.descricao || l.description || l.details || '').toLowerCase().includes(termo) ||
@@ -70,7 +70,7 @@ const RelatorioAuditoriaPage: React.FC = () => {
   return (
     <div className="space-y-8 pb-20 animate-in fade-in duration-500">
       <div className="flex items-center space-x-4">
-        <button 
+        <button
           onClick={() => navigate('/relatorios')}
           className="p-3 bg-white border border-slate-200 rounded-2xl text-slate-500 hover:text-indigo-600 hover:border-indigo-100 transition-all shadow-sm group"
         >
@@ -79,61 +79,61 @@ const RelatorioAuditoriaPage: React.FC = () => {
           </svg>
         </button>
         <div>
-           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Relatórios / Segurança</p>
-           <h1 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">Logs de Auditoria</h1>
+          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Relatórios / Segurança</p>
+          <h1 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">Logs de Auditoria</h1>
         </div>
       </div>
 
       <div className="bg-white rounded-[2.5rem] border border-slate-200 p-10 shadow-sm min-h-[500px]">
-         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12 items-end">
-            <div className="md:col-span-2">
-               <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Busca Textual</label>
-               <input type="text" value={busca} onChange={e => setBusca(e.target.value)} placeholder="Usuário, ação ou registro..." className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold focus:ring-2 focus:ring-slate-900 outline-none" />
-            </div>
-            <div>
-               <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Nível</label>
-               <select value={nivel} onChange={e => setNivel(e.target.value)} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-slate-900 outline-none appearance-none cursor-pointer">
-                  <option value="">Todos</option>
-                  <option value="CRITICAL">Críticos</option>
-                  <option value="ERROR">Erros</option>
-                  <option value="INFO">Informativos</option>
-               </select>
-            </div>
-            <button 
-              onClick={handleGerar}
-              disabled={loading}
-              className="px-6 py-3.5 bg-slate-900 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl hover:bg-slate-800 transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
-            >
-               {loading ? (
-                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-               ) : (
-                 <>
-                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                   <span>Gerar Relatório</span>
-                 </>
-               )}
-            </button>
-         </div>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12 items-end">
+          <div className="md:col-span-2">
+            <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Busca Textual</label>
+            <input type="text" value={busca} onChange={e => setBusca(e.target.value)} placeholder="Usuário, ação ou registro..." className="w-full bg-white border border-slate-100 rounded-2xl px-5 py-3.5 text-sm font-bold focus:ring-2 focus:ring-slate-900 outline-none" />
+          </div>
+          <div>
+            <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Nível</label>
+            <select value={nivel} onChange={e => setNivel(e.target.value)} className="w-full bg-white border border-slate-100 rounded-2xl px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-slate-900 outline-none appearance-none cursor-pointer">
+              <option value="">Todos</option>
+              <option value="CRITICAL">Críticos</option>
+              <option value="ERROR">Erros</option>
+              <option value="INFO">Informativos</option>
+            </select>
+          </div>
+          <button
+            onClick={handleGerar}
+            disabled={loading}
+            className="px-6 py-3.5 bg-slate-900 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl hover:bg-slate-800 transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
+          >
+            {loading ? (
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            ) : (
+              <>
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                <span>Gerar Relatório</span>
+              </>
+            )}
+          </button>
+        </div>
 
-         <div className="border-2 border-dashed border-slate-100 rounded-[2rem] py-20 text-center flex flex-col items-center">
-            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 text-slate-200">
-               <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-            </div>
-            <p className="text-slate-300 font-black uppercase text-xs tracking-[0.2em]">Clique em gerar relatório para rastrear eventos do sistema</p>
-         </div>
+        <div className="border-2 border-dashed border-slate-100 rounded-[2rem] py-20 text-center flex flex-col items-center">
+          <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 text-slate-200">
+            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+          </div>
+          <p className="text-slate-300 font-black uppercase text-xs tracking-[0.2em]">Clique em gerar relatório para rastrear eventos do sistema</p>
+        </div>
       </div>
 
       {/* QUICK PREVIEW MODAL */}
       {reportData && (
-        <RelatoriosQuickPreview 
-          isOpen={isPreviewOpen} 
-          onClose={() => setIsPreviewOpen(false)} 
+        <RelatoriosQuickPreview
+          isOpen={isPreviewOpen}
+          onClose={() => setIsPreviewOpen(false)}
           title="Pré-visualização — Auditoria"
         >
-          <AuditoriaTemplate 
-            empresa={empresa} 
-            watermark={watermark} 
-            data={reportData} 
+          <AuditoriaTemplate
+            empresa={empresa}
+            watermark={watermark}
+            data={reportData}
           />
         </RelatoriosQuickPreview>
       )}

@@ -13,3 +13,14 @@ export interface IRecentActivity {
   descricao: string;
   data: string;
 }
+
+export interface IHistoryData {
+  mes: string;
+  vendas_valor: number;
+  vendas_qtd: number;
+  compras_valor: number;
+  compras_qtd: number;
+  despesas_valor: number;
+  lucro_valor: number;
+  estoque_valor: number;
+}

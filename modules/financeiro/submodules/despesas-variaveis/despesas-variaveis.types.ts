@@ -1,6 +1,6 @@
 import { ITitulo } from '../../financeiro.types';
 
-export type VariaveisTab = 'MES_ATUAL' | 'ATRASADOS' | 'OUTROS';
+export type VariaveisTab = 'MES_ATUAL' | 'ATRASADOS' | 'OUTROS' | 'FUTUROS';
 export type GroupByVariavel = 'nenhum' | 'mes' | 'categoria';
 
 export interface IVariaveisFiltros {

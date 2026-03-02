@@ -52,8 +52,8 @@ const TiposVeiculosPage: React.FC = () => {
 
     setIsSaving(true);
     try {
-      await TiposVeiculosService.save({ 
-        id: editing?.id, 
+      await TiposVeiculosService.save({
+        id: editing?.id,
         nome: nome.trim()
       });
       setIsOpen(false);
@@ -89,9 +89,8 @@ const TiposVeiculosPage: React.FC = () => {
     <div className="space-y-6 animate-in fade-in duration-500 relative">
       {/* Toast Notification */}
       {toast && (
-        <div className={`fixed top-6 right-6 z-[220] px-6 py-3 rounded-2xl shadow-2xl flex items-center space-x-3 animate-in slide-in-from-right duration-300 ${
-          toast.type === 'success' ? 'bg-slate-900 text-white border-l-4 border-emerald-500' : 'bg-rose-600 text-white'
-        }`}>
+        <div className={`fixed top-6 right-6 z-[220] px-6 py-3 rounded-2xl shadow-2xl flex items-center space-x-3 animate-in slide-in-from-right duration-300 ${toast.type === 'success' ? 'bg-slate-900 text-white border-l-4 border-emerald-500' : 'bg-rose-600 text-white'
+          }`}>
           <div className={toast.type === 'success' ? 'text-emerald-500' : 'text-white'}>
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
@@ -139,10 +138,10 @@ const TiposVeiculosPage: React.FC = () => {
                   </div>
                   <span className="font-black text-slate-800 uppercase tracking-tighter truncate">{t.nome}</span>
                 </div>
-                
+
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity bg-white/80 backdrop-blur-sm p-1 rounded-xl shadow-sm border border-slate-100">
-                  <button 
-                    onClick={(e) => { e.stopPropagation(); handleOpen(t); }} 
+                  <button
+                    onClick={(e) => { e.stopPropagation(); handleOpen(t); }}
                     className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
                     title="Editar"
                   >
@@ -150,8 +149,8 @@ const TiposVeiculosPage: React.FC = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                     </svg>
                   </button>
-                  <button 
-                    onClick={(e) => { e.stopPropagation(); handleClickDelete(t.id); }} 
+                  <button
+                    onClick={(e) => { e.stopPropagation(); handleClickDelete(t.id); }}
                     className="p-2 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
                     title="Excluir"
                   >
@@ -187,10 +186,10 @@ const TiposVeiculosPage: React.FC = () => {
             <form onSubmit={handleSave} className="p-8 space-y-6">
               <div>
                 <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Nome da Categoria</label>
-                <input 
+                <input
                   autoFocus
                   value={nome}
-                  onChange={e => setNome(e.target.value)}
+                  onChange={e => setNome(e.target.value.toUpperCase())}
                   disabled={isSaving}
                   className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-bold outline-none focus:ring-2 focus:ring-indigo-500 transition-all disabled:opacity-50"
                   placeholder="Ex: Sedan, SUV, Hatch..."
@@ -198,17 +197,17 @@ const TiposVeiculosPage: React.FC = () => {
                 />
               </div>
               <div className="flex justify-end space-x-3 pt-4">
-                <button 
-                  type="button" 
-                  onClick={() => setIsOpen(false)} 
+                <button
+                  type="button"
+                  onClick={() => setIsOpen(false)}
                   disabled={isSaving}
                   className="px-6 py-3 text-slate-500 font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 rounded-xl"
                 >
                   Cancelar
                 </button>
-                <button 
-                  type="submit" 
-                  disabled={isSaving} 
+                <button
+                  type="submit"
+                  disabled={isSaving}
                   className="px-8 py-3 bg-indigo-600 text-white rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg shadow-indigo-100 disabled:opacity-50 min-w-[140px] flex items-center justify-center"
                 >
                   {isSaving ? (
@@ -230,7 +229,7 @@ const TiposVeiculosPage: React.FC = () => {
       )}
 
       {/* Modal de Confirmação */}
-      <ConfirmModal 
+      <ConfirmModal
         isOpen={!!deleteId}
         onClose={() => setDeleteId(null)}
         onConfirm={handleConfirmDelete}

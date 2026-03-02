@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { IVeiculo } from './estoque.types';
 import { EstoqueService } from './estoque.service';
 import { PedidosCompraService } from '../pedidos-compra/pedidos-compra.service';
@@ -18,11 +19,13 @@ import FormCardObservations from './components/FormCardObservations';
 const EstoqueFormPage: React.FC = () => {
   const navigate = useNavigate();
   const { id, pedidoId } = useParams();
+  const queryClient = useQueryClient();
 
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [cores, setCores] = useState<ICor[]>([]);
   const [toast, setToast] = useState<{ type: 'success' | 'error' | 'warning', message: string } | null>(null);
+  const [isConsignacao, setIsConsignacao] = useState(false);
 
   const [formData, setFormData] = useState<Partial<IVeiculo>>({
     status: 'PREPARACAO',
@@ -49,6 +52,17 @@ const EstoqueFormPage: React.FC = () => {
         ]);
         setCores(coresData);
 
+        if (pedidoId) {
+          try {
+            const pedido = await PedidosCompraService.getById(pedidoId);
+            if (pedido && pedido.forma_pagamento?.nome?.toLowerCase().includes('consigna')) {
+              setIsConsignacao(true);
+            }
+          } catch (e) {
+            console.error('Erro ao verificar pedido', e);
+          }
+        }
+
         if (id) {
           const veiculo = await EstoqueService.getById(id);
           if (veiculo) setFormData(veiculo);
@@ -60,7 +74,7 @@ const EstoqueFormPage: React.FC = () => {
       }
     }
     loadInitialData();
-  }, [id]);
+  }, [id, pedidoId]);
 
   const showToast = (type: 'success' | 'error' | 'warning', message: string) => {
     setToast({ type, message });
@@ -80,8 +94,8 @@ const EstoqueFormPage: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    if (!formData.montadora_id || !formData.modelo_id || !formData.placa) {
-      showToast('error', "Preencha Montadora, Modelo e Placa.");
+    if (!formData.montadora_id || !formData.modelo_id || !formData.tipo_veiculo_id || !formData.versao_id || !formData.cor_id) {
+      showToast('error', "Preencha todos os campos obrigatórios (Marca, Modelo, Tipo, Versão e Cor).");
       return;
     }
 
@@ -89,6 +103,10 @@ const EstoqueFormPage: React.FC = () => {
     try {
       // O service agora cuida da limpeza dos campos modelo/montadora etc.
       const saved = await EstoqueService.save(formData);
+
+      // Invalida queries do estoque para garantir atualização imediata
+      queryClient.invalidateQueries({ queryKey: ['estoque_list'] });
+      queryClient.invalidateQueries({ queryKey: ['estoque_stats'] });
 
       const targetPedidoId = pedidoId || formData.pedido_id;
       if (location.pathname.includes('/pedidos-compra/')) {
@@ -154,7 +172,7 @@ const EstoqueFormPage: React.FC = () => {
       <div className="max-w-5xl mx-auto px-6 mt-8 space-y-8">
         <FormCardGallery formData={formData} onChange={handleUpdateField} onNotification={showToast} />
         <FormCardIdentification formData={formData} onChange={handleUpdateField} />
-        <FormCardFinance formData={formData} onChange={handleUpdateField} onNotification={showToast} />
+        <FormCardFinance formData={formData} onChange={handleUpdateField} onNotification={showToast} isConsignacao={isConsignacao} />
         <FormCardTechnical formData={formData} cores={cores} onChange={handleUpdateField} />
         <FormCardChecklist formData={formData} onChange={handleUpdateField} />
         <FormCardObservations formData={formData} onChange={handleUpdateField} />

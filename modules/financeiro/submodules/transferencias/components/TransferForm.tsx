@@ -26,7 +26,7 @@ const TransferForm: React.FC<Props> = ({ initialData, onClose, onSuccess }) => {
 
   useEffect(() => {
     ContasBancariasService.getAll().then(data => setContas(data.filter(c => c.ativo)));
-    
+
     if (initialData) {
       setFormData({
         id: initialData.id,
@@ -90,38 +90,56 @@ const TransferForm: React.FC<Props> = ({ initialData, onClose, onSuccess }) => {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1 tracking-widest">Data</label>
-              <input type="date" value={formData.data} onChange={e => setFormData({...formData, data: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3.5 font-bold outline-none focus:ring-2 focus:ring-indigo-500" required />
+              <input type="date" value={formData.data} onChange={e => setFormData({ ...formData, data: e.target.value })} className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3.5 font-bold text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500" required />
             </div>
             <div>
               <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1 tracking-widest">Valor</label>
-              <input type="text" value={valorFormatado} onChange={handleCurrencyChange} className="w-full bg-slate-50 border-2 border-indigo-100 rounded-2xl px-5 py-3.5 text-lg font-black text-indigo-600 outline-none focus:border-indigo-500 text-center" required />
+              <input type="text" value={valorFormatado} onChange={handleCurrencyChange} className="w-full bg-white border-2 border-indigo-100 rounded-2xl px-5 py-3.5 text-lg font-black text-indigo-600 outline-none focus:border-indigo-500 text-center" required />
             </div>
           </div>
 
           <div>
             <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1 tracking-widest">Descrição</label>
-            <input type="text" value={formData.descricao} onChange={e => setFormData({...formData, descricao: e.target.value})} className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3.5 font-bold outline-none focus:ring-2 focus:ring-indigo-500" required />
+            <input type="text" value={formData.descricao} onChange={e => setFormData({ ...formData, descricao: e.target.value.toUpperCase() })} className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3.5 font-bold text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500" required />
           </div>
 
           <div className="space-y-4 pt-4 border-t border-slate-100">
-             <div className="p-4 bg-rose-50 rounded-2xl border border-rose-100">
-                <label className="block text-[10px] font-black text-rose-500 uppercase mb-2 ml-1 tracking-widest">Origem (SAÍDA)</label>
-                <select required value={formData.conta_origem_id} onChange={e => setFormData({...formData, conta_origem_id: e.target.value})} className="w-full bg-white border border-rose-200 rounded-xl px-4 py-3 text-xs font-bold text-rose-700 outline-none">
-                  <option value="">Selecione...</option>
-                  {contas.map(c => <option key={c.id} value={c.id}>{c.banco_nome} - {c.titular} | Saldo: {formatCurrency(c.saldo_atual || 0)}</option>)}
-                </select>
-             </div>
-             <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100">
-                <label className="block text-[10px] font-black text-emerald-500 uppercase mb-2 ml-1 tracking-widest">Destino (ENTRADA)</label>
-                <select required value={formData.conta_destino_id} onChange={e => setFormData({...formData, conta_destino_id: e.target.value})} className="w-full bg-white border border-emerald-200 rounded-xl px-4 py-3 text-xs font-bold text-emerald-700 outline-none">
-                  <option value="">Selecione...</option>
-                  {contas.map(c => <option key={c.id} value={c.id}>{c.banco_nome} - {c.titular} | Saldo: {formatCurrency(c.saldo_atual || 0)}</option>)}
-                </select>
-             </div>
+            <div className="p-4 bg-rose-50 rounded-2xl border border-rose-100">
+              <label className="block text-[10px] font-black text-rose-500 uppercase mb-2 ml-1 tracking-widest">Origem (SAÍDA)</label>
+              <select required value={formData.conta_origem_id} onChange={e => setFormData({ ...formData, conta_origem_id: e.target.value })} className="w-full bg-white border border-rose-200 rounded-xl px-4 py-3 text-xs font-bold text-rose-700 outline-none">
+                <option value="">Selecione...</option>
+                {contas.map(c => (
+                  <option
+                    key={c.id}
+                    value={c.id}
+                    disabled={c.id === formData.conta_destino_id}
+                  >
+                    {c.banco_nome} - {c.titular} | Saldo: {formatCurrency(c.saldo_atual || 0)}
+                    {c.id === formData.conta_destino_id && ' (Já selecionada)'}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100">
+              <label className="block text-[10px] font-black text-emerald-500 uppercase mb-2 ml-1 tracking-widest">Destino (ENTRADA)</label>
+              <select required value={formData.conta_destino_id} onChange={e => setFormData({ ...formData, conta_destino_id: e.target.value })} className="w-full bg-white border border-emerald-200 rounded-xl px-4 py-3 text-xs font-bold text-emerald-700 outline-none">
+                <option value="">Selecione...</option>
+                {contas.map(c => (
+                  <option
+                    key={c.id}
+                    value={c.id}
+                    disabled={c.id === formData.conta_origem_id}
+                  >
+                    {c.banco_nome} - {c.titular} | Saldo: {formatCurrency(c.saldo_atual || 0)}
+                    {c.id === formData.conta_origem_id && ' (Já selecionada)'}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           <button type="submit" disabled={isSaving} className="w-full py-5 bg-slate-900 text-white rounded-2xl text-xs font-black uppercase tracking-[0.2em] hover:bg-indigo-600 transition-all flex items-center justify-center space-x-3">
-             {isSaving ? <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div> : 'Confirmar Alterações'}
+            {isSaving ? <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div> : 'Confirmar Alterações'}
           </button>
         </form>
       </div>

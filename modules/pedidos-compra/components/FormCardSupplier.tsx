@@ -15,11 +15,12 @@ const FormCardSupplier: React.FC<Props> = ({ formData, parceiros, onChange, disa
   return (
     <div className="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm">
       <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-6">02. Origem do Veículo</h3>
-      <PartnerSelect 
-        parceiros={parceiros} 
-        selectedId={formData.fornecedor_id} 
-        onChange={onChange} 
+      <PartnerSelect
+        parceiros={parceiros}
+        selectedId={formData.fornecedor_id}
+        onChange={onChange}
         disabled={disabled}
+        label="Fornecedor *"
       />
     </div>
   );

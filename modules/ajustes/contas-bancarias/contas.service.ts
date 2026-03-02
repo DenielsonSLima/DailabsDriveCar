@@ -57,32 +57,16 @@ export const ContasBancariasService = {
 
   // Atualiza especificamente o saldo inicial e a data de corte
   async setSaldoInicial(id: string, valor: number, dataReferencia: string): Promise<void> {
-    // 1. Busca saldo atual e inicial antigo para calcular a diferença
-    const { data: conta, error: fetchError } = await supabase
-      .from(TABLE)
-      .select('saldo_inicial, saldo_atual')
-      .eq('id', id)
-      .single();
+    const { error } = await supabase.rpc('ajustar_saldo_inicial', {
+      p_conta_id: id,
+      p_novo_saldo_inicial: valor,
+      p_data_referencia: dataReferencia
+    });
 
-    if (fetchError) throw fetchError;
-
-    const saldoInicialAntigo = Number(conta.saldo_inicial) || 0;
-    const saldoAtualAntigo = Number(conta.saldo_atual) || 0;
-    const diferenca = valor - saldoInicialAntigo;
-    const novoSaldoAtual = saldoAtualAntigo + diferenca;
-
-    // 2. Atualiza respeitando o histórico
-    const { error } = await supabase
-      .from(TABLE)
-      .update({
-        saldo_inicial: valor,
-        data_saldo_inicial: dataReferencia,
-        saldo_atual: novoSaldoAtual,
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', id);
-
-    if (error) throw error;
+    if (error) {
+      console.error('Erro ao ajustar saldo inicial via RPC:', error);
+      throw error;
+    }
   },
 
   subscribe(onUpdate: (eventType: string) => void) {

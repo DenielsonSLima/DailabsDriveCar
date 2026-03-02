@@ -14,14 +14,15 @@ import VehicleDataSaleColumn from './sub/VehicleDataSaleColumn';
 interface Props {
   veiculo: IVeiculo;
   isConcluido: boolean;
+  isConsignado?: boolean;
   onUnlink: () => void;
   onUpdatePrice: (newPrice: number) => void;
 }
 
-const VehicleInSaleCard: React.FC<Props> = ({ veiculo, isConcluido, onUnlink, onUpdatePrice }) => {
+const VehicleInSaleCard: React.FC<Props> = ({ veiculo, isConcluido, isConsignado, onUnlink, onUpdatePrice }) => {
   const navigate = useNavigate();
   const { id } = useParams(); // ID do Pedido de Venda
-  
+
   const [isEditingPrice, setIsEditingPrice] = useState(false);
   const [localPrice, setLocalPrice] = useState(veiculo.valor_venda || 0);
   const [car, setCar] = useState<ICaracteristica[]>([]);
@@ -74,25 +75,26 @@ const VehicleInSaleCard: React.FC<Props> = ({ veiculo, isConcluido, onUnlink, on
   };
 
   return (
-    <div 
+    <div
       className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm relative overflow-hidden transition-all duration-500 hover:shadow-xl hover:border-indigo-300 group animate-in slide-in-from-bottom-4"
     >
       {/* Grid Principal Simétrico - Proporção 380px para imagem para manter consistência com Compra */}
-      <div 
+      <div
         onClick={handleGoToDetails}
         className="grid grid-cols-1 lg:grid-cols-[380px_1fr] items-stretch cursor-pointer min-h-[400px]"
       >
         {/* LADO ESQUERDO: Imagem e Tags */}
-        <VehicleMediaSaleColumn 
-          veiculo={veiculo} 
-          allCaracteristicas={car} 
-          allOpcionais={op} 
+        <VehicleMediaSaleColumn
+          veiculo={veiculo}
+          allCaracteristicas={car}
+          allOpcionais={op}
         />
 
         {/* LADO DIREITO: Dados, KPIs e Sócios */}
-        <VehicleDataSaleColumn 
+        <VehicleDataSaleColumn
           veiculo={veiculo}
           isConcluido={isConcluido}
+          isConsignado={isConsignado}
           isEditingPrice={isEditingPrice}
           localPrice={localPrice}
           onStartEditPrice={handleStartEditPrice}

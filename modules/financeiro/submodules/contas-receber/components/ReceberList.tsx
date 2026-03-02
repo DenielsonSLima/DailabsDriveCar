@@ -8,9 +8,10 @@ interface Props {
   isGrouped: boolean;
   onBaixa: (titulo: ITituloReceber) => void;
   onDelete: (id: string) => void;
+  onRowClick: (titulo: ITituloReceber) => void;
 }
 
-const ReceberList: React.FC<Props> = ({ items, loading, isGrouped, onBaixa, onDelete }) => {
+const ReceberList: React.FC<Props> = ({ items, loading, isGrouped, onBaixa, onDelete, onRowClick }) => {
   const navigate = useNavigate();
   const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
   const formatDate = (date: string) => new Date(date).toLocaleDateString('pt-BR');
@@ -39,13 +40,14 @@ const ReceberList: React.FC<Props> = ({ items, loading, isGrouped, onBaixa, onDe
             <th className="px-8 py-5">Status</th>
             <th className="px-8 py-5">Cliente / Documento</th>
             <th className="px-8 py-5">Categoria</th>
+            <th className="px-8 py-5">Conta de Destino</th>
             <th className="px-8 py-5 text-right">Valor Total</th>
             <th className="px-8 py-5 text-right">Ações</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-50">
           {rows.map((t) => (
-            <tr key={t.id} className="hover:bg-slate-50/50 transition-colors group">
+            <tr key={t.id} onClick={() => onRowClick(t)} className="hover:bg-slate-50/50 transition-colors group cursor-pointer">
               <td className="px-8 py-6">
                 <p className="text-xs font-black text-slate-900">{formatDate(t.data_vencimento)}</p>
                 <p className="text-[9px] text-slate-400 font-bold uppercase mt-0.5">Ref: {t.documento_ref || 'N/D'}</p>
@@ -58,16 +60,30 @@ const ReceberList: React.FC<Props> = ({ items, loading, isGrouped, onBaixa, onDe
               <td className="px-8 py-6">
                 <p className="text-xs font-bold text-slate-700 uppercase truncate max-w-[220px]">{t.parceiro?.nome || t.descricao}</p>
                 {t.pedido_id && (
-                   <button onClick={() => navigate(`/pedidos-venda/${t.pedido_id}`)} className="flex items-center mt-1 text-[9px] font-black text-emerald-500 hover:text-emerald-700 uppercase tracking-tighter">
-                     <svg className="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
-                     Ver Pedido de Venda
-                   </button>
+                  <button onClick={(e) => { e.stopPropagation(); navigate(`/pedidos-venda/${t.pedido_id}`); }} className="flex items-center mt-1 text-[9px] font-black text-emerald-500 hover:text-emerald-700 uppercase tracking-tighter">
+                    <svg className="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
+                    Ver Pedido de Venda
+                  </button>
                 )}
               </td>
               <td className="px-8 py-6">
-                <span className="text-[10px] font-black text-slate-400 bg-slate-50 px-2 py-0.5 rounded border border-slate-100 uppercase tracking-widest">
+                <span className="text-[10px] font-black text-slate-400 bg-slate-50 px-2 py-0.5 rounded border border-slate-100 uppercase tracking-widest truncate max-w-[150px] inline-block">
                   {t.categoria?.nome || 'RECEITA'}
                 </span>
+              </td>
+              <td className="px-8 py-6">
+                {t.transacoes && t.transacoes.length > 0 ? (
+                  <div className="flex flex-col">
+                    <span className="text-[10px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 uppercase tracking-widest w-fit truncate max-w-[150px]">
+                      {t.transacoes[0].conta?.nome || t.transacoes[0].conta?.banco_nome || 'CONTA'}
+                    </span>
+                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">
+                      {t.transacoes[0].conta?.agencia || '-'} / {t.transacoes[0].conta?.conta || '-'}
+                    </span>
+                  </div>
+                ) : (
+                  <span className="text-[10px] font-bold text-slate-300 italic">Pendente</span>
+                )}
               </td>
               <td className="px-8 py-6 text-right">
                 <p className="text-sm font-black text-slate-900">{formatCurrency(t.valor_total)}</p>
@@ -76,7 +92,7 @@ const ReceberList: React.FC<Props> = ({ items, loading, isGrouped, onBaixa, onDe
                 )}
               </td>
               <td className="px-8 py-6 text-right">
-                <div className="flex justify-end space-x-2">
+                <div className="flex justify-end space-x-2" onClick={(e) => e.stopPropagation()}>
                   {t.status !== 'PAGO' && (
                     <button onClick={() => onBaixa(t)} className="px-4 py-2 bg-emerald-50 text-emerald-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-600 hover:text-white transition-all shadow-sm">
                       Baixar

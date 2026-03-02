@@ -33,7 +33,7 @@ const PedidosVendaFilters: React.FC<Props> = ({ filtros, corretores, socios, onC
             placeholder="Buscar por número da venda, cliente ou veículo..."
             value={filtros.busca}
             onChange={(e) => handleChange('busca', e.target.value)}
-            className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 pl-10 pr-4 text-sm font-bold focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all placeholder:font-medium"
+            className="w-full bg-white border border-slate-200 rounded-2xl py-3.5 pl-10 pr-4 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all placeholder:font-medium shadow-sm hover:shadow-md"
           />
         </div>
 
@@ -41,7 +41,7 @@ const PedidosVendaFilters: React.FC<Props> = ({ filtros, corretores, socios, onC
         <div className="flex flex-col md:flex-row gap-4 items-center overflow-x-auto pb-1 xl:pb-0">
 
           {/* Período */}
-          <div className="flex items-center space-x-2 bg-slate-50 border border-slate-200 rounded-xl p-1">
+          <div className="flex items-center space-x-2 bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
             <input
               type="date"
               value={filtros.dataInicio}
@@ -66,7 +66,7 @@ const PedidosVendaFilters: React.FC<Props> = ({ filtros, corretores, socios, onC
             <select
               value={filtros.status || ''}
               onChange={(e) => handleChange('status', e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-bold outline-none focus:ring-2 focus:ring-emerald-500/20 cursor-pointer"
+              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 cursor-pointer shadow-sm hover:shadow-md transition-all"
             >
               <option value="">Todos os Status</option>
               <option value="RASCUNHO">Em Negociação</option>

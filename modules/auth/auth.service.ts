@@ -9,6 +9,21 @@ export const AuthService = {
       password: senha,
     });
     if (error) throw error;
+
+    // Validação de acesso ativo
+    if (data.user) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('ativo')
+        .eq('id', data.user.id)
+        .single();
+
+      if (profile && profile.ativo === false) {
+        await supabase.auth.signOut();
+        throw new Error("Seu acesso está inativo. Contate o administrador.");
+      }
+    }
+
     return data;
   },
 

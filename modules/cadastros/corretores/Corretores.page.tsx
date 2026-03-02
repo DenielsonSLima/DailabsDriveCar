@@ -15,7 +15,7 @@ const CorretoresPage: React.FC = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<ICorretor | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  
+
   // Estado para notificações (Toast)
   const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info', message: string } | null>(null);
 
@@ -34,7 +34,7 @@ const CorretoresPage: React.FC = () => {
 
   useEffect(() => {
     loadData();
-    
+
     // Configuração do Realtime
     const sub = CorretoresService.subscribe((eventType) => {
       loadData(true);
@@ -54,8 +54,8 @@ const CorretoresPage: React.FC = () => {
 
   const filteredItems = useMemo(() => {
     const lowerSearch = searchTerm.toLowerCase();
-    return items.filter(i => 
-      i.nome.toLowerCase().includes(lowerSearch) || 
+    return items.filter(i =>
+      i.nome.toLowerCase().includes(lowerSearch) ||
       i.sobrenome?.toLowerCase().includes(lowerSearch) ||
       i.cpf.includes(searchTerm)
     );
@@ -109,16 +109,14 @@ const CorretoresPage: React.FC = () => {
   return (
     <div className="space-y-6 animate-in fade-in duration-500 relative">
       {toast && (
-        <div className={`fixed top-6 right-6 z-[200] px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 animate-in slide-in-from-right duration-300 border backdrop-blur-md ${
-          toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' : 
-          toast.type === 'info' ? 'bg-indigo-600/95 text-white border-indigo-400/50' :
-          'bg-rose-600 text-white border-rose-400/50'
-        }`}>
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-            toast.type === 'success' ? 'bg-emerald-500 text-white' : 
-            toast.type === 'info' ? 'bg-white text-indigo-600' :
-            'bg-white text-rose-600'
+        <div className={`fixed top-6 right-6 z-[200] px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 animate-in slide-in-from-right duration-300 border backdrop-blur-md ${toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' :
+            toast.type === 'info' ? 'bg-indigo-600/95 text-white border-indigo-400/50' :
+              'bg-rose-600 text-white border-rose-400/50'
           }`}>
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${toast.type === 'success' ? 'bg-emerald-500 text-white' :
+              toast.type === 'info' ? 'bg-white text-indigo-600' :
+                'bg-white text-rose-600'
+            }`}>
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
               <path strokeLinecap="round" strokeLinejoin="round" d={toast.type === 'success' ? "M5 13l4 4L19 7" : toast.type === 'info' ? "M13 10V3L4 14h7v7l9-11h-7z" : "M6 18L18 6M6 6l12 12"} />
             </svg>
@@ -143,15 +141,15 @@ const CorretoresPage: React.FC = () => {
 
       <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm p-8 min-h-[500px]">
         <div className="mb-8 relative max-w-md">
-           <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+          <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
           </span>
-          <input 
-            type="text" 
+          <input
+            type="text"
             placeholder="Buscar por nome, sobrenome ou CPF..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3 pl-10 pr-4 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
+            className="w-full bg-white border border-slate-200 rounded-2xl py-3 pl-10 pr-4 text-sm font-bold text-[#111827] focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
           />
         </div>
 
@@ -163,16 +161,16 @@ const CorretoresPage: React.FC = () => {
         ) : filteredItems.length === 0 ? (
           <div className="py-20 text-center text-slate-400 italic">Nenhum corretor encontrado.</div>
         ) : (
-          <CorretorList 
-            items={filteredItems} 
-            onEdit={handleEdit} 
-            onDelete={handleClickDelete} 
+          <CorretorList
+            items={filteredItems}
+            onEdit={handleEdit}
+            onDelete={handleClickDelete}
           />
         )}
       </div>
 
       {isFormOpen && (
-        <CorretorForm 
+        <CorretorForm
           initialData={editingItem}
           isSaving={isSaving}
           onClose={() => setIsFormOpen(false)}
@@ -180,7 +178,7 @@ const CorretoresPage: React.FC = () => {
         />
       )}
 
-      <ConfirmModal 
+      <ConfirmModal
         isOpen={!!deleteId}
         onClose={() => setDeleteId(null)}
         onConfirm={handleConfirmDelete}

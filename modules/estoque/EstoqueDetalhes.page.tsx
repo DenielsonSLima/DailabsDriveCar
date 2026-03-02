@@ -17,6 +17,7 @@ import FinancialCard from './components/details/FinancialCard';
 import SpecsCard from './components/details/SpecsCard';
 import VehicleExpensesCard from './components/details/VehicleExpensesCard';
 import VehicleQuickInfoCard from './components/details/VehicleQuickInfoCard';
+import ModalEditarDespesaVeiculo from './components/details/ModalEditarDespesaVeiculo';
 
 const EstoqueDetalhesPage: React.FC = () => {
   const navigate = useNavigate();
@@ -24,6 +25,7 @@ const EstoqueDetalhesPage: React.FC = () => {
 
   const [veiculo, setVeiculo] = useState<IVeiculo | null>(null);
   const [loading, setLoading] = useState(true);
+  const [editingExpense, setEditingExpense] = useState<IVeiculoDespesa | null>(null);
 
   // Dados auxiliares
   const [allCaracteristicas, setAllCaracteristicas] = useState<ICaracteristica[]>([]);
@@ -131,9 +133,21 @@ const EstoqueDetalhesPage: React.FC = () => {
         <VehicleExpensesCard
           veiculo={veiculo}
           onAddExpense={handleAddExpense}
+          onEditExpense={setEditingExpense}
           onDeleteExpense={handleDeleteExpense}
         />
       </div>
+
+      {editingExpense && (
+        <ModalEditarDespesaVeiculo
+          despesa={editingExpense}
+          onClose={() => setEditingExpense(null)}
+          onSuccess={() => {
+            setEditingExpense(null);
+            loadData();
+          }}
+        />
+      )}
     </div>
   );
 };

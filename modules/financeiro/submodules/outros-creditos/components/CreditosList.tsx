@@ -6,10 +6,11 @@ interface Props {
   loading: boolean;
   isGrouped: boolean;
   onReceber: (titulo: ITituloCredito) => void;
+  onEdit: (titulo: ITituloCredito) => void;
   onDelete: (id: string) => void;
 }
 
-const CreditosList: React.FC<Props> = ({ items, loading, isGrouped, onReceber, onDelete }) => {
+const CreditosList: React.FC<Props> = ({ items, loading, isGrouped, onReceber, onEdit, onDelete }) => {
   const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
   const formatDate = (date: string) => new Date(date).toLocaleDateString('pt-BR');
 
@@ -40,9 +41,8 @@ const CreditosList: React.FC<Props> = ({ items, loading, isGrouped, onReceber, o
                 <p className="text-xs font-black text-slate-900">{formatDate(t.data_vencimento)}</p>
               </td>
               <td className="px-8 py-6">
-                <span className={`px-2 py-1 rounded text-[8px] font-black uppercase tracking-widest border ${
-                  t.status === 'PAGO' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-teal-50 text-teal-600 border-teal-100'
-                }`}>
+                <span className={`px-2 py-1 rounded text-[8px] font-black uppercase tracking-widest border ${t.status === 'PAGO' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-teal-50 text-teal-600 border-teal-100'
+                  }`}>
                   {t.status}
                 </span>
               </td>
@@ -51,25 +51,31 @@ const CreditosList: React.FC<Props> = ({ items, loading, isGrouped, onReceber, o
                 <p className="text-[9px] text-slate-400 font-bold uppercase mt-0.5">{t.parceiro?.nome || t.categoria?.nome}</p>
               </td>
               <td className="px-8 py-6">
-                {t.conta_bancaria ? (
-                   <div className="flex flex-col">
-                      <p className="text-[10px] font-black text-slate-600 uppercase">{t.conta_bancaria.banco_nome}</p>
-                      <p className="text-[9px] text-slate-400 font-mono">CC: {t.conta_bancaria.conta}</p>
-                   </div>
-                ) : <span className="text-[9px] text-slate-300 font-bold uppercase">Não Definida</span>}
+                {(() => {
+                  const conta = t.transacoes?.[0]?.conta_origem;
+                  return conta ? (
+                    <div className="flex flex-col">
+                      <p className="text-[10px] font-black text-slate-600 uppercase">{conta.banco_nome}</p>
+                      <p className="text-[9px] text-slate-400 font-mono">CC: {conta.conta}</p>
+                    </div>
+                  ) : <span className="text-[9px] text-slate-300 font-bold uppercase">Não Definida</span>;
+                })()}
               </td>
               <td className="px-8 py-6 text-right">
                 <p className="text-sm font-black text-teal-600">{formatCurrency(t.valor_total)}</p>
               </td>
               <td className="px-8 py-6 text-right">
                 <div className="flex justify-end space-x-2">
+                  <button onClick={() => onEdit(t)} className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="Editar">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                  </button>
                   {t.status !== 'PAGO' && (
-                    <button onClick={() => onReceber(t)} className="p-2 text-teal-500 hover:bg-teal-50 rounded-lg transition-colors">
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+                    <button onClick={() => onReceber(t)} className="p-2 text-teal-500 hover:bg-teal-50 rounded-lg transition-colors" title="Receber">
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
                     </button>
                   )}
-                  <button onClick={() => onDelete(t.id)} className="p-2 text-slate-300 hover:text-rose-600 rounded-lg transition-colors">
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                  <button onClick={() => onDelete(t.id)} className="p-2 text-slate-300 hover:text-rose-600 rounded-lg transition-colors" title="Excluir">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                   </button>
                 </div>
               </td>

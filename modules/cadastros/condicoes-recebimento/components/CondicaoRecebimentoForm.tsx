@@ -45,7 +45,7 @@ const CondicaoRecebimentoForm: React.FC<Props> = ({ initialData, isSaving, onClo
             <input 
               autoFocus
               value={nome}
-              onChange={e => setNome(e.target.value)}
+              onChange={e => setNome(e.target.value.toUpperCase())}
               disabled={isSaving}
               className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-bold outline-none focus:ring-2 focus:ring-emerald-500 transition-all disabled:opacity-50"
               placeholder="Ex: À Vista, 30/60/90 Dias, Entrada 50%..."

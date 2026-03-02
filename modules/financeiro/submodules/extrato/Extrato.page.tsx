@@ -24,7 +24,7 @@ const ExtratoPage: React.FC = () => {
   });
 
   // Debounce para busca por texto
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const loadData = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
@@ -51,7 +51,7 @@ const ExtratoPage: React.FC = () => {
 
   useEffect(() => {
     loadData();
-    const sub = FinanceiroService.subscribe(() => loadData(true));
+    const sub = FinanceiroService.subscribeToTable('fin_transacoes', () => loadData(true));
     return () => { sub.unsubscribe(); };
   }, [loadData]);
 

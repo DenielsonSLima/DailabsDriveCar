@@ -11,7 +11,7 @@ export const UsuariosService = {
     try {
       const { data, error, status } = await supabase
         .from('profiles')
-        .select('id, nome, role, avatar_url')
+        .select('id, nome, sobrenome, cpf, telefone, role, avatar_url, email, ativo')
         .order('nome', { ascending: true });
 
       if (error) {
@@ -25,8 +25,6 @@ export const UsuariosService = {
 
       return (data || []).map(u => ({
         ...u,
-        email: 'acesso@sistema.com', // Placeholder pois email reside no Auth
-        ativo: true,
         created_at: new Date().toISOString()
       })) as IUsuario[];
     } catch (err: any) {
@@ -53,7 +51,11 @@ export const UsuariosService = {
         options: {
           data: {
             nome: usuario.nome,
-            role: usuario.role
+            sobrenome: usuario.sobrenome,
+            telefone: usuario.telefone,
+            cpf: usuario.cpf,
+            role: usuario.role,
+            ativo: usuario.ativo !== undefined ? usuario.ativo : true
           }
         }
       });
@@ -74,7 +76,11 @@ export const UsuariosService = {
         .from('profiles')
         .update({
           nome: usuario.nome,
-          role: usuario.role
+          sobrenome: usuario.sobrenome,
+          cpf: usuario.cpf,
+          telefone: usuario.telefone,
+          role: usuario.role,
+          ativo: usuario.ativo !== undefined ? usuario.ativo : true
         })
         .eq('id', usuario.id);
 
@@ -82,12 +88,55 @@ export const UsuariosService = {
     }
   },
 
-  async delete(id: string): Promise<void> {
+  async toggleStatus(id: string, currentStatus: boolean): Promise<void> {
     const { error } = await supabase
       .from('profiles')
-      .delete()
+      .update({ ativo: !currentStatus })
       .eq('id', id);
 
     if (error) throw error;
+  },
+
+  async delete(id: string): Promise<void> {
+    // Verifica lançamentos em vendas
+    const { count: countVendas, error: errVendas } = await supabase
+      .from('venda_pedidos')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', id);
+
+    // Verifica lançamentos em compras
+    const { count: countCompras, error: errCompras } = await supabase
+      .from('cmp_pedidos')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', id);
+
+    if ((countVendas && countVendas > 0) || (countCompras && countCompras > 0)) {
+      throw new Error("Este usuário possui lançamentos (vendas/compras) vinculados no sistema e não pode ser excluído. Em vez disso, apenas inative o acesso.");
+    }
+
+    // Chama a função segura no banco de dados para excluir da auth.users
+    const { error } = await supabase.rpc('delete_user_completely', { user_id: id });
+
+    if (error) {
+      if (error.code === '23503' || error.message?.includes('foreign key constraint')) {
+        throw new Error("Este usuário possui registros vinculados no banco de dados e não pode ser excluído.");
+      }
+      throw error;
+    }
+  },
+
+  subscribeToChanges(callback: () => void) {
+    return supabase
+      .channel('public:profiles_changes')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'profiles' },
+        callback
+      )
+      .subscribe();
+  },
+
+  unsubscribeFromChanges(channel: any) {
+    supabase.removeChannel(channel);
   }
 };

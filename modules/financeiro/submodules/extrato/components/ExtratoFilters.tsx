@@ -18,13 +18,13 @@ const ExtratoFilters: React.FC<Props> = ({ filtros, onChange }) => {
             placeholder="Descrição, parceiro ou nº pedido..."
             value={filtros.busca || ''}
             onChange={e => onChange({ ...filtros, busca: e.target.value })}
-            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-bold outline-none placeholder-slate-300 focus:border-indigo-300 focus:ring-1 focus:ring-indigo-200 transition-all"
+            className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-bold text-[#111827] outline-none placeholder-slate-300 focus:border-indigo-300 focus:ring-1 focus:ring-indigo-200 transition-all"
           />
         </div>
 
         <div className="flex-1 w-full">
           <label className="block text-[9px] font-black text-slate-400 uppercase mb-1.5 ml-1 tracking-widest">Período de Análise</label>
-          <div className="flex items-center space-x-2 bg-slate-50 border border-slate-200 rounded-xl p-1">
+          <div className="flex items-center space-x-2 bg-white border border-slate-200 rounded-xl p-1">
             <input
               type="date"
               value={filtros.dataInicio || ''}
@@ -56,7 +56,7 @@ const ExtratoFilters: React.FC<Props> = ({ filtros, onChange }) => {
           <select
             value={filtros.tipo || ''}
             onChange={e => onChange({ ...filtros, tipo: e.target.value })}
-            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-bold outline-none cursor-pointer"
+            className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-bold text-[#111827] outline-none cursor-pointer"
           >
             <option value="">Todas</option>
             <option value="ENTRADA">Entradas Realizadas</option>
@@ -72,7 +72,7 @@ const ExtratoFilters: React.FC<Props> = ({ filtros, onChange }) => {
           <select
             value={filtros.status || ''}
             onChange={e => onChange({ ...filtros, status: e.target.value })}
-            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-bold outline-none cursor-pointer"
+            className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-bold text-[#111827] outline-none cursor-pointer"
           >
             <option value="">Todos</option>
             <option value="REALIZADO">Realizado</option>
@@ -87,7 +87,7 @@ const ExtratoFilters: React.FC<Props> = ({ filtros, onChange }) => {
           <select
             value={filtros.origem || ''}
             onChange={e => onChange({ ...filtros, origem: e.target.value })}
-            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-bold outline-none cursor-pointer"
+            className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-bold text-[#111827] outline-none cursor-pointer"
           >
             <option value="">Todas</option>
             <option value="COMPRA">Compra de Veículo</option>

@@ -1,5 +1,5 @@
-
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SitePublicoService } from './site-publico.service';
 import { IVeiculoPublic } from './site-publico.types';
@@ -15,105 +15,78 @@ const PublicVehicleDetailsPage: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const [veiculo, setVeiculo] = useState<IVeiculoPublic | null>(null);
-  const [empresa, setEmpresa] = useState<IEmpresa | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [allCaracteristicas, setAllCaracteristicas] = useState<{ id: string; nome: string }[]>([]);
-  const [allOpcionais, setAllOpcionais] = useState<{ id: string; nome: string }[]>([]);
-  const [cores, setCores] = useState<{ id: string; nome: string; rgb_hex: string }[]>([]);
+  // TanStack Query: Carrega todos os dados necessários em uma única chamada paralela no serviço
+  const { data, isLoading } = useQuery({
+    queryKey: ['veiculo_detalhes', id],
+    queryFn: () => SitePublicoService.getVeiculoDetails(id!),
+    enabled: !!id,
+    staleTime: 1000 * 60 * 10, // 10 minutos
+  });
+
   const [activePhoto, setActivePhoto] = useState<string | null>(null);
   const [activePhotoIndex, setActivePhotoIndex] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+
+  const veiculo = data?.veiculo;
+  const empresa = data?.empresa;
+  const allCaracteristicas = data?.caracteristicas || [];
+  const allOpcionais = data?.opcionais || [];
+  const cores = data?.cores || [];
 
   const sortedPhotos = useMemo(
     () => veiculo?.fotos ? [...veiculo.fotos].sort((a, b) => (a.is_capa === b.is_capa ? 0 : a.is_capa ? -1 : 1)) : [],
     [veiculo?.fotos]
   );
 
-  // Auto-play Effect
+  // Define foto inicial quando o veículo carrega
   useEffect(() => {
-    // Só inicia se houver fotos, não estiver em fullscreen e não estiver com mouse em cima
-    if (sortedPhotos.length <= 1 || isFullscreen || isHovered) return;
-
-    const interval = setInterval(() => {
-      setActivePhotoIndex((prev) => {
-        const next = (prev + 1) % sortedPhotos.length;
-        setActivePhoto(sortedPhotos[next].url);
-        return next;
-      });
-    }, 3500);
-
-    return () => clearInterval(interval);
-  }, [sortedPhotos.length, isFullscreen, isHovered]);
-
-  useEffect(() => {
-    async function loadData() {
-      if (!id) return;
-      setLoading(true);
-      try {
-        const { veiculo: vData, caracteristicas: carData, opcionais: opData, cores: coresData, empresa: empData } = await SitePublicoService.getVeiculoDetails(id);
-
-        if (!vData) {
-          navigate('/');
-          return;
-        }
-
-        setVeiculo(vData);
-        setAllCaracteristicas(carData);
-        setAllOpcionais(opData);
-        setCores(coresData);
-        setEmpresa(empData);
-
-        // SEO: Define título e meta tags dinâmicos com dados do veículo
-        const veiculoTitle = `${vData.montadora?.nome || ''} ${vData.modelo?.nome || ''} ${vData.ano_modelo}`;
-        const initialPhotos = [...(vData.fotos || [])].sort((a, b) => (a.is_capa === b.is_capa ? 0 : a.is_capa ? -1 : 1));
-        const coverPhoto = initialPhotos.length > 0 ? initialPhotos[0].url : undefined;
-        const veiculoUrl = `${window.location.origin}/veiculo/${id}`;
-
-        setSEO({
-          title: `${veiculoTitle} | Hidrocar Veículos`,
-          description: `${veiculoTitle} - ${vData.km?.toLocaleString('pt-BR')} KM, ${vData.combustivel}, ${vData.transmissao}. Confira na Hidrocar Veículos em Aracaju/SE.`,
-          image: coverPhoto,
-          url: veiculoUrl
-        });
-
-        // JSON-LD: Dados estruturados do veículo para Google Rich Snippets
-        setVehicleJsonLd({
-          name: veiculoTitle.trim(),
-          brand: vData.montadora?.nome || '',
-          model: vData.modelo?.nome || '',
-          year: vData.ano_modelo,
-          mileage: vData.km || 0,
-          fuelType: vData.combustivel || '',
-          transmission: vData.transmissao || '',
-          price: vData.valor_venda || 0,
-          image: coverPhoto,
-          url: veiculoUrl,
-          description: `${veiculoTitle} - ${vData.km?.toLocaleString('pt-BR')} KM, ${vData.combustivel}, ${vData.transmissao}.`,
-          sellerName: 'Hidrocar Veículos',
-          sellerPhone: empData?.telefone,
-        });
-
-        if (initialPhotos.length > 0) {
-          setActivePhoto(initialPhotos[0].url);
-          setActivePhotoIndex(0);
-        }
-
-      } catch (error) {
-        console.error("Erro ao carregar dados:", error);
-        navigate('/');
-      } finally {
-        setLoading(false);
-      }
+    if (sortedPhotos.length > 0 && !activePhoto) {
+      setActivePhoto(sortedPhotos[0].url);
+      setActivePhotoIndex(0);
     }
-    loadData();
-    window.scrollTo(0, 0);
+  }, [sortedPhotos, activePhoto]);
 
-    return () => {
-      removeJsonLd();
-    };
-  }, [id, navigate]);
+  // SEO & JSON-LD Effect
+  useEffect(() => {
+    if (!veiculo || !empresa) return;
+
+    const veiculoTitle = `${veiculo.montadora?.nome || ''} ${veiculo.modelo?.nome || ''} ${veiculo.ano_modelo}`;
+    const coverPhoto = sortedPhotos.length > 0 ? sortedPhotos[0].url : undefined;
+    const veiculoUrl = `${window.location.origin}/veiculo/${id}`;
+
+    setSEO({
+      title: `${veiculoTitle} | Hidrocar Veículos`,
+      description: `${veiculoTitle} - ${veiculo.km?.toLocaleString('pt-BR')} KM, ${veiculo.combustivel}, ${veiculo.transmissao}. Confira na Hidrocar Veículos em Aracaju/SE.`,
+      image: coverPhoto,
+      url: veiculoUrl
+    });
+
+    setVehicleJsonLd({
+      name: veiculoTitle.trim(),
+      brand: veiculo.montadora?.nome || '',
+      model: veiculo.modelo?.nome || '',
+      year: veiculo.ano_modelo,
+      mileage: veiculo.km || 0,
+      fuelType: veiculo.combustivel || '',
+      transmission: veiculo.transmissao || '',
+      price: veiculo.valor_venda || 0,
+      image: coverPhoto,
+      url: veiculoUrl,
+      description: `${veiculoTitle} - ${veiculo.km?.toLocaleString('pt-BR')} KM, ${veiculo.combustivel}, ${veiculo.transmissao}.`,
+      sellerName: 'Hidrocar Veículos',
+      sellerPhone: empresa?.telefone,
+    });
+
+    return () => removeJsonLd();
+  }, [veiculo, empresa, id, sortedPhotos]);
+
+  // Redireciona se não encontrar veículo após carregar
+  useEffect(() => {
+    if (!isLoading && !veiculo && id) {
+      navigate('/');
+    }
+  }, [isLoading, veiculo, id, navigate]);
 
   const handleNextPhoto = useCallback((e?: React.MouseEvent) => {
     e?.stopPropagation();
@@ -145,6 +118,17 @@ const PublicVehicleDetailsPage: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isFullscreen, handleNextPhoto, handlePrevPhoto]);
 
+  // Passagem automática de fotos (Auto-play)
+  useEffect(() => {
+    if (isFullscreen || isHovered || sortedPhotos.length <= 1) return;
+
+    const interval = setInterval(() => {
+      handleNextPhoto();
+    }, 4000); // Troca a cada 4 segundos
+
+    return () => clearInterval(interval);
+  }, [isFullscreen, isHovered, sortedPhotos.length, handleNextPhoto]);
+
   const handleWhatsApp = useCallback(() => {
     if (!veiculo || !empresa) return;
     const phone = (empresa.telefone || '').replace(/\D/g, '');
@@ -152,7 +136,61 @@ const PublicVehicleDetailsPage: React.FC = () => {
     window.open(`https://wa.me/55${phone}?text=${message}`, '_blank');
   }, [veiculo, empresa]);
 
-  if (!veiculo && !loading) {
+  const [shareStatus, setShareStatus] = useState<'idle' | 'copied'>('idle');
+
+  const handleShare = useCallback(async () => {
+    if (!veiculo) return;
+    const title = `${veiculo.montadora?.nome} ${veiculo.modelo?.nome} ${veiculo.ano_modelo}`;
+    const url = window.location.href;
+
+    const fallbackCopy = async () => {
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(url);
+        } else {
+          // Fallback legacy (para acessos HTTP ou IPs locais)
+          const textArea = document.createElement("textarea");
+          textArea.value = url;
+          // Evita rolar a tela
+          textArea.style.position = "fixed";
+          textArea.style.top = "0";
+          textArea.style.left = "0";
+          textArea.style.opacity = "0";
+          document.body.appendChild(textArea);
+          textArea.focus();
+          textArea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textArea);
+        }
+
+        setShareStatus('copied');
+        setTimeout(() => setShareStatus('idle'), 3000);
+      } catch (err) {
+        console.error('Failed to copy: ', err);
+        alert('Não foi possível copiar o link. Copie a URL do navegador.');
+      }
+    };
+
+    // Use native share only on mobile platforms where it's robust
+    const isMobile = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase());
+
+    if (navigator.share && isMobile) {
+      try {
+        await navigator.share({
+          title: title,
+          text: `Confira este ${title} na Hidrocar Veículos!`,
+          url: url,
+        });
+      } catch (err) {
+        console.log('Error sharing:', err);
+      }
+    } else {
+      // Fallback: Copy to clipboard on Desktop
+      await fallbackCopy();
+    }
+  }, [veiculo]);
+
+  if (!veiculo && !isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
         <p className="text-slate-500">Veículo não encontrado.</p>
@@ -175,7 +213,9 @@ const PublicVehicleDetailsPage: React.FC = () => {
   );
 
   // Se estiver carregando, mostramos o esqueleto mas JÁ COM navbar
-  const content = loading ? <VehicleDetailsSkeleton /> : (
+  const content = isLoading ? (
+    <VehicleDetailsSkeleton />
+  ) : (
     <>
       <section className="pt-24 lg:pt-32 pb-12">
         <div className="max-w-[1400px] mx-auto px-6">
@@ -282,7 +322,7 @@ const PublicVehicleDetailsPage: React.FC = () => {
                   <p className="text-5xl font-[900] text-[#004691] tracking-tighter">{veiculo ? formatCurrency(veiculo.valor_venda) : 'R$ --'}</p>
                 </div>
 
-                <div className="pt-4">
+                <div className="pt-4 space-y-3">
                   <button
                     onClick={handleWhatsApp}
                     className="w-full py-6 bg-[#004691] text-white rounded-[2rem] font-black uppercase tracking-[0.2em] text-[11px] shadow-2xl hover:bg-[#00356d] transition-all active:scale-95 flex items-center justify-center group"
@@ -290,32 +330,46 @@ const PublicVehicleDetailsPage: React.FC = () => {
                     <svg className="w-5 h-5 mr-3 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.463 1.065 2.875 1.213 3.074.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" /></svg>
                     Falar com Especialista
                   </button>
+
+                  <button
+                    onClick={handleShare}
+                    className="w-full py-4 bg-white border-2 border-slate-100 text-slate-900 rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] hover:border-[#004691] hover:text-[#004691] transition-all active:scale-95 flex items-center justify-center group"
+                  >
+                    <svg className="w-4 h-4 mr-3 group-hover:rotate-12 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 10.342l7.132-3.566m-7.132 5.066l7.132 3.566M16 5a3 3 0 11-6 0 3 3 0 016 0zm-8 7a3 3 0 11-6 0 3 3 0 016 0zm8 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    {shareStatus === 'copied' ? 'Link Copiado!' : 'Compartilhar Veículo'}
+                  </button>
                 </div>
 
-                <div className="grid grid-cols-2 gap-y-6 gap-x-6">
-                  <div className="space-y-1">
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Ano Fab/Mod</p>
-                    <p className="text-xl font-black text-slate-900 leading-none">{veiculo?.ano_fabricacao} / {veiculo?.ano_modelo}</p>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Quilometragem</p>
-                    <p className="text-xl font-black text-slate-900 leading-none">{veiculo?.km?.toLocaleString('pt-BR')} <span className="text-[10px]">KM</span></p>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Câmbio</p>
-                    <p className="text-sm font-black text-slate-900 leading-none uppercase">{veiculo?.transmissao}</p>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Combustível</p>
-                    <p className="text-sm font-black text-slate-900 leading-none uppercase">{veiculo?.combustivel}</p>
-                  </div>
-                  {corObj && (
-                    <div className="col-span-2 flex items-center gap-3 bg-slate-50 p-4 rounded-3xl border border-slate-100 shadow-inner">
-                      <div className="w-5 h-5 rounded-full border-2 border-white shadow-md" style={{ backgroundColor: corObj.rgb_hex }}></div>
-                      <p className="text-[10px] font-black text-slate-700 uppercase tracking-widest">Cor {corObj.nome}</p>
+                {isLoading ? (
+                  <div className="h-10 w-32 bg-slate-100 animate-pulse rounded-xl" />
+                ) : (
+                  <div className="grid grid-cols-2 gap-y-6 gap-x-6">
+                    <div className="space-y-1">
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Ano Fab/Mod</p>
+                      <p className="text-xl font-black text-slate-900 leading-none">{veiculo?.ano_fabricacao} / {veiculo?.ano_modelo}</p>
                     </div>
-                  )}
-                </div>
+                    <div className="space-y-1">
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Quilometragem</p>
+                      <p className="text-xl font-black text-slate-900 leading-none">{veiculo?.km?.toLocaleString('pt-BR')} <span className="text-[10px]">KM</span></p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Câmbio</p>
+                      <p className="text-sm font-black text-slate-900 leading-none uppercase">{veiculo?.transmissao}</p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Combustível</p>
+                      <p className="text-sm font-black text-slate-900 leading-none uppercase">{veiculo?.combustivel}</p>
+                    </div>
+                    {corObj && (
+                      <div className="col-span-2 flex items-center gap-3 bg-slate-50 p-4 rounded-3xl border border-slate-100 shadow-inner">
+                        <div className="w-5 h-5 rounded-full border-2 border-white shadow-md" style={{ backgroundColor: corObj.rgb_hex }}></div>
+                        <p className="text-[10px] font-black text-slate-700 uppercase tracking-widest">Cor {corObj.nome}</p>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>

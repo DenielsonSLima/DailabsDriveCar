@@ -12,14 +12,16 @@ const VisaoGeralPage: React.FC = () => {
     atrasado: { total: 0, count: 0 },
     hoje: { total: 0, count: 0 }
   });
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     loadData();
-    const sub = FinanceiroService.subscribe(() => loadData());
+    const sub = FinanceiroService.subscribeToTable('fin_titulos', () => loadData());
     return () => { sub.unsubscribe(); };
   }, []);
 
   async function loadData() {
+    setIsLoading(true);
     try {
       const [contasData, pendenciasData] = await Promise.all([
         FinanceiroService.getContasBancarias(),
@@ -29,6 +31,8 @@ const VisaoGeralPage: React.FC = () => {
       if (pendenciasData) setPendencias(pendenciasData);
     } catch (error) {
       console.error("Erro ao carregar dados financeiros", error);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -41,12 +45,12 @@ const VisaoGeralPage: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Coluna Principal: Resumo de Contas */}
         <div className="lg:col-span-8">
-          <CardSaldoContas contas={contas} />
+          <CardSaldoContas contas={contas} isLoading={isLoading} />
         </div>
 
         {/* Coluna Lateral: Alertas e Próximos Passos */}
         <div className="lg:col-span-4">
-          <CardPendenciasUrgentes pendencias={pendencias} />
+          <CardPendenciasUrgentes pendencias={pendencias} isLoading={isLoading} />
         </div>
       </div>
     </div>

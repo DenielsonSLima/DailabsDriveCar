@@ -1,6 +1,15 @@
+
 import { supabase } from '../../lib/supabase';
-import { IPedidoVenda, IVendaFiltros, IVendaPagamento, VendaTab, IPedidoVendaResponse } from './pedidos-venda.types';
-import { FinanceiroAutomationService } from '../financeiro/financeiro.automation';
+import {
+  IPedidoVenda,
+  IVendaFiltros,
+  IVendaPagamento,
+  VendaTab,
+  IPedidoVendaResponse,
+  PedidoVendaSchema,
+  VendaPagamentoSchema
+} from './pedidos-venda.types';
+import { FinanceiroService } from '../financeiro/financeiro.service';
 
 const TABLE = 'venda_pedidos';
 const PAYMENTS_TABLE = 'venda_pedidos_pagamentos';
@@ -71,7 +80,6 @@ export const PedidosVendaService = {
         veiculo:est_veiculos(valor_custo, valor_custo_servicos, valor_venda)
       `);
 
-    // Mesma lógica de filtros
     if (tab === 'RASCUNHO') {
       query = query.eq('status', 'RASCUNHO');
     } else if (tab === 'MES_ATUAL') {
@@ -87,64 +95,91 @@ export const PedidosVendaService = {
     if (filtros.corretorId) query = query.eq('corretor_id', filtros.corretorId);
 
     const { data, error } = await query;
-    if (error) {
-      console.error('Error fetching stats:', error);
-      return [];
-    }
-    return data as any;
+    if (error) throw error;
+    return (data || []) as unknown as IPedidoVenda[];
   },
 
-  async getById(id: string): Promise<IPedidoVenda | null> {
+  async getById(id: string): Promise<IPedidoVenda> {
     const { data, error } = await supabase
       .from(TABLE)
       .select(`
         *,
         cliente:parceiros(*),
-        veiculo:est_veiculos(
-          *, 
-          montadora:cad_montadoras(*), 
-          modelo:cad_modelos(*), 
-          versao:cad_versoes(*),
-          tipo_veiculo:cad_tipos_veiculos(*),
-          pedido_compra:cmp_pedidos!est_veiculos_pedido_id_fkey(id, forma_pagamento:cad_formas_pagamento(id, nome))
-        ),
         forma_pagamento:cad_formas_pagamento(*),
+        veiculo:est_veiculos(
+          *,
+          montadora:cad_montadoras(*),
+          modelo:cad_modelos(*),
+          versao:cad_versoes(*)
+        ),
         pagamentos:venda_pedidos_pagamentos(
           *,
-          forma_pagamento:cad_formas_pagamento(nome),
-          condicao:cad_condicoes_recebimento(nome),
-          conta_bancaria:fin_contas_bancarias(banco_nome, conta)
-        )
+          forma_pagamento:cad_formas_pagamento(*),
+          conta_bancaria:fin_contas_bancarias(banco_nome, conta, agencia, titular)
+        ),
+        corretor:cad_corretores(*)
       `)
       .eq('id', id)
-      .single();
-
-    if (error) {
-      console.error('Erro ao buscar pedido de venda:', error);
-      throw error;
-    }
-
-    return data as IPedidoVenda;
-  },
-
-  async save(payload: Partial<IPedidoVenda>): Promise<IPedidoVenda> {
-    const { id, cliente, veiculo, forma_pagamento, pagamentos, ...rest } = payload as any;
-    const dataToSave = { ...rest, updated_at: new Date().toISOString() };
-
-    const { data, error } = await supabase
-      .from(TABLE)
-      .upsert(id ? { id, ...dataToSave } : dataToSave)
-      .select()
       .single();
 
     if (error) throw error;
     return data as IPedidoVenda;
   },
 
+  async save(payload: Partial<IPedidoVenda>): Promise<IPedidoVenda> {
+    const { pagamentos = [], ...pedido } = payload as any;
+
+    // Validate with Zod
+    // Se tiver ID, permite atualização parcial. Se não, exige campos obrigatórios.
+    // Validate: use partial for updates, full for inserts
+    const schema = pedido.id ? PedidoVendaSchema.partial() : PedidoVendaSchema;
+    let validatedPedido = schema.parse(pedido);
+
+    let pedidoId = pedido.id;
+
+    if (pedidoId) {
+      // Filter out keys that were not in the original payload to prevent Zod defaults from leaking in
+      const payloadKeys = Object.keys(pedido);
+      const dataToUpdate = Object.fromEntries(
+        Object.entries(validatedPedido).filter(([key]) => payloadKeys.includes(key))
+      );
+
+      const { error } = await supabase
+        .from(TABLE)
+        .update(dataToUpdate)
+        .eq('id', pedidoId);
+      if (error) throw error;
+    } else {
+      const { data, error } = await supabase
+        .from(TABLE)
+        .insert(validatedPedido)
+        .select()
+        .single();
+      if (error) throw error;
+      pedidoId = data.id;
+    }
+
+    if (pagamentos.length > 0) {
+      const validatedPagamentos = pagamentos.map((p: any) =>
+        VendaPagamentoSchema.parse({ ...p, pedido_id: pedidoId })
+      );
+
+      const { error: pError } = await supabase
+        .from(PAYMENTS_TABLE)
+        .upsert(validatedPagamentos);
+      if (pError) throw pError;
+    }
+
+    return this.getById(pedidoId);
+  },
+
   async savePayment(payment: Partial<IVendaPagamento>): Promise<void> {
+    const validated = payment.id
+      ? VendaPagamentoSchema.partial().parse(payment)
+      : VendaPagamentoSchema.parse(payment);
     const { error } = await supabase
       .from(PAYMENTS_TABLE)
-      .upsert(payment);
+      .upsert(validated);
     if (error) throw error;
   },
 
@@ -156,82 +191,64 @@ export const PedidosVendaService = {
     if (error) throw error;
   },
 
-  async confirmSale(params: {
-    pedido: IPedidoVenda,
-    condicao: any,
-    contaBancariaId?: string
-  }): Promise<void> {
-    const { pedido, condicao, contaBancariaId } = params;
-
-    const isConsignacao = pedido.forma_pagamento?.nome?.toLowerCase().includes('consignação') ||
-      pedido.forma_pagamento?.nome?.toLowerCase().includes('consignacao');
-
-    // 1. Processar Financeiro
-    await FinanceiroAutomationService.processarFinanceiroPedido({
-      tipo: 'RECEBER',
-      pedidoId: pedido.id,
-      parceiroId: pedido.cliente_id,
-      formaPagamento: pedido.forma_pagamento!,
-      condicao: condicao,
-      valorTotal: pedido.valor_venda,
-      descricao: isConsignacao
-        ? `COMISSÃO CONSIGNAÇÃO: ${pedido.numero_venda || pedido.id.substring(0, 8)}`
-        : `VENDA: ${pedido.numero_venda || pedido.id.substring(0, 8)}`,
-      contaBancariaId
+  async confirmSale(payload: { pedido: IPedidoVenda, condicao?: any, contaBancariaId?: string }): Promise<void> {
+    const { error } = await supabase.rpc('confirmar_venda_pedido', {
+      p_pedido_id: payload.pedido.id,
+      p_conta_id: payload.contaBancariaId || null
     });
+    if (error) throw error;
+  },
 
-    // 2. Atualizar Status do Pedido
-    const { error: errorPedido } = await supabase
-      .from(TABLE)
-      .update({
-        status: 'CONCLUIDO',
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', pedido.id);
-
-    if (errorPedido) throw new Error(`Erro ao atualizar pedido: ${errorPedido.message}`);
-
-    // 3. Atualizar Status do Veículo
-    // Fallback: se veiculo_id não veio no objeto, buscar diretamente no banco
-    let veiculoIdFinal = pedido.veiculo_id;
-    if (!veiculoIdFinal) {
-      const { data: pedidoDB } = await supabase
-        .from(TABLE)
-        .select('veiculo_id')
-        .eq('id', pedido.id)
-        .single();
-      veiculoIdFinal = pedidoDB?.veiculo_id;
-    }
-
-    if (veiculoIdFinal) {
-      console.log('Finalizando venda do veículo:', veiculoIdFinal);
-      const { error: errorVeiculo } = await supabase
-        .from('est_veiculos')
-        .update({
-          status: 'VENDIDO',
-          publicado_site: false,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', veiculoIdFinal);
-
-      if (errorVeiculo) {
-        console.error('Erro ao atualizar veículo na finalização:', errorVeiculo);
-        throw new Error(`Erro ao atualizar veículo: ${errorVeiculo.message}`);
-      }
-    } else {
-      console.warn('ATENÇÃO: Venda concluída sem veículo vinculado. Pedido:', pedido.id);
-    }
+  async cancelSale(id: string): Promise<void> {
+    const { error } = await supabase.rpc('cancelar_venda_pedido', {
+      p_pedido_id: id
+    });
+    if (error) throw error;
   },
 
   async delete(id: string): Promise<void> {
-    await supabase.from(TABLE).delete().eq('id', id);
+    const { error } = await supabase
+      .from(TABLE)
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+  },
+
+  async getDraftCount(): Promise<number> {
+    const { count, error } = await supabase
+      .from(TABLE)
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'RASCUNHO');
+
+    if (error) throw error;
+    return count || 0;
+  },
+
+  async getConsignacaoFormaPagamento(): Promise<string | null> {
+    const { data, error } = await supabase
+      .from('cad_formas_pagamento')
+      .select('id')
+      .ilike('nome', '%consignação%')
+      .maybeSingle();
+
+    if (error) return null;
+    return data?.id || null;
+  },
+
+  async getTitulosByPedidoId(pedidoId: string): Promise<any[]> {
+    // Delega ao FinanceiroService com tipo VENDA para usar coluna venda_pedido_id
+    return FinanceiroService.getTitulosByPedidoId(pedidoId, 'VENDA');
   },
 
   subscribe(onUpdate: () => void) {
     return supabase
-      .channel('venda_pedidos_realtime')
-      .on('postgres_changes', { event: '*', schema: 'public', table: TABLE }, () => onUpdate())
-      .on('postgres_changes', { event: '*', schema: 'public', table: PAYMENTS_TABLE }, () => onUpdate())
+      .channel('venda_pedidos_changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: TABLE }, () => {
+        onUpdate();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: PAYMENTS_TABLE }, () => {
+        onUpdate();
+      })
       .subscribe();
   }
 };

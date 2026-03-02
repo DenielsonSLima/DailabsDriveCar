@@ -100,10 +100,15 @@ const CardPaymentData: React.FC<Props> = ({ pedido, totalAquisicaoReferencia, on
                   <td className="px-6 py-4">
                     <div className="flex flex-col">
                       <span className="text-xs font-black text-slate-900 uppercase tracking-tight">{(p as any).forma_pagamento?.nome}</span>
-                      {p.condicao_id && (
-                        <span className="text-[9px] font-bold text-indigo-500 uppercase">{(p as any).condicao?.nome}</span>
+                      {p.conta_bancaria && (
+                        <span className="text-[9px] text-indigo-600 font-black uppercase tracking-widest mt-1 bg-indigo-50/50 px-1.5 py-0.5 rounded leading-none w-fit">
+                          {p.conta_bancaria.banco_nome}
+                        </span>
                       )}
-                      {p.observacao && <span className="text-[9px] text-slate-400 italic">"{p.observacao}"</span>}
+                      {p.condicao_id && (
+                        <span className="text-[9px] font-bold text-indigo-500 uppercase mt-1">{(p as any).condicao?.nome}</span>
+                      )}
+                      {p.observacao && <span className="text-[9px] text-slate-400 italic mt-1 font-medium">"{p.observacao}"</span>}
                     </div>
                   </td>
                   <td className="px-6 py-4 text-sm font-black text-indigo-600 text-right">{formatCurrency(p.valor)}</td>
@@ -134,6 +139,7 @@ const CardPaymentData: React.FC<Props> = ({ pedido, totalAquisicaoReferencia, on
       {isModalOpen && (
         <ModalPaymentForm
           pedidoId={pedido.id}
+          formaPagamentoId={pedido.forma_pagamento_id}
           isSaving={isSaving}
           valorSugerido={valorRestante}
           onClose={() => setIsModalOpen(false)}

@@ -1,3 +1,4 @@
+import { z } from 'zod';
 
 export interface IEmpresa {
   id?: string;
@@ -9,7 +10,7 @@ export interface IEmpresa {
   email?: string;
   telefone?: string;
   website?: string;
-  
+
   // Endereço
   cep: string;
   logradouro: string;
@@ -18,11 +19,33 @@ export interface IEmpresa {
   bairro: string;
   cidade: string;
   uf: string;
-  
+
   logo_url?: string;
   created_at?: string;
   updated_at?: string;
 }
+
+export const EmpresaSchema = z.object({
+  id: z.string().optional(),
+  user_id: z.string().optional(),
+  cnpj: z.string(),
+  razao_social: z.string(),
+  nome_fantasia: z.string(),
+  inscricao_estadual: z.string().optional().nullable(),
+  email: z.string().optional().nullable(),
+  telefone: z.string().optional().nullable(),
+  website: z.string().optional().nullable(),
+  cep: z.string(),
+  logradouro: z.string(),
+  numero: z.string(),
+  complemento: z.string().optional().nullable(),
+  bairro: z.string(),
+  cidade: z.string(),
+  uf: z.string(),
+  logo_url: z.string().optional().nullable(),
+  created_at: z.string().optional(),
+  updated_at: z.string().optional(),
+});
 
 export interface IBrasilAPICNPJ {
   cnpj: string;

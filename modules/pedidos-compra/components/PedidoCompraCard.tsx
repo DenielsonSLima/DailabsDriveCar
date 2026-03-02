@@ -15,28 +15,41 @@ const PedidoCompraCard: React.FC<Props> = ({ pedido, onClick }) => {
   const currentVeiculo = hasVeiculos ? veiculos[Math.min(activeVehicleIndex, veiculos.length - 1)] : null;
   const v = currentVeiculo as any;
   const todosVendidos = hasVeiculos && veiculos.every((v: any) => v.status === 'VENDIDO');
+  const isConsignacao = pedido.forma_pagamento?.nome?.toLowerCase().includes('consigna') || false;
   const capaUrl = v?.fotos?.find((f: any) => f.is_capa)?.url || v?.fotos?.[0]?.url;
 
   const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
   const formatDate = (date: string) => new Date(date).toLocaleDateString('pt-BR');
 
   // Cálculos Financeiros Agregados
-  const custoAquisicao = veiculos.reduce((acc, v) => acc + (v.valor_custo || 0), 0);
-  const custoServicos = veiculos.reduce((acc, v) => acc + (v.valor_custo_servicos || 0), 0);
+  const custoAquisicaoBase = veiculos.reduce((acc, v: any) => acc + (Number(v.valor_custo) || 0), 0);
+  const valorPedido = Number(pedido.valor_negociado) || 0;
+  const custoAquisicao = valorPedido > 0 ? valorPedido : custoAquisicaoBase;
+
+  const custoServicos = veiculos.reduce((acc, v: any) => acc + (Number(v.valor_custo_servicos) || 0), 0);
   const totalInvestido = custoAquisicao + custoServicos;
 
   // Consolidação de Sócios
   const sociosAgrupados = React.useMemo(() => {
-    const map = new Map<string, { nome: string, valor: number }>();
-    veiculos.forEach(v => {
-      v.socios?.forEach(s => {
-        const current = map.get(s.socio_id) || { nome: s.nome, valor: 0 };
-        map.set(s.socio_id, { nome: s.nome, valor: current.valor + s.valor });
+    const map = new Map<string, { nome: string, valor: number, porcentagemTotal: number }>();
+    veiculos.forEach((v: any) => {
+      v.socios?.forEach((s: any) => {
+        const perc = Number(s.porcentagem) || 0;
+        // The value each partner invests is their percentage applied to the total lot investment
+        const investidoSocio = totalInvestido * (perc / 100);
+
+        const current = map.get(s.socio_id) || { nome: s.nome, valor: 0, porcentagemTotal: 0 };
+        map.set(s.socio_id, {
+          nome: s.nome,
+          valor: current.valor + investidoSocio,
+          porcentagemTotal: current.porcentagemTotal + perc
+        });
       });
     });
     return Array.from(map.values()).map(s => ({
-      ...s,
-      porcentagem: totalInvestido > 0 ? (s.valor / totalInvestido) * 100 : 0
+      nome: s.nome,
+      valor: s.valor,
+      porcentagem: totalInvestido > 0 ? (s.valor / totalInvestido) * 100 : s.porcentagemTotal
     }));
   }, [veiculos, totalInvestido]);
 
@@ -97,11 +110,16 @@ const PedidoCompraCard: React.FC<Props> = ({ pedido, onClick }) => {
         {/* Status Badge - AJUSTADO PARA MÁXIMA VISIBILIDADE */}
         <div className="absolute top-4 right-4 flex flex-col gap-1.5 items-end">
           <span className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-xl border-2 ${pedido.status === 'CONCLUIDO'
-              ? 'bg-emerald-600 text-white border-emerald-500'
-              : 'bg-amber-500 text-white border-amber-400 animate-pulse'
+            ? 'bg-emerald-600 text-white border-emerald-500'
+            : 'bg-amber-500 text-white border-amber-400 animate-pulse'
             }`}>
             {pedido.status}
           </span>
+          {isConsignacao && (
+            <span className="px-3 py-1 rounded-xl text-[9px] font-black uppercase tracking-widest shadow-lg border-2 bg-violet-600 text-white border-violet-500">
+              Consignado
+            </span>
+          )}
           {todosVendidos && (
             <span className="px-3 py-1 rounded-xl text-[9px] font-black uppercase tracking-widest shadow-lg border-2 bg-rose-500 text-white border-rose-400">
               Veículo Vendido

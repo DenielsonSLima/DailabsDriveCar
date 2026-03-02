@@ -68,6 +68,14 @@ const PublicVehicleCard: React.FC<Props> = React.memo(({ veiculo, cores = [] }) 
           <div className="bg-[#004691] text-white px-4 py-1.5 rounded-full text-[8px] font-black shadow-xl border border-white/20 uppercase tracking-[0.2em]">
             Seleção HCV
           </div>
+          {veiculo.status !== 'DISPONIVEL' && (
+            <div className={`text-white px-3 py-1 rounded-full text-[8px] font-black shadow-xl uppercase tracking-widest w-fit ${veiculo.status === 'VENDIDO' ? 'bg-rose-500' :
+                veiculo.status === 'RESERVADO' ? 'bg-amber-500' :
+                  'bg-indigo-500'
+              }`}>
+              {veiculo.status === 'PREPARACAO' ? 'EM PREPARAÇÃO' : veiculo.status}
+            </div>
+          )}
           {veiculo.km < 10000 && (
             <div className="bg-emerald-500 text-white px-3 py-1 rounded-full text-[8px] font-black shadow-xl uppercase tracking-widest animate-pulse w-fit">
               Baixa KM

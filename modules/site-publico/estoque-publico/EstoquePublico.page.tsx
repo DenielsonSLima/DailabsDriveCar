@@ -57,15 +57,15 @@ const EstoquePublicoPage: React.FC = () => {
 
     // SEO: Define título e meta tags da página
     setSEO({
-      title: 'Estoque Completo | Hidrocar Veículos - Veículos em Aracaju/SE',
-      description: 'Confira nosso estoque completo de veículos selecionados. Filtre por marca, preço e encontre o veículo ideal na Hidrocar Veículos.',
+      title: 'Estoque | Hidrocar Veículos - Veículos em Aracaju/SE',
+      description: 'Confira nosso estoque de veículos selecionados. Filtre por marca, preço e encontre o veículo ideal na Hidrocar Veículos.',
       url: `${window.location.origin}/estoque-publico`
     });
 
     // JSON-LD: Dados estruturados da loja
     setDealerJsonLd({
       name: 'Hidrocar Veículos - Estoque',
-      description: 'Estoque completo de veículos selecionados com procedência comprovada.',
+      description: 'Estoque de veículos selecionados com procedência comprovada.',
       url: `${window.location.origin}/estoque-publico`,
       image: `${window.location.origin}/logos/logohidrocarsimbolo.png`,
     });
@@ -86,7 +86,7 @@ const EstoquePublicoPage: React.FC = () => {
     async function fetchVehicles() {
       setLoading(true);
       try {
-  // Só busca montadoras junto com veículos se ainda não tiver nenhuma
+        // Só busca montadoras junto com veículos se ainda não tiver nenhuma
         const res = await SitePublicoService.getStockData({
           page,
           pageSize,

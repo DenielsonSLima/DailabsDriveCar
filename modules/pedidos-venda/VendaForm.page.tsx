@@ -1,12 +1,13 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PedidosVendaService } from './pedidos-venda.service';
 import { IPedidoVenda } from './pedidos-venda.types';
 import { CorretoresService } from '../cadastros/corretores/corretores.service';
 import { FormasPagamentoService } from '../cadastros/formas-pagamento/formas-pagamento.service';
 import { ParceirosService } from '../parceiros/parceiros.service';
 import { IParceiro } from '../parceiros/parceiros.types';
+
 
 // Cards Modulares
 import FormVendaHeader from './components/FormVendaHeader';
@@ -19,13 +20,26 @@ import FormVendaNotes from './components/FormVendaNotes';
 const VendaFormPage: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const queryClient = useQueryClient();
 
-  const [loading, setLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
+  // Queries de Catálogos
+  const { data: corretores = [] } = useQuery({ queryKey: ['corretores'], queryFn: () => CorretoresService.getAll() });
+  const { data: parceiros = [] } = useQuery({ queryKey: ['parceiros_select'], queryFn: () => ParceirosService.getAllForSelect() });
 
-  const [corretores, setCorretores] = useState([]);
-  const [formas, setFormas] = useState([]);
-  const [parceiros, setParceiros] = useState<IParceiro[]>([]);
+  const { data: formas = [] } = useQuery({
+    queryKey: ['formas_pagamento_venda'],
+    queryFn: async () => {
+      const all = await FormasPagamentoService.getAll();
+      return all.filter((item: any) => item.tipo_movimentacao !== 'PAGAMENTO');
+    }
+  });
+
+  // Query do Pedido (se houver ID)
+  const { data: pedidoOriginal, isLoading: isLoadingPedido } = useQuery({
+    queryKey: ['pedido_venda_detalhes', id],
+    queryFn: () => PedidosVendaService.getById(id!),
+    enabled: !!id
+  });
 
   const [formData, setFormData] = useState<Partial<IPedidoVenda>>({
     status: 'RASCUNHO',
@@ -35,38 +49,45 @@ const VendaFormPage: React.FC = () => {
     valor_venda: 0
   });
 
+  const formasFiltradas = useMemo(() => {
+    if (!formas.length) return [];
+
+    // Se um veículo já estiver vinculado e não for de consignação, esconder "Consignação"
+    if (formData.veiculo_id && !formData.is_consignado) {
+      return formas.filter((f: any) => !f.nome.toLowerCase().includes('consigna'));
+    }
+
+    return formas;
+  }, [formas, formData.veiculo_id, formData.is_consignado]);
+
+  // Sincronizar dados do pedido quando carregado
+  useEffect(() => {
+    if (pedidoOriginal) {
+      setFormData(pedidoOriginal);
+    }
+  }, [pedidoOriginal]);
+
   const isLocked = !!id && formData.status !== 'RASCUNHO';
 
-  useEffect(() => {
-    async function init() {
-      try {
-        const [c, f, p] = await Promise.all([
-          CorretoresService.getAll(),
-          FormasPagamentoService.getAll(),
-          ParceirosService.getAllForSelect()
-        ]);
-        setCorretores(c);
-        // Filtra apenas formas que permitem RECEBIMENTO
-        setFormas(f.filter((item: any) => item.tipo_movimentacao !== 'PAGAMENTO'));
-        setParceiros(p);
-
-        if (id) {
-          const ped = await PedidosVendaService.getById(id);
-          if (ped) setFormData(ped);
-        }
-      } catch (err) {
-        console.error("Erro ao inicializar formulário:", err);
-      } finally {
-        setLoading(false);
-      }
+  // Mutation de Salvamento
+  const saveMutation = useMutation({
+    mutationFn: (data: Partial<IPedidoVenda>) => PedidosVendaService.save(data),
+    onSuccess: (result) => {
+      queryClient.invalidateQueries({ queryKey: ['pedidos_venda_list'] });
+      queryClient.invalidateQueries({ queryKey: ['pedidos_venda_stats'] });
+      queryClient.invalidateQueries({ queryKey: ['pedido_venda_detalhes', result.id] });
+      navigate(`/pedidos-venda/${result.id}`);
+    },
+    onError: (err: any) => {
+      alert("Erro ao salvar: " + err.message);
     }
-    init();
-  }, [id]);
+  });
 
   const handleUpdate = (updates: Partial<IPedidoVenda>) => {
     if (isLocked) return;
     setFormData(prev => ({ ...prev, ...updates }));
   };
+
 
   const handleClientChange = (pId: string) => {
     if (isLocked) return;
@@ -107,19 +128,13 @@ const VendaFormPage: React.FC = () => {
       return;
     }
 
-    setIsSaving(true);
-    try {
-      const result = await PedidosVendaService.save(formData);
-      // Após salvar o rascunho, vai para os detalhes para vincular veículo e pagamentos
-      navigate(`/pedidos-venda/${result.id}`);
-    } catch (e: any) {
-      alert("Erro ao salvar: " + e.message);
-    } finally {
-      setIsSaving(false);
-    }
+
+    saveMutation.mutate(formData);
   };
 
-  if (loading) return (
+  const isLoading = isLoadingPedido && !!id;
+
+  if (isLoading) return (
     <div className="flex flex-col items-center justify-center py-40">
       <div className="w-10 h-10 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin mb-4"></div>
       <p className="text-slate-400 font-black uppercase text-[10px] tracking-widest">Preparando Pedido...</p>
@@ -130,7 +145,7 @@ const VendaFormPage: React.FC = () => {
     <div className="max-w-4xl mx-auto space-y-8 pb-32 animate-in fade-in duration-500">
       <FormVendaHeader
         id={id}
-        isSaving={isSaving}
+        isSaving={saveMutation.isPending}
         isLocked={isLocked}
         onBack={() => navigate(-1)}
         onSave={handleSubmit}
@@ -143,6 +158,7 @@ const VendaFormPage: React.FC = () => {
           onChange={handleUpdate}
           disabled={isLocked}
         />
+
 
         <FormVendaClient
           formData={formData}
@@ -160,7 +176,7 @@ const VendaFormPage: React.FC = () => {
 
         <FormVendaFinance
           formData={formData}
-          formas={formas}
+          formas={formasFiltradas}
           onChange={handleUpdate}
           disabled={isLocked}
         />

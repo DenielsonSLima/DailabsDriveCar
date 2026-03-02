@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { SitePublicoService } from './site-publico.service';
-import { IPublicPageData } from './site-publico.types';
 import { IEmpresa } from '../ajustes/empresa/empresa.types';
 
 // Componentes corrigidos conforme nomes reais dos arquivos
@@ -16,35 +16,25 @@ import PublicHomeSkeleton from './components/PublicHomeSkeleton';
 import { setSEO, setDealerJsonLd, removeJsonLd } from './utils/seo';
 
 const SitePublicoPage: React.FC = () => {
-  const [data, setData] = useState<IPublicPageData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
 
+  // TanStack Query: Substitui useState + useEffect
+  const { data, isLoading } = useQuery({
+    queryKey: ['site_publico_home'],
+    queryFn: () => SitePublicoService.getHomePageData(),
+    staleTime: 1000 * 60 * 5, // 5 minutos de cache
+  });
+
+  // Realtime: Invalida o cache do TanStack Query em vez de chamar load() manualmente
   useEffect(() => {
-    async function load() {
-      try {
-        const res = await SitePublicoService.getHomePageData();
-        setData(res);
-      } catch (err) {
-        console.error("Erro ao carregar site público:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
-
-    // Realtime: atualiza automaticamente quando veículos são adicionados, vendidos ou removidos
-    // Usa debounce de 2s para evitar múltiplas re-fetches seguidas
-    let realtimeTimeout: ReturnType<typeof setTimeout>;
     const subscription = SitePublicoService.subscribe(() => {
-      clearTimeout(realtimeTimeout);
-      realtimeTimeout = setTimeout(() => load(), 2000);
+      queryClient.invalidateQueries({ queryKey: ['site_publico_home'] });
     });
 
     return () => {
-      clearTimeout(realtimeTimeout);
       subscription.unsubscribe();
     };
-  }, []);
+  }, [queryClient]);
 
   // SEO dinâmico: atualiza título, meta tags e JSON-LD quando os dados da empresa carregam
   useEffect(() => {
@@ -87,9 +77,9 @@ const SitePublicoPage: React.FC = () => {
 
       <main>
         {/* Hero Section */}
-        <PublicHero />
+        <PublicHero slides={data?.conteudo?.hero_slides} />
 
-        {loading ? (
+        {isLoading ? (
           <PublicHomeSkeleton />
         ) : (
           <>
@@ -102,10 +92,23 @@ const SitePublicoPage: React.FC = () => {
         )}
 
         {/* Seções Institucionais */}
-        <AboutUs />
+        <AboutUs
+          subtitulo={data?.conteudo?.sobre_subtitulo}
+          titulo={data?.conteudo?.sobre_titulo}
+          paragrafos={data?.conteudo?.sobre_paragrafos}
+          imagemUrl={data?.conteudo?.sobre_imagem_url}
+          cards={data?.conteudo?.sobre_cards}
+        />
 
         {/* Contatos Imersivo */}
-        <PublicContact telefone={data?.empresa?.telefone} />
+        <PublicContact
+          telefone={data?.empresa?.telefone}
+          contato_titulo={data?.conteudo?.contato_titulo}
+          contato_subtitulo={data?.conteudo?.contato_subtitulo}
+          contato_descricao={data?.conteudo?.contato_descricao}
+          contato_horario_semana={data?.conteudo?.contato_horario_semana}
+          contato_horario_sabado={data?.conteudo?.contato_horario_sabado}
+        />
 
         {/* Localização - Espaçamentos reduzidos e Mapa Satélite Restaurado */}
         <section id="localizacao" className="pt-12 bg-white">

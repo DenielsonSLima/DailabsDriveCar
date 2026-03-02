@@ -1,4 +1,4 @@
-
+import { z } from 'zod';
 import { IParceiro } from '../parceiros/parceiros.types';
 import { IVeiculo } from '../estoque/estoque.types';
 import { IFormaPagamento } from '../cadastros/formas-pagamento/formas-pagamento.types';
@@ -38,6 +38,7 @@ export interface IPedidoVenda {
   valor_venda: number;
   status: StatusPedidoVenda;
   forma_pagamento_id?: string;
+  is_consignado: boolean;
 
   // Fix: Adicionando campos de endereço e controle de sincronização com cadastro para evitar erros de tipo no formulário de venda
   endereco_igual_cadastro: boolean;
@@ -78,3 +79,40 @@ export interface IPedidoVendaResponse {
   currentPage: number;
   totalPages: number;
 }
+
+// Zod Schemas for Validation
+export const VendaPagamentoSchema = z.object({
+  id: z.string().uuid().optional(),
+  pedido_id: z.string().uuid(),
+  data_recebimento: z.string(),
+  forma_pagamento_id: z.string().uuid(),
+  condicao_id: z.string().uuid().optional().nullable(),
+  conta_bancaria_id: z.string().uuid().optional().nullable(),
+  valor: z.number().positive(),
+  observacao: z.string().optional().nullable(),
+});
+
+export const PedidoVendaSchema = z.object({
+  id: z.string().uuid().optional(),
+  numero_venda: z.coerce.string().optional().nullable(),
+  data_venda: z.string(),
+  cliente_id: z.string().uuid(),
+  veiculo_id: z.string().uuid().optional().nullable(),
+  corretor_id: z.string().uuid().optional().nullable(),
+  valor_venda: z.number().nonnegative(),
+  status: z.enum(['RASCUNHO', 'CONCLUIDO', 'CANCELADO']),
+  forma_pagamento_id: z.string().uuid().optional().nullable(),
+  is_consignado: z.boolean().default(false),
+  endereco_igual_cadastro: z.boolean().default(true),
+  cep: z.string().optional().nullable(),
+  logradouro: z.string().optional().nullable(),
+  numero: z.string().optional().nullable(),
+  bairro: z.string().optional().nullable(),
+  cidade: z.string().optional().nullable(),
+  uf: z.string().length(2).optional().nullable(),
+  complemento: z.string().optional().nullable(),
+  observacoes: z.string().optional().nullable(),
+});
+
+export type IVendaPagamentoInput = z.infer<typeof VendaPagamentoSchema>;
+export type IPedidoVendaInput = z.infer<typeof PedidoVendaSchema>;

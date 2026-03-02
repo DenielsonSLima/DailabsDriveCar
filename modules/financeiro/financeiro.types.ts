@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import { IContaBancaria } from '../ajustes/contas-bancarias/contas.types';
 import { IParceiro } from '../parceiros/parceiros.types';
 import { IFormaPagamento } from '../cadastros/formas-pagamento/formas-pagamento.types';
@@ -6,6 +7,44 @@ export type TipoTitulo = 'PAGAR' | 'RECEBER';
 export type StatusTitulo = 'PENDENTE' | 'PARCIAL' | 'PAGO' | 'ATRASADO' | 'CANCELADO';
 export type TipoCategoria = 'FIXA' | 'VARIAVEL' | 'OUTROS';
 
+export const TituloSchema = z.object({
+  id: z.string(),
+  parceiro_id: z.string().optional().nullable(),
+  categoria_id: z.string().optional().nullable(),
+  pedido_id: z.string().optional().nullable(),
+  descricao: z.string(),
+  tipo: z.enum(['PAGAR', 'RECEBER']),
+  status: z.enum(['PENDENTE', 'PARCIAL', 'PAGO', 'ATRASADO', 'CANCELADO']),
+  valor_total: z.number(),
+  valor_pago: z.number().default(0),
+  data_emissao: z.string(),
+  data_vencimento: z.string(),
+  parcela_numero: z.number().default(1),
+  parcela_total: z.number().default(1),
+  grupo_id: z.string().optional().nullable(),
+  documento_ref: z.string().optional().nullable(),
+  forma_pagamento_id: z.string().optional().nullable(),
+  veiculo_id: z.string().optional().nullable(),
+  despesa_veiculo_id: z.string().optional().nullable(),
+  origem_tipo: z.enum(['PEDIDO_COMPRA', 'PEDIDO_VENDA', 'DESPESA_VEICULO', 'DESPESA_FIXA', 'DESPESA_VARIAVEL', 'OUTRO_CREDITO', 'MANUAL']).optional().nullable(),
+  origem_id: z.string().optional().nullable(),
+  created_at: z.string(),
+});
+
+export const TransacaoSchema = z.object({
+  id: z.string(),
+  titulo_id: z.string().optional().nullable(),
+  conta_origem_id: z.string().optional().nullable(),
+  conta_destino_id: z.string().optional().nullable(),
+  valor: z.number(),
+  data_pagamento: z.string(),
+  tipo: z.enum(['ENTRADA', 'SAIDA', 'TRANSFERENCIA']),
+  tipo_transacao: z.string().optional().nullable(),
+  forma_pagamento_id: z.string().optional().nullable(),
+  comprovante_url: z.string().optional().nullable(),
+  descricao: z.string().optional().nullable(),
+});
+
 export interface ICategoriaFinanceira {
   id: string;
   nome: string;
@@ -13,12 +52,21 @@ export interface ICategoriaFinanceira {
   natureza: 'ENTRADA' | 'SAIDA';
 }
 
+export const CategoriaFinanceiraSchema = z.object({
+  id: z.string(),
+  nome: z.string(),
+  tipo: z.enum(['FIXA', 'VARIAVEL', 'OUTROS']),
+  natureza: z.enum(['ENTRADA', 'SAIDA']),
+});
+
 // Fix: Adding IFinanceiroKpis interface to satisfy imports in Financeiro.page.tsx
 export interface IFinanceiroKpis {
   saldo_total: number;
-  pagar_mes: number;
-  receber_mes: number;
-  balanco_projetado: number;
+  compra_veiculos_mes: number;
+  despesas_fixas_mes: number;
+  despesas_variaveis_mes: number;
+  outras_receitas_mes: number;
+  retiradas_mes: number;
 }
 
 export interface IPendencias {
@@ -36,17 +84,39 @@ export interface ITitulo {
   status: StatusTitulo;
   valor_total: number;
   valor_pago: number;
+  valor_desconto?: number;
+  valor_acrescimo?: number;
   data_emissao: string;
   data_vencimento: string;
   parcela_numero: number;
   parcela_total: number;
   grupo_id?: string;
   documento_ref?: string;
+  forma_pagamento_id?: string;
+  veiculo_id?: string;
+  despesa_veiculo_id?: string;
+  // Rastreabilidade
+  origem_tipo?: 'PEDIDO_COMPRA' | 'PEDIDO_VENDA' | 'DESPESA_VEICULO' | 'DESPESA_FIXA' | 'DESPESA_VARIAVEL' | 'OUTRO_CREDITO' | 'MANUAL';
+  origem_id?: string;
   created_at: string;
 
   // Joins
   parceiro?: IParceiro;
   categoria?: ICategoriaFinanceira;
+}
+
+export interface ILancarDespesaPayload {
+  descricao: string;
+  valor_total: number;
+  categoria_id: string;
+  qtd_parcelas: number;
+  data_vencimento: string;     // ISO String da primeira parcela (ou única)
+  dias_intervalo: number;      // 30 para mensal
+  pago_avista: boolean;
+  conta_id?: string;           // Obrigatório se pago_avista
+  forma_pagamento_id?: string; // Obrigatório se pago_avista
+  natureza: 'FIXA' | 'VARIAVEL';
+  documento_ref?: string;
 }
 
 export interface ITransacao {

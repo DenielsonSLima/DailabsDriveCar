@@ -1,5 +1,5 @@
 import { supabase } from '../../../../lib/supabase';
-import { ITituloPagar, PagarTab, IPagarFiltros, IPagarResponse } from './contas-pagar.types';
+import { PagarTab, IPagarFiltros, IPagarResponse, PagarResponseSchema } from './contas-pagar.types';
 
 const TABLE = 'fin_titulos';
 
@@ -49,17 +49,46 @@ export const ContasPagarService = {
       throw error;
     }
 
-    return {
-      data: (data || []) as ITituloPagar[],
+    const totalPages = Math.ceil((count || 0) / limit);
+
+    const rawResponse = {
+      data: data || [],
       count: count || 0,
       currentPage: page,
-      totalPages: Math.ceil((count || 0) / limit)
+      totalPages
     };
+
+    return PagarResponseSchema.parse(rawResponse) as IPagarResponse;
   },
 
   async delete(id: string): Promise<void> {
-    const { error } = await supabase.from(TABLE).delete().eq('id', id);
-    if (error) throw error;
+    const { error } = await supabase.rpc('excluir_titulo', { p_id: id });
+    if (error) {
+      console.error('Erro ao excluir título via RPC:', error);
+      throw error;
+    }
+  },
+
+  async getPagamentos(tituloId: string) {
+    const { data, error } = await supabase
+      .from('fin_transacoes')
+      .select(`
+        id,
+        valor,
+        data_pagamento,
+        descricao,
+        conta:fin_contas_bancarias(banco_nome, titular),
+        forma:cad_formas_pagamento(nome)
+      `)
+      .eq('titulo_id', tituloId)
+      .order('data_pagamento', { ascending: false });
+
+    if (error) {
+      console.error('Erro ao buscar pagamentos do título:', error);
+      throw error;
+    }
+
+    return data;
   },
 
   subscribe(onUpdate: () => void) {

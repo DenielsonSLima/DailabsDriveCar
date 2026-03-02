@@ -1,36 +1,21 @@
-
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { PedidosCompraService } from './pedidos-compra.service';
-import { IPedidoCompra, IPedidoFiltros } from './pedidos-compra.types';
+import { IPedidoFiltros } from './pedidos-compra.types';
 import PedidosList from './components/PedidosList';
 import PedidosFilters from './components/PedidosFilters';
 import PedidosKpis from './components/PedidosKpis';
 import { CorretoresService } from '../cadastros/corretores/corretores.service';
-import { ICorretor } from '../cadastros/corretores/corretores.types';
 import { SociosService } from '../ajustes/socios/socios.service';
-import { ISocio } from '../ajustes/socios/socios.types';
-
-
-
 
 const PedidoCompraPage: React.FC = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  // Data States
-  const [pedidos, setPedidos] = useState<IPedidoCompra[]>([]);
-  const [statsPedidos, setStatsPedidos] = useState<IPedidoCompra[]>([]);
-  const [corretores, setCorretores] = useState<ICorretor[]>([]);
-  const [socios, setSocios] = useState<ISocio[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  // Pagination
+  // Pagination & Filter States
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalCount, setTotalCount] = useState(0);
   const ITEMS_PER_PAGE = 12;
-
-  // Filters
   const [activeTab, setActiveTab] = useState<'EFETIVADOS' | 'RASCUNHO' | 'TODOS'>('EFETIVADOS');
   const [filtros, setFiltros] = useState<IPedidoFiltros>({
     busca: '',
@@ -40,56 +25,60 @@ const PedidoCompraPage: React.FC = () => {
     socioId: ''
   });
 
-  const loadData = useCallback(async (silent = false) => {
-    if (!silent) setLoading(true);
-    try {
-      const response = await PedidosCompraService.getAll({
-        ...filtros,
-        page: currentPage,
-        limit: ITEMS_PER_PAGE
-      }, activeTab);
+  // Queries
+  const { data: listData, isLoading: isLoadingList } = useQuery({
+    queryKey: ['pedidos_compra_list', activeTab, filtros, currentPage],
+    queryFn: () => PedidosCompraService.getAll({ ...filtros, page: currentPage, limit: ITEMS_PER_PAGE }, activeTab),
+  });
 
-      setPedidos(response.data);
-      setTotalPages(response.totalPages);
-      setTotalCount(response.count);
+  const { data: statsData } = useQuery({
+    queryKey: ['pedidos_compra_stats', activeTab, filtros],
+    queryFn: () => PedidosCompraService.getDashboardStats(filtros, activeTab),
+  });
 
-      // Carregar Stats (sem paginação)
-      const stats = await PedidosCompraService.getDashboardStats(filtros, activeTab);
-      setStatsPedidos(stats);
+  const { data: draftCount = 0 } = useQuery({
+    queryKey: ['pedidos_compra_draft_count'],
+    queryFn: () => PedidosCompraService.getDraftCount(),
+  });
 
-    } catch (e) {
-      console.error(e);
-    } finally {
-      if (!silent) setLoading(false);
-    }
-  }, [activeTab, filtros, currentPage]);
+  const { data: corretores = [] } = useQuery({
+    queryKey: ['corretores'],
+    queryFn: () => CorretoresService.getAll(),
+  });
 
+  const { data: socios = [] } = useQuery({
+    queryKey: ['socios'],
+    queryFn: () => SociosService.getAll(),
+  });
+
+  // Real-time Subscription
   useEffect(() => {
-    // Busca dependências dos filtros
-    Promise.all([
-      CorretoresService.getAll(),
-      SociosService.getAll()
-    ]).then(([c, s]) => {
-      setCorretores(c);
-      setSocios(s);
+    const sub = PedidosCompraService.subscribe(() => {
+      queryClient.invalidateQueries({ queryKey: ['pedidos_compra_list'] });
+      queryClient.invalidateQueries({ queryKey: ['pedidos_compra_stats'] });
+      queryClient.invalidateQueries({ queryKey: ['pedidos_compra_draft_count'] });
     });
-  }, []);
+    return () => {
+      sub.unsubscribe();
+    };
+  }, [queryClient]);
 
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
-
-  // Reset pagination when filters change (ignoring currentPage itself)
+  // Reset pagination when filters change
   useEffect(() => {
     setCurrentPage(1);
   }, [activeTab, filtros]);
 
   const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
+    if (page >= 1 && page <= (listData?.totalPages || 1)) {
       setCurrentPage(page);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
+
+  const pedidos = listData?.data || [];
+  const totalPages = listData?.totalPages || 1;
+  const totalCount = listData?.count || 0;
+  const statsPedidos = statsData || [];
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500 pb-20">
@@ -114,9 +103,14 @@ const PedidoCompraPage: React.FC = () => {
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === tab ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+            className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === tab ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
           >
             {tab === 'EFETIVADOS' ? 'Efetivados' : tab === 'RASCUNHO' ? 'Rascunhos' : 'Ver Todos'}
+            {tab === 'RASCUNHO' && draftCount > 0 && (
+              <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${activeTab === 'RASCUNHO' ? 'bg-amber-100 text-amber-600' : 'bg-slate-200 text-slate-500'}`}>
+                {draftCount}
+              </span>
+            )}
           </button>
         ))}
       </div>
@@ -132,7 +126,6 @@ const PedidoCompraPage: React.FC = () => {
         </div>
       )}
 
-
       <PedidosFilters
         filtros={filtros}
         corretores={corretores}
@@ -140,10 +133,10 @@ const PedidoCompraPage: React.FC = () => {
         onChange={setFiltros}
       />
 
-      <PedidosList pedidos={pedidos} loading={loading} onEdit={(p) => navigate(`/pedidos-compra/${p.id}`)} />
+      <PedidosList pedidos={pedidos} loading={isLoadingList} onEdit={(p) => navigate(`/pedidos-compra/${p.id}`)} />
 
       {/* Pagination */}
-      {!loading && totalPages > 1 && (
+      {!isLoadingList && totalPages > 1 && (
         <div className="flex items-center justify-between mt-8 pt-6 border-t border-slate-100">
           <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">
             Página <span className="text-slate-900">{currentPage}</span> de <span className="text-slate-900">{totalPages}</span>

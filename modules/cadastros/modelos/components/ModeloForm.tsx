@@ -84,7 +84,7 @@ const ModeloForm: React.FC<FormProps> = ({ initialData, isSaving, onClose, onSub
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value.toUpperCase() }));
   };
 
   return (
@@ -141,7 +141,7 @@ const ModeloForm: React.FC<FormProps> = ({ initialData, isSaving, onClose, onSub
                 onChange={handleChange}
                 required
                 disabled={isSaving}
-                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-bold disabled:opacity-50"
+                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3 text-sm font-bold text-[#111827] focus:ring-2 focus:ring-indigo-500 outline-none transition-all disabled:opacity-50"
                 placeholder="Ex: Corolla, Civic, Onix..."
               />
             </div>
@@ -155,7 +155,7 @@ const ModeloForm: React.FC<FormProps> = ({ initialData, isSaving, onClose, onSub
                   onChange={handleChange}
                   required
                   disabled={isSaving || loadingOptions}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-bold appearance-none disabled:opacity-50"
+                  className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3 text-sm font-bold text-[#111827] focus:ring-2 focus:ring-indigo-500 outline-none transition-all appearance-none disabled:opacity-50"
                 >
                   <option value="">Marca...</option>
                   {montadoras.map(m => (
@@ -172,7 +172,7 @@ const ModeloForm: React.FC<FormProps> = ({ initialData, isSaving, onClose, onSub
                   onChange={handleChange}
                   required
                   disabled={isSaving || loadingOptions}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-bold appearance-none disabled:opacity-50"
+                  className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3 text-sm font-bold text-[#111827] focus:ring-2 focus:ring-indigo-500 outline-none transition-all appearance-none disabled:opacity-50"
                 >
                   <option value="">Categoria...</option>
                   {tipos.map(t => (

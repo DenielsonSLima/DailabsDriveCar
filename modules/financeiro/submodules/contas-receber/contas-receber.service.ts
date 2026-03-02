@@ -1,5 +1,5 @@
 import { supabase } from '../../../../lib/supabase';
-import { ITituloReceber, ReceberTab, IReceberFiltros, IReceberResponse } from './contas-receber.types';
+import { ReceberTab, IReceberFiltros, IReceberResponse, ReceberResponseSchema } from './contas-receber.types';
 
 const TABLE = 'fin_titulos';
 
@@ -15,9 +15,16 @@ export const ContasReceberService = {
       .select(`
         *,
         parceiro:parceiros(nome, documento),
-        categoria:fin_categorias(nome)
+        categoria:fin_categorias(nome),
+        transacoes:fin_transacoes(
+          id,
+          valor,
+          data_pagamento,
+          conta:fin_contas_bancarias(titular, conta, agencia, banco_nome)
+        )
       `, { count: 'exact' })
-      .eq('tipo', 'RECEBER');
+      .eq('tipo', 'RECEBER')
+      .or('categoria_id.not.is.null,pedido_id.not.is.null,venda_pedido_id.not.is.null');
 
     const hoje = new Date().toISOString().split('T')[0];
 
@@ -44,17 +51,24 @@ export const ContasReceberService = {
 
     if (error) throw error;
 
-    return {
-      data: (data || []) as ITituloReceber[],
+    const totalPages = Math.ceil((count || 0) / limit);
+
+    const rawResponse = {
+      data: data || [],
       count: count || 0,
       currentPage: page,
-      totalPages: Math.ceil((count || 0) / limit)
+      totalPages
     };
+
+    return ReceberResponseSchema.parse(rawResponse) as IReceberResponse;
   },
 
   async delete(id: string): Promise<void> {
-    const { error } = await supabase.from(TABLE).delete().eq('id', id);
-    if (error) throw error;
+    const { error } = await supabase.rpc('excluir_titulo', { p_id: id });
+    if (error) {
+      console.error('Erro ao excluir título via RPC:', error);
+      throw error;
+    }
   },
 
   subscribe(onUpdate: () => void) {

@@ -103,11 +103,11 @@ const FormMontadora: React.FC<FormProps> = ({ initialData, isSaving, onClose, on
               type="text"
               name="nome"
               value={formData.nome}
-              onChange={(e) => setFormData(prev => ({ ...prev, nome: e.target.value }))}
+              onChange={(e) => setFormData(prev => ({ ...prev, nome: e.target.value.toUpperCase() }))}
               required
               disabled={isSaving}
               autoFocus
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-bold disabled:opacity-50"
+              className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 text-sm font-bold text-[#111827] focus:ring-2 focus:ring-indigo-500 outline-none transition-all disabled:opacity-50"
               placeholder="Ex: Toyota, BMW, Chevrolet..."
             />
           </div>

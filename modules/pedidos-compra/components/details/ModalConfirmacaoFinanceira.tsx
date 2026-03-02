@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { IPedidoCompra } from '../../pedidos-compra.types';
 import { CondicoesPagamentoService } from '../../../cadastros/condicoes-pagamento/condicoes-pagamento.service';
 import { ContasBancariasService } from '../../../ajustes/contas-bancarias/contas.service';
-import { FinanceiroAutomationService } from '../../../financeiro/financeiro.automation';
+import { FinanceiroService } from '../../../financeiro/financeiro.service';
 
 interface Props {
   pedido: IPedidoCompra;
@@ -17,6 +17,7 @@ const ModalConfirmacaoFinanceira: React.FC<Props> = ({ pedido, onClose, onConfir
   const [contas, setContas] = useState<any[]>([]);
   const [selectedCondicaoId, setSelectedCondicaoId] = useState('');
   const [selectedContaId, setSelectedContaId] = useState('');
+  const [parcelasPrevia, setParcelasPrevia] = useState<any[]>([]);
 
   const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
@@ -53,8 +54,25 @@ const ModalConfirmacaoFinanceira: React.FC<Props> = ({ pedido, onClose, onConfir
     ContasBancariasService.getAll().then(data => setContas(data.filter((c: any) => c.ativo)));
   }, [pedido.forma_pagamento_id, pedido.pagamentos]);
 
+  useEffect(() => {
+    if (selectedCondicaoId && pedido.valor_negociado > 0) {
+      const isAuto = selectedCondicaoId.startsWith('__auto');
+      const cond = condicoes.find(c => c.id === selectedCondicaoId);
+
+      FinanceiroService.previewCronograma({
+        valorTotal: pedido.valor_negociado,
+        condicaoId: isAuto ? undefined : selectedCondicaoId,
+        tipo: 'COMPRA',
+        qtdParcelas: isAuto ? CONDICAO_AVISTA_AUTO.qtd_parcelas : undefined,
+        diasPrimeira: isAuto ? CONDICAO_AVISTA_AUTO.dias_primeira_parcela : undefined,
+        diasEntre: isAuto ? CONDICAO_AVISTA_AUTO.dias_entre_parcelas : undefined
+      }).then(setParcelasPrevia);
+    } else {
+      setParcelasPrevia([]);
+    }
+  }, [selectedCondicaoId, pedido.valor_negociado, condicoes]);
+
   const selectedCondicao = condicoes.find(c => c.id === selectedCondicaoId);
-  const parcelasPrevia = selectedCondicao ? FinanceiroAutomationService.gerarCronograma(pedido.valor_negociado, selectedCondicao) : [];
 
   const requiresAccount = parcelasPrevia.some(p => p.data_vencimento === new Date().toISOString().split('T')[0]) &&
     pedido.forma_pagamento?.destino_lancamento === 'CAIXA';

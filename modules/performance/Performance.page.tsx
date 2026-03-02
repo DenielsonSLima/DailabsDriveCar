@@ -8,6 +8,8 @@ import OutrosMeses from './components/OutrosMeses';
 import QuickPreviewModal from '../caixa/components/QuickPreviewModal';
 import PerformancePrint from './components/PerformancePrint';
 
+import { useQuery } from '@tanstack/react-query';
+
 /**
  * Módulo de Performance & BI
  * 2 Abas: Mês Atual | Outros Meses
@@ -17,10 +19,21 @@ const PerformancePage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<PerformanceTab>('MES_ATUAL');
   const [showPreview, setShowPreview] = useState(false);
   const [printData, setPrintData] = useState<IPerformanceData | null>(null);
-  const [empresa, setEmpresa] = useState<any>(null);
-  const [watermark, setWatermark] = useState<any>(null);
   const [loadingPdf, setLoadingPdf] = useState(false);
   const [printPeriodo, setPrintPeriodo] = useState('');
+
+  // Queries para Metadados
+  const { data: empresa } = useQuery({
+    queryKey: ['empresa'],
+    queryFn: () => EmpresaService.getDadosEmpresa(),
+    staleTime: 1000 * 60 * 60, // 1 hour
+  });
+
+  const { data: watermark } = useQuery({
+    queryKey: ['config-marca-dagua'],
+    queryFn: () => MarcaDaguaService.getConfig(),
+    staleTime: 1000 * 60 * 60, // 1 hour
+  });
 
   const tabs: { id: PerformanceTab; label: string; icon: string }[] = [
     {
@@ -43,15 +56,9 @@ const PerformancePage: React.FC = () => {
       const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
       const mesNome = now.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
 
-      const [data, empRes, watRes] = await Promise.all([
-        PerformanceService.getPerformanceData(startDate, endDate),
-        EmpresaService.getDadosEmpresa(),
-        MarcaDaguaService.getConfig(),
-      ]);
+      const data = await PerformanceService.getPerformanceData(startDate, endDate);
 
       setPrintData(data);
-      setEmpresa(empRes);
-      setWatermark(watRes);
       setPrintPeriodo(mesNome.charAt(0).toUpperCase() + mesNome.slice(1));
       setShowPreview(true);
     } catch (error) {
@@ -99,11 +106,10 @@ const PerformancePage: React.FC = () => {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center px-6 py-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${
-              activeTab === tab.id
+            className={`flex items-center px-6 py-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === tab.id
                 ? 'bg-slate-900 text-white shadow-xl'
                 : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
-            }`}
+              }`}
           >
             <svg
               className={`w-4 h-4 mr-2.5 ${activeTab === tab.id ? 'text-white' : 'text-slate-400'}`}

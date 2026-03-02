@@ -20,13 +20,13 @@ const EstoqueCard: React.FC<Props> = ({ veiculo, cores, onClick }) => {
   const [isToggling, setIsToggling] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const v = veiculo as any;
-  
+
   const fotos = veiculo.fotos || [];
   const hasPhotos = fotos.length > 0;
   const currentPhoto = hasPhotos ? fotos[activePhotoIndex] : null;
   const corObj = cores.find(c => c.id === veiculo.cor_id);
 
-  const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
+  const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(val);
 
   const handleNext = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -67,7 +67,7 @@ const EstoqueCard: React.FC<Props> = ({ veiculo, cores, onClick }) => {
   };
 
   const getStatusColor = (status: string) => {
-    switch(status) {
+    switch (status) {
       case 'DISPONIVEL': return 'bg-emerald-500 shadow-emerald-200';
       case 'RESERVADO': return 'bg-amber-500 shadow-amber-200';
       case 'VENDIDO': return 'bg-rose-500 shadow-rose-200';
@@ -77,7 +77,7 @@ const EstoqueCard: React.FC<Props> = ({ veiculo, cores, onClick }) => {
   };
 
   return (
-    <div 
+    <div
       onClick={onClick}
       className="group bg-white border border-slate-200 rounded-[2.5rem] overflow-hidden hover:shadow-2xl hover:border-indigo-300 transition-all duration-300 cursor-pointer flex flex-col h-full transform hover:-translate-y-1"
     >
@@ -103,18 +103,23 @@ const EstoqueCard: React.FC<Props> = ({ veiculo, cores, onClick }) => {
             <span className="text-[10px] font-bold uppercase tracking-widest mt-2">Sem Foto</span>
           </div>
         )}
-        
+
         <div className="absolute top-3 right-3 flex flex-col gap-2 items-end z-10">
           <div className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest text-white shadow-lg ${getStatusColor(veiculo.status)}`}>
             {veiculo.status}
           </div>
-          
-          <button 
+
+          {veiculo.is_consignado && (
+            <div className="px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest text-white shadow-lg bg-violet-600 shadow-violet-200 ring-2 ring-violet-400">
+              CONSIGNADO
+            </div>
+          )}
+
+          <button
             onClick={handleToggleClick}
             disabled={isToggling}
-            className={`px-3 py-1.5 rounded-lg text-[8px] font-black uppercase tracking-widest transition-all shadow-lg flex items-center gap-1.5 border ${
-              localPublicado ? 'bg-emerald-600 text-white border-emerald-500' : 'bg-white/90 text-slate-400 border-slate-200'
-            }`}
+            className={`px-3 py-1.5 rounded-lg text-[8px] font-black uppercase tracking-widest transition-all shadow-lg flex items-center gap-1.5 border ${localPublicado ? 'bg-emerald-600 text-white border-emerald-500' : 'bg-white/90 text-slate-400 border-slate-200'
+              }`}
           >
             <div className={`w-1.5 h-1.5 rounded-full ${localPublicado ? 'bg-white animate-pulse' : 'bg-slate-300'}`}></div>
             {localPublicado ? 'No Site' : 'Interno'}
@@ -122,9 +127,9 @@ const EstoqueCard: React.FC<Props> = ({ veiculo, cores, onClick }) => {
         </div>
 
         <div className="absolute bottom-3 left-3 z-10">
-           <div className="bg-white/90 backdrop-blur-md px-2 py-1 rounded-md border border-slate-200 text-[10px] font-mono font-bold text-slate-700 shadow-sm uppercase">
-             {veiculo.placa || 'SEM PLACA'}
-           </div>
+          <div className="bg-white/90 backdrop-blur-md px-2 py-1 rounded-md border border-slate-200 text-[10px] font-mono font-bold text-slate-700 shadow-sm uppercase">
+            {veiculo.placa || 'SEM PLACA'}
+          </div>
         </div>
       </div>
 
@@ -132,17 +137,17 @@ const EstoqueCard: React.FC<Props> = ({ veiculo, cores, onClick }) => {
       <div className="p-5 flex flex-col flex-1">
         <div className="mb-4">
           <div className="flex items-center space-x-2 mb-1">
-             <span className="text-[10px] font-black text-indigo-500 uppercase tracking-widest">{veiculo.ano_fabricacao}/{veiculo.ano_modelo}</span>
-             {corObj && (
-               <>
-                 <span className="text-slate-300 text-[10px]">•</span>
-                 <div className="w-2 h-2 rounded-full border border-slate-200 shadow-sm" style={{ backgroundColor: corObj.rgb_hex }} title={corObj.nome}></div>
-               </>
-             )}
-             <span className="text-slate-300 text-[10px]">•</span>
-             <span className="text-[10px] font-bold text-slate-400 uppercase">{veiculo.km.toLocaleString()} km</span>
+            <span className="text-[10px] font-black text-indigo-500 uppercase tracking-widest">{veiculo.ano_fabricacao}/{veiculo.ano_modelo}</span>
+            {corObj && (
+              <>
+                <span className="text-slate-300 text-[10px]">•</span>
+                <div className="w-2 h-2 rounded-full border border-slate-200 shadow-sm" style={{ backgroundColor: corObj.rgb_hex }} title={corObj.nome}></div>
+              </>
+            )}
+            <span className="text-slate-300 text-[10px]">•</span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase">{veiculo.km.toLocaleString()} km</span>
           </div>
-          
+
           <h4 className="font-black text-slate-900 text-lg leading-tight line-clamp-2 uppercase tracking-tighter">
             {v.montadora?.nome} {v.modelo?.nome}
           </h4>
@@ -152,24 +157,34 @@ const EstoqueCard: React.FC<Props> = ({ veiculo, cores, onClick }) => {
         </div>
 
         <div className="mt-auto pt-4 border-t border-slate-50 flex items-end justify-between">
-           <div>
-             <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Preço Venda</p>
-             <p className="text-xl font-black text-emerald-600 tracking-tight">{formatCurrency(veiculo.valor_venda)}</p>
-           </div>
-           
-           <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path d="M9 5l7 7-7 7" /></svg>
-           </div>
+          <div>
+            <div className="mb-2">
+              <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Investimento (Custo)</p>
+              <p className="text-sm font-black text-slate-700 tracking-tight">
+                {formatCurrency(
+                  veiculo.is_consignado
+                    ? (Number(veiculo.valor_custo_servicos) || 0)
+                    : ((Number(veiculo.valor_custo) || 0) + (Number(veiculo.valor_custo_servicos) || 0))
+                )}
+              </p>
+            </div>
+            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Preço Venda</p>
+            <p className="text-xl font-black text-emerald-600 tracking-tight">{formatCurrency(veiculo.valor_venda)}</p>
+          </div>
+
+          <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path d="M9 5l7 7-7 7" /></svg>
+          </div>
         </div>
       </div>
 
-      <ConfirmModal 
+      <ConfirmModal
         isOpen={showConfirm}
         onClose={() => setShowConfirm(false)}
         onConfirm={executeToggle}
         title={localPublicado ? "Remover do Site?" : "Publicar no Site?"}
-        message={localPublicado 
-          ? "Este veículo deixará de ser exibido na vitrine pública." 
+        message={localPublicado
+          ? "Este veículo deixará de ser exibido na vitrine pública."
           : "Este veículo ficará visível para clientes no seu site oficial."}
         confirmText={localPublicado ? "Sim, Remover" : "Sim, Publicar"}
         variant={localPublicado ? 'danger' : 'info'}

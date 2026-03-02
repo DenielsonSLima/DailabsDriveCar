@@ -46,54 +46,54 @@ const CoresForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSubmit }
         <form onSubmit={handleSubmit} className="p-8 space-y-6">
           <div>
             <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Descrição da Cor</label>
-            <input 
+            <input
               autoFocus
               value={nome}
-              onChange={e => setNome(e.target.value)}
+              onChange={e => setNome(e.target.value.toUpperCase())}
               disabled={isSaving}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-bold outline-none focus:ring-2 focus:ring-indigo-500 transition-all disabled:opacity-50"
+              className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 font-bold text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all disabled:opacity-50"
               placeholder="Ex: Branco Perolizado, Prata Bari..."
               required
             />
           </div>
 
           <div>
-             <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Seletor Visual</label>
-             <div className="flex items-center space-x-4 bg-slate-50 p-2 rounded-2xl border border-slate-100">
-                <div className="relative overflow-hidden w-16 h-16 rounded-xl border border-slate-200 shadow-sm shrink-0">
-                  <input 
-                    type="color" 
-                    value={hex}
-                    onChange={e => setHex(e.target.value)}
-                    disabled={isSaving}
-                    className="absolute inset-0 w-[150%] h-[150%] -top-[25%] -left-[25%] cursor-pointer p-0 border-0"
-                  />
-                </div>
-                <div className="flex-1">
-                  <input 
-                    type="text" 
-                    value={hex.toUpperCase()}
-                    onChange={e => setHex(e.target.value)}
-                    disabled={isSaving}
-                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 font-mono text-sm uppercase font-bold text-slate-600 focus:ring-2 focus:ring-indigo-500 outline-none"
-                    maxLength={7}
-                  />
-                  <p className="text-[9px] text-slate-400 mt-1 ml-1 font-medium">Clique na cor para alterar</p>
-                </div>
-             </div>
+            <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Seletor Visual</label>
+            <div className="flex items-center space-x-4 bg-white p-2 rounded-2xl border border-slate-100">
+              <div className="relative overflow-hidden w-16 h-16 rounded-xl border border-slate-200 shadow-sm shrink-0">
+                <input
+                  type="color"
+                  value={hex}
+                  onChange={e => setHex(e.target.value)}
+                  disabled={isSaving}
+                  className="absolute inset-0 w-[150%] h-[150%] -top-[25%] -left-[25%] cursor-pointer p-0 border-0"
+                />
+              </div>
+              <div className="flex-1">
+                <input
+                  type="text"
+                  value={hex.toUpperCase()}
+                  onChange={e => setHex(e.target.value)}
+                  disabled={isSaving}
+                  className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 font-mono text-sm uppercase font-bold text-[#111827] focus:ring-2 focus:ring-indigo-500 outline-none"
+                  maxLength={7}
+                />
+                <p className="text-[9px] text-slate-400 mt-1 ml-1 font-medium">Clique na cor para alterar</p>
+              </div>
+            </div>
           </div>
 
           <div className="flex justify-end space-x-3 pt-4">
-            <button 
-              type="button" 
-              onClick={onClose} 
+            <button
+              type="button"
+              onClick={onClose}
               className="px-6 py-3 text-slate-500 font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 rounded-xl"
             >
               Cancelar
             </button>
-            <button 
-              type="submit" 
-              disabled={isSaving} 
+            <button
+              type="submit"
+              disabled={isSaving}
               className="px-8 py-3 bg-indigo-600 text-white rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg shadow-indigo-100 disabled:opacity-50 min-w-[140px] flex items-center justify-center"
             >
               {isSaving ? 'Salvando...' : 'Salvar'}

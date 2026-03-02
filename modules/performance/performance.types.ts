@@ -1,10 +1,28 @@
-// =============================================
-// MÓDULO PERFORMANCE - TIPOS
-// 2 Abas: Mês Atual / Outros Meses
-// Visão completa da empresa por período
-// =============================================
+import { z } from 'zod';
 
 export type PerformanceTab = 'MES_ATUAL' | 'OUTROS_MESES';
+
+// ---- KPIs Resumo do Período Schema ----
+const numericField = z.union([z.number(), z.null(), z.undefined()]).transform(val => val ?? 0);
+
+export const PerformanceResumoSchema = z.object({
+  total_vendas_valor: numericField,
+  total_vendas_qtd: numericField,
+  total_compras_valor: numericField,
+  total_compras_qtd: numericField,
+  lucro_bruto: numericField,
+  margem_media: numericField,
+  ticket_medio_venda: numericField,
+  despesas_veiculos: numericField,
+  retiradas_socios: numericField,
+  contas_pagar_pendente: numericField,
+  contas_receber_pendente: numericField,
+  contas_pagar_pago: numericField,
+  contas_receber_pago: numericField,
+  saldo_contas_bancarias: numericField,
+  total_entradas: numericField,
+  total_saidas: numericField,
+});
 
 // ---- KPIs Resumo do Período ----
 export interface IPerformanceResumo {

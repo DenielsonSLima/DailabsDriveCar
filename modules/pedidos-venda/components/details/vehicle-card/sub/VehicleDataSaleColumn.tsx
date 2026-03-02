@@ -4,6 +4,7 @@ import { IVeiculo } from '../../../../../estoque/estoque.types';
 interface Props {
   veiculo: IVeiculo;
   isConcluido: boolean;
+  isConsignado?: boolean;
   isEditingPrice: boolean;
   localPrice: number;
   onStartEditPrice: (e: React.MouseEvent) => void;
@@ -15,6 +16,7 @@ interface Props {
 const VehicleDataSaleColumn: React.FC<Props> = ({
   veiculo,
   isConcluido,
+  isConsignado,
   isEditingPrice,
   localPrice,
   onStartEditPrice,
@@ -116,7 +118,9 @@ const VehicleDataSaleColumn: React.FC<Props> = ({
 
         {/* Preço de Venda (Editável) */}
         <div className="bg-emerald-50 border rounded-2xl p-3 shadow-sm border-emerald-200 flex flex-col justify-center h-20 min-w-0 relative group/price">
-          <p className="text-[7px] font-black text-emerald-600 uppercase tracking-widest mb-1 truncate">Preço Negociado</p>
+          <p className="text-[7px] font-black text-emerald-600 uppercase tracking-widest mb-1 truncate">
+            {isConsignado ? 'Preço de Venda' : 'Preço Negociado'}
+          </p>
           {isEditingPrice && !isConcluido ? (
             <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
               <input

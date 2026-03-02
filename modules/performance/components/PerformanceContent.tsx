@@ -1,9 +1,19 @@
 import React, { useState } from 'react';
 import { IPerformanceData } from '../performance.types';
+import { KpiCard, SecaoHeader } from './PerformanceUI';
+import {
+  VendasTable,
+  ComprasTable,
+  TitulosTable,
+  DespesasTable,
+  RetiradasTable,
+  EstoqueTable
+} from './tables/PerformanceTables';
 
 interface Props {
   data: IPerformanceData;
   periodoLabel: string;
+  isFetching?: boolean;
 }
 
 type SecaoAberta = 'vendas' | 'compras' | 'pagar' | 'receber' | 'despesas' | 'retiradas' | 'estoque' | 'contas' | null;
@@ -11,88 +21,13 @@ type SecaoAberta = 'vendas' | 'compras' | 'pagar' | 'receber' | 'despesas' | 're
 const formatCurrency = (val: number) =>
   new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
-const formatDate = (d: string) => {
-  if (!d) return '-';
-  const parts = d.split('-');
-  if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
-  return d;
-};
-
-const statusColor: Record<string, string> = {
-  PAGO: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-  PENDENTE: 'bg-amber-50 text-amber-700 border-amber-200',
-  PARCIAL: 'bg-blue-50 text-blue-700 border-blue-200',
-  ATRASADO: 'bg-rose-50 text-rose-700 border-rose-200',
-};
-
-const PerformanceContent: React.FC<Props> = ({ data, periodoLabel }) => {
+const PerformanceContent: React.FC<Props> = ({ data, periodoLabel, isFetching = false }) => {
   const [secaoAberta, setSecaoAberta] = useState<SecaoAberta>(null);
   const r = data.resumo;
 
   const toggle = (secao: SecaoAberta) => {
     setSecaoAberta(prev => (prev === secao ? null : secao));
   };
-
-  // ===================== KPI CARD =====================
-  const KpiCard = ({ label, valor, sub, color = 'slate', isCurrency = true, icon }: {
-    label: string; valor: number; sub?: string; color?: string; isCurrency?: boolean; icon: string;
-  }) => (
-    <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md transition-all group">
-      <div className="flex items-start justify-between mb-3">
-        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-tight">{label}</p>
-        <div className={`w-8 h-8 rounded-xl bg-${color}-50 border border-${color}-100 flex items-center justify-center`}>
-          <svg className={`w-4 h-4 text-${color}-500`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d={icon} />
-          </svg>
-        </div>
-      </div>
-      <h3 className="text-xl font-black text-slate-900 tracking-tight">
-        {isCurrency ? formatCurrency(valor) : valor}
-      </h3>
-      {sub && <p className="text-[9px] font-bold text-slate-400 uppercase mt-1.5">{sub}</p>}
-    </div>
-  );
-
-  // ===================== SEÇÃO EXPANSÍVEL =====================
-  const SecaoHeader = ({ id, titulo, subtitulo, count, valor, icon, color }: {
-    id: SecaoAberta; titulo: string; subtitulo: string; count: number; valor?: number; icon: string; color: string;
-  }) => (
-    <button
-      onClick={() => toggle(id)}
-      className={`w-full flex items-center justify-between p-5 rounded-2xl border transition-all ${
-        secaoAberta === id
-          ? 'bg-slate-900 text-white border-slate-800 shadow-xl'
-          : 'bg-white text-slate-800 border-slate-200/80 hover:border-slate-300 hover:shadow-sm'
-      }`}
-    >
-      <div className="flex items-center gap-4">
-        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-          secaoAberta === id ? 'bg-white/10' : `bg-${color}-50 border border-${color}-100`
-        }`}>
-          <svg className={`w-5 h-5 ${secaoAberta === id ? 'text-white' : `text-${color}-500`}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d={icon} />
-          </svg>
-        </div>
-        <div className="text-left">
-          <h4 className="text-sm font-black uppercase tracking-tight">{titulo}</h4>
-          <p className={`text-[10px] font-bold uppercase tracking-widest mt-0.5 ${secaoAberta === id ? 'text-white/50' : 'text-slate-400'}`}>{subtitulo}</p>
-        </div>
-      </div>
-      <div className="flex items-center gap-4">
-        <div className="text-right">
-          <span className={`text-[10px] font-black uppercase tracking-widest ${secaoAberta === id ? 'text-white/50' : 'text-slate-400'}`}>
-            {count} {count === 1 ? 'registro' : 'registros'}
-          </span>
-          {valor !== undefined && (
-            <p className={`text-sm font-black ${secaoAberta === id ? 'text-white' : 'text-slate-900'}`}>{formatCurrency(valor)}</p>
-          )}
-        </div>
-        <svg className={`w-5 h-5 transition-transform ${secaoAberta === id ? 'rotate-180 text-white/60' : 'text-slate-300'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-        </svg>
-      </div>
-    </button>
-  );
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
@@ -186,7 +121,6 @@ const PerformanceContent: React.FC<Props> = ({ data, periodoLabel }) => {
 
       {/* ================== SEÇÕES EXPANSÍVEIS ================== */}
       <div className="space-y-3">
-
         {/* ---- VENDAS ---- */}
         <SecaoHeader
           id="vendas"
@@ -196,52 +130,10 @@ const PerformanceContent: React.FC<Props> = ({ data, periodoLabel }) => {
           valor={r.total_vendas_valor}
           icon="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
           color="emerald"
+          isOpen={secaoAberta === 'vendas'}
+          onToggle={() => toggle('vendas')}
         />
-        {secaoAberta === 'vendas' && (
-          <div className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden animate-in slide-in-from-top-2 duration-300">
-            {data.vendas.length === 0 ? (
-              <p className="text-sm text-slate-400 font-bold text-center py-10">Nenhuma venda neste período.</p>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left">
-                  <thead className="bg-slate-50 border-b border-slate-100">
-                    <tr className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
-                      <th className="px-5 py-4">Nº</th>
-                      <th className="px-5 py-4">Data</th>
-                      <th className="px-5 py-4">Cliente</th>
-                      <th className="px-5 py-4">Veículo</th>
-                      <th className="px-5 py-4 text-right">Custo</th>
-                      <th className="px-5 py-4 text-right">Venda</th>
-                      <th className="px-5 py-4 text-right">Lucro</th>
-                      <th className="px-5 py-4 text-center">Margem</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-50">
-                    {data.vendas.map(v => (
-                      <tr key={v.id} className="hover:bg-slate-50/50 transition-colors">
-                        <td className="px-5 py-3 text-[11px] font-black text-slate-500">{v.numero_venda}</td>
-                        <td className="px-5 py-3 text-[11px] text-slate-500 font-mono">{formatDate(v.data_venda)}</td>
-                        <td className="px-5 py-3 text-xs font-bold text-slate-700">{v.cliente_nome}</td>
-                        <td className="px-5 py-3">
-                          <p className="text-xs font-black text-slate-800 uppercase tracking-tighter">{v.veiculo_modelo}</p>
-                          <p className="text-[10px] text-slate-400 font-mono">{v.veiculo_placa}</p>
-                        </td>
-                        <td className="px-5 py-3 text-xs font-bold text-slate-500 text-right">{formatCurrency(v.custo_veiculo + v.custo_servicos)}</td>
-                        <td className="px-5 py-3 text-xs font-black text-indigo-600 text-right">{formatCurrency(v.valor_venda)}</td>
-                        <td className={`px-5 py-3 text-xs font-black text-right ${v.lucro_bruto >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>{formatCurrency(v.lucro_bruto)}</td>
-                        <td className="px-5 py-3 text-center">
-                          <span className={`inline-flex px-2 py-0.5 rounded-lg text-[10px] font-black border ${v.margem_percent >= 10 ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : v.margem_percent >= 0 ? 'bg-amber-50 text-amber-600 border-amber-200' : 'bg-rose-50 text-rose-600 border-rose-200'}`}>
-                            {v.margem_percent.toFixed(1)}%
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        )}
+        {secaoAberta === 'vendas' && <VendasTable data={data.vendas} />}
 
         {/* ---- COMPRAS ---- */}
         <SecaoHeader
@@ -252,42 +144,10 @@ const PerformanceContent: React.FC<Props> = ({ data, periodoLabel }) => {
           valor={r.total_compras_valor}
           icon="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
           color="blue"
+          isOpen={secaoAberta === 'compras'}
+          onToggle={() => toggle('compras')}
         />
-        {secaoAberta === 'compras' && (
-          <div className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden animate-in slide-in-from-top-2 duration-300">
-            {data.compras.length === 0 ? (
-              <p className="text-sm text-slate-400 font-bold text-center py-10">Nenhuma compra neste período.</p>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left">
-                  <thead className="bg-slate-50 border-b border-slate-100">
-                    <tr className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
-                      <th className="px-5 py-4">Nº</th>
-                      <th className="px-5 py-4">Data</th>
-                      <th className="px-5 py-4">Fornecedor</th>
-                      <th className="px-5 py-4">Veículo</th>
-                      <th className="px-5 py-4 text-right">Valor</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-50">
-                    {data.compras.map(c => (
-                      <tr key={c.id} className="hover:bg-slate-50/50 transition-colors">
-                        <td className="px-5 py-3 text-[11px] font-black text-slate-500">{c.numero_pedido}</td>
-                        <td className="px-5 py-3 text-[11px] text-slate-500 font-mono">{formatDate(c.data_compra)}</td>
-                        <td className="px-5 py-3 text-xs font-bold text-slate-700">{c.fornecedor_nome}</td>
-                        <td className="px-5 py-3">
-                          <p className="text-xs font-black text-slate-800 uppercase tracking-tighter">{c.veiculo_modelo}</p>
-                          <p className="text-[10px] text-slate-400 font-mono">{c.veiculo_placa}</p>
-                        </td>
-                        <td className="px-5 py-3 text-xs font-black text-slate-900 text-right">{formatCurrency(c.valor_negociado)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        )}
+        {secaoAberta === 'compras' && <ComprasTable data={data.compras} />}
 
         {/* ---- CONTAS A RECEBER ---- */}
         <SecaoHeader
@@ -298,47 +158,10 @@ const PerformanceContent: React.FC<Props> = ({ data, periodoLabel }) => {
           valor={data.titulos_receber.reduce((s, t) => s + t.valor_total, 0)}
           icon="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
           color="amber"
+          isOpen={secaoAberta === 'receber'}
+          onToggle={() => toggle('receber')}
         />
-        {secaoAberta === 'receber' && (
-          <div className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden animate-in slide-in-from-top-2 duration-300">
-            {data.titulos_receber.length === 0 ? (
-              <p className="text-sm text-slate-400 font-bold text-center py-10">Nenhum título a receber neste período.</p>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left">
-                  <thead className="bg-slate-50 border-b border-slate-100">
-                    <tr className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
-                      <th className="px-5 py-4">Descrição</th>
-                      <th className="px-5 py-4">Parceiro</th>
-                      <th className="px-5 py-4">Categoria</th>
-                      <th className="px-5 py-4">Vencimento</th>
-                      <th className="px-5 py-4 text-right">Valor</th>
-                      <th className="px-5 py-4 text-right">Pago</th>
-                      <th className="px-5 py-4 text-center">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-50">
-                    {data.titulos_receber.map(t => (
-                      <tr key={t.id} className="hover:bg-slate-50/50 transition-colors">
-                        <td className="px-5 py-3 text-xs font-bold text-slate-700 max-w-[200px] truncate">{t.descricao}</td>
-                        <td className="px-5 py-3 text-xs text-slate-500">{t.parceiro_nome}</td>
-                        <td className="px-5 py-3 text-[11px] text-slate-400">{t.categoria_nome}</td>
-                        <td className="px-5 py-3 text-[11px] text-slate-500 font-mono">{formatDate(t.data_vencimento)}</td>
-                        <td className="px-5 py-3 text-xs font-black text-slate-900 text-right">{formatCurrency(t.valor_total)}</td>
-                        <td className="px-5 py-3 text-xs font-bold text-emerald-600 text-right">{formatCurrency(t.valor_pago)}</td>
-                        <td className="px-5 py-3 text-center">
-                          <span className={`inline-flex px-2 py-0.5 rounded-lg text-[9px] font-black border ${statusColor[t.status] || 'bg-slate-50 text-slate-500 border-slate-200'}`}>
-                            {t.status}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        )}
+        {secaoAberta === 'receber' && <TitulosTable data={data.titulos_receber} />}
 
         {/* ---- CONTAS A PAGAR ---- */}
         <SecaoHeader
@@ -349,47 +172,10 @@ const PerformanceContent: React.FC<Props> = ({ data, periodoLabel }) => {
           valor={data.titulos_pagar.reduce((s, t) => s + t.valor_total, 0)}
           icon="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
           color="rose"
+          isOpen={secaoAberta === 'pagar'}
+          onToggle={() => toggle('pagar')}
         />
-        {secaoAberta === 'pagar' && (
-          <div className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden animate-in slide-in-from-top-2 duration-300">
-            {data.titulos_pagar.length === 0 ? (
-              <p className="text-sm text-slate-400 font-bold text-center py-10">Nenhum título a pagar neste período.</p>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left">
-                  <thead className="bg-slate-50 border-b border-slate-100">
-                    <tr className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
-                      <th className="px-5 py-4">Descrição</th>
-                      <th className="px-5 py-4">Parceiro</th>
-                      <th className="px-5 py-4">Categoria</th>
-                      <th className="px-5 py-4">Vencimento</th>
-                      <th className="px-5 py-4 text-right">Valor</th>
-                      <th className="px-5 py-4 text-right">Pago</th>
-                      <th className="px-5 py-4 text-center">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-50">
-                    {data.titulos_pagar.map(t => (
-                      <tr key={t.id} className="hover:bg-slate-50/50 transition-colors">
-                        <td className="px-5 py-3 text-xs font-bold text-slate-700 max-w-[200px] truncate">{t.descricao}</td>
-                        <td className="px-5 py-3 text-xs text-slate-500">{t.parceiro_nome}</td>
-                        <td className="px-5 py-3 text-[11px] text-slate-400">{t.categoria_nome}</td>
-                        <td className="px-5 py-3 text-[11px] text-slate-500 font-mono">{formatDate(t.data_vencimento)}</td>
-                        <td className="px-5 py-3 text-xs font-black text-slate-900 text-right">{formatCurrency(t.valor_total)}</td>
-                        <td className="px-5 py-3 text-xs font-bold text-emerald-600 text-right">{formatCurrency(t.valor_pago)}</td>
-                        <td className="px-5 py-3 text-center">
-                          <span className={`inline-flex px-2 py-0.5 rounded-lg text-[9px] font-black border ${statusColor[t.status] || 'bg-slate-50 text-slate-500 border-slate-200'}`}>
-                            {t.status}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        )}
+        {secaoAberta === 'pagar' && <TitulosTable data={data.titulos_pagar} />}
 
         {/* ---- DESPESAS VEÍCULOS ---- */}
         <SecaoHeader
@@ -400,46 +186,10 @@ const PerformanceContent: React.FC<Props> = ({ data, periodoLabel }) => {
           valor={r.despesas_veiculos}
           icon="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
           color="orange"
+          isOpen={secaoAberta === 'despesas'}
+          onToggle={() => toggle('despesas')}
         />
-        {secaoAberta === 'despesas' && (
-          <div className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden animate-in slide-in-from-top-2 duration-300">
-            {data.despesas_veiculos.length === 0 ? (
-              <p className="text-sm text-slate-400 font-bold text-center py-10">Nenhuma despesa de veículo neste período.</p>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left">
-                  <thead className="bg-slate-50 border-b border-slate-100">
-                    <tr className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
-                      <th className="px-5 py-4">Veículo</th>
-                      <th className="px-5 py-4">Descrição</th>
-                      <th className="px-5 py-4">Data</th>
-                      <th className="px-5 py-4 text-right">Valor</th>
-                      <th className="px-5 py-4 text-center">Pagamento</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-50">
-                    {data.despesas_veiculos.map(d => (
-                      <tr key={d.id} className="hover:bg-slate-50/50 transition-colors">
-                        <td className="px-5 py-3">
-                          <p className="text-xs font-black text-slate-800 uppercase tracking-tighter">{d.veiculo_modelo}</p>
-                          <p className="text-[10px] text-slate-400 font-mono">{d.veiculo_placa}</p>
-                        </td>
-                        <td className="px-5 py-3 text-xs font-bold text-slate-700">{d.descricao}</td>
-                        <td className="px-5 py-3 text-[11px] text-slate-500 font-mono">{formatDate(d.data)}</td>
-                        <td className="px-5 py-3 text-xs font-black text-rose-600 text-right">{formatCurrency(d.valor_total)}</td>
-                        <td className="px-5 py-3 text-center">
-                          <span className={`inline-flex px-2 py-0.5 rounded-lg text-[9px] font-black border ${statusColor[d.status_pagamento] || 'bg-slate-50 text-slate-500 border-slate-200'}`}>
-                            {d.status_pagamento}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        )}
+        {secaoAberta === 'despesas' && <DespesasTable data={data.despesas_veiculos} />}
 
         {/* ---- RETIRADAS SÓCIOS ---- */}
         <SecaoHeader
@@ -450,39 +200,10 @@ const PerformanceContent: React.FC<Props> = ({ data, periodoLabel }) => {
           valor={r.retiradas_socios}
           icon="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
           color="purple"
+          isOpen={secaoAberta === 'retiradas'}
+          onToggle={() => toggle('retiradas')}
         />
-        {secaoAberta === 'retiradas' && (
-          <div className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden animate-in slide-in-from-top-2 duration-300">
-            {data.retiradas.length === 0 ? (
-              <p className="text-sm text-slate-400 font-bold text-center py-10">Nenhuma retirada neste período.</p>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left">
-                  <thead className="bg-slate-50 border-b border-slate-100">
-                    <tr className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
-                      <th className="px-5 py-4">Sócio</th>
-                      <th className="px-5 py-4">Tipo</th>
-                      <th className="px-5 py-4">Descrição</th>
-                      <th className="px-5 py-4">Data</th>
-                      <th className="px-5 py-4 text-right">Valor</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-50">
-                    {data.retiradas.map(ret => (
-                      <tr key={ret.id} className="hover:bg-slate-50/50 transition-colors">
-                        <td className="px-5 py-3 text-xs font-black text-slate-800">{ret.socio_nome}</td>
-                        <td className="px-5 py-3 text-[11px] text-slate-500 uppercase">{ret.tipo}</td>
-                        <td className="px-5 py-3 text-xs text-slate-500">{ret.descricao}</td>
-                        <td className="px-5 py-3 text-[11px] text-slate-500 font-mono">{formatDate(ret.data)}</td>
-                        <td className="px-5 py-3 text-xs font-black text-rose-600 text-right">{formatCurrency(ret.valor)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        )}
+        {secaoAberta === 'retiradas' && <RetiradasTable data={data.retiradas} />}
 
         {/* ---- ESTOQUE ATUAL ---- */}
         <SecaoHeader
@@ -493,60 +214,10 @@ const PerformanceContent: React.FC<Props> = ({ data, periodoLabel }) => {
           valor={data.estoque.reduce((s, e) => s + e.valor_venda, 0)}
           icon="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
           color="indigo"
+          isOpen={secaoAberta === 'estoque'}
+          onToggle={() => toggle('estoque')}
         />
-        {secaoAberta === 'estoque' && (
-          <div className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden animate-in slide-in-from-top-2 duration-300">
-            {data.estoque.length === 0 ? (
-              <p className="text-sm text-slate-400 font-bold text-center py-10">Nenhum veículo em estoque.</p>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left">
-                  <thead className="bg-slate-50 border-b border-slate-100">
-                    <tr className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
-                      <th className="px-5 py-4">Veículo</th>
-                      <th className="px-5 py-4">Status</th>
-                      <th className="px-5 py-4 text-right">Custo</th>
-                      <th className="px-5 py-4 text-right">Serviços</th>
-                      <th className="px-5 py-4 text-right">Preço Venda</th>
-                      <th className="px-5 py-4 text-center">Margem</th>
-                      <th className="px-5 py-4 text-center">Dias</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-50">
-                    {data.estoque.map(e => (
-                      <tr key={e.id} className={`hover:bg-slate-50/50 transition-colors ${e.dias_estoque > 60 ? 'bg-rose-50/30' : ''}`}>
-                        <td className="px-5 py-3">
-                          <p className="text-xs font-black text-slate-800 uppercase tracking-tighter">{e.modelo}</p>
-                          <p className="text-[10px] text-slate-400 font-mono">{e.placa}</p>
-                        </td>
-                        <td className="px-5 py-3">
-                          <span className={`inline-flex px-2 py-0.5 rounded-lg text-[9px] font-black border ${
-                            e.status === 'DISPONIVEL' ? 'bg-emerald-50 text-emerald-600 border-emerald-200' :
-                            e.status === 'RESERVADO' ? 'bg-blue-50 text-blue-600 border-blue-200' :
-                            'bg-amber-50 text-amber-600 border-amber-200'
-                          }`}>{e.status}</span>
-                        </td>
-                        <td className="px-5 py-3 text-xs font-bold text-slate-500 text-right">{formatCurrency(e.valor_custo)}</td>
-                        <td className="px-5 py-3 text-xs font-bold text-slate-500 text-right">{formatCurrency(e.valor_custo_servicos)}</td>
-                        <td className="px-5 py-3 text-xs font-black text-indigo-600 text-right">{formatCurrency(e.valor_venda)}</td>
-                        <td className="px-5 py-3 text-center">
-                          <span className={`inline-flex px-2 py-0.5 rounded-lg text-[10px] font-black border ${e.margem_percent >= 10 ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : e.margem_percent >= 0 ? 'bg-amber-50 text-amber-600 border-amber-200' : 'bg-rose-50 text-rose-600 border-rose-200'}`}>
-                            {e.margem_percent.toFixed(1)}%
-                          </span>
-                        </td>
-                        <td className="px-5 py-3 text-center">
-                          <span className={`text-xs font-black ${e.dias_estoque > 60 ? 'text-rose-500' : e.dias_estoque > 30 ? 'text-amber-500' : 'text-slate-700'}`}>
-                            {e.dias_estoque}d
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        )}
+        {secaoAberta === 'estoque' && <EstoqueTable data={data.estoque} />}
 
         {/* ---- CONTAS BANCÁRIAS ---- */}
         <SecaoHeader
@@ -557,6 +228,8 @@ const PerformanceContent: React.FC<Props> = ({ data, periodoLabel }) => {
           valor={r.saldo_contas_bancarias}
           icon="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
           color="slate"
+          isOpen={secaoAberta === 'contas'}
+          onToggle={() => toggle('contas')}
         />
         {secaoAberta === 'contas' && (
           <div className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden animate-in slide-in-from-top-2 duration-300">
@@ -579,7 +252,6 @@ const PerformanceContent: React.FC<Props> = ({ data, periodoLabel }) => {
             )}
           </div>
         )}
-
       </div>
     </div>
   );

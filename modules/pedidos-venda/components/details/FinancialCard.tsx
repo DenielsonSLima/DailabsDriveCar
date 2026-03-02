@@ -61,7 +61,9 @@ const FinancialCard: React.FC<Props> = ({ pedido, valorVendaEfetivo, onAddPaymen
 
         <div className="bg-emerald-600 p-6 rounded-3xl text-white shadow-xl shadow-emerald-100 relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
-          <p className="text-[9px] font-black uppercase tracking-widest opacity-70 mb-1">Valor Total Negociado</p>
+          <p className="text-[9px] font-black uppercase tracking-widest opacity-70 mb-1">
+            {pedido.is_consignado ? 'Comissão da Empresa' : 'Valor Total Negociado'}
+          </p>
           <h4 className="text-2xl font-black tracking-tight">{formatCurrency(valorVendaEfetivo)}</h4>
         </div>
       </div>

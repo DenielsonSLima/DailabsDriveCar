@@ -17,21 +17,21 @@ const FormCardContext: React.FC<Props> = ({ formData, corretores, onChange, disa
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">Data do Pedido</label>
-          <input 
-            type="date" 
+          <input
+            type="date"
             disabled={disabled}
-            value={formData.data_compra || ''} 
-            onChange={e => onChange({ data_compra: e.target.value })} 
-            className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-bold outline-none focus:ring-2 focus:ring-indigo-500 transition-all disabled:opacity-50" 
+            value={formData.data_compra || ''}
+            onChange={e => onChange({ data_compra: e.target.value })}
+            className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 font-bold text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm hover:shadow-md disabled:opacity-50"
           />
         </div>
         <div>
           <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">Corretor / Intermediário</label>
-          <select 
+          <select
             disabled={disabled}
-            value={formData.corretor_id || ''} 
-            onChange={e => onChange({ corretor_id: e.target.value })} 
-            className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-bold outline-none focus:ring-2 focus:ring-indigo-500 appearance-none transition-all cursor-pointer disabled:opacity-50"
+            value={formData.corretor_id || ''}
+            onChange={e => onChange({ corretor_id: e.target.value })}
+            className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 font-bold text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 appearance-none transition-all cursor-pointer shadow-sm hover:shadow-md disabled:opacity-50"
           >
             <option value="">Selecione o Corretor...</option>
             {corretores.map(c => <option key={c.id} value={c.id}>{c.nome} {c.sobrenome}</option>)}

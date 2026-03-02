@@ -1,13 +1,16 @@
 import { supabase } from '../../lib/supabase';
 import { StorageService } from '../../lib/storage.service';
-import { IVeiculo, IVeiculoDespesa, IEstoqueFilters, IEstoqueResponse, IVeiculoFoto } from './estoque.types';
+import { FinanceiroService } from '../financeiro/financeiro.service';
+import { ITitulo } from '../financeiro/financeiro.types';
+import { IVeiculo, IVeiculoDespesa, IEstoqueFilters, IEstoqueResponse, IVeiculoFoto, VeiculoSchema } from './estoque.types';
+import { EstVeiculosDespesasService } from './est-veiculos-despesas.service';
 
 const TABLE = 'est_veiculos';
 
 export const EstoqueService = {
   async getAll(filters?: IEstoqueFilters): Promise<IEstoqueResponse> {
     const page = filters?.page || 1;
-    const limit = filters?.limit || 9;
+    const limit = filters?.limit || 12;
     const from = (page - 1) * limit;
     const to = from + limit - 1;
 
@@ -18,7 +21,8 @@ export const EstoqueService = {
         montadora:cad_montadoras(nome, logo_url),
         modelo:cad_modelos(nome),
         versao:cad_versoes(nome),
-        tipo_veiculo:cad_tipos_veiculos(nome)
+        tipo_veiculo:cad_tipos_veiculos(nome),
+        pedido_compra:cmp_pedidos!est_veiculos_pedido_id_fkey(forma_pagamento:cad_formas_pagamento(nome))
       `, { count: 'exact' });
 
     // Aplicar Filtros
@@ -45,47 +49,37 @@ export const EstoqueService = {
       throw error;
     }
 
+    const totalCount = count || 0;
+
     return {
       data: (data || []) as IVeiculo[],
-      count: count || 0,
+      count: totalCount,
       currentPage: page,
-      totalPages: Math.ceil((count || 0) / limit)
+      totalPages: Math.ceil(totalCount / limit)
     };
   },
 
-  async getDashboardStats(filters?: IEstoqueFilters): Promise<IVeiculo[]> {
-    // Busca leve para cálculo de KPIs (apenas colunas numéricas e de filtro)
-    let query = supabase
-      .from(TABLE)
-      .select(`
-        id,
-        valor_venda,
-        valor_custo,
-        valor_custo_servicos,
-        socios,
-        status,
-        montadora_id,
-        tipo_veiculo_id,
-        placa
-      `);
+  async getDashboardStats(filters?: IEstoqueFilters): Promise<any> {
+    const { data, error } = await supabase.rpc('get_estoque_dashboard_stats', {
+      p_search: filters?.search || null,
+      p_montadora_id: filters?.montadoraId || null,
+      p_tipo_id: filters?.tipoId || null,
+      p_status: filters?.statusTab || null
+    });
 
-    // Reaplicar os mesmos filtros para que os KPIs batam com a lista
-    if (filters) {
-      if (filters.search) query = query.ilike('placa', `%${filters.search}%`);
-      if (filters.montadoraId) query = query.eq('montadora_id', filters.montadoraId);
-      if (filters.tipoId) query = query.eq('tipo_veiculo_id', filters.tipoId);
-      if (filters.statusTab) {
-        if (filters.statusTab === 'DISPONIVEL') query = query.eq('status', 'DISPONIVEL');
-        else if (filters.statusTab === 'RASCUNHO') query = query.eq('status', 'PREPARACAO');
-      }
-    }
-
-    const { data, error } = await query;
     if (error) {
-      console.error('Erro ao buscar estatísticas:', error);
-      return [];
+      console.error('Erro ao buscar estatísticas via RPC:', error);
+      return {
+        totalVenda: 0,
+        totalCustoBase: 0,
+        totalServicos: 0,
+        totalInvestido: 0,
+        ticketMedioVenda: 0,
+        count: 0,
+        socioStats: []
+      };
     }
-    return data as IVeiculo[];
+    return data;
   },
 
   async getById(id: string): Promise<IVeiculo | null> {
@@ -97,9 +91,16 @@ export const EstoqueService = {
         modelo:cad_modelos(nome),
         versao:cad_versoes(nome),
         tipo_veiculo:cad_tipos_veiculos(nome),
+        pedido_compra:cmp_pedidos!est_veiculos_pedido_id_fkey(forma_pagamento:cad_formas_pagamento(nome)),
         despesas:est_veiculos_despesas(
           *,
-          categoria:fin_categorias(nome)
+          categoria:fin_categorias(nome),
+          conta_bancaria:fin_contas_bancarias(banco_nome),
+          pagamentos:est_veiculos_despesas_pagamentos(
+            *,
+            conta_bancaria:fin_contas_bancarias(banco_nome, conta),
+            forma_pagamento:cad_formas_pagamento(nome)
+          )
         )
       `)
       .eq('id', id)
@@ -111,7 +112,20 @@ export const EstoqueService = {
     }
 
     const veiculo = data as any;
-    if (veiculo?.despesas) {
+    if (!veiculo) return null;
+
+    // Cálculos financeiros (Movidos de SQL para JS devido limitações do PostgREST)
+    const custo = Number(veiculo.valor_custo || 0);
+    const servicos = Number(veiculo.valor_custo_servicos || 0);
+    const venda = Number(veiculo.valor_venda || 0);
+
+    veiculo.valor_total_investido = veiculo.is_consignado ? servicos : (custo + servicos);
+    veiculo.lucro_projetado = venda - veiculo.valor_total_investido;
+    veiculo.margem_projetada = veiculo.valor_total_investido > 0
+      ? (veiculo.lucro_projetado / veiculo.valor_total_investido) * 100
+      : 0;
+
+    if (veiculo.despesas) {
       veiculo.despesas = veiculo.despesas.map((d: any) => ({
         ...d,
         categoria_nome: d.categoria?.nome
@@ -122,6 +136,26 @@ export const EstoqueService = {
   },
 
   async save(payload: Partial<IVeiculo>): Promise<IVeiculo> {
+    // Validate with Zod
+    // Validate: use partial for updates, full for inserts
+    // Note: Zod's .partial() still applies .default() values if they exist in the original schema.
+    // For updates, we want to skip defaults to avoid corrupting existing data.
+    const schema = payload.id
+      ? VeiculoSchema.partial() // We need to be careful with defaults here
+      : VeiculoSchema;
+
+    let validatedVeiculo = schema.parse(payload);
+
+    // If it's an update, we MUST ensure we don't overwrite with defaults if the key wasn't in the payload
+    if (payload.id) {
+      // Filter out keys that were not in the original payload to prevent Zod defaults from leaking in
+      const payloadKeys = Object.keys(payload);
+      validatedVeiculo = Object.fromEntries(
+        Object.entries(validatedVeiculo).filter(([key]) => payloadKeys.includes(key))
+      ) as any;
+    }
+
+
     const {
       id,
       montadora,
@@ -131,8 +165,10 @@ export const EstoqueService = {
       created_at,
       updated_at,
       despesas,
+      user_id,
+      organization_id,
       ...rest
-    } = payload as any;
+    } = validatedVeiculo as any;
 
     const dataToSave = {
       ...rest,
@@ -196,86 +232,51 @@ export const EstoqueService = {
   },
 
   async saveExpensesBatch(veiculoId: string, expenses: Partial<IVeiculoDespesa>[]): Promise<void> {
-    for (const exp of expenses) {
-      const { data: savedExp, error: errExp } = await supabase
-        .from('est_veiculos_despesas')
-        .insert({ ...exp, veiculo_id: veiculoId })
-        .select()
-        .single();
+    const { error } = await supabase.rpc('salvar_lote_despesas', {
+      p_veiculo_id: veiculoId,
+      p_despesas: expenses
+    });
 
-      if (errExp) throw errExp;
-
-      const { data: titulo, error: errTitulo } = await supabase
-        .from('fin_titulos')
-        .insert({
-          tipo: 'PAGAR',
-          veiculo_id: veiculoId,
-          despesa_veiculo_id: savedExp.id,
-          categoria_id: exp.categoria_id,
-          descricao: `DESPESA VEÍCULO (${savedExp.descricao})`,
-          status: exp.status_pagamento,
-          valor_total: exp.valor_total,
-          valor_pago: exp.status_pagamento === 'PAGO' ? exp.valor_total : 0,
-          data_emissao: exp.data,
-          data_vencimento: exp.data_vencimento || exp.data,
-          forma_pagamento_id: exp.forma_pagamento_id
-        })
-        .select()
-        .single();
-
-      if (errTitulo) throw errTitulo;
-
-      if (exp.status_pagamento === 'PAGO' && exp.conta_bancaria_id) {
-        await supabase.from('fin_transacoes').insert({
-          titulo_id: titulo.id,
-          conta_origem_id: exp.conta_bancaria_id,
-          valor: exp.valor_total,
-          tipo: 'SAIDA',
-          data_pagamento: new Date().toISOString(),
-          forma_pagamento_id: exp.forma_pagamento_id,
-          descricao: `PGTO IMEDIATO: ${savedExp.descricao}`,
-          tipo_transacao: 'DESPESA_VE_ICULO'
-        });
-
-        const { data: conta } = await supabase
-          .from('fin_contas_bancarias')
-          .select('saldo_atual')
-          .eq('id', exp.conta_bancaria_id)
-          .single();
-
-        await supabase
-          .from('fin_contas_bancarias')
-          .update({ saldo_atual: (conta.saldo_atual - exp.valor_total!) })
-          .eq('id', exp.conta_bancaria_id);
-      }
+    if (error) {
+      console.error('Erro ao salvar lote de despesas via RPC:', error);
+      throw error;
     }
-    await this.recalculateVehicleTotalCost(veiculoId);
   },
 
   async deleteExpense(id: string): Promise<void> {
     const { data: exp } = await supabase.from('est_veiculos_despesas').select('veiculo_id').eq('id', id).single();
-    const { error } = await supabase.from('est_veiculos_despesas').delete().eq('id', id);
-    if (error) throw error;
-    if (exp) await this.recalculateVehicleTotalCost(exp.veiculo_id);
+    if (!exp) return;
+
+    const { error } = await supabase.rpc('excluir_despesa_veiculo', {
+      p_id: id,
+      p_veiculo_id: exp.veiculo_id
+    });
+
+    if (error) {
+      console.error('Erro ao excluir despesa via RPC:', error);
+      throw error;
+    }
   },
 
-  async recalculateVehicleTotalCost(veiculoId: string) {
-    const { data: despesas } = await supabase
-      .from('est_veiculos_despesas')
-      .select('valor_total')
-      .eq('veiculo_id', veiculoId);
-
-    const total = (despesas || []).reduce((acc, d) => acc + (Number(d.valor_total) || 0), 0);
-
-    await supabase
-      .from(TABLE)
-      .update({ valor_custo_servicos: total, updated_at: new Date().toISOString() })
-      .eq('id', veiculoId);
+  async updateExpense(id: string, payload: Partial<IVeiculoDespesa>): Promise<void> {
+    // Delega ao EstVeiculosDespesasService que usa a RPC salvar_despesa_veiculo
+    // Garante consistência: save(), delete() e agora update() todos passam pela mesma RPC
+    await EstVeiculosDespesasService.save({ ...payload, id });
   },
 
   async delete(id: string): Promise<boolean> {
     const { error } = await supabase.from(TABLE).delete().eq('id', id);
     if (error) throw error;
     return true;
+  },
+
+  /**
+   * Real-time subscription for stock changes
+   */
+  subscribe(onUpdate: () => void) {
+    return supabase
+      .channel('est_veiculos_changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: TABLE }, () => onUpdate())
+      .subscribe();
   }
 };

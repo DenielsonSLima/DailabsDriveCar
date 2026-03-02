@@ -57,7 +57,7 @@ const VersionForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSubmit
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value.toUpperCase() }));
   };
 
   return (
@@ -66,9 +66,9 @@ const VersionForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSubmit
         <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
           <div className="flex items-center space-x-4">
             <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-200">
-               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-               </svg>
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
             </div>
             <div>
               <h2 className="text-xl font-black text-slate-900 uppercase tracking-tighter leading-none">
@@ -88,14 +88,14 @@ const VersionForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSubmit
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
               <label className="block text-[9px] font-black text-slate-400 uppercase mb-1.5 ml-1 tracking-widest">Nome da Versão Comercial *</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 name="nome"
                 value={formData.nome}
                 onChange={handleChange}
                 required
                 disabled={isSaving}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-3.5 text-sm focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all font-black uppercase disabled:opacity-50"
+                className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 text-sm focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all font-black text-[#111827] uppercase disabled:opacity-50"
                 placeholder="Ex: LTZ, PREMIERE, HIGHLINE..."
               />
             </div>
@@ -104,12 +104,12 @@ const VersionForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSubmit
             <div>
               <label className="block text-[9px] font-black text-slate-400 uppercase mb-1.5 ml-1 tracking-widest">Motorização</label>
               <div className="relative">
-                <select 
+                <select
                   name="motorizacao"
                   value={formData.motorizacao}
                   onChange={handleChange}
                   disabled={isSaving || loadingOptions}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-3.5 text-sm font-bold appearance-none outline-none disabled:opacity-50 cursor-pointer focus:ring-2 focus:ring-indigo-500 transition-all"
+                  className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 text-sm font-bold text-[#111827] appearance-none outline-none disabled:opacity-50 cursor-pointer focus:ring-2 focus:ring-indigo-500 transition-all"
                 >
                   <option value="">Selecione o Motor...</option>
                   {motores.map(m => (
@@ -126,12 +126,12 @@ const VersionForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSubmit
             <div>
               <label className="block text-[9px] font-black text-slate-400 uppercase mb-1.5 ml-1 tracking-widest">Combustível</label>
               <div className="relative">
-                <select 
-                  name="combustivel" 
-                  value={formData.combustivel} 
-                  onChange={handleChange} 
-                  disabled={isSaving || loadingOptions} 
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-3.5 text-sm font-bold appearance-none outline-none disabled:opacity-50 cursor-pointer focus:ring-2 focus:ring-indigo-500 transition-all"
+                <select
+                  name="combustivel"
+                  value={formData.combustivel}
+                  onChange={handleChange}
+                  disabled={isSaving || loadingOptions}
+                  className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 text-sm font-bold text-[#111827] appearance-none outline-none disabled:opacity-50 cursor-pointer focus:ring-2 focus:ring-indigo-500 transition-all"
                 >
                   <option value="">Selecione...</option>
                   {combustiveis.map(c => (
@@ -148,12 +148,12 @@ const VersionForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSubmit
             <div>
               <label className="block text-[9px] font-black text-slate-400 uppercase mb-1.5 ml-1 tracking-widest">Transmissão</label>
               <div className="relative">
-                <select 
-                  name="transmissao" 
-                  value={formData.transmissao} 
-                  onChange={handleChange} 
-                  disabled={isSaving || loadingOptions} 
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-3.5 text-sm font-bold appearance-none outline-none disabled:opacity-50 cursor-pointer focus:ring-2 focus:ring-indigo-500 transition-all"
+                <select
+                  name="transmissao"
+                  value={formData.transmissao}
+                  onChange={handleChange}
+                  disabled={isSaving || loadingOptions}
+                  className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 text-sm font-bold text-[#111827] appearance-none outline-none disabled:opacity-50 cursor-pointer focus:ring-2 focus:ring-indigo-500 transition-all"
                 >
                   <option value="">Selecione...</option>
                   {transmissoes.map(t => (
@@ -169,33 +169,33 @@ const VersionForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSubmit
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-[9px] font-black text-slate-400 uppercase mb-1.5 ml-1 tracking-widest">Ano Fabr.</label>
-                <input type="number" name="ano_fabricacao" value={formData.ano_fabricacao} onChange={handleChange} required disabled={isSaving} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-3.5 text-sm font-bold outline-none focus:ring-2 focus:ring-indigo-500 transition-all" />
+                <input type="number" name="ano_fabricacao" value={formData.ano_fabricacao} onChange={handleChange} required disabled={isSaving} className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 text-sm font-bold text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all" />
               </div>
               <div>
                 <label className="block text-[9px] font-black text-slate-400 uppercase mb-1.5 ml-1 tracking-widest">Ano Mod.</label>
-                <input type="number" name="ano_modelo" value={formData.ano_modelo} onChange={handleChange} required disabled={isSaving} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-3.5 text-sm font-bold outline-none focus:ring-2 focus:ring-indigo-500 transition-all" />
+                <input type="number" name="ano_modelo" value={formData.ano_modelo} onChange={handleChange} required disabled={isSaving} className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 text-sm font-bold text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all" />
               </div>
             </div>
           </div>
 
           <div className="pt-8 flex flex-col-reverse sm:flex-row items-center justify-end gap-3 border-t border-slate-50">
-            <button 
-              type="button" 
-              onClick={onClose} 
+            <button
+              type="button"
+              onClick={onClose}
               disabled={isSaving}
               className="w-full sm:w-auto px-8 py-3.5 text-slate-400 text-[10px] font-black uppercase tracking-widest hover:text-slate-600 transition-all"
             >
               Cancelar
             </button>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={isSaving}
               className="w-full sm:w-auto px-10 py-3.5 bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-indigo-700 shadow-xl shadow-indigo-100 transition-all flex items-center justify-center min-w-[180px] disabled:opacity-50 active:scale-95"
             >
               {isSaving ? (
                 <div className="flex items-center">
-                   <div className="w-3 h-3 border-2 border-white/30 border-t-white animate-spin rounded-full mr-2" />
-                   <span>Processando</span>
+                  <div className="w-3 h-3 border-2 border-white/30 border-t-white animate-spin rounded-full mr-2" />
+                  <span>Processando</span>
                 </div>
               ) : (initialData?.id ? 'Atualizar Dados' : 'Gravar Versão')}
             </button>

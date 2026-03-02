@@ -1,5 +1,5 @@
 import { supabase } from '../../lib/supabase';
-import { ITitulo, ITransacao, ICategoriaFinanceira, IFinanceiroKpis, IExtratoFiltros, IExtratoResponse, IExtratoTotals, IPendencias, IHistoricoFiltros, IHistoricoResponse, IHistoricoTotals, IHistoricoUnificado, OrigemHistorico, StatusHistorico } from './financeiro.types';
+import { ITitulo, ITransacao, ICategoriaFinanceira, IFinanceiroKpis, IExtratoFiltros, IExtratoResponse, IExtratoTotals, IPendencias, IHistoricoFiltros, IHistoricoResponse, IHistoricoTotals, IHistoricoUnificado, OrigemHistorico, StatusHistorico, ILancarDespesaPayload } from './financeiro.types';
 import { IContaBancaria } from '../ajustes/contas-bancarias/contas.types';
 
 export const FinanceiroService = {
@@ -17,56 +17,42 @@ export const FinanceiroService = {
     return data as unknown as ITitulo[];
   },
 
-  async baixarTitulo(titulo: ITitulo, valor: number, contaId: string, formaId: string): Promise<void> {
-    if (valor <= 0) throw new Error('O valor de baixa deve ser maior que zero.');
-    const saldoDevedor = titulo.valor_total - (titulo.valor_pago || 0);
-    if (valor > saldoDevedor + 0.01) throw new Error(`Valor de baixa (${valor.toFixed(2)}) excede o saldo devedor (${saldoDevedor.toFixed(2)}).`);
-    const novoValorPago = (titulo.valor_pago || 0) + valor;
-    const novoStatus = novoValorPago >= titulo.valor_total ? 'PAGO' : 'PARCIAL';
+  async baixarTitulo(titulo: ITitulo, valor: number, contaId: string, formaId: string, desconto = 0, acrescimo = 0, dataPagamento?: string): Promise<void> {
+    const { error } = await supabase.rpc('baixar_titulo', {
+      p_titulo_id: titulo.id,
+      p_valor: valor,
+      p_conta_id: contaId,
+      p_forma_pagamento_id: formaId,
+      p_desconto: desconto,
+      p_acrescimo: acrescimo,
+      p_data_pagamento: dataPagamento || new Date().toISOString().split('T')[0]
+    });
 
-    const { error: errorTitulo } = await supabase
-      .from('fin_titulos')
-      .update({
-        valor_pago: novoValorPago,
-        status: novoStatus,
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', titulo.id);
+    if (error) {
+      console.error('Erro ao baixar título via RPC:', error);
+      throw error;
+    }
+  },
 
-    if (errorTitulo) throw errorTitulo;
+  async lancarDespesa(payload: ILancarDespesaPayload): Promise<void> {
+    const { error } = await supabase.rpc('lancar_despesa_financeira', {
+      p_descricao: payload.descricao,
+      p_valor_total: payload.valor_total,
+      p_categoria_id: payload.categoria_id,
+      p_qtd_parcelas: payload.qtd_parcelas,
+      p_data_vencimento: payload.data_vencimento,
+      p_dias_intervalo: payload.dias_intervalo,
+      p_pago_avista: payload.pago_avista,
+      p_conta_id: payload.conta_id || null,
+      p_forma_pagamento_id: payload.forma_pagamento_id || null,
+      p_natureza: payload.natureza,
+      p_documento_ref: payload.documento_ref || null
+    });
 
-    const { error: errorTransacao } = await supabase
-      .from('fin_transacoes')
-      .insert({
-        titulo_id: titulo.id,
-        conta_origem_id: contaId,
-        valor: valor,
-        data_pagamento: new Date().toISOString(),
-        tipo: titulo.tipo === 'PAGAR' ? 'SAIDA' : 'ENTRADA',
-        forma_pagamento_id: formaId,
-        descricao: `LIQUIDAÇÃO: ${titulo.descricao}`,
-        tipo_transacao: titulo.tipo === 'PAGAR' ? 'PAGAMENTO_TITULO' : 'RECEBIMENTO_TITULO'
-      });
-
-    if (errorTransacao) throw errorTransacao;
-
-    const { data: conta, error: errorConta } = await supabase
-      .from('fin_contas_bancarias')
-      .select('saldo_atual')
-      .eq('id', contaId)
-      .single();
-
-    if (errorConta || !conta) throw new Error('Conta bancária não encontrada para atualização de saldo.');
-
-    const multiplicador = titulo.tipo === 'PAGAR' ? -1 : 1;
-    const novoSaldo = (Number(conta.saldo_atual) || 0) + (valor * multiplicador);
-
-    const { error: errorSaldo } = await supabase
-      .from('fin_contas_bancarias')
-      .update({ saldo_atual: novoSaldo, updated_at: new Date().toISOString() })
-      .eq('id', contaId);
-
-    if (errorSaldo) throw new Error('Erro ao atualizar saldo da conta bancária.');
+    if (error) {
+      console.error('Erro ao lançar despesa via RPC:', error);
+      throw error;
+    }
   },
 
   async getExtrato(filtros: IExtratoFiltros = {}): Promise<IExtratoResponse> {
@@ -133,69 +119,98 @@ export const FinanceiroService = {
     };
   },
 
+  async getExtratoPorConta(contaId: string, dataInicio: string, dataFim: string): Promise<{ saldoAnterior: number, transacoes: ITransacao[], saldoFINAL: number }> {
+    // 1. Get initial balance from the account
+    const { data: conta, error: errC } = await supabase.from('fin_contas_bancarias').select('saldo_inicial').eq('id', contaId).single();
+    if (errC) throw errC;
+    let saldo = Number(conta?.saldo_inicial || 0);
+
+    // 2. Compute the balance from all past transactions before dataInicio
+    const { data: pastTx, error: errP } = await supabase.from('fin_transacoes').select('valor, tipo').eq('conta_origem_id', contaId).lt('data_pagamento', dataInicio)
+    if (errP) throw errP;
+
+    if (pastTx) {
+      saldo += pastTx.filter(t => t.tipo === 'ENTRADA').reduce((acc, t) => acc + Number(t.valor || 0), 0);
+      saldo -= pastTx.filter(t => t.tipo === 'SAIDA').reduce((acc, t) => acc + Number(t.valor || 0), 0);
+    }
+    const saldoAnterior = saldo;
+
+    // 3. Get transactions for the specified period, ordered chronologically
+    const { data: currentTx, error } = await supabase
+      .from('fin_transacoes')
+      .select(`
+        id, valor, data_pagamento, tipo, tipo_transacao, descricao,
+        titulo:fin_titulos(descricao, parceiro:parceiros(nome)),
+        forma_pagamento:cad_formas_pagamento(nome)
+      `)
+      .eq('conta_origem_id', contaId)
+      .gte('data_pagamento', dataInicio)
+      .lte('data_pagamento', dataFim + 'T23:59:59')
+      .order('data_pagamento', { ascending: true })
+      .order('created_at', { ascending: true }); // chronological
+
+    if (error) throw error;
+
+    let saldoFINAL = saldoAnterior;
+    if (currentTx) {
+      saldoFINAL += currentTx.filter(t => t.tipo === 'ENTRADA').reduce((acc, t) => acc + Number(t.valor || 0), 0);
+      saldoFINAL -= currentTx.filter(t => t.tipo === 'SAIDA').reduce((acc, t) => acc + Number(t.valor || 0), 0);
+    }
+
+    return {
+      saldoAnterior,
+      transacoes: (currentTx || []) as unknown as ITransacao[],
+      saldoFINAL
+    };
+  },
+
   async realizarTransferencia(payload: { origem: string, destino: string, valor: number, obs?: string }): Promise<void> {
-    const { data: transf, error: errorTransf } = await supabase
-      .from('fin_transferencias')
-      .insert({
-        conta_origem_id: payload.origem,
-        conta_destino_id: payload.destino,
-        valor: payload.valor,
-        descricao: payload.obs || 'Transferência Interna'
-      })
-      .select()
-      .single();
+    const { error } = await supabase.rpc('salvar_transferencia', {
+      p_id: null,
+      p_origem_id: payload.origem,
+      p_destino_id: payload.destino,
+      p_valor: payload.valor,
+      p_descricao: payload.obs || 'Transferência Interna',
+      p_data: new Date().toISOString().split('T')[0]
+    });
 
-    if (errorTransf) throw errorTransf;
+    if (error) {
+      console.error('Erro ao realizar transferência via RPC:', error);
+      throw error;
+    }
+  },
 
-    await supabase.from('fin_transacoes').insert([
-      {
-        transferencia_id: transf.id,
-        conta_origem_id: payload.origem,
-        valor: payload.valor,
-        tipo: 'SAIDA',
-        data_pagamento: new Date().toISOString(),
-        tipo_transacao: 'TRANSFERENCIA_SAIDA',
-        descricao: `[SAÍDA] ${payload.obs || 'Transferência entre contas'}`
-      },
-      {
-        transferencia_id: transf.id,
-        conta_origem_id: payload.destino,
-        valor: payload.valor,
-        tipo: 'ENTRADA',
-        data_pagamento: new Date().toISOString(),
-        tipo_transacao: 'TRANSFERENCIA_ENTRADA',
-        descricao: `[ENTRADA] ${payload.obs || 'Transferência entre contas'}`
-      }
-    ]);
+  async previewCronograma(params: {
+    valorTotal: number,
+    condicaoId?: string,
+    tipo?: 'COMPRA' | 'VENDA',
+    qtdParcelas?: number,
+    diasPrimeira?: number,
+    diasEntre?: number
+  }): Promise<any[]> {
+    const { data, error } = await supabase.rpc('preview_cronograma', {
+      p_valor_total: params.valorTotal,
+      p_condicao_id: params.condicaoId && !params.condicaoId.startsWith('__auto') ? params.condicaoId : null,
+      p_tipo_condicao: params.tipo || null,
+      p_qtd_parcelas: params.qtdParcelas || null,
+      p_dias_primeira: params.diasPrimeira || null,
+      p_dias_entre: params.diasEntre || null
+    });
+
+    if (error) {
+      console.error('Erro ao gerar prévia de cronograma:', error);
+      throw error;
+    }
+    return data || [];
   },
 
   async getKpis(): Promise<IFinanceiroKpis> {
-    const { data: contas } = await supabase.from('fin_contas_bancarias').select('saldo_atual');
-    const saldoTotal = (contas || []).reduce((acc, c) => acc + (c.saldo_atual || 0), 0);
-
-    const now = new Date();
-    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString();
-
-    const { data: pagar } = await supabase.from('fin_titulos')
-      .select('valor_total, valor_pago')
-      .eq('tipo', 'PAGAR').neq('status', 'CANCELADO')
-      .gte('data_vencimento', firstDay).lte('data_vencimento', lastDay);
-
-    const { data: receber } = await supabase.from('fin_titulos')
-      .select('valor_total, valor_pago')
-      .eq('tipo', 'RECEBER').neq('status', 'CANCELADO')
-      .gte('data_vencimento', firstDay).lte('data_vencimento', lastDay);
-
-    const totalPagar = (pagar || []).reduce((acc, t) => acc + (t.valor_total - t.valor_pago), 0);
-    const totalReceber = (receber || []).reduce((acc, t) => acc + (t.valor_total - t.valor_pago), 0);
-
-    return {
-      saldo_total: saldoTotal,
-      pagar_mes: totalPagar,
-      receber_mes: totalReceber,
-      balanco_projetado: saldoTotal + totalReceber - totalPagar
-    };
+    const { data, error } = await supabase.rpc('get_financeiro_kpis');
+    if (error) {
+      console.error('Erro ao buscar KPIs via RPC:', error);
+      throw error;
+    }
+    return data as IFinanceiroKpis;
   },
 
   async getCategorias(): Promise<ICategoriaFinanceira[]> {
@@ -215,36 +230,23 @@ export const FinanceiroService = {
   },
 
   async getPendencias(): Promise<IPendencias> {
-    const hoje = new Date().toISOString().split('T')[0];
+    const { data, error } = await supabase.rpc('get_financeiro_pendencias');
+    if (error) {
+      console.error('Erro ao buscar pendências via RPC:', error);
+      throw error;
+    }
+    return data as IPendencias;
+  },
 
-    // Atrasados (Pagar)
-    const { data: atrasados } = await supabase
+  async getTitulosByPedidoId(pedidoId: string, tipo: 'COMPRA' | 'VENDA' = 'COMPRA'): Promise<ITitulo[]> {
+    const coluna = tipo === 'VENDA' ? 'venda_pedido_id' : 'pedido_id';
+    const { data, error } = await supabase
       .from('fin_titulos')
-      .select('valor_total, valor_pago')
-      .eq('tipo', 'PAGAR')
-      .lt('data_vencimento', hoje)
-      .neq('status', 'PAGO')
-      .neq('status', 'CANCELADO');
+      .select('*')
+      .eq(coluna, pedidoId);
 
-    // Vencendo Hoje (Pagar)
-    const { data: hojePagar } = await supabase
-      .from('fin_titulos')
-      .select('valor_total, valor_pago')
-      .eq('tipo', 'PAGAR')
-      .eq('data_vencimento', hoje)
-      .neq('status', 'PAGO')
-      .neq('status', 'CANCELADO');
-
-    const totalAtrasado = (atrasados || []).reduce((acc, t) => acc + (t.valor_total - (t.valor_pago || 0)), 0);
-    const countAtrasado = (atrasados || []).length;
-
-    const totalHoje = (hojePagar || []).reduce((acc, t) => acc + (t.valor_total - (t.valor_pago || 0)), 0);
-    const countHoje = (hojePagar || []).length;
-
-    return {
-      atrasado: { total: totalAtrasado, count: countAtrasado },
-      hoje: { total: totalHoje, count: countHoje }
-    };
+    if (error) throw error;
+    return (data || []) as ITitulo[];
   },
 
   // ─── HISTÓRICO GERAL UNIFICADO ─────────────────────────────────────
@@ -262,7 +264,7 @@ export const FinanceiroService = {
         id, valor, data_pagamento, tipo, tipo_transacao, descricao,
         titulo:fin_titulos(id, descricao, pedido_id, tipo, parcela_numero, parcela_total,
           parceiro:parceiros(nome)),
-        conta_origem:fin_contas_bancarias(banco_nome, conta),
+        conta:fin_contas_bancarias(banco_nome),
         forma_pagamento:cad_formas_pagamento(nome)
       `);
 
@@ -284,7 +286,8 @@ export const FinanceiroService = {
         pedido_id, despesa_veiculo_id,
         parceiro:parceiros(nome),
         categoria:fin_categorias(nome, natureza),
-        forma_pagamento:cad_formas_pagamento(nome)
+        forma_pagamento:cad_formas_pagamento(nome),
+        conta_prevista:fin_contas_bancarias(banco_nome)
       `)
       .in('status', ['PENDENTE', 'PARCIAL', 'ATRASADO']);
 
@@ -336,7 +339,7 @@ export const FinanceiroService = {
         status: 'REALIZADO' as StatusHistorico,
         origem: mapOrigemTx(t),
         parceiro_nome: t.titulo?.parceiro?.nome,
-        conta_nome: t.conta_origem?.banco_nome,
+        conta_nome: t.conta?.banco_nome,
         forma_pagamento: t.forma_pagamento?.nome,
         parcela_info: t.titulo?.parcela_numero ? `${t.titulo.parcela_numero}/${t.titulo.parcela_total}` : undefined,
         pedido_ref: pedidoInfo?.ref,
@@ -372,6 +375,7 @@ export const FinanceiroService = {
         status: statusMap[t.status] || 'PENDENTE',
         origem: origemTit(),
         parceiro_nome: t.parceiro?.nome,
+        conta_nome: t.conta_prevista?.banco_nome,
         forma_pagamento: t.forma_pagamento?.nome,
         parcela_info: t.parcela_numero ? `${t.parcela_numero}/${t.parcela_total}` : undefined,
         pedido_ref: pedidoInfo?.ref,
@@ -467,13 +471,19 @@ export const FinanceiroService = {
     };
   },
 
-  subscribe(onUpdate: () => void) {
+  // ─── REALTIME SURGICAL (Seção 5.2) ──────────────────────────────────
+
+  subscribeToTable(table: 'fin_titulos' | 'fin_transacoes' | 'fin_transferencias' | 'fin_retiradas', onUpdate: () => void) {
     return supabase
-      .channel('financeiro_global_sync')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'fin_titulos' }, () => onUpdate())
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'fin_transacoes' }, () => onUpdate())
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'fin_transferencias' }, () => onUpdate())
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'fin_retiradas' }, () => onUpdate())
+      .channel(`financeiro_${table}_sync`)
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: table
+      }, () => {
+        console.log(`[Realtime] Update detected on ${table}`);
+        onUpdate();
+      })
       .subscribe();
   }
 };

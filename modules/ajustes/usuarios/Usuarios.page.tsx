@@ -16,6 +16,15 @@ const UsuariosPage: React.FC = () => {
 
   useEffect(() => {
     loadUsuarios();
+
+    // Inicia subscrição Realtime no Supabase para a tabela profiles
+    const channel = UsuariosService.subscribeToChanges(() => {
+      loadUsuarios();
+    });
+
+    return () => {
+      UsuariosService.unsubscribeFromChanges(channel);
+    };
   }, []);
 
   const loadUsuarios = async () => {
@@ -45,7 +54,7 @@ const UsuariosPage: React.FC = () => {
   const handleSubmit = async (data: Partial<IUsuario>) => {
     try {
       await UsuariosService.save(data);
-      await loadUsuarios();
+      // loadUsuarios is now triggered by realtime
       setIsFormOpen(false);
       setEditingUser(null);
     } catch (err: any) {
@@ -57,10 +66,18 @@ const UsuariosPage: React.FC = () => {
     if (confirm('Deseja realmente remover este acesso?')) {
       try {
         await UsuariosService.delete(id);
-        await loadUsuarios();
+        // loadUsuarios is now triggered by realtime
       } catch (err: any) {
-        alert("Erro ao excluir: " + err.message);
+        alert(err.message);
       }
+    }
+  };
+
+  const handleToggleStatus = async (id: string, currentStatus: boolean) => {
+    try {
+      await UsuariosService.toggleStatus(id, currentStatus);
+    } catch (err: any) {
+      alert(`Erro ao alterar status: ${err.message}`);
     }
   };
 
@@ -68,7 +85,7 @@ const UsuariosPage: React.FC = () => {
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-start space-x-4">
-          <button 
+          <button
             onClick={() => navigate('/ajustes')}
             className="mt-1 p-2 bg-white border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-all shadow-sm group"
           >
@@ -83,17 +100,6 @@ const UsuariosPage: React.FC = () => {
         </div>
 
         <div className="flex items-center space-x-3">
-          <button
-            onClick={loadUsuarios}
-            disabled={loading}
-            className="p-3 bg-white border border-slate-200 rounded-2xl text-slate-400 hover:text-indigo-600 transition-all disabled:opacity-50"
-            title="Recarregar"
-          >
-            <svg className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
-          </button>
-
           {!isFormOpen && (
             <button
               onClick={handleOpenAdd}
@@ -110,10 +116,10 @@ const UsuariosPage: React.FC = () => {
 
       <div className="max-w-6xl">
         {isFormOpen ? (
-          <FormUsuario 
-            initialData={editingUser} 
-            onSubmit={handleSubmit} 
-            onCancel={() => setIsFormOpen(false)} 
+          <FormUsuario
+            initialData={editingUser}
+            onSubmit={handleSubmit}
+            onCancel={() => setIsFormOpen(false)}
           />
         ) : (
           <div className="space-y-6">
@@ -147,15 +153,21 @@ const UsuariosPage: React.FC = () => {
 
             {loading ? (
               <div className="bg-white rounded-3xl border border-slate-200 p-20 flex flex-col items-center justify-center space-y-4">
-                 <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-                 <p className="text-slate-400 font-bold uppercase text-[10px] tracking-widest">Aguardando Supabase...</p>
+                <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+                <p className="text-slate-400 font-bold uppercase text-[10px] tracking-widest">Aguardando Supabase...</p>
               </div>
             ) : !errorStatus && (
-              <ListUsuarios 
-                usuarios={usuarios} 
-                onEdit={handleEdit} 
-                onDelete={handleDelete} 
-                onToggleStatus={() => {}} 
+              <ListUsuarios
+                usuarios={usuarios}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onToggleStatus={(id) => {
+                  const user = usuarios.find(u => u.id === id);
+                  if (user) {
+                    // Impede o usuário de desativar a si mesmo se necessário (opcional)
+                    handleToggleStatus(id, user.ativo ?? true);
+                  }
+                }}
               />
             )}
           </div>

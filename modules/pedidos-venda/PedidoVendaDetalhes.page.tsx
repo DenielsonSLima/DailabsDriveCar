@@ -4,7 +4,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { PedidosVendaService } from './pedidos-venda.service';
 import { IPedidoVenda, IVendaPagamento } from './pedidos-venda.types';
 import { EstoqueService } from '../estoque/estoque.service';
-import { supabase } from '../../lib/supabase';
 import ConfirmModal from '../../components/ConfirmModal';
 
 // Componentes Reestruturados (Ordem Linear)
@@ -27,6 +26,7 @@ const PedidoVendaDetalhesPage: React.FC = () => {
 
   const [showConfirm, setShowConfirm] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
+  const [showCancel, setShowCancel] = useState(false);
   const [unlinkVehicleId, setUnlinkVehicleId] = useState<string | null>(null);
   const [toast, setToast] = useState<{ type: 'success' | 'error', message: string } | null>(null);
 
@@ -56,10 +56,10 @@ const PedidoVendaDetalhesPage: React.FC = () => {
           data.veiculo?.pedido_compra?.forma_pagamento?.nome?.toLowerCase().includes('consignacao');
 
         if (isConsignado) {
-          // Busca o ID da forma de pagamento Consignação
-          const { data: fpConsig } = await supabase.from('cad_formas_pagamento').select('id').ilike('nome', '%CONSIGNAC%').single();
-          if (fpConsig) {
-            await PedidosVendaService.save({ id: data.id, forma_pagamento_id: fpConsig.id });
+          // Busca o ID da forma de pagamento Consignação via Service
+          const fpConsigId = await PedidosVendaService.getConsignacaoFormaPagamento();
+          if (fpConsigId) {
+            await PedidosVendaService.save({ id: data.id, forma_pagamento_id: fpConsigId });
             loadData(true);
           }
         }
@@ -83,6 +83,10 @@ const PedidoVendaDetalhesPage: React.FC = () => {
   const hasVeiculoVinculado = !!pedido?.veiculo_id || !!veiculoEfetivo?.id;
   const valorVendaEfetivo = valorVenda > 0 ? valorVenda : (veiculoEfetivo?.valor_venda || 0);
 
+  const isConsignado = pedido?.is_consignado || false;
+  const valorCustoEfetivo = (veiculoEfetivo?.valor_custo || 0) + (veiculoEfetivo?.valor_custo_servicos || 0);
+  const valorFinanceiroEfetivo = isConsignado ? Math.max(0, valorVendaEfetivo - valorCustoEfetivo) : valorVendaEfetivo;
+
   // Permitir confirmar se houver dados mínimos para faturamento
   // A composição de recebimentos pode ser estruturada no fluxo de confirmação.
   const isFinanceiroOK = hasVeiculoVinculado && valorVendaEfetivo > 0 && !!pedido?.forma_pagamento_id;
@@ -94,10 +98,20 @@ const PedidoVendaDetalhesPage: React.FC = () => {
 
   const handleLinkVehicle = async (vId: string) => {
     if (!pedido) return;
+
+    const veiculoSelecionado = (veiculosDisponiveis as any[]).find(v => v.id === vId);
+    const isVeiculoConsignado = veiculoSelecionado?.pedido_compra?.forma_pagamento?.nome?.toLowerCase().includes('consigna') || false;
+
+    // VERIFICAÇÃO DE CONSIGNAÇÃO NO VÍNCULO
+    const isPedidoConsignacao = pedido.forma_pagamento?.nome?.toLowerCase().includes('consigna');
+    if (isPedidoConsignacao && !isVeiculoConsignado) {
+      showNotification('error', 'Este pedido está configurado como venda em Consignação. Selecione um veículo consignado.');
+      return;
+    }
+
     setActionLoading(true);
     try {
-      const veiculoSelecionado = (veiculosDisponiveis as any[]).find(v => v.id === vId);
-      const updates: any = { id: pedido.id, veiculo_id: vId };
+      const updates: any = { id: pedido.id, veiculo_id: vId, is_consignado: isVeiculoConsignado };
       if ((pedido.valor_venda || 0) <= 0 && veiculoSelecionado?.valor_venda) {
         updates.valor_venda = veiculoSelecionado.valor_venda;
       }
@@ -160,6 +174,17 @@ const PedidoVendaDetalhesPage: React.FC = () => {
       showNotification('error', 'Para faturar, informe veículo, valor de venda e forma de recebimento.');
       return;
     }
+
+    // VERIFICAÇÃO DUPLA DE CONSIGNAÇÃO ANTES DE FATURAR
+    const isPedidoConsignacao = pedido.forma_pagamento?.nome?.toLowerCase().includes('consigna');
+    const isVeiculoConsignado = pedido.is_consignado;
+
+    if (isPedidoConsignacao && !isVeiculoConsignado) {
+      showNotification('error', 'Não é possível faturar uma venda em Consignação com um veículo de estoque próprio.');
+      setShowConfirm(false);
+      return;
+    }
+
     setActionLoading(true);
     try {
       const veiculoIdEfetivo = pedido.veiculo_id || veiculoEfetivo?.id;
@@ -183,12 +208,8 @@ const PedidoVendaDetalhesPage: React.FC = () => {
       const mesAtual = hoje.getMonth();
       const anoAtual = hoje.getFullYear();
 
-      // Busca os títulos criados para verificar datas
-      const { data: titulos } = await supabase
-        .from('fin_titulos')
-        .select('data_vencimento')
-        .eq('pedido_id', pedido.id);
-
+      // Busca os títulos criados via Service para verificar datas
+      const titulos = await PedidosVendaService.getTitulosByPedidoId(pedido.id);
       const temVencimentoForaDoMes = titulos?.some(t => {
         const d = new Date(t.data_vencimento);
         return d.getMonth() !== mesAtual || d.getFullYear() !== anoAtual;
@@ -204,6 +225,21 @@ const PedidoVendaDetalhesPage: React.FC = () => {
       loadData(true);
     } catch (e: any) {
       showNotification('error', "Erro ao faturar venda: " + e.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleCancelSale = async () => {
+    if (!pedido) return;
+    setActionLoading(true);
+    try {
+      await PedidosVendaService.cancelSale(pedido.id);
+      showNotification('success', 'Venda cancelada com sucesso. Financeiro estornado e veículo liberado.');
+      setShowCancel(false);
+      loadData(true);
+    } catch (e: any) {
+      showNotification('error', "Erro ao cancelar venda: " + e.message);
     } finally {
       setActionLoading(false);
     }
@@ -236,6 +272,7 @@ const PedidoVendaDetalhesPage: React.FC = () => {
         onEdit={() => navigate(`/pedidos-venda/editar/${pedido.id}`)}
         onConfirm={() => setShowConfirm(true)}
         onDelete={() => setShowDelete(true)}
+        onCancel={() => setShowCancel(true)}
         loadingAction={actionLoading}
         canConfirm={isFinanceiroOK}
       />
@@ -257,6 +294,7 @@ const PedidoVendaDetalhesPage: React.FC = () => {
           onLink={handleLinkVehicle}
           onUnlink={handleUnlinkVehicle}
           isConcluido={pedido.status === 'CONCLUIDO'}
+          actionLoading={actionLoading}
         />
       </section>
 
@@ -264,7 +302,7 @@ const PedidoVendaDetalhesPage: React.FC = () => {
       <section>
         <FinancialCard
           pedido={pedido}
-          valorVendaEfetivo={valorVendaEfetivo}
+          valorVendaEfetivo={valorFinanceiroEfetivo}
           onAddPayments={handleAddPayments}
           onDeletePayment={handleDeletePayment}
           isSaving={actionLoading}
@@ -285,7 +323,7 @@ const PedidoVendaDetalhesPage: React.FC = () => {
       {showConfirm && (
         <ModalConfirmacaoVenda
           pedido={pedido}
-          valorVendaEfetivo={valorVendaEfetivo}
+          valorVendaEfetivo={valorFinanceiroEfetivo}
           onClose={() => setShowConfirm(false)}
           onConfirm={handleConfirmSale}
           isLoading={actionLoading}
@@ -300,7 +338,22 @@ const PedidoVendaDetalhesPage: React.FC = () => {
           navigate('/pedidos-venda');
         }}
         title="Excluir Pedido de Venda?"
-        message="Esta ação apagará o rascunho. Veículos vinculados voltarão a ficar disponíveis no estoque."
+        message={pedido.status === 'CONCLUIDO'
+          ? "Esta venda já está faturada. A exclusão removerá o registro permanentemente. Recomenda-se cancelar antes para estornar o financeiro."
+          : "Esta ação apagará o pedido permanentemente. Veículos vinculados voltarão a ficar disponíveis no estoque."}
+        confirmText="Sim, Excluir"
+        isLoading={actionLoading}
+      />
+
+      <ConfirmModal
+        isOpen={showCancel}
+        onClose={() => setShowCancel(false)}
+        onConfirm={handleCancelSale}
+        title="Cancelar Venda Faturada?"
+        message="Ao cancelar, os títulos financeiros (Contas a Receber) não pagos serão excluídos e o veículo voltará para o estoque como disponível. Esta ação não pode ser desfeita."
+        confirmText="Confirmar Cancelamento"
+        cancelText="Voltar"
+        variant="danger"
         isLoading={actionLoading}
       />
 

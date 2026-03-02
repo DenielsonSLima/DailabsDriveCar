@@ -1,6 +1,6 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PedidosCompraService } from './pedidos-compra.service';
 import { IPedidoCompra } from './pedidos-compra.types';
 import { CorretoresService } from '../cadastros/corretores/corretores.service';
@@ -18,13 +18,19 @@ import FormCardNotes from './components/FormCardNotes';
 const PedidoCompraFormPage: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const queryClient = useQueryClient();
 
-  const [loading, setLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
+  // Queries de Catálogos
+  const { data: corretores = [] } = useQuery({ queryKey: ['corretores'], queryFn: () => CorretoresService.getAll() });
+  const { data: formas = [] } = useQuery({ queryKey: ['formas_pagamento'], queryFn: () => FormasPagamentoService.getAll() });
+  const { data: parceiros = [] } = useQuery({ queryKey: ['parceiros_select'], queryFn: () => ParceirosService.getAllForSelect() });
 
-  const [corretores, setCorretores] = useState([]);
-  const [formas, setFormas] = useState([]);
-  const [parceiros, setParceiros] = useState<IParceiro[]>([]);
+  // Query do Pedido (se houver ID)
+  const { data: pedidoOriginal, isLoading: isLoadingPedido } = useQuery({
+    queryKey: ['pedido_compra_detalhes', id],
+    queryFn: () => PedidosCompraService.getById(id!),
+    enabled: !!id
+  });
 
   const [formData, setFormData] = useState<Partial<IPedidoCompra>>({
     status: 'RASCUNHO',
@@ -34,33 +40,29 @@ const PedidoCompraFormPage: React.FC = () => {
     valor_negociado: 0
   });
 
-  // isLocked agora é apenas uma indicação visual de que o pedido já foi finalizado
+  // Sincronizar dados do pedido quando carregado
+  useEffect(() => {
+    if (pedidoOriginal) {
+      setFormData(pedidoOriginal);
+    }
+  }, [pedidoOriginal]);
+
   const isConcluido = !!id && formData.status !== 'RASCUNHO';
 
-  useEffect(() => {
-    async function init() {
-      try {
-        const [c, f, p] = await Promise.all([
-          CorretoresService.getAll(),
-          FormasPagamentoService.getAll(),
-          ParceirosService.getAllForSelect()
-        ]);
-        setCorretores(c);
-        setFormas(f);
-        setParceiros(p);
-
-        if (id) {
-          const ped = await PedidosCompraService.getById(id);
-          if (ped) setFormData(ped);
-        }
-      } catch (err) {
-        console.error("Erro ao inicializar formulário:", err);
-      } finally {
-        setLoading(false);
-      }
+  // Mutation de Salvamento
+  const saveMutation = useMutation({
+    mutationFn: (data: Partial<IPedidoCompra>) => PedidosCompraService.save(data),
+    onSuccess: (result) => {
+      queryClient.invalidateQueries({ queryKey: ['pedidos_compra_list'] });
+      queryClient.invalidateQueries({ queryKey: ['pedidos_compra_stats'] });
+      queryClient.invalidateQueries({ queryKey: ['pedido_compra_detalhes', result.id] });
+      navigate(`/pedidos-compra/${result.id}`);
+    },
+    onError: (err: any) => {
+      alert("Erro ao salvar: " + err.message);
     }
-    init();
-  }, [id]);
+  });
+
 
   const handleUpdate = (updates: Partial<IPedidoCompra>) => {
     setFormData(prev => ({ ...prev, ...updates }));
@@ -110,18 +112,12 @@ const PedidoCompraFormPage: React.FC = () => {
       }
     }
 
-    setIsSaving(true);
-    try {
-      const result = await PedidosCompraService.save(formData);
-      navigate(`/pedidos-compra/${result.id}`);
-    } catch (e: any) {
-      alert("Erro ao salvar: " + e.message);
-    } finally {
-      setIsSaving(false);
-    }
+    saveMutation.mutate(formData);
   };
 
-  if (loading) return (
+  const isLoading = isLoadingPedido && !!id;
+
+  if (isLoading) return (
     <div className="flex flex-col items-center justify-center py-40 animate-pulse">
       <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4"></div>
       <p className="text-slate-400 font-black uppercase text-[10px] tracking-[0.2em]">Sincronizando Módulos...</p>
@@ -132,8 +128,8 @@ const PedidoCompraFormPage: React.FC = () => {
     <div className="max-w-4xl mx-auto space-y-8 pb-32 animate-in fade-in duration-500">
       <FormCardHeader
         id={id}
-        isSaving={isSaving}
-        isLocked={false} // Forçamos false para o cabeçalho sempre mostrar o botão de salvar
+        isSaving={saveMutation.isPending}
+        isLocked={false}
         onBack={() => navigate(-1)}
         onSave={handleSubmit}
       />

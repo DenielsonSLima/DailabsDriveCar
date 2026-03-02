@@ -44,7 +44,7 @@ const GroupForm: React.FC<Props> = ({ tipoAtual, initialData, onClose, onSubmit,
             <input 
               autoFocus
               value={nome}
-              onChange={e => setNome(e.target.value)}
+              onChange={e => setNome(e.target.value.toUpperCase())}
               className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
               placeholder="Ex: Administrativo"
             />

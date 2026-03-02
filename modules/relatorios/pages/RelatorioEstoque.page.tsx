@@ -4,7 +4,7 @@ import RelatoriosQuickPreview from '../components/RelatoriosQuickPreview';
 import EstoqueTemplate from '../templates/estoque/EstoqueTemplate';
 import { EmpresaService } from '../../ajustes/empresa/empresa.service';
 import { MarcaDaguaService } from '../../ajustes/marca-dagua/marca-dagua.service';
-import { supabase } from '../../../lib/supabase';
+import { RelatoriosService } from '../relatorios.service';
 
 const RelatorioEstoquePage: React.FC = () => {
   const navigate = useNavigate();
@@ -23,20 +23,7 @@ const RelatorioEstoquePage: React.FC = () => {
   const handleGerar = async () => {
     setLoading(true);
     try {
-      let query = supabase.from('est_veiculos').select(`
-        id, placa, ano_fabricacao, ano_modelo, cor, valor_custo, valor_custo_servicos, valor_venda, status,
-        montadora:cad_montadoras(nome),
-        modelo:cad_modelos(nome),
-        versao:cad_versoes(nome)
-      `);
-
-      if (statusFiltro === 'DISPONIVEL') {
-        query = query.eq('status', 'DISPONIVEL');
-      }
-      // Se 'TODOS', não aplica filtro de status
-
-      const { data: veiculos, error } = await query.order('created_at', { ascending: false });
-      if (error) throw error;
+      const veiculos = await RelatoriosService.getEstoqueParaRelatorio(statusFiltro);
 
       const items = (veiculos || []).map((v: any) => ({
         placa: v.placa || '—',
@@ -69,7 +56,7 @@ const RelatorioEstoquePage: React.FC = () => {
   return (
     <div className="space-y-8 pb-20 animate-in fade-in duration-500">
       <div className="flex items-center space-x-4">
-        <button 
+        <button
           onClick={() => navigate('/relatorios')}
           className="p-3 bg-white border border-slate-200 rounded-2xl text-slate-500 hover:text-indigo-600 hover:border-indigo-100 transition-all shadow-sm group"
         >
@@ -78,61 +65,61 @@ const RelatorioEstoquePage: React.FC = () => {
           </svg>
         </button>
         <div>
-           <p className="text-[10px] font-black text-blue-500 uppercase tracking-widest">Relatórios / Operacional</p>
-           <h1 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">Posição de Estoque</h1>
+          <p className="text-[10px] font-black text-blue-500 uppercase tracking-widest">Relatórios / Operacional</p>
+          <h1 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">Posição de Estoque</h1>
         </div>
       </div>
 
       <div className="bg-white rounded-[2.5rem] border border-slate-200 p-10 shadow-sm min-h-[500px]">
-         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12 items-end">
-            <div>
-               <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Status</label>
-               <select value={statusFiltro} onChange={e => setStatusFiltro(e.target.value)} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-blue-500 outline-none appearance-none cursor-pointer">
-                  <option value="DISPONIVEL">Apenas Disponíveis</option>
-                  <option value="TODOS">Todos os Veículos</option>
-               </select>
-            </div>
-            <div>
-               <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Categoria</label>
-               <select className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-blue-500 outline-none appearance-none cursor-pointer">
-                  <option value="">Todas</option>
-               </select>
-            </div>
-            <button 
-              onClick={handleGerar}
-              disabled={loading}
-              className="px-6 py-3.5 bg-blue-600 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-blue-100 hover:bg-blue-700 transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
-            >
-               {loading ? (
-                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-               ) : (
-                 <>
-                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
-                   <span>Gerar Inventário</span>
-                 </>
-               )}
-            </button>
-         </div>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12 items-end">
+          <div>
+            <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Status</label>
+            <select value={statusFiltro} onChange={e => setStatusFiltro(e.target.value)} className="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3 text-sm font-bold text-[#111827] focus:ring-2 focus:ring-blue-500 outline-none appearance-none cursor-pointer">
+              <option value="DISPONIVEL">Apenas Disponíveis</option>
+              <option value="TODOS">Todos os Veículos</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Categoria</label>
+            <select className="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3 text-sm font-bold text-[#111827] focus:ring-2 focus:ring-blue-500 outline-none appearance-none cursor-pointer">
+              <option value="">Todas</option>
+            </select>
+          </div>
+          <button
+            onClick={handleGerar}
+            disabled={loading}
+            className="px-6 py-3.5 bg-blue-600 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-blue-100 hover:bg-blue-700 transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
+          >
+            {loading ? (
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            ) : (
+              <>
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+                <span>Gerar Inventário</span>
+              </>
+            )}
+          </button>
+        </div>
 
-         <div className="border-2 border-dashed border-slate-100 rounded-[2rem] py-20 text-center flex flex-col items-center">
-            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 text-slate-200">
-               <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
-            </div>
-            <p className="text-slate-300 font-black uppercase text-xs tracking-[0.2em]">Selecione os parâmetros do estoque para visualização</p>
-         </div>
+        <div className="border-2 border-dashed border-slate-100 rounded-[2rem] py-20 text-center flex flex-col items-center">
+          <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 text-slate-200">
+            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+          </div>
+          <p className="text-slate-300 font-black uppercase text-xs tracking-[0.2em]">Selecione os parâmetros do estoque para visualização</p>
+        </div>
       </div>
 
       {/* QUICK PREVIEW MODAL */}
       {reportData && (
-        <RelatoriosQuickPreview 
-          isOpen={isPreviewOpen} 
-          onClose={() => setIsPreviewOpen(false)} 
+        <RelatoriosQuickPreview
+          isOpen={isPreviewOpen}
+          onClose={() => setIsPreviewOpen(false)}
           title="Pré-visualização do Inventário"
         >
-          <EstoqueTemplate 
-            empresa={empresa} 
-            watermark={watermark} 
-            data={reportData} 
+          <EstoqueTemplate
+            empresa={empresa}
+            watermark={watermark}
+            data={reportData}
           />
         </RelatoriosQuickPreview>
       )}

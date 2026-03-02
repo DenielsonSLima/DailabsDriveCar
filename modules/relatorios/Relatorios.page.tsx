@@ -32,6 +32,7 @@ const RelatoriosPage: React.FC = () => {
       nome: 'Gestão & Auditoria',
       items: [
         { id: 'financeiro', titulo: 'Movimentação Financeira', descricao: 'Fluxo de caixa consolidado, entradas e saídas.', icon: 'M12 8v13m0-13V6a2 2 0 112 2h-2z', color: 'rose', path: '/relatorios/financeiro' },
+        { id: 'extrato-bancario', titulo: 'Extrato Bancário', descricao: 'Histórico de transações linha a linha por conta bancária com saldo progressivo.', icon: 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z', color: 'blue', path: '/relatorios/extrato-bancario' },
         { id: 'auditoria', titulo: 'Logs de Auditoria', descricao: 'Rastreabilidade de alterações críticas no sistema.', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z', color: 'slate', path: '/relatorios/auditoria' },
       ]
     }
@@ -45,8 +46,8 @@ const RelatoriosPage: React.FC = () => {
           <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mt-1">Extração de dados inteligentes para gestão estratégica</p>
         </div>
         <div className="bg-white px-4 py-2 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-2">
-           <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-           <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Base de Dados Conectada</span>
+          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+          <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Base de Dados Conectada</span>
         </div>
       </div>
 
@@ -54,13 +55,13 @@ const RelatoriosPage: React.FC = () => {
         {categorias.map((cat, idx) => (
           <div key={idx} className="space-y-6">
             <div className="flex items-center space-x-4">
-               <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.3em] whitespace-nowrap">{cat.nome}</h3>
-               <div className="h-px w-full bg-slate-100"></div>
+              <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.3em] whitespace-nowrap">{cat.nome}</h3>
+              <div className="h-px w-full bg-slate-100"></div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {cat.items.map((item) => (
-                <div 
+                <div
                   key={item.id}
                   onClick={() => navigate(item.path)}
                   className="group bg-white rounded-[2.5rem] border border-slate-200 p-8 shadow-sm hover:shadow-2xl hover:border-indigo-300 transition-all duration-300 cursor-pointer relative overflow-hidden"
@@ -70,13 +71,13 @@ const RelatoriosPage: React.FC = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" d={item.icon} />
                     </svg>
                   </div>
-                  
+
                   <h4 className="text-lg font-black text-slate-900 uppercase tracking-tighter mb-2 group-hover:text-indigo-600 transition-colors">{item.titulo}</h4>
                   <p className="text-xs text-slate-500 leading-relaxed font-medium">{item.descricao}</p>
-                  
+
                   <div className="mt-8 flex items-center text-indigo-600 text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
-                     Gerar Relatório
-                     <svg className="w-3.5 h-3.5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                    Gerar Relatório
+                    <svg className="w-3.5 h-3.5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                   </div>
 
                   {/* Efeito Visual */}

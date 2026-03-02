@@ -18,8 +18,8 @@ const EstoqueKpis: React.FC<Props> = ({ veiculos }) => {
     return { totalInvestido, totalVenda, qtd, ticketMedio, lucroProjetado };
   }, [veiculos]);
 
-  const formatCurrency = (val: number) => 
-    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
+  const formatCurrency = (val: number) =>
+    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(val);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 animate-in fade-in slide-in-from-top-4 duration-700">
@@ -29,8 +29,8 @@ const EstoqueKpis: React.FC<Props> = ({ veiculos }) => {
           {formatCurrency(stats.totalInvestido)}
         </h3>
         <div className="mt-2 flex items-center space-x-1 relative z-10">
-           <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
-           <span className="text-[10px] text-slate-400 font-bold uppercase">Patrimônio em Pátio</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+          <span className="text-[10px] text-slate-400 font-bold uppercase">Patrimônio em Pátio</span>
         </div>
       </div>
 
@@ -40,8 +40,8 @@ const EstoqueKpis: React.FC<Props> = ({ veiculos }) => {
           {formatCurrency(stats.totalVenda)}
         </h3>
         <div className="mt-2 flex items-center space-x-1 relative z-10">
-           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-           <span className="text-[10px] text-emerald-600 font-bold uppercase">Margem: {formatCurrency(stats.lucroProjetado)}</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          <span className="text-[10px] text-emerald-600 font-bold uppercase">Margem: {formatCurrency(stats.lucroProjetado)}</span>
         </div>
       </div>
 

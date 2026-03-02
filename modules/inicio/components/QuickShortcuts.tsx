@@ -1,41 +1,71 @@
-
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+
+const ShortcutItem = ({ to, label, icon, color, description }: { to: string, label: string, icon: React.ReactNode, color: string, description: string }) => {
+  return (
+    <NavLink
+      to={to}
+      className="group flex items-center gap-5 p-5 bg-white rounded-3xl border border-slate-200/60 shadow-sm hover:shadow-xl hover:border-slate-300 transition-all duration-500"
+    >
+      <div className={`w-14 h-14 rounded-2xl bg-${color}-50 border border-${color}-100 flex items-center justify-center text-${color}-600 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500`}>
+        {icon}
+      </div>
+      <div>
+        <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight group-hover:text-indigo-600 transition-colors">{label}</h4>
+        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">{description}</p>
+      </div>
+      <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity translate-x-2 group-hover:translate-x-0 group-hover:duration-500">
+        <svg className="w-5 h-5 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
+        </svg>
+      </div>
+    </NavLink>
+  );
+};
 
 const QuickShortcuts: React.FC = () => {
-  const navigate = useNavigate();
-
-  const links = [
-    { label: 'Novo Veículo', path: '/estoque/novo', color: 'indigo', icon: 'M12 4v16m8-8H4' },
-    { label: 'Nova Venda', path: '/pedidos-venda/novo', color: 'emerald', icon: 'M12 6v6m0 0v6m0-6h6m-6 0H6' },
-    { label: 'Novo Parceiro', path: '/parceiros/novo', color: 'blue', icon: 'M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z' },
-    { label: 'Financeiro', path: '/financeiro', color: 'rose', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
-  ];
-
   return (
-    <div className="bg-slate-900 p-8 rounded-[2.5rem] shadow-xl relative overflow-hidden h-full">
-      <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/20 rounded-full blur-[80px]"></div>
-
-      <div className="relative z-10">
-        <h3 className="text-white/60 text-xs font-black uppercase tracking-[0.2em] mb-6">Acesso Rápido</h3>
-
-        <div className="grid grid-cols-2 gap-4">
-          {links.map((link, i) => (
-            <button
-              key={i}
-              onClick={() => navigate(link.path)}
-              className="flex flex-col items-center justify-center p-4 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 hover:border-white/20 hover:scale-105 transition-all group aspect-square text-center"
-            >
-              <div className={`w-10 h-10 rounded-xl bg-${link.color}-500/20 text-${link.color}-400 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={link.icon} />
-                </svg>
-              </div>
-              <span className="text-[10px] font-black text-white/90 uppercase tracking-wider leading-tight">{link.label}</span>
-            </button>
-          ))}
-        </div>
+    <div className="flex flex-col gap-6">
+      <div className="px-1 border-l-4 border-amber-500 mb-2">
+        <h3 className="text-lg font-black text-slate-900 tracking-tight uppercase">Fluxo Ágil</h3>
+        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Atalhos para operações frequentes</p>
       </div>
+
+      <ShortcutItem
+        to="/parceiros?action=new"
+        label="Cadastrar Parceiro"
+        description="Novo cliente ou fornecedor"
+        color="indigo"
+        icon={
+          <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+          </svg>
+        }
+      />
+
+      <ShortcutItem
+        to="/pedidos-compra/novo"
+        label="Pedido de Compra"
+        description="Integrar veículo ao pátio"
+        color="emerald"
+        icon={
+          <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+        }
+      />
+
+      <ShortcutItem
+        to="/pedidos-venda/novo"
+        label="Pedido de Venda"
+        description="Registrar saída de veículo"
+        color="amber"
+        icon={
+          <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        }
+      />
     </div>
   );
 };

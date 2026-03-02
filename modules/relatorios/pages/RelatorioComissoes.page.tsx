@@ -4,7 +4,7 @@ import RelatoriosQuickPreview from '../components/RelatoriosQuickPreview';
 import ComissoesTemplate from '../templates/comissoes/ComissoesTemplate';
 import { EmpresaService } from '../../ajustes/empresa/empresa.service';
 import { MarcaDaguaService } from '../../ajustes/marca-dagua/marca-dagua.service';
-import { supabase } from '../../../lib/supabase';
+import { RelatoriosService } from '../relatorios.service';
 
 const RelatorioComissoesPage: React.FC = () => {
   const navigate = useNavigate();
@@ -24,7 +24,7 @@ const RelatorioComissoesPage: React.FC = () => {
   useEffect(() => {
     EmpresaService.getDadosEmpresa().then(setEmpresa);
     MarcaDaguaService.getConfig().then(setWatermark);
-    supabase.from('cad_corretores').select('id, nome').eq('ativo', true).order('nome').then(({ data }) => {
+    RelatoriosService.getVendedoresAtivos().then(data => {
       setCorretores(data || []);
     });
   }, []);
@@ -32,22 +32,11 @@ const RelatorioComissoesPage: React.FC = () => {
   const handleGerar = async () => {
     setLoading(true);
     try {
-      let query = supabase.from('venda_pedidos').select(`
-        id, numero_venda, data_venda, valor_venda, corretor_id,
-        cliente:parceiros(nome),
-        veiculo:est_veiculos(placa, montadora:cad_montadoras(nome), modelo:cad_modelos(nome)),
-        corretor:cad_corretores(nome, comissao_percentual)
-      `).eq('status', 'CONCLUIDO');
-
-      if (dataInicio) query = query.gte('data_venda', dataInicio);
-      if (dataFim) query = query.lte('data_venda', `${dataFim}T23:59:59`);
-      if (corretorId) query = query.eq('corretor_id', corretorId);
-
-      // Filtrar apenas vendas que possuem corretor
-      query = query.not('corretor_id', 'is', null);
-
-      const { data: vendas, error } = await query.order('data_venda', { ascending: false });
-      if (error) throw error;
+      const vendas = await RelatoriosService.getComissoesParaRelatorio({
+        dataInicio,
+        dataFim,
+        corretorId
+      });
 
       const vendasComComissao = (vendas || []).map((v: any) => {
         const percentual = v.corretor?.comissao_percentual || 3;
@@ -98,7 +87,7 @@ const RelatorioComissoesPage: React.FC = () => {
   return (
     <div className="space-y-8 pb-20 animate-in fade-in duration-500">
       <div className="flex items-center space-x-4">
-        <button 
+        <button
           onClick={() => navigate('/relatorios')}
           className="p-3 bg-white border border-slate-200 rounded-2xl text-slate-500 hover:text-indigo-600 hover:border-indigo-100 transition-all shadow-sm group"
         >
@@ -107,63 +96,63 @@ const RelatorioComissoesPage: React.FC = () => {
           </svg>
         </button>
         <div>
-           <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest">Relatórios / Comercial</p>
-           <h1 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">Relatório de Comissões</h1>
+          <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest">Relatórios / Comercial</p>
+          <h1 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">Relatório de Comissões</h1>
         </div>
       </div>
 
       <div className="bg-white rounded-[2.5rem] border border-slate-200 p-10 shadow-sm min-h-[500px]">
-         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12 items-end">
-            <div className="md:col-span-2">
-               <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Período</label>
-               <div className="flex items-center space-x-2 bg-slate-50 p-1 rounded-2xl border border-slate-100">
-                  <input type="date" value={dataInicio} onChange={e => setDataInicio(e.target.value)} className="flex-1 bg-transparent border-none px-4 py-2 text-sm font-bold focus:ring-0 outline-none" />
-                  <span className="text-slate-300 font-black text-[9px] uppercase">até</span>
-                  <input type="date" value={dataFim} onChange={e => setDataFim(e.target.value)} className="flex-1 bg-transparent border-none px-4 py-2 text-sm font-bold focus:ring-0 outline-none" />
-               </div>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12 items-end">
+          <div className="md:col-span-2">
+            <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Período</label>
+            <div className="flex items-center space-x-2 bg-white p-1 rounded-2xl border border-slate-100">
+              <input type="date" value={dataInicio} onChange={e => setDataInicio(e.target.value)} className="flex-1 bg-white border-none px-4 py-2 text-sm font-bold focus:ring-0 outline-none" />
+              <span className="text-slate-300 font-black text-[9px] uppercase">até</span>
+              <input type="date" value={dataFim} onChange={e => setDataFim(e.target.value)} className="flex-1 bg-white border-none px-4 py-2 text-sm font-bold focus:ring-0 outline-none" />
             </div>
-            <div>
-               <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Corretor</label>
-               <select value={corretorId} onChange={e => setCorretorId(e.target.value)} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-indigo-500 outline-none appearance-none cursor-pointer">
-                  <option value="">Todos</option>
-                  {corretores.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
-               </select>
-            </div>
-            <button 
-              onClick={handleGerar}
-              disabled={loading}
-              className="px-6 py-3.5 bg-indigo-600 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-indigo-100 hover:bg-indigo-700 transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
-            >
-               {loading ? (
-                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-               ) : (
-                 <>
-                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                   <span>Gerar Relatório</span>
-                 </>
-               )}
-            </button>
-         </div>
+          </div>
+          <div>
+            <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Corretor</label>
+            <select value={corretorId} onChange={e => setCorretorId(e.target.value)} className="w-full bg-white border border-slate-100 rounded-2xl px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-indigo-500 outline-none appearance-none cursor-pointer">
+              <option value="">Todos</option>
+              {corretores.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
+            </select>
+          </div>
+          <button
+            onClick={handleGerar}
+            disabled={loading}
+            className="px-6 py-3.5 bg-indigo-600 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-indigo-100 hover:bg-indigo-700 transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
+          >
+            {loading ? (
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            ) : (
+              <>
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <span>Gerar Relatório</span>
+              </>
+            )}
+          </button>
+        </div>
 
-         <div className="border-2 border-dashed border-slate-100 rounded-[2rem] py-20 text-center flex flex-col items-center">
-            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 text-slate-200">
-               <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            </div>
-            <p className="text-slate-300 font-black uppercase text-xs tracking-[0.2em]">Selecione período e corretor para calcular comissões</p>
-         </div>
+        <div className="border-2 border-dashed border-slate-100 rounded-[2rem] py-20 text-center flex flex-col items-center">
+          <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 text-slate-200">
+            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          </div>
+          <p className="text-slate-300 font-black uppercase text-xs tracking-[0.2em]">Selecione período e corretor para calcular comissões</p>
+        </div>
       </div>
 
       {/* QUICK PREVIEW MODAL */}
       {reportData && (
-        <RelatoriosQuickPreview 
-          isOpen={isPreviewOpen} 
-          onClose={() => setIsPreviewOpen(false)} 
+        <RelatoriosQuickPreview
+          isOpen={isPreviewOpen}
+          onClose={() => setIsPreviewOpen(false)}
           title="Pré-visualização — Comissões"
         >
-          <ComissoesTemplate 
-            empresa={empresa} 
-            watermark={watermark} 
-            data={reportData} 
+          <ComissoesTemplate
+            empresa={empresa}
+            watermark={watermark}
+            data={reportData}
           />
         </RelatoriosQuickPreview>
       )}

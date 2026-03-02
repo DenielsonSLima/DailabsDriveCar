@@ -28,6 +28,7 @@ const ContaForm: React.FC<Props> = ({ initialData, onClose, onSubmit }) => {
     conta: '',
     tipo: 'CORRENTE',
     cor_cartao: '#1e293b',
+    permite_negativo: true,
     ativo: true,
     ...initialData
   });
@@ -61,7 +62,7 @@ const ContaForm: React.FC<Props> = ({ initialData, onClose, onSubmit }) => {
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
       <div className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col max-h-[90vh]">
-        
+
         {/* Header */}
         <div className="p-8 border-b border-slate-100 flex items-center justify-between">
           <div>
@@ -70,28 +71,39 @@ const ContaForm: React.FC<Props> = ({ initialData, onClose, onSubmit }) => {
             </h2>
             <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1">Dados Bancários</p>
           </div>
-          
-          <div className="flex items-center space-x-4">
-             {/* Switch Ativo */}
-             <label className="flex items-center space-x-2 cursor-pointer bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100">
-                <span className={`text-[10px] font-black uppercase tracking-widest ${formData.ativo ? 'text-emerald-600' : 'text-slate-400'}`}>
-                  {formData.ativo ? 'Ativa' : 'Inativa'}
-                </span>
-                <div className="relative">
-                  <input type="checkbox" name="ativo" checked={formData.ativo} onChange={handleChange} className="sr-only peer" />
-                  <div className="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
-                </div>
-             </label>
 
-             <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full text-slate-400 transition-colors">
-               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-             </button>
+          <div className="flex items-center space-x-4">
+            {/* Switch Sugestão: Permite Negativo */}
+            <label className="flex items-center space-x-2 cursor-pointer bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100">
+              <span className={`text-[10px] font-black uppercase tracking-widest ${formData.permite_negativo ? 'text-indigo-600' : 'text-slate-400'}`}>
+                {formData.permite_negativo ? 'Negativo OK' : 'Bloquear Negativo'}
+              </span>
+              <div className="relative">
+                <input type="checkbox" name="permite_negativo" checked={formData.permite_negativo} onChange={handleChange} className="sr-only peer" />
+                <div className="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-500"></div>
+              </div>
+            </label>
+
+            {/* Switch Ativo */}
+            <label className="flex items-center space-x-2 cursor-pointer bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100">
+              <span className={`text-[10px] font-black uppercase tracking-widest ${formData.ativo ? 'text-emerald-600' : 'text-slate-400'}`}>
+                {formData.ativo ? 'Ativa' : 'Inativa'}
+              </span>
+              <div className="relative">
+                <input type="checkbox" name="ativo" checked={formData.ativo} onChange={handleChange} className="sr-only peer" />
+                <div className="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+              </div>
+            </label>
+
+            <button type="button" onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full text-slate-400 transition-colors">
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
           </div>
         </div>
 
         <div className="flex-1 overflow-y-auto">
           <form onSubmit={handleSubmit} className="p-8 space-y-8">
-            
+
             {/* 1. Instituição */}
             <div>
               <label className="block text-[10px] font-black text-slate-400 uppercase mb-3 tracking-widest ml-1">1. Selecione a Instituição *</label>
@@ -101,18 +113,17 @@ const ContaForm: React.FC<Props> = ({ initialData, onClose, onSubmit }) => {
                     key={b.codigo}
                     type="button"
                     onClick={() => handleBancoSelect(b)}
-                    className={`flex items-center p-3 rounded-xl border transition-all ${
-                      formData.banco_codigo === b.codigo 
-                        ? 'bg-slate-900 border-slate-900 text-white shadow-lg scale-[1.02]' 
-                        : 'bg-white border-slate-200 text-slate-600 hover:border-indigo-300'
-                    }`}
+                    className={`flex items-center p-3 rounded-xl border transition-all ${formData.banco_codigo === b.codigo
+                      ? 'bg-slate-900 border-slate-900 text-white shadow-lg scale-[1.02]'
+                      : 'bg-white border-slate-200 text-slate-600 hover:border-indigo-300'
+                      }`}
                   >
                     <div className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: b.cor }}></div>
                     <span className="text-xs font-bold truncate">{b.nome}</span>
                   </button>
                 ))}
               </div>
-              <input 
+              <input
                 name="banco_nome"
                 value={formData.banco_nome}
                 onChange={handleChange}
@@ -125,7 +136,7 @@ const ContaForm: React.FC<Props> = ({ initialData, onClose, onSubmit }) => {
             {/* 2. Titular */}
             <div>
               <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">2. Titular da Conta *</label>
-              <input 
+              <input
                 name="titular"
                 value={formData.titular}
                 onChange={handleChange}
@@ -139,7 +150,7 @@ const ContaForm: React.FC<Props> = ({ initialData, onClose, onSubmit }) => {
             <div className="grid grid-cols-2 gap-6">
               <div>
                 <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">3. Agência (Opcional)</label>
-                <input 
+                <input
                   name="agencia"
                   value={formData.agencia}
                   onChange={handleChange}
@@ -149,7 +160,7 @@ const ContaForm: React.FC<Props> = ({ initialData, onClose, onSubmit }) => {
               </div>
               <div>
                 <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">4. Conta (Opcional)</label>
-                <input 
+                <input
                   name="conta"
                   value={formData.conta}
                   onChange={handleChange}
@@ -162,13 +173,13 @@ const ContaForm: React.FC<Props> = ({ initialData, onClose, onSubmit }) => {
             {/* Pré-visualização do Cartão */}
             <div className="pt-4">
               <label className="block text-[10px] font-black text-slate-400 uppercase mb-3 tracking-widest ml-1">Pré-visualização</label>
-              <div 
+              <div
                 className={`relative w-full aspect-[1.586/1] max-w-[320px] mx-auto rounded-2xl shadow-xl overflow-hidden p-6 text-white flex flex-col justify-between transition-all ${!formData.ativo ? 'grayscale opacity-75' : ''}`}
                 style={{ background: `linear-gradient(135deg, ${formData.cor_cartao} 0%, ${formData.cor_cartao}dd 100%)` }}
               >
                 {/* Texture Overlay */}
                 <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
-                
+
                 <div className="relative z-10 flex justify-between items-start">
                   <span className="font-bold uppercase tracking-wider text-sm">{formData.banco_nome || 'BANCO'}</span>
                   <div className="w-8 h-5 bg-yellow-200/80 rounded-md"></div> {/* Fake Chip */}
@@ -197,8 +208,8 @@ const ContaForm: React.FC<Props> = ({ initialData, onClose, onSubmit }) => {
 
         <div className="p-6 border-t border-slate-100 flex justify-end space-x-3 bg-white">
           <button type="button" onClick={onClose} className="px-6 py-3 text-slate-500 font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 rounded-xl transition-all">Cancelar</button>
-          <button 
-            onClick={handleSubmit} 
+          <button
+            onClick={handleSubmit}
             className="px-8 py-3 bg-indigo-600 text-white rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg hover:bg-indigo-700 transition-all active:scale-95"
           >
             Salvar Conta

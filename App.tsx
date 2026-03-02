@@ -45,6 +45,7 @@ import RelatorioFinanceiroPage from './modules/relatorios/pages/RelatorioFinance
 import RelatorioAuditoriaPage from './modules/relatorios/pages/RelatorioAuditoria.page.tsx';
 import RelatorioComissoesPage from './modules/relatorios/pages/RelatorioComissoes.page.tsx';
 import RelatorioServicosPage from './modules/relatorios/pages/RelatorioServicos.page.tsx';
+import RelatorioExtratoBancarioPage from './modules/relatorios/pages/RelatorioExtratoBancario.page.tsx';
 
 // Submódulos Cadastros
 import CidadesPage from './modules/cadastros/cidades/Cidades.page.tsx';
@@ -75,28 +76,78 @@ import ApiResetPage from './modules/ajustes/api-reset/ApiReset.page.tsx';
 import ContasBancariasPage from './modules/ajustes/contas-bancarias/ContasBancarias.page.tsx';
 import SaldoInicialPage from './modules/ajustes/saldo-inicial/SaldoInicial.page.tsx';
 
+import { useAuthStore } from './store/auth.store.ts';
+
 const App: React.FC = () => {
-  const [session, setSession] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const { session, profile, loading, setSession, setProfile, setLoading } = useAuthStore();
+
+  const loadProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+
+      if (!error && data) {
+        if (data.ativo === false) {
+          await AuthService.signOut();
+          alert("Sua conta foi desativada pelo administrador.");
+          window.location.href = '/login';
+          return;
+        }
+        setProfile(data);
+      }
+    } catch (err) {
+      console.error('Error fetching profile:', err);
+    }
+  };
 
   useEffect(() => {
     // Busca sessão inicial
     AuthService.getSession().then(s => {
       setSession(s);
-      setLoading(false);
+      if (s?.user) loadProfile(s.user.id);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, currentSession) => {
       if (event === 'SIGNED_OUT') {
         setSession(null);
+        setProfile(null);
       } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
         setSession(currentSession);
+        if (currentSession?.user) loadProfile(currentSession.user.id);
       }
       setLoading(false);
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [setSession, setProfile, setLoading]);
+
+  // Monitoramento de inatividade (30 minutos = 1.800.000 ms)
+  useEffect(() => {
+    if (!session) return;
+
+    let timeoutId: NodeJS.Timeout;
+
+    const resetTimer = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        AuthService.signOut().then(() => {
+          alert('Sua sessão expirou por inatividade. Por favor, faça login novamente.');
+        }).catch(console.error);
+      }, 30 * 60 * 1000); // 30 minutos
+    };
+
+    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+    events.forEach(e => document.addEventListener(e, resetTimer));
+    resetTimer();
+
+    return () => {
+      clearTimeout(timeoutId);
+      events.forEach(e => document.removeEventListener(e, resetTimer));
+    };
+  }, [session]);
 
   // Se estiver carregando, mostramos um loader apenas para rotas internas (via hash)
   const isPublicRoute = window.location.pathname === '/' || window.location.pathname.startsWith('/veiculo/') || window.location.pathname.startsWith('/estoque-publico');
@@ -181,6 +232,7 @@ const App: React.FC = () => {
                 <Route path="/relatorios/auditoria" element={<RelatorioAuditoriaPage />} />
                 <Route path="/relatorios/comissoes" element={<RelatorioComissoesPage />} />
                 <Route path="/relatorios/servicos" element={<RelatorioServicosPage />} />
+                <Route path="/relatorios/extrato-bancario" element={<RelatorioExtratoBancarioPage />} />
 
                 <Route path="/editor-site" element={<EditorSitePage />} />
 

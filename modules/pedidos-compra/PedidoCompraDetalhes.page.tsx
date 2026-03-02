@@ -1,5 +1,7 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PedidosCompraService } from './pedidos-compra.service';
 import { IPedidoCompra, IPedidoPagamento } from './pedidos-compra.types';
 import { EmpresaService } from '../ajustes/empresa/empresa.service';
@@ -26,13 +28,7 @@ import QuickPreviewModal from './components/details/QuickPreviewModal';
 const PedidoCompraDetalhesPage: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [pedido, setPedido] = useState<IPedidoCompra | null>(null);
-  const [empresa, setEmpresa] = useState<any>(null);
-  const [watermark, setWatermark] = useState<any>(null);
-  const [allCaracteristicas, setAllCaracteristicas] = useState<any[]>([]);
-  const [allOpcionais, setAllOpcionais] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [actionLoading, setActionLoading] = useState(false);
+  const queryClient = useQueryClient();
 
   // Controle de Preview e Toast
   const [previewType, setPreviewType] = useState<'supplier' | 'internal' | null>(null);
@@ -40,146 +36,127 @@ const PedidoCompraDetalhesPage: React.FC = () => {
 
   const [showConfirm, setShowConfirm] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
+  const [showReopen, setShowReopen] = useState(false);
   const [unlinkTargetId, setUnlinkTargetId] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadData();
-    const sub = PedidosCompraService.subscribe(() => loadData(true));
-    return () => { sub.unsubscribe(); };
-  }, [id]);
+  // Queries
+  const { data: pedido, isLoading: isLoadingPedido } = useQuery({
+    queryKey: ['pedido_compra_detalhes', id],
+    queryFn: () => PedidosCompraService.getById(id!),
+    enabled: !!id
+  });
 
-  async function loadData(silent = false) {
-    if (!id) return;
-    if (!silent) setLoading(true);
-    try {
-      const [pData, eData, wData, carData, opData] = await Promise.all([
-        PedidosCompraService.getById(id),
-        EmpresaService.getDadosEmpresa(),
-        MarcaDaguaService.getConfig(),
-        CaracteristicasService.getAll(),
-        OpcionaisService.getAll()
-      ]);
-      setPedido(pData);
-      setEmpresa(eData);
-      setWatermark(wData);
-      setAllCaracteristicas(carData);
-      setAllOpcionais(opData);
-    } catch (error) {
-      console.error(error);
-      navigate('/pedidos-compra');
-    } finally {
-      if (!silent) setLoading(false);
-    }
-  }
-
-  // CÁLCULOS FINANCEIROS DE VALIDAÇÃO
-  const totalCustoVeiculos = (pedido?.veiculos || []).reduce((acc, v) => acc + (v.valor_custo || 0), 0);
-  const totalPagamentosLancados = (pedido?.pagamentos || []).reduce((acc, p) => acc + p.valor, 0);
-
-  const isConsignacao = pedido?.forma_pagamento?.nome?.toLowerCase().includes('consignação') ||
-    pedido?.forma_pagamento?.nome?.toLowerCase().includes('consignacao');
-
-  // O valor negociado master é o custo do veículo se houver veículo, senão usa o campo do pedido
-  const valorMasterPedido = totalCustoVeiculos > 0 ? totalCustoVeiculos : (pedido?.valor_negociado || 0);
-
-  // Permitir confirmar apenas se houver veículo E o pagamento bater com o custo (ou se for consignação)
-  const isFinanceiroOK = totalCustoVeiculos > 0 && (isConsignacao || Math.abs(totalCustoVeiculos - totalPagamentosLancados) < 0.05);
+  const { data: empresa } = useQuery({ queryKey: ['empresa_dados'], queryFn: () => EmpresaService.getDadosEmpresa() });
+  const { data: watermark } = useQuery({ queryKey: ['marca_dagua'], queryFn: () => MarcaDaguaService.getConfig() });
+  const { data: allCaracteristicas = [] } = useQuery({ queryKey: ['caracteristicas_all'], queryFn: () => CaracteristicasService.getAll() });
+  const { data: allOpcionais = [] } = useQuery({ queryKey: ['opcionais_all'], queryFn: () => OpcionaisService.getAll() });
 
   const showNotification = (type: 'success' | 'error', message: string) => {
     setToast({ type, message });
     setTimeout(() => setToast(null), 3500);
   };
 
-  const handleDownloadPDF = () => {
-    window.print();
-  };
+  // Real-time Subscription
+  useEffect(() => {
+    if (!id) return;
+    const sub = PedidosCompraService.subscribe(() => {
+      queryClient.invalidateQueries({ queryKey: ['pedido_compra_detalhes', id] });
+    });
+    return () => { sub.unsubscribe(); };
+  }, [id, queryClient]);
 
-  const handleReopen = async () => {
-    if (!id || !confirm("Deseja reabrir este pedido para edição? O status voltará para Rascunho.")) return;
-    setActionLoading(true);
-    try {
-      await PedidosCompraService.reopenOrder(id);
-      showNotification('success', 'Pedido reaberto com sucesso.');
-      loadData(true);
-    } catch (e) {
-      showNotification('error', 'Erro ao reabrir pedido.');
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
-  const handleAddPayments = async (payments: Partial<IPedidoPagamento>[]) => {
-    if (!pedido) return;
-    setActionLoading(true);
-    try {
-      for (const p of payments) {
-        await PedidosCompraService.savePayment(p);
-      }
-      showNotification('success', `${payments.length} pagamento(s) lançado(s) com sucesso!`);
-      loadData(true);
-    } catch (e) {
-      showNotification('error', 'Erro ao processar pagamentos.');
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
-  const handleDeletePayment = async (payId: string) => {
-    setActionLoading(true);
-    try {
-      await PedidosCompraService.deletePayment(payId);
-      showNotification('success', 'Lançamento removido com sucesso.');
-      loadData(true);
-    } catch (e) {
-      showNotification('error', 'Erro ao excluir lançamento.');
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
-  const handleConfirmOrder = async (params: { condicao: any, contaId?: string }) => {
-    if (!pedido) return;
-    if (!isFinanceiroOK) {
-      showNotification('error', 'A composição de pagamentos deve ser igual ao valor de custo do veículo.');
-      return;
-    }
-    setActionLoading(true);
-    try {
-      const titulos = await PedidosCompraService.confirmOrder({
+  // Mutations
+  const confirmMutation = useMutation({
+    mutationFn: (params: { condicao: any, contaId?: string }) =>
+      PedidosCompraService.confirmOrder({
         pedido: { ...pedido, valor_negociado: valorMasterPedido },
         condicao: params.condicao,
         contaBancariaId: params.contaId
-      });
-
+      }),
+    onSuccess: (titulos) => {
       let successMsg = 'Pedido confirmado! Veículo agora disponível no estoque.';
-
-      // Feedback melhorado do financeiro
       if (titulos && titulos.length > 0) {
-        const primeiroTitulo = titulos[0];
-        const vencimento = new Date(primeiroTitulo.data_vencimento);
-        const hoje = new Date();
-
-        // Formata data para DD/MM/AAAA (sem fuso horário)
+        const vencimento = new Date(titulos[0].data_vencimento);
         const vencimentoStr = vencimento.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
-
-        if (vencimento.getMonth() !== hoje.getMonth() || vencimento.getFullYear() !== hoje.getFullYear()) {
-          successMsg = `Pedido confirmado! Lançamento criado para ${vencimentoStr}. Verifique a aba 'Outros Meses' ou 'Futuros' no financeiro.`;
-        } else {
-          successMsg = `Pedido confirmado! Lançamento criado para ${vencimentoStr}.`;
-        }
+        successMsg = `Pedido confirmado! Lançamento criado para ${vencimentoStr}.`;
       }
-
       showNotification('success', successMsg);
       setShowConfirm(false);
-      loadData(true);
-    } catch (e: any) {
-      showNotification('error', "Erro ao confirmar entrada: " + e.message);
-    } finally {
-      setActionLoading(false);
-    }
-  };
+      queryClient.invalidateQueries({ queryKey: ['pedido_compra_detalhes', id] });
+      queryClient.invalidateQueries({ queryKey: ['pedidos_compra_list'] });
+    },
+    onError: (e: any) => showNotification('error', "Erro ao confirmar entrada: " + e.message)
+  });
 
-  if (loading || !pedido) {
+  const reopenMutation = useMutation({
+    mutationFn: () => PedidosCompraService.reopenOrder(id!),
+    onSuccess: () => {
+      showNotification('success', 'Pedido reaberto com sucesso.');
+      setShowReopen(false);
+      queryClient.invalidateQueries({ queryKey: ['pedido_compra_detalhes', id] });
+      queryClient.invalidateQueries({ queryKey: ['pedidos_compra_list'] });
+    },
+    onError: () => showNotification('error', 'Erro ao reabrir pedido.')
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: () => PedidosCompraService.delete(id!),
+    onSuccess: () => {
+      navigate('/pedidos-compra');
+      queryClient.invalidateQueries({ queryKey: ['pedidos_compra_list'] });
+    },
+    onError: () => showNotification('error', 'Erro ao excluir pedido.')
+  });
+
+  const savePaymentMutation = useMutation({
+    mutationFn: async (payments: Partial<IPedidoPagamento>[]) => {
+      for (const p of payments) {
+        await PedidosCompraService.savePayment(p);
+      }
+    },
+    onSuccess: (_, variables) => {
+      showNotification('success', `${variables.length} pagamento(s) lançado(s) com sucesso!`);
+      queryClient.invalidateQueries({ queryKey: ['pedido_compra_detalhes', id] });
+    },
+    onError: () => showNotification('error', 'Erro ao processar pagamentos.')
+  });
+
+  const deletePaymentMutation = useMutation({
+    mutationFn: (payId: string) => PedidosCompraService.deletePayment(payId),
+    onSuccess: () => {
+      showNotification('success', 'Lançamento removido com sucesso.');
+      queryClient.invalidateQueries({ queryKey: ['pedido_compra_detalhes', id] });
+    },
+    onError: () => showNotification('error', 'Erro ao excluir lançamento.')
+  });
+
+  const unlinkVehicleMutation = useMutation({
+    mutationFn: (vehicleId: string) => PedidosCompraService.unlinkVehicle(vehicleId),
+    onSuccess: () => {
+      setUnlinkTargetId(null);
+      queryClient.invalidateQueries({ queryKey: ['pedido_compra_detalhes', id] });
+    },
+    onError: () => showNotification('error', 'Erro ao desvincular veículo.')
+  });
+
+  const saveNotesMutation = useMutation({
+    mutationFn: (v: string) => PedidosCompraService.save({ id: pedido?.id, observacoes: v }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['pedido_compra_detalhes', id] }),
+    onError: () => showNotification('error', 'Erro ao salvar observações.')
+  });
+
+  // CÁLCULOS FINANCEIROS DE VALIDAÇÃO
+  const totalCustoVeiculos = (pedido?.veiculos || []).reduce((acc, v) => acc + (v.valor_custo || 0), 0);
+  const totalPagamentosLancados = (pedido?.pagamentos || []).reduce((acc, p) => acc + p.valor, 0);
+
+  const isConsignacao = pedido?.forma_pagamento?.nome?.toLowerCase().includes('consigna') || false;
+
+  const valorMasterPedido = totalCustoVeiculos > 0 ? totalCustoVeiculos : (pedido?.valor_negociado || 0);
+  const isFinanceiroOK = totalCustoVeiculos > 0 && (isConsignacao || Math.abs(totalCustoVeiculos - totalPagamentosLancados) < 0.05);
+
+  const handleDownloadPDF = () => window.print();
+
+  if (isLoadingPedido || !pedido) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh]">
         <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
@@ -188,9 +165,13 @@ const PedidoCompraDetalhesPage: React.FC = () => {
     );
   }
 
+  const actionLoading = confirmMutation.isPending || reopenMutation.isPending ||
+    deleteMutation.isPending || savePaymentMutation.isPending ||
+    deletePaymentMutation.isPending || unlinkVehicleMutation.isPending ||
+    saveNotesMutation.isPending;
+
   return (
     <div className="pb-32 space-y-8 animate-in fade-in duration-500 max-w-screen-2xl mx-auto px-4">
-
       {/* Toast Notification */}
       {toast && (
         <div className={`fixed top-6 right-6 z-[300] px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 animate-in slide-in-from-right duration-300 border backdrop-blur-md ${toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' : 'bg-rose-600 text-white border-rose-400/50'
@@ -199,20 +180,18 @@ const PedidoCompraDetalhesPage: React.FC = () => {
         </div>
       )}
 
-      {/* 1. Header de Status */}
       <HeaderPedido
         pedido={pedido}
         onBack={() => navigate('/pedidos-compra')}
         onEdit={() => navigate(`/pedidos-compra/editar/${pedido.id}`)}
         onConfirm={() => {
           if (isConsignacao) {
-            // Se for consignação, confirma direto sem modal financeiro
-            handleConfirmOrder({ condicao: { nome: 'AVULSO', qtd_parcelas: 1, dias_primeira_parcela: 0, dias_entre_parcelas: 0 } });
+            confirmMutation.mutate({ condicao: { nome: 'AVULSO', qtd_parcelas: 1, dias_primeira_parcela: 0, dias_entre_parcelas: 0 } });
           } else {
             setShowConfirm(true);
           }
         }}
-        onReopen={handleReopen}
+        onReopen={() => setShowReopen(true)}
         onDelete={() => setShowDelete(true)}
         onPrintSupplier={() => setPreviewType('supplier')}
         onPrintInternal={() => setPreviewType('internal')}
@@ -220,16 +199,10 @@ const PedidoCompraDetalhesPage: React.FC = () => {
         canConfirm={isFinanceiroOK}
       />
 
-      {/* 2. Dados do Parceiro e Corretor */}
       <InfoNegociacaoHeader pedido={pedido} />
-
-      {/* 3. Divisão de Capital e Retorno por Investidor */}
       <PurchasePartnersResultKpis pedido={pedido} />
+      <OrderCostKpis pedido={pedido} isConsignacao={isConsignacao} />
 
-      {/* 4. Métricas de Custo (KPIs) */}
-      <OrderCostKpis pedido={pedido} />
-
-      {/* 5. Ativos Vinculados */}
       <section className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm p-8">
         <VeiculosPedidoList
           pedido={pedido}
@@ -238,28 +211,24 @@ const PedidoCompraDetalhesPage: React.FC = () => {
         />
       </section>
 
-      {/* 6. Gestão Financeira */}
-      <section>
-        <CardPaymentData
-          pedido={pedido}
-          totalAquisicaoReferencia={valorMasterPedido}
-          onAddPayment={handleAddPayments}
-          onDeletePayment={handleDeletePayment}
-          isSaving={actionLoading}
-        />
-      </section>
+      {!isConsignacao && (
+        <section>
+          <CardPaymentData
+            pedido={pedido}
+            totalAquisicaoReferencia={valorMasterPedido}
+            onAddPayment={(p) => savePaymentMutation.mutate(p)}
+            onDeletePayment={(pid) => deletePaymentMutation.mutate(pid)}
+            isSaving={actionLoading}
+          />
+        </section>
+      )}
 
-      {/* 7. Observações */}
       <CardAnnotations
         initialValue={pedido.observacoes}
-        onSave={async (v) => {
-          await PedidosCompraService.save({ id: pedido.id, observacoes: v });
-          loadData(true);
-        }}
-        isSaving={actionLoading}
+        onSave={(v) => saveNotesMutation.mutate(v)}
+        isSaving={saveNotesMutation.isPending}
       />
 
-      {/* MODAL DE QUICK PREVIEW */}
       {empresa && (
         <QuickPreviewModal
           isOpen={!!previewType}
@@ -287,60 +256,64 @@ const PedidoCompraDetalhesPage: React.FC = () => {
         </QuickPreviewModal>
       )}
 
-      {/* Componentes de Impressão Invisíveis */}
-      {empresa && (
-        <div className="hidden print:block">
-          <PurchaseOrderPrint
-            pedido={pedido}
-            empresa={empresa}
-            watermark={watermark}
-            allCaracteristicas={allCaracteristicas}
-            allOpcionais={allOpcionais}
-          />
-          <InternalAnalysisPrint
-            pedido={pedido}
-            empresa={empresa}
-            watermark={watermark}
-            allCaracteristicas={allCaracteristicas}
-            allOpcionais={allOpcionais}
-          />
-        </div>
-      )}
+      <div className="hidden print:block">
+        {empresa && (
+          <>
+            <PurchaseOrderPrint
+              pedido={pedido}
+              empresa={empresa}
+              watermark={watermark}
+              allCaracteristicas={allCaracteristicas}
+              allOpcionais={allOpcionais}
+            />
+            <InternalAnalysisPrint
+              pedido={pedido}
+              empresa={empresa}
+              watermark={watermark}
+              allCaracteristicas={allCaracteristicas}
+              allOpcionais={allOpcionais}
+            />
+          </>
+        )}
+      </div>
 
-      {/* Modais */}
       {showConfirm && (
         <ModalConfirmacaoFinanceira
           pedido={{ ...pedido, valor_negociado: valorMasterPedido }}
           onClose={() => setShowConfirm(false)}
-          /* Changed from handleConfirmSale to handleConfirmOrder to fix the error */
-          onConfirm={handleConfirmOrder}
-          isLoading={actionLoading}
+          onConfirm={(params) => confirmMutation.mutate(params)}
+          isLoading={confirmMutation.isPending}
         />
       )}
 
       <ConfirmModal
         isOpen={showDelete}
         onClose={() => setShowDelete(false)}
-        onConfirm={async () => {
-          await PedidosCompraService.delete(pedido.id);
-          navigate('/pedidos-compra');
-        }}
+        onConfirm={() => deleteMutation.mutate()}
         title="Excluir Pedido?"
         message="Esta ação apagará o rascunho e todos os vínculos criados até agora."
-        isLoading={actionLoading}
+        isLoading={deleteMutation.isPending}
       />
 
       <ConfirmModal
         isOpen={!!unlinkTargetId}
         onClose={() => setUnlinkTargetId(null)}
-        onConfirm={async () => {
-          await PedidosCompraService.unlinkVehicle(unlinkTargetId!);
-          setUnlinkTargetId(null);
-          loadData(true);
-        }}
+        onConfirm={() => unlinkVehicleMutation.mutate(unlinkTargetId!)}
         title="Remover Veículo?"
         message="O veículo será desvinculado deste contrato."
-        isLoading={actionLoading}
+        isLoading={unlinkVehicleMutation.isPending}
+      />
+
+      <ConfirmModal
+        isOpen={showReopen}
+        onClose={() => setShowReopen(false)}
+        onConfirm={() => reopenMutation.mutate()}
+        title="Reabrir Pedido de Compra?"
+        message="Deseja reabrir este pedido para edição? O status voltará para Rascunho."
+        confirmText="Sim, Reabrir"
+        cancelText="Voltar"
+        variant="info"
+        isLoading={reopenMutation.isPending}
       />
     </div>
   );

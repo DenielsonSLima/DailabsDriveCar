@@ -76,7 +76,7 @@ const PurchasePartnersResultKpis: React.FC<Props> = ({ pedido }) => {
                   <div className="flex items-center space-x-2">
                     <p className="text-[8px] font-bold text-indigo-500 uppercase tracking-widest">Investidor Ativo</p>
                     <span className="text-[10px] font-black text-slate-300">•</span>
-                    <span className="text-[10px] font-black text-indigo-600">{socio.porcentagem}%</span>
+                    <span className="text-[10px] font-black text-indigo-600">{Number(socio.porcentagem).toFixed(2)}%</span>
                   </div>
                 </div>
               </div>

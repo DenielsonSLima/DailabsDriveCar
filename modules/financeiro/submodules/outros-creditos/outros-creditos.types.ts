@@ -20,4 +20,11 @@ export interface ITituloCredito extends Omit<ITitulo, 'parceiro' | 'categoria'> 
     banco_nome: string;
     conta: string;
   };
+  transacoes?: {
+    id: string;
+    conta_origem: {
+      banco_nome: string;
+      conta: string;
+    } | null;
+  }[];
 }

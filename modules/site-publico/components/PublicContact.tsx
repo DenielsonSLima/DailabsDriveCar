@@ -2,11 +2,31 @@ import React from 'react';
 
 interface Props {
     telefone?: string;
+    contato_titulo?: string;
+    contato_subtitulo?: string;
+    contato_descricao?: string;
+    contato_horario_semana?: string;
+    contato_horario_sabado?: string;
 }
 
-const PublicContact: React.FC<Props> = React.memo(({ telefone }) => {
+const DEFAULT_TITULO = 'Tradição e Segurança em Cada Negociação';
+const DEFAULT_SUBTITULO = 'Experiência Hidrocar';
+const DEFAULT_DESCRICAO = 'Oferecemos oportunidades exclusivas para quem deseja adquirir um veículo de qualidade, além da compra do seu automóvel com avaliação justa, ágil e segura. Nossa equipe atua com profissionalismo, transparência e responsabilidade, garantindo uma negociação segura do início ao fim.';
+
+const PublicContact: React.FC<Props> = React.memo(({ telefone, contato_titulo, contato_subtitulo, contato_descricao, contato_horario_semana, contato_horario_sabado }) => {
     const phone = (telefone || '').replace(/\D/g, '');
     const whatsappUrl = `https://api.whatsapp.com/send?phone=55${phone}&text=Seu%20seminovo%20está%20aqui,%20fale%20conosco!`;
+
+    const titulo = contato_titulo || DEFAULT_TITULO;
+    const subtitulo = contato_subtitulo || DEFAULT_SUBTITULO;
+    const descricao = contato_descricao || DEFAULT_DESCRICAO;
+    const horarioSemana = contato_horario_semana || '08h às 17h';
+    const horarioSabado = contato_horario_sabado || '08h às 12h';
+
+    // Separar título para a parte gradiente (após o primeiro \n ou quebra natural)
+    const tituloPartes = titulo.split('\n').length > 1 ? titulo.split('\n') : titulo.split(' em ');
+    const tituloPrimeiro = tituloPartes.length > 1 ? tituloPartes[0] : titulo;
+    const tituloSegundo = tituloPartes.length > 1 ? tituloPartes.slice(1).join(' em ') : '';
 
     return (
         <section id="contato" className="relative w-full min-h-[600px] bg-[#001d3d] overflow-hidden flex items-center">
@@ -30,19 +50,16 @@ const PublicContact: React.FC<Props> = React.memo(({ telefone }) => {
                     <div className="space-y-8">
                         <div className="inline-flex items-center space-x-3 bg-white/5 border border-white/10 px-4 py-2 rounded-2xl backdrop-blur-md">
                             <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></div>
-                            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-200">Experiência Hidrocar</span>
+                            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-200">{subtitulo}</span>
                         </div>
 
                         <div className="space-y-6">
                             <h2 className="text-3xl md:text-4xl lg:text-5xl font-[900] text-white uppercase tracking-tighter leading-[0.95]">
-                                Tradição e Segurança <br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300">em Cada Negociação</span>
+                                {tituloPrimeiro} <br />
+                                {tituloSegundo && <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300">{tituloSegundo}</span>}
                             </h2>
                             <p className="text-lg text-blue-100/70 font-medium max-w-xl leading-relaxed">
-                                Oferecemos oportunidades exclusivas para quem deseja adquirir um veículo de qualidade,
-                                além da compra do seu automóvel com avaliação justa, ágil e segura.
-                                Nossa equipe atua com profissionalismo, transparência e responsabilidade,
-                                garantindo uma negociação segura do início ao fim.
+                                {descricao}
                             </p>
                             <div className="flex items-center space-x-2 text-blue-300/80">
                                 <div className="h-px w-8 bg-blue-500/50"></div>
@@ -68,8 +85,8 @@ const PublicContact: React.FC<Props> = React.memo(({ telefone }) => {
                                 <h3 className="text-xs font-black uppercase tracking-widest text-white">Atendimento</h3>
                             </div>
                             <div className="space-y-2 text-blue-100/60 text-sm">
-                                <p><span className="text-white font-bold">Segunda a Sexta-feira:</span> <br /> 08h às 17h</p>
-                                <p><span className="text-white font-bold">Sábado:</span> <br /> 08h às 12h</p>
+                                <p><span className="text-white font-bold">Segunda a Sexta-feira:</span> <br /> {horarioSemana}</p>
+                                <p><span className="text-white font-bold">Sábado:</span> <br /> {horarioSabado}</p>
                             </div>
                         </div>
 

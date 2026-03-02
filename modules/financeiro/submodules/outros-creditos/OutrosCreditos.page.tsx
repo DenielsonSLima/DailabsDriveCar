@@ -13,7 +13,7 @@ const OutrosCreditosPage: React.FC = () => {
   const [titulos, setTitulos] = useState<ITituloCredito[]>([]);
   const [loading, setLoading] = useState(true);
   const [groupBy, setGroupBy] = useState<GroupByCredito>('conta');
-  
+
   const [filtros, setFiltros] = useState<ICreditoFiltros>({
     busca: '',
     dataInicio: '',
@@ -21,6 +21,7 @@ const OutrosCreditosPage: React.FC = () => {
   });
 
   const [selectedTitulo, setSelectedTitulo] = useState<ITituloCredito | null>(null);
+  const [editTitulo, setEditTitulo] = useState<ITituloCredito | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -57,7 +58,7 @@ const OutrosCreditosPage: React.FC = () => {
         const d = new Date(t.data_vencimento);
         key = d.toLocaleString('pt-BR', { month: 'long', year: 'numeric' }).toUpperCase();
       } else if (groupBy === 'conta') {
-        key = t.conta_bancaria?.banco_nome || 'SEM CONTA DEFINIDA';
+        key = t.transacoes?.[0]?.conta_origem?.banco_nome || 'SEM CONTA DEFINIDA';
       }
 
       if (!acc[key]) acc[key] = [];
@@ -85,9 +86,8 @@ const OutrosCreditosPage: React.FC = () => {
   return (
     <div className="space-y-8 animate-in fade-in duration-500 relative">
       {toast && (
-        <div className={`fixed top-6 right-6 z-[200] px-6 py-4 rounded-2xl shadow-2xl animate-in slide-in-from-right duration-300 border backdrop-blur-md ${
-          toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' : 'bg-rose-600 text-white'
-        }`}>
+        <div className={`fixed top-6 right-6 z-[200] px-6 py-4 rounded-2xl shadow-2xl animate-in slide-in-from-right duration-300 border backdrop-blur-md ${toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' : 'bg-rose-600 text-white'
+          }`}>
           <span className="font-bold text-sm tracking-tight">{toast.message}</span>
         </div>
       )}
@@ -97,7 +97,7 @@ const OutrosCreditosPage: React.FC = () => {
           <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter leading-none">Outros Créditos</h2>
           <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mt-2">Aportes, rendimentos e entradas extraordinárias</p>
         </div>
-        <button 
+        <button
           onClick={() => setIsFormOpen(true)}
           className="px-8 py-4 bg-teal-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-teal-700 transition-all shadow-xl active:scale-95 flex items-center shadow-teal-200"
         >
@@ -115,39 +115,41 @@ const OutrosCreditosPage: React.FC = () => {
         <button onClick={() => setActiveTab('OUTROS')} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'OUTROS' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Todos os Meses</button>
       </div>
 
-      <CreditosFilters 
-        filtros={filtros} 
-        onChange={setFiltros} 
+      <CreditosFilters
+        filtros={filtros}
+        onChange={setFiltros}
         groupBy={groupBy}
         setGroupBy={setGroupBy}
       />
 
       <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden min-h-[400px]">
-        <CreditosList 
-          items={processedData} 
-          loading={loading} 
+        <CreditosList
+          items={processedData}
+          loading={loading}
           isGrouped={groupBy !== 'nenhum'}
-          onReceber={(t) => setSelectedTitulo(t as any)} 
-          onDelete={setDeleteId} 
+          onReceber={(t) => setSelectedTitulo(t as any)}
+          onEdit={(t) => { setEditTitulo(t); setIsFormOpen(true); }}
+          onDelete={setDeleteId}
         />
       </div>
 
       {selectedTitulo && (
-        <ModalBaixa 
-          titulo={selectedTitulo as any} 
-          onClose={() => setSelectedTitulo(null)} 
-          onSuccess={() => { setSelectedTitulo(null); loadData(true); setToast({type: 'success', message: 'Baixa realizada com sucesso!'}); }} 
+        <ModalBaixa
+          titulo={selectedTitulo as any}
+          onClose={() => setSelectedTitulo(null)}
+          onSuccess={() => { setSelectedTitulo(null); loadData(true); setToast({ type: 'success', message: 'Baixa realizada com sucesso!' }); }}
         />
       )}
 
       {isFormOpen && (
-        <CreditoForm 
-          onClose={() => setIsFormOpen(false)} 
-          onSuccess={() => { setIsFormOpen(false); loadData(true); setToast({type: 'success', message: 'Crédito lançado com sucesso!'}); }}
+        <CreditoForm
+          editData={editTitulo || undefined}
+          onClose={() => { setIsFormOpen(false); setEditTitulo(null); }}
+          onSuccess={() => { setIsFormOpen(false); setEditTitulo(null); loadData(true); setToast({ type: 'success', message: editTitulo ? 'Crédito atualizado com sucesso!' : 'Crédito lançado com sucesso!' }); }}
         />
       )}
 
-      <ConfirmModal 
+      <ConfirmModal
         isOpen={!!deleteId}
         onClose={() => setDeleteId(null)}
         onConfirm={handleDelete}

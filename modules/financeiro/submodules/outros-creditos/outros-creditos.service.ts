@@ -10,11 +10,15 @@ export const OutrosCreditosService = {
       .select(`
         *,
         parceiro:parceiros(nome),
-        categoria:fin_categorias!inner(nome, tipo),
-        conta_bancaria:fin_contas_bancarias(banco_nome, conta)
+        transacoes:fin_transacoes(
+          id,
+          conta_origem:fin_contas_bancarias(banco_nome, conta)
+        )
       `)
       .eq('tipo', 'RECEBER')
-      .eq('fin_categorias.tipo', 'OUTROS');
+      .is('categoria_id', null)
+      .is('pedido_id', null)
+      .is('venda_pedido_id', null);
 
     if (tab === 'MES_ATUAL') {
       const now = new Date();
@@ -30,7 +34,7 @@ export const OutrosCreditosService = {
     if (filtros.dataFim) query = query.lte('data_vencimento', filtros.dataFim);
 
     const { data, error } = await query.order('data_vencimento', { ascending: false });
-    
+
     if (error) throw error;
     return data as any as ITituloCredito[];
   },
@@ -39,33 +43,44 @@ export const OutrosCreditosService = {
     descricao: string;
     valor_total: number;
     data_vencimento: string;
-    categoria_id: string;
-    conta_bancaria_id?: string;
-    parceiro_id?: string;
+    conta_id: string;
     documento_ref?: string;
-    status?: string;
+    socios?: { socio_id: string; valor: number; porcentagem: number }[];
   }): Promise<void> {
-    const { error } = await supabase.from(TABLE).insert({
-      descricao: payload.descricao,
-      valor_total: payload.valor_total,
-      valor_pago: 0,
-      data_emissao: new Date().toISOString().split('T')[0],
-      data_vencimento: payload.data_vencimento,
-      tipo: 'RECEBER',
-      status: payload.status || 'PENDENTE',
-      categoria_id: payload.categoria_id,
-      conta_bancaria_id: payload.conta_bancaria_id || null,
-      parceiro_id: payload.parceiro_id || null,
-      documento_ref: payload.documento_ref || null,
-      parcela_numero: 1,
-      parcela_total: 1,
+    const { error } = await supabase.rpc('lancar_credito', {
+      p_descricao: payload.descricao,
+      p_valor: payload.valor_total,
+      p_data_vencimento: payload.data_vencimento,
+      p_conta_id: payload.conta_id,
+      p_documento_ref: payload.documento_ref || null,
+      p_socios: payload.socios && payload.socios.length > 0 ? payload.socios : null,
     });
     if (error) throw error;
   },
 
-  async delete(id: string): Promise<void> {
-    const { error } = await supabase.from(TABLE).delete().eq('id', id);
+  async update(id: string, payload: {
+    descricao: string;
+    data_vencimento: string;
+    documento_ref?: string;
+  }): Promise<void> {
+    const { error } = await supabase
+      .from(TABLE)
+      .update({
+        descricao: payload.descricao,
+        data_vencimento: payload.data_vencimento,
+        documento_ref: payload.documento_ref || null,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', id);
     if (error) throw error;
+  },
+
+  async delete(id: string): Promise<void> {
+    const { error } = await supabase.rpc('excluir_titulo', { p_id: id });
+    if (error) {
+      console.error('Erro ao excluir título via RPC:', error);
+      throw error;
+    }
   },
 
   subscribe(onUpdate: () => void) {

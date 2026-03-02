@@ -34,57 +34,54 @@ export const RetiradasService = {
     return data as IRetirada[];
   },
 
+  async getSaldosSocios(): Promise<any[]> {
+    const { data, error } = await supabase.rpc('get_saldos_socios');
+    if (error) {
+      console.error('Erro ao buscar saldos dos sócios:', error);
+      throw error;
+    }
+    return data || [];
+  },
+
   async save(payload: Partial<IRetirada>): Promise<void> {
-    const isNew = !payload.id;
-    
-    // 1. Salva a Retirada
-    const { data: currentRetirada, error: errSave } = await supabase
-      .from(TABLE)
-      .upsert({ ...payload, updated_at: new Date().toISOString() })
-      .select()
-      .single();
-
-    if (errSave) throw errSave;
-
-    // 2. Se for novo, abate do saldo da conta bancária e lança no extrato
-    if (isNew) {
-      // Ajuste de Saldo
-      const { data: conta, error: errConta } = await supabase.from('fin_contas_bancarias').select('saldo_atual').eq('id', payload.conta_origem_id).single();
-      if (errConta || !conta) throw new Error('Conta bancária de origem não encontrada.');
-      await supabase.from('fin_contas_bancarias').update({ saldo_atual: (Number(conta.saldo_atual) - payload.valor!), updated_at: new Date().toISOString() }).eq('id', payload.conta_origem_id);
-
-      // Lançamento no Extrato (vinculado pelo retirada_id para exclusão segura)
-      await supabase.from('fin_transacoes').insert({
-        conta_origem_id: payload.conta_origem_id,
-        retirada_id: currentRetirada.id,
-        valor: payload.valor,
-        tipo: 'SAIDA',
-        data_pagamento: payload.data,
-        tipo_transacao: 'RETIRADA_SOCIO',
-        descricao: `RETIRADA: ${payload.descricao}`
+    if (payload.id) {
+      const { error } = await supabase.rpc('atualizar_retirada', {
+        p_id: payload.id,
+        p_socio_id: payload.socio_id,
+        p_conta_id: payload.conta_origem_id,
+        p_valor: payload.valor,
+        p_data: payload.data,
+        p_descricao: payload.descricao,
+        p_tipo: payload.tipo
       });
+      if (error) {
+        console.error('Erro ao editar retirada via RPC:', error);
+        throw error;
+      }
+      return;
+    }
+
+    const { error } = await supabase.rpc('registrar_retirada', {
+      p_socio_id: payload.socio_id,
+      p_conta_id: payload.conta_origem_id,
+      p_valor: payload.valor,
+      p_data: payload.data,
+      p_descricao: payload.descricao,
+      p_tipo: payload.tipo
+    });
+
+    if (error) {
+      console.error('Erro ao registrar retirada via RPC:', error);
+      throw error;
     }
   },
 
   async delete(id: string): Promise<void> {
-    const { data: old } = await supabase.from(TABLE).select('*').eq('id', id).single();
-    if (old) {
-      // Reverte saldo
-      const { data: conta, error: errConta } = await supabase.from('fin_contas_bancarias').select('saldo_atual').eq('id', old.conta_origem_id).single();
-      if (!errConta && conta) {
-        await supabase.from('fin_contas_bancarias').update({ saldo_atual: (Number(conta.saldo_atual) + old.valor), updated_at: new Date().toISOString() }).eq('id', old.conta_origem_id);
-      }
-      
-      // Remove do extrato vinculado por retirada_id (seguro) com fallback por match
-      const { error: errDelTx } = await supabase.from('fin_transacoes').delete().eq('retirada_id', id);
-      if (errDelTx) {
-        // Fallback: tenta por match (retrocompatibilidade com registros antigos)
-        await supabase.from('fin_transacoes').delete().match({ tipo_transacao: 'RETIRADA_SOCIO', valor: old.valor, data_pagamento: old.data, conta_origem_id: old.conta_origem_id });
-      }
+    const { error } = await supabase.rpc('excluir_retirada', { p_id: id });
+    if (error) {
+      console.error('Erro ao excluir retirada via RPC:', error);
+      throw error;
     }
-
-    const { error } = await supabase.from(TABLE).delete().eq('id', id);
-    if (error) throw error;
   },
 
   subscribe(onUpdate: () => void) {

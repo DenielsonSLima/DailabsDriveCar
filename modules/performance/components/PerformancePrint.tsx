@@ -1,5 +1,13 @@
 import React from 'react';
 import { IPerformanceData } from '../performance.types';
+import {
+  VendasTable,
+  ComprasTable,
+  TitulosTable,
+  DespesasTable,
+  RetiradasTable,
+  EstoqueTable
+} from './tables/PerformanceTables';
 
 interface Props {
   data: IPerformanceData;
@@ -12,13 +20,6 @@ const PerformancePrint: React.FC<Props> = ({ data, empresa, watermark, periodo }
   const fmt = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
   const now = new Date();
   const r = data.resumo;
-
-  const formatDate = (d: string) => {
-    if (!d) return '-';
-    const parts = d.split('-');
-    if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
-    return d;
-  };
 
   return (
     <div className="w-[210mm] min-h-[297mm] bg-white text-slate-900 relative p-12 mx-auto print-container font-sans" style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' as any }}>
@@ -172,42 +173,7 @@ const PerformancePrint: React.FC<Props> = ({ data, empresa, watermark, periodo }
               </div>
               <span className="text-[8px] font-black text-slate-400 uppercase">{data.vendas.length} venda{data.vendas.length !== 1 ? 's' : ''} • {fmt(r.total_vendas_valor)}</span>
             </div>
-            <div className="rounded-xl border border-slate-100 overflow-hidden">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50" style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' as any }}>
-                    <th className="pl-3 py-2 text-[8px] font-black uppercase text-slate-500 tracking-widest">Nº</th>
-                    <th className="py-2 text-[8px] font-black uppercase text-slate-500 tracking-widest">Data</th>
-                    <th className="py-2 text-[8px] font-black uppercase text-slate-500 tracking-widest">Cliente</th>
-                    <th className="py-2 text-[8px] font-black uppercase text-slate-500 tracking-widest">Veículo</th>
-                    <th className="py-2 text-[8px] font-black uppercase text-slate-500 tracking-widest text-right">Custo</th>
-                    <th className="py-2 text-[8px] font-black uppercase text-slate-500 tracking-widest text-right">Venda</th>
-                    <th className="py-2 text-[8px] font-black uppercase text-slate-500 tracking-widest text-right">Lucro</th>
-                    <th className="pr-3 py-2 text-[8px] font-black uppercase text-slate-500 tracking-widest text-right">Margem</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-50">
-                  {data.vendas.slice(0, 20).map((v, i) => (
-                    <tr key={i}>
-                      <td className="pl-3 py-1.5 text-[9px] font-bold text-slate-500">{v.numero_venda}</td>
-                      <td className="py-1.5 text-[8px] font-medium text-slate-400">{formatDate(v.data_venda)}</td>
-                      <td className="py-1.5 text-[9px] font-bold text-slate-700 max-w-[100px] truncate">{v.cliente_nome}</td>
-                      <td className="py-1.5">
-                        <span className="text-[9px] font-bold text-slate-800 uppercase">{v.veiculo_modelo}</span>
-                        <span className="text-[8px] text-slate-400 ml-1">{v.veiculo_placa}</span>
-                      </td>
-                      <td className="py-1.5 text-[9px] font-bold text-slate-500 text-right">{fmt(v.custo_veiculo + v.custo_servicos)}</td>
-                      <td className="py-1.5 text-[9px] font-black text-indigo-600 text-right">{fmt(v.valor_venda)}</td>
-                      <td className={`py-1.5 text-[9px] font-black text-right ${v.lucro_bruto >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>{fmt(v.lucro_bruto)}</td>
-                      <td className={`pr-3 py-1.5 text-[9px] font-black text-right ${v.margem_percent >= 10 ? 'text-emerald-600' : v.margem_percent >= 0 ? 'text-amber-600' : 'text-rose-600'}`}>{v.margem_percent.toFixed(1)}%</td>
-                    </tr>
-                  ))}
-                  {data.vendas.length > 20 && (
-                    <tr><td colSpan={8} className="px-3 py-2 text-center text-[8px] text-slate-400 font-bold">+{data.vendas.length - 20} mais registros...</td></tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+            <VendasTable data={data.vendas} variant="print" />
           </section>
         )}
 
@@ -221,36 +187,7 @@ const PerformancePrint: React.FC<Props> = ({ data, empresa, watermark, periodo }
               </div>
               <span className="text-[8px] font-black text-slate-400 uppercase">{data.compras.length} compra{data.compras.length !== 1 ? 's' : ''} • {fmt(r.total_compras_valor)}</span>
             </div>
-            <div className="rounded-xl border border-slate-100 overflow-hidden">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50" style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' as any }}>
-                    <th className="pl-3 py-2 text-[8px] font-black uppercase text-slate-500 tracking-widest">Nº</th>
-                    <th className="py-2 text-[8px] font-black uppercase text-slate-500 tracking-widest">Data</th>
-                    <th className="py-2 text-[8px] font-black uppercase text-slate-500 tracking-widest">Fornecedor</th>
-                    <th className="py-2 text-[8px] font-black uppercase text-slate-500 tracking-widest">Veículo</th>
-                    <th className="pr-3 py-2 text-[8px] font-black uppercase text-slate-500 tracking-widest text-right">Valor</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-50">
-                  {data.compras.slice(0, 20).map((c, i) => (
-                    <tr key={i}>
-                      <td className="pl-3 py-1.5 text-[9px] font-bold text-slate-500">{c.numero_pedido}</td>
-                      <td className="py-1.5 text-[8px] font-medium text-slate-400">{formatDate(c.data_compra)}</td>
-                      <td className="py-1.5 text-[9px] font-bold text-slate-700">{c.fornecedor_nome}</td>
-                      <td className="py-1.5">
-                        <span className="text-[9px] font-bold text-slate-800 uppercase">{c.veiculo_modelo}</span>
-                        <span className="text-[8px] text-slate-400 ml-1">{c.veiculo_placa}</span>
-                      </td>
-                      <td className="pr-3 py-1.5 text-[9px] font-black text-slate-900 text-right">{fmt(c.valor_negociado)}</td>
-                    </tr>
-                  ))}
-                  {data.compras.length > 20 && (
-                    <tr><td colSpan={5} className="px-3 py-2 text-center text-[8px] text-slate-400 font-bold">+{data.compras.length - 20} mais registros...</td></tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+            <ComprasTable data={data.compras} variant="print" />
           </section>
         )}
 
@@ -266,27 +203,7 @@ const PerformancePrint: React.FC<Props> = ({ data, empresa, watermark, periodo }
                 </div>
                 <span className="text-[8px] font-black text-emerald-600">{fmt(data.titulos_receber.reduce((s, t) => s + t.valor_total, 0))}</span>
               </div>
-              <div className="rounded-xl border border-emerald-100 overflow-hidden">
-                <table className="w-full text-left">
-                  <tbody className="divide-y divide-emerald-50">
-                    {data.titulos_receber.slice(0, 15).map((t, i) => (
-                      <tr key={i}>
-                        <td className="px-3 py-1.5 text-[9px] text-slate-600">
-                          <span className="font-bold text-slate-800 block max-w-[150px] truncate">{t.descricao}</span>
-                          <span className="text-[8px] text-slate-400">{formatDate(t.data_vencimento)} • {t.parceiro_nome}</span>
-                        </td>
-                        <td className="px-3 py-1.5 text-[9px] font-black text-emerald-600 text-right">{fmt(t.valor_total)}</td>
-                      </tr>
-                    ))}
-                    {data.titulos_receber.length === 0 && (
-                      <tr><td colSpan={2} className="px-3 py-4 text-center text-[9px] text-slate-400 italic">Nenhum título a receber.</td></tr>
-                    )}
-                    {data.titulos_receber.length > 15 && (
-                      <tr><td colSpan={2} className="px-3 py-2 text-center text-[8px] text-slate-400 font-bold">+{data.titulos_receber.length - 15} mais...</td></tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
+              <TitulosTable data={data.titulos_receber} variant="print" />
             </div>
 
             {/* Contas a Pagar */}
@@ -298,27 +215,7 @@ const PerformancePrint: React.FC<Props> = ({ data, empresa, watermark, periodo }
                 </div>
                 <span className="text-[8px] font-black text-rose-600">{fmt(data.titulos_pagar.reduce((s, t) => s + t.valor_total, 0))}</span>
               </div>
-              <div className="rounded-xl border border-rose-100 overflow-hidden">
-                <table className="w-full text-left">
-                  <tbody className="divide-y divide-rose-50">
-                    {data.titulos_pagar.slice(0, 15).map((t, i) => (
-                      <tr key={i}>
-                        <td className="px-3 py-1.5 text-[9px] text-slate-600">
-                          <span className="font-bold text-slate-800 block max-w-[150px] truncate">{t.descricao}</span>
-                          <span className="text-[8px] text-slate-400">{formatDate(t.data_vencimento)} • {t.parceiro_nome}</span>
-                        </td>
-                        <td className="px-3 py-1.5 text-[9px] font-black text-rose-600 text-right">{fmt(t.valor_total)}</td>
-                      </tr>
-                    ))}
-                    {data.titulos_pagar.length === 0 && (
-                      <tr><td colSpan={2} className="px-3 py-4 text-center text-[9px] text-slate-400 italic">Nenhum título a pagar.</td></tr>
-                    )}
-                    {data.titulos_pagar.length > 15 && (
-                      <tr><td colSpan={2} className="px-3 py-2 text-center text-[8px] text-slate-400 font-bold">+{data.titulos_pagar.length - 15} mais...</td></tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
+              <TitulosTable data={data.titulos_pagar} variant="print" />
             </div>
           </div>
         </section>
@@ -333,34 +230,7 @@ const PerformancePrint: React.FC<Props> = ({ data, empresa, watermark, periodo }
               </div>
               <span className="text-[8px] font-black text-slate-400 uppercase">{fmt(r.despesas_veiculos)}</span>
             </div>
-            <div className="rounded-xl border border-slate-100 overflow-hidden">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50" style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' as any }}>
-                    <th className="pl-3 py-2 text-[8px] font-black uppercase text-slate-500 tracking-widest">Veículo</th>
-                    <th className="py-2 text-[8px] font-black uppercase text-slate-500 tracking-widest">Descrição</th>
-                    <th className="py-2 text-[8px] font-black uppercase text-slate-500 tracking-widest">Data</th>
-                    <th className="pr-3 py-2 text-[8px] font-black uppercase text-slate-500 tracking-widest text-right">Valor</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-50">
-                  {data.despesas_veiculos.slice(0, 20).map((d, i) => (
-                    <tr key={i}>
-                      <td className="pl-3 py-1.5">
-                        <span className="text-[9px] font-bold text-slate-800 uppercase">{d.veiculo_modelo}</span>
-                        <span className="text-[8px] text-slate-400 ml-1">{d.veiculo_placa}</span>
-                      </td>
-                      <td className="py-1.5 text-[9px] font-medium text-slate-600 max-w-[140px] truncate">{d.descricao}</td>
-                      <td className="py-1.5 text-[8px] font-medium text-slate-400">{formatDate(d.data)}</td>
-                      <td className="pr-3 py-1.5 text-[9px] font-black text-rose-600 text-right">{fmt(d.valor_total)}</td>
-                    </tr>
-                  ))}
-                  {data.despesas_veiculos.length > 20 && (
-                    <tr><td colSpan={4} className="px-3 py-2 text-center text-[8px] text-slate-400 font-bold">+{data.despesas_veiculos.length - 20} mais registros...</td></tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+            <DespesasTable data={data.despesas_veiculos} variant="print" />
           </section>
         )}
 
@@ -374,30 +244,7 @@ const PerformancePrint: React.FC<Props> = ({ data, empresa, watermark, periodo }
               </div>
               <span className="text-[8px] font-black text-slate-400 uppercase">{fmt(r.retiradas_socios)}</span>
             </div>
-            <div className="rounded-xl border border-slate-100 overflow-hidden">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50" style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' as any }}>
-                    <th className="pl-3 py-2 text-[8px] font-black uppercase text-slate-500 tracking-widest">Sócio</th>
-                    <th className="py-2 text-[8px] font-black uppercase text-slate-500 tracking-widest">Tipo</th>
-                    <th className="py-2 text-[8px] font-black uppercase text-slate-500 tracking-widest">Descrição</th>
-                    <th className="py-2 text-[8px] font-black uppercase text-slate-500 tracking-widest">Data</th>
-                    <th className="pr-3 py-2 text-[8px] font-black uppercase text-slate-500 tracking-widest text-right">Valor</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-50">
-                  {data.retiradas.map((ret, i) => (
-                    <tr key={i}>
-                      <td className="pl-3 py-1.5 text-[9px] font-bold text-slate-800 uppercase">{ret.socio_nome}</td>
-                      <td className="py-1.5 text-[8px] font-medium text-slate-500 uppercase">{ret.tipo}</td>
-                      <td className="py-1.5 text-[9px] font-medium text-slate-600 max-w-[120px] truncate">{ret.descricao}</td>
-                      <td className="py-1.5 text-[8px] font-medium text-slate-400">{formatDate(ret.data)}</td>
-                      <td className="pr-3 py-1.5 text-[9px] font-black text-rose-600 text-right">{fmt(ret.valor)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <RetiradasTable data={data.retiradas} variant="print" />
           </section>
         )}
 
@@ -414,41 +261,7 @@ const PerformancePrint: React.FC<Props> = ({ data, empresa, watermark, periodo }
                 <span className="text-[8px] font-black text-indigo-600 uppercase">{fmt(data.estoque.reduce((s, e) => s + e.valor_venda, 0))} em venda</span>
               </div>
             </div>
-            <div className="rounded-xl border border-slate-100 overflow-hidden">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50" style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' as any }}>
-                    <th className="pl-3 py-2 text-[8px] font-black uppercase text-slate-500 tracking-widest">Veículo</th>
-                    <th className="py-2 text-[8px] font-black uppercase text-slate-500 tracking-widest">Status</th>
-                    <th className="py-2 text-[8px] font-black uppercase text-slate-500 tracking-widest text-right">Custo</th>
-                    <th className="py-2 text-[8px] font-black uppercase text-slate-500 tracking-widest text-right">Venda</th>
-                    <th className="py-2 text-[8px] font-black uppercase text-slate-500 tracking-widest text-right">Margem</th>
-                    <th className="pr-3 py-2 text-[8px] font-black uppercase text-slate-500 tracking-widest text-right">Dias</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-50">
-                  {data.estoque.map((e, i) => (
-                    <tr key={i} className={e.dias_estoque > 60 ? 'bg-rose-50/30' : ''} style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' as any }}>
-                      <td className="pl-3 py-1.5">
-                        <span className="text-[9px] font-bold text-slate-800 uppercase">{e.modelo}</span>
-                        <span className="text-[8px] text-slate-400 ml-1">{e.placa}</span>
-                      </td>
-                      <td className="py-1.5">
-                        <span className={`text-[8px] font-black uppercase px-1.5 py-0.5 rounded ${
-                          e.status === 'DISPONIVEL' ? 'bg-emerald-50 text-emerald-600' :
-                          e.status === 'RESERVADO' ? 'bg-blue-50 text-blue-600' :
-                          'bg-amber-50 text-amber-600'
-                        }`} style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' as any }}>{e.status}</span>
-                      </td>
-                      <td className="py-1.5 text-[9px] font-bold text-slate-500 text-right">{fmt(e.valor_custo + e.valor_custo_servicos)}</td>
-                      <td className="py-1.5 text-[9px] font-black text-indigo-600 text-right">{fmt(e.valor_venda)}</td>
-                      <td className={`py-1.5 text-[9px] font-black text-right ${e.margem_percent >= 10 ? 'text-emerald-600' : e.margem_percent >= 0 ? 'text-amber-600' : 'text-rose-600'}`}>{e.margem_percent.toFixed(1)}%</td>
-                      <td className={`pr-3 py-1.5 text-[9px] font-black text-right ${e.dias_estoque > 60 ? 'text-rose-500' : e.dias_estoque > 30 ? 'text-amber-500' : 'text-slate-700'}`}>{e.dias_estoque}d</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <EstoqueTable data={data.estoque} variant="print" />
           </section>
         )}
 

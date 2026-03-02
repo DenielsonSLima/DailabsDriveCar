@@ -8,16 +8,19 @@ interface Props {
 
 const PedidosKpis: React.FC<Props> = ({ pedidos }) => {
   const stats = useMemo(() => {
-    
+
+    // Remove consignados dos cálculos
+    const pedidosFiltrados = pedidos.filter(p => !p.forma_pagamento?.nome?.toLowerCase().includes('consigna'));
+
     // 1. Valor Total de Compra (Soma puramente o valor negociado na aquisição)
-    const totalCompra = pedidos.reduce((acc, p) => acc + (p.valor_negociado || 0), 0);
+    const totalCompra = pedidosFiltrados.reduce((acc, p) => acc + (p.valor_negociado || 0), 0);
 
     // 2. Valor Total com Serviços (Soma o custo final do veículo no estoque, se existir)
     // Apenas para pedidos CONCLUIDOS que possuem veículo vinculado
-    const totalComServicos = pedidos.reduce((acc, p) => {
+    const totalComServicos = pedidosFiltrados.reduce((acc, p) => {
       // Fix: Property 'veiculo' does not exist on type 'IPedidoCompra'. Using 'veiculos' array instead.
       if (p.status === 'CONCLUIDO' && p.veiculos && p.veiculos.length > 0) {
-        const totalCusto = p.veiculos.reduce((sum, v) => sum + (v.valor_custo || 0), 0);
+        const totalCusto = p.veiculos.reduce((sum, v) => sum + (Number(v.valor_custo) || 0) + (Number(v.valor_custo_servicos) || 0), 0);
         return acc + totalCusto;
       }
       return acc;
@@ -26,30 +29,35 @@ const PedidosKpis: React.FC<Props> = ({ pedidos }) => {
     // 3. Total Investido (Global)
     // Se for Efetivado: Usa o Custo Total (Compra + Serviços)
     // Se for Rascunho: Usa o Valor Negociado (Compromisso Financeiro)
-    const totalInvestido = pedidos.reduce((acc, p) => {
+    const totalInvestido = pedidosFiltrados.reduce((acc, p) => {
       // Fix: Property 'veiculo' does not exist on type 'IPedidoCompra'. Using 'veiculos' array instead.
       if (p.status === 'CONCLUIDO' && p.veiculos && p.veiculos.length > 0) {
-        const totalCusto = p.veiculos.reduce((sum, v) => sum + (v.valor_custo || 0), 0);
+        const totalCusto = p.veiculos.reduce((sum, v) => sum + (Number(v.valor_custo) || 0) + (Number(v.valor_custo_servicos) || 0), 0);
         return acc + totalCusto;
       }
-      return acc + (p.valor_negociado || 0);
+      return acc + (Number(p.valor_negociado) || 0);
     }, 0);
 
-    const qtd = pedidos.length;
+    const qtd = pedidosFiltrados.length;
     const ticketMedio = qtd > 0 ? totalCompra / qtd : 0;
 
     // Diferença entre Custo Final e Compra (Gastos com Serviços)
-    const deltaServicos = totalComServicos > 0 ? totalComServicos - (pedidos.filter(p => p.status === 'CONCLUIDO').reduce((acc, p) => acc + p.valor_negociado, 0)) : 0;
+    const deltaServicos = pedidosFiltrados.reduce((acc, p) => {
+      if (p.status === 'CONCLUIDO' && p.veiculos && p.veiculos.length > 0) {
+        return acc + p.veiculos.reduce((sum, v) => sum + (Number(v.valor_custo_servicos) || 0), 0);
+      }
+      return acc;
+    }, 0);
 
     return { totalCompra, totalComServicos, totalInvestido, ticketMedio, qtd, deltaServicos };
   }, [pedidos]);
 
-  const formatCurrency = (val: number) => 
+  const formatCurrency = (val: number) =>
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 animate-in fade-in slide-in-from-top-4 duration-700">
-      
+
       {/* KPI 1: Valor Total de Compra (Negociado) */}
       <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm relative overflow-hidden group hover:border-indigo-300 transition-all">
         <div className="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
@@ -60,8 +68,8 @@ const PedidosKpis: React.FC<Props> = ({ pedidos }) => {
           {formatCurrency(stats.totalCompra)}
         </h3>
         <div className="mt-2 flex items-center space-x-1 relative z-10">
-           <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
-           <span className="text-[10px] text-slate-400 font-bold uppercase">{stats.qtd} Negociações</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+          <span className="text-[10px] text-slate-400 font-bold uppercase">{stats.qtd} Negociações</span>
         </div>
       </div>
 
@@ -72,9 +80,9 @@ const PedidosKpis: React.FC<Props> = ({ pedidos }) => {
           {formatCurrency(stats.totalComServicos)}
         </h3>
         <div className="mt-2 flex items-center space-x-1 relative z-10">
-           <span className="text-[10px] text-slate-400 font-bold uppercase">
-             Add. Serviços: <span className="text-amber-600">{formatCurrency(stats.deltaServicos)}</span>
-           </span>
+          <span className="text-[10px] text-slate-400 font-bold uppercase">
+            Add. Serviços: <span className="text-amber-600">{formatCurrency(stats.deltaServicos)}</span>
+          </span>
         </div>
       </div>
 

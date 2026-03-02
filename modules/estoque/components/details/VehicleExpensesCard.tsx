@@ -5,10 +5,11 @@ import ExpenseForm from './ExpenseForm';
 interface Props {
   veiculo: IVeiculo;
   onAddExpense: (expenses: Partial<IVeiculoDespesa>[]) => void;
+  onEditExpense: (expense: IVeiculoDespesa) => void;
   onDeleteExpense: (id: string) => void;
 }
 
-const VehicleExpensesCard: React.FC<Props> = ({ veiculo, onAddExpense, onDeleteExpense }) => {
+const VehicleExpensesCard: React.FC<Props> = ({ veiculo, onAddExpense, onEditExpense, onDeleteExpense }) => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
@@ -22,9 +23,9 @@ const VehicleExpensesCard: React.FC<Props> = ({ veiculo, onAddExpense, onDeleteE
           </h3>
           <p className="text-xs text-slate-500 font-medium mt-1">Gestão de custos e previsões financeiras vinculadas ao ativo.</p>
         </div>
-        
+
         {veiculo.status !== 'VENDIDO' && (
-          <button 
+          <button
             onClick={() => setIsFormOpen(true)}
             className="px-6 py-3 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 transition-all flex items-center shadow-lg active:scale-95"
           >
@@ -48,7 +49,7 @@ const VehicleExpensesCard: React.FC<Props> = ({ veiculo, onAddExpense, onDeleteE
           </thead>
           <tbody className="divide-y divide-slate-50">
             {veiculo.despesas && veiculo.despesas.length > 0 ? (
-              veiculo.despesas.map((d) => (
+              (veiculo.despesas as IVeiculoDespesa[]).map((d) => (
                 <tr key={d.id} className="hover:bg-slate-50/50 transition-colors group">
                   <td className="px-6 py-4">
                     <p className="text-xs font-bold text-slate-700">{new Date(d.data).toLocaleDateString('pt-BR')}</p>
@@ -57,26 +58,40 @@ const VehicleExpensesCard: React.FC<Props> = ({ veiculo, onAddExpense, onDeleteE
                     )}
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`px-2 py-1 rounded-md text-[9px] font-black uppercase tracking-widest border ${
-                      d.status_pagamento === 'PAGO' 
-                        ? 'bg-emerald-50 text-emerald-600 border-emerald-100' 
-                        : 'bg-rose-50 text-rose-600 border-rose-100 animate-pulse'
-                    }`}>
+                    <span className={`px-2 py-1 rounded-md text-[9px] font-black uppercase tracking-widest border ${d.status_pagamento === 'PAGO'
+                      ? 'bg-emerald-50 text-emerald-600 border-emerald-100'
+                      : 'bg-rose-50 text-rose-600 border-rose-100 animate-pulse'
+                      }`}>
                       {d.status_pagamento}
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-600 text-[8px] font-black uppercase mb-1 inline-block">
-                      {d.categoria_nome || 'DIVERSOS'}
-                    </span>
-                    <p className="text-xs font-bold text-slate-700 truncate max-w-[250px]">{d.descricao}</p>
+                    <div className="flex flex-col">
+                      <span className="px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-600 text-[8px] font-black uppercase mb-1 inline-block w-fit">
+                        {d.categoria_nome || 'DIVERSOS'}
+                      </span>
+                      <p className="text-xs font-bold text-slate-700 truncate max-w-[250px]">{d.descricao}</p>
+                      {d.conta_bancaria && (
+                        <span className="text-[9px] text-emerald-600 font-black uppercase tracking-widest mt-1 bg-emerald-50/50 px-1.5 py-0.5 rounded leading-none w-fit">
+                          {d.conta_bancaria.banco_nome}
+                        </span>
+                      )}
+                    </div>
                   </td>
                   <td className="px-6 py-4 text-xs font-black text-slate-900 text-center">{d.quantidade}</td>
                   <td className="px-6 py-4 text-sm font-black text-indigo-600 text-right">{formatCurrency(d.valor_total)}</td>
-                  <td className="px-6 py-4 text-right">
-                    <button 
+                  <td className="px-6 py-4 text-right flex justify-end space-x-2">
+                    <button
+                      onClick={() => onEditExpense(d)}
+                      className="p-2 text-slate-300 hover:text-indigo-600 transition-colors"
+                      title="Editar Despesa"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                    </button>
+                    <button
                       onClick={() => onDeleteExpense(d.id)}
                       className="p-2 text-slate-300 hover:text-rose-600 transition-colors"
+                      title="Excluir Despesa"
                     >
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                     </button>
@@ -95,7 +110,7 @@ const VehicleExpensesCard: React.FC<Props> = ({ veiculo, onAddExpense, onDeleteE
       </div>
 
       {isFormOpen && (
-        <ExpenseForm 
+        <ExpenseForm
           onClose={() => setIsFormOpen(false)}
           onSubmit={(data) => {
             onAddExpense(data);

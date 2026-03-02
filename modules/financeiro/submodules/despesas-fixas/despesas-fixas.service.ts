@@ -1,5 +1,7 @@
 import { supabase } from '../../../../lib/supabase';
 import { ITituloFixa, FixasTab, IFixasFiltros } from './despesas-fixas.types';
+import { FinanceiroService } from '../../financeiro.service';
+import { ILancarDespesaPayload } from '../../financeiro.types';
 
 const TABLE = 'fin_titulos';
 
@@ -13,10 +15,11 @@ export const DespesasFixasService = {
         categoria:fin_categorias!inner(id, nome, tipo)
       `)
       .eq('tipo', 'PAGAR')
-      .eq('fin_categorias.tipo', 'FIXA');
+      .eq('fin_categorias.tipo', 'FIXA')
+      .neq('status', 'CANCELADO');
 
     const hoje = new Date().toISOString().split('T')[0];
-    
+
     if (tab === 'MES_ATUAL') {
       const now = new Date();
       const primeiroDia = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
@@ -24,6 +27,11 @@ export const DespesasFixasService = {
       query = query.gte('data_vencimento', primeiroDia).lte('data_vencimento', ultimoDia);
     } else if (tab === 'ATRASADOS') {
       query = query.lt('data_vencimento', hoje).neq('status', 'PAGO').neq('status', 'CANCELADO');
+    } else if (tab === 'FUTUROS') {
+      const now = new Date();
+      // O mês atual termina nesse dia, logo o próximo mês começa no "primeiroDiaProximoMes"
+      const primeiroDiaProximoMes = new Date(now.getFullYear(), now.getMonth() + 1, 1).toISOString().split('T')[0];
+      query = query.gte('data_vencimento', primeiroDiaProximoMes).neq('status', 'PAGO').neq('status', 'CANCELADO');
     }
 
     if (filtros.busca) {
@@ -35,7 +43,7 @@ export const DespesasFixasService = {
     if (filtros.dataFim) query = query.lte('data_vencimento', filtros.dataFim);
 
     const { data, error } = await query.order('data_vencimento', { ascending: true });
-    
+
     if (error) throw error;
     return data as any as ITituloFixa[];
   },
@@ -43,31 +51,49 @@ export const DespesasFixasService = {
   async save(payload: {
     descricao: string;
     valor_total: number;
-    data_vencimento: string;
     categoria_id: string;
-    parceiro_id?: string;
+    qtd_parcelas: number;
+    data_vencimento: string;
+    dias_intervalo: number;
+    pago_avista: boolean;
+    conta_id?: string;
+    forma_pagamento_id?: string;
     documento_ref?: string;
   }): Promise<void> {
-    const { error } = await supabase.from(TABLE).insert({
-      descricao: payload.descricao,
-      valor_total: payload.valor_total,
-      valor_pago: 0,
-      data_emissao: new Date().toISOString().split('T')[0],
-      data_vencimento: payload.data_vencimento,
-      tipo: 'PAGAR',
-      status: 'PENDENTE',
-      categoria_id: payload.categoria_id,
-      parceiro_id: payload.parceiro_id || null,
-      documento_ref: payload.documento_ref || null,
-      parcela_numero: 1,
-      parcela_total: 1,
+    await FinanceiroService.lancarDespesa({
+      ...payload,
+      natureza: 'FIXA'
     });
-    if (error) throw error;
+  },
+
+  async update(id: string, payload: {
+    descricao: string;
+    valor_total: number;
+    categoria_id: string;
+    data_vencimento: string;
+    grupo_id?: string;
+    documento_ref?: string;
+  }): Promise<void> {
+    const { error } = await supabase.rpc('atualizar_titulo', {
+      p_id: id,
+      p_descricao: payload.descricao,
+      p_valor_total: payload.valor_total,
+      p_categoria_id: payload.categoria_id,
+      p_data_vencimento: payload.data_vencimento,
+      p_documento_ref: payload.documento_ref || null
+    });
+    if (error) {
+      console.error('Erro ao atualizar título via RPC:', error);
+      throw error;
+    }
   },
 
   async delete(id: string): Promise<void> {
-    const { error } = await supabase.from(TABLE).delete().eq('id', id);
-    if (error) throw error;
+    const { error } = await supabase.rpc('excluir_titulo', { p_id: id });
+    if (error) {
+      console.error('Erro ao excluir título via RPC:', error);
+      throw error;
+    }
   },
 
   subscribe(onUpdate: () => void) {

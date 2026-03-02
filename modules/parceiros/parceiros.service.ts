@@ -1,5 +1,5 @@
 import { supabase } from '../../lib/supabase';
-import { IParceiro, IParceirosResponse, IParceirosStats, ParceiroTab } from './parceiros.types';
+import { IParceiro, IParceirosResponse, IParceirosStats, ParceiroTab, ParceiroSchema } from './parceiros.types';
 
 const TABLE = 'parceiros';
 
@@ -73,28 +73,25 @@ export const ParceirosService = {
   },
 
   async getStats(): Promise<IParceirosStats> {
-    const { data, error } = await supabase
-      .from(TABLE)
-      .select('id, tipo, ativo');
+    const { data, error } = await supabase.rpc('get_parceiros_stats');
 
     if (error) {
-      console.error('Erro ao buscar estatísticas:', error);
+      console.error('Erro ao buscar estatísticas via RPC:', error);
       return { total: 0, ativos: 0, clientes: 0, fornecedores: 0, inativos: 0 };
     }
 
-    const total = data.length;
-    const ativos = data.filter(p => p.ativo).length;
-    const inativos = total - ativos;
-    const clientes = data.filter(p => p.ativo && (p.tipo === 'CLIENTE' || p.tipo === 'AMBOS')).length;
-    const fornecedores = data.filter(p => p.ativo && (p.tipo === 'FORNECEDOR' || p.tipo === 'AMBOS')).length;
-
-    return { total, ativos, clientes, fornecedores, inativos };
+    return data as IParceirosStats;
   },
 
   async save(payload: Partial<IParceiro>): Promise<IParceiro> {
-    const { id, created_at, updated_at, user_id, ...rest } = payload;
+    // Validate with Zod
+    const validatedData = ParceiroSchema.parse(payload);
+    const { id, created_at, updated_at, user_id, organization_id, ...rest } = validatedData;
 
-    const dataToSave: any = { ...rest };
+    const dataToSave: any = {
+      ...rest,
+      updated_at: new Date().toISOString()
+    };
 
     if (id) {
       dataToSave.id = id;
@@ -139,6 +136,22 @@ export const ParceirosService = {
     }
   },
 
+  async checkDocumentExists(documento: string, excludeId?: string): Promise<boolean> {
+    const cleanDoc = documento.replace(/\D/g, '');
+    let query = supabase
+      .from(TABLE)
+      .select('id')
+      .eq('documento', cleanDoc);
+
+    if (excludeId) {
+      query = query.neq('id', excludeId);
+    }
+
+    const { data, error } = await query.maybeSingle();
+    if (error) return false;
+    return !!data;
+  },
+
   async consultarCNPJ(cnpj: string) {
     const cleanCnpj = cnpj.replace(/\D/g, '');
     if (cleanCnpj.length !== 14) return null;
@@ -153,9 +166,11 @@ export const ParceirosService = {
     }
   },
 
-  subscribe(onUpdate: () => void) {
-    return supabase
-      .channel(`public:${TABLE}_changes`)
+
+  subscribe(onUpdate: (payload: any) => void) {
+    const channelName = `realtime:parceiros:${Math.random().toString(36).substring(7)}`;
+    const channel = supabase
+      .channel(channelName)
       .on(
         'postgres_changes',
         {
@@ -164,10 +179,16 @@ export const ParceirosService = {
           table: TABLE
         },
         (payload) => {
-          console.log('Realtime Update:', payload.eventType);
-          onUpdate();
+          console.debug('[Realtime] Mudança detectada em parceiros:', payload.eventType);
+          onUpdate(payload);
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') {
+          console.debug('[Realtime] Inscrito com sucesso no canal de parceiros');
+        }
+      });
+
+    return channel;
   }
 };

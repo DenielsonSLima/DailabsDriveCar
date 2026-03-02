@@ -17,7 +17,7 @@ const CidadeForm: React.FC<FormProps> = ({ initialData, onClose, onSubmit }) => 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData(prev => ({ ...prev, [name]: value.toUpperCase() }));
   };
 
   const ufs = [
@@ -71,14 +71,14 @@ const CidadeForm: React.FC<FormProps> = ({ initialData, onClose, onSubmit }) => 
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-6">
             <div className="sm:col-span-3">
               <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Nome do Município</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 name="nome"
                 value={formData.nome}
                 onChange={handleChange}
                 required
                 autoFocus
-                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-bold"
+                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 text-sm font-bold text-[#111827] focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
                 placeholder="Ex: São Paulo"
               />
             </div>
@@ -86,12 +86,12 @@ const CidadeForm: React.FC<FormProps> = ({ initialData, onClose, onSubmit }) => 
             <div className="sm:col-span-1">
               <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">UF</label>
               <div className="relative">
-                <select 
+                <select
                   name="uf"
                   value={formData.uf}
                   onChange={handleChange}
                   required
-                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-bold appearance-none cursor-pointer"
+                  className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 text-sm font-bold text-[#111827] focus:ring-2 focus:ring-indigo-500 outline-none transition-all appearance-none cursor-pointer"
                 >
                   <option value="">...</option>
                   {ufs.map(item => (
@@ -106,15 +106,15 @@ const CidadeForm: React.FC<FormProps> = ({ initialData, onClose, onSubmit }) => 
           </div>
 
           <div className="pt-6 flex justify-end space-x-4 border-t border-slate-50 mt-4">
-            <button 
-              type="button" 
-              onClick={onClose} 
+            <button
+              type="button"
+              onClick={onClose}
               className="px-8 py-4 text-slate-500 text-xs font-black uppercase tracking-widest hover:bg-slate-50 rounded-2xl transition-all"
             >
               Cancelar
             </button>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="px-10 py-4 bg-indigo-600 text-white text-xs font-black uppercase tracking-widest rounded-2xl hover:bg-indigo-700 shadow-xl shadow-indigo-100 transition-all active:scale-95"
             >
               {initialData ? 'Salvar Alterações' : 'Cadastrar Cidade'}

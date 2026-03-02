@@ -9,15 +9,17 @@ import { PedidosVendaService } from '../../pedidos-venda.service';
 interface Props {
   pedido: IPedidoVenda;
   veiculosDisponiveis: IVeiculo[];
-  onLink: (id: string) => void;
+  onLink: (id: string) => Promise<void>;
   onUnlink: (id: string) => void;
   isConcluido: boolean;
+  actionLoading?: boolean;
 }
 
-const VeiculosVendaList: React.FC<Props> = ({ pedido, veiculosDisponiveis, onLink, onUnlink, isConcluido }) => {
+const VeiculosVendaList: React.FC<Props> = ({ pedido, veiculosDisponiveis, onLink, onUnlink, isConcluido, actionLoading }) => {
   const [showSelector, setShowSelector] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  
+  const [localLinking, setLocalLinking] = useState(false);
+
   const veiculosList = (pedido as any).veiculos || (pedido.veiculo ? [pedido.veiculo] : []);
 
   const normalizedSearch = searchTerm.trim().toLowerCase();
@@ -57,6 +59,8 @@ const VeiculosVendaList: React.FC<Props> = ({ pedido, veiculosDisponiveis, onLin
     }
   };
 
+  const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
+
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-700">
       <div className="flex items-center justify-between px-2">
@@ -64,13 +68,13 @@ const VeiculosVendaList: React.FC<Props> = ({ pedido, veiculosDisponiveis, onLin
           <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2M7 7h10" /></svg>
           Produtos no Pedido ({veiculosList.length})
         </h3>
-        
+
         {!isConcluido && (
-          <button 
+          <button
+            disabled={actionLoading || localLinking}
             onClick={() => setShowSelector(!showSelector)}
-            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
-              showSelector ? 'bg-slate-200 text-slate-600' : 'bg-indigo-50 text-indigo-600 border border-indigo-100 hover:bg-indigo-100'
-            }`}
+            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${showSelector ? 'bg-slate-200 text-slate-600' : 'bg-indigo-50 text-indigo-600 border border-indigo-100 hover:bg-indigo-100'
+              } ${(actionLoading || localLinking) ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             {showSelector ? 'Cancelar Adição' : 'Adicionar Outro Veículo'}
           </button>
@@ -84,6 +88,7 @@ const VeiculosVendaList: React.FC<Props> = ({ pedido, veiculosDisponiveis, onLin
             <input
               autoFocus
               type="text"
+              disabled={actionLoading || localLinking}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Digite placa, montadora, modelo, categoria, motorização ou KM"
@@ -100,15 +105,21 @@ const VeiculosVendaList: React.FC<Props> = ({ pedido, veiculosDisponiveis, onLin
                   <button
                     key={v.id}
                     type="button"
-                    onClick={() => {
-                      onLink(v.id);
-                      setShowSelector(false);
-                      setSearchTerm('');
+                    disabled={actionLoading || localLinking}
+                    onClick={async () => {
+                      setLocalLinking(true);
+                      try {
+                        await onLink(v.id);
+                        setShowSelector(false);
+                        setSearchTerm('');
+                      } finally {
+                        setLocalLinking(false);
+                      }
                     }}
-                    className="w-full text-left bg-slate-50 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-200 rounded-2xl p-4 transition-all"
+                    className={`w-full text-left bg-slate-50 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-200 rounded-2xl p-4 transition-all ${localLinking ? 'opacity-50 pointer-events-none' : ''}`}
                   >
                     <div className="flex items-center gap-4">
-                      <div className="w-20 h-20 rounded-xl border border-slate-200 bg-white overflow-hidden shrink-0">
+                      <div className="w-24 h-24 rounded-xl border border-slate-200 bg-white overflow-hidden shrink-0">
                         {v.fotos?.[0]?.url ? (
                           <img src={v.fotos[0].url} alt={`${v.montadora?.nome || ''} ${v.modelo?.nome || ''}`} className="w-full h-full object-cover" />
                         ) : (
@@ -119,17 +130,38 @@ const VeiculosVendaList: React.FC<Props> = ({ pedido, veiculosDisponiveis, onLin
                       </div>
 
                       <div className="min-w-0 flex-1">
-                        <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-1 truncate">
-                          {v.montadora?.nome || 'Montadora'}
-                        </p>
-                        <h4 className="text-base font-black text-slate-900 uppercase tracking-tight truncate">
-                          {v.modelo?.nome || 'Modelo'}
-                        </h4>
-                        <div className="mt-2 grid grid-cols-2 lg:grid-cols-3 gap-2">
-                          <span className="text-[10px] font-bold text-slate-600 uppercase truncate">Categoria: {v.tipo_veiculo?.nome || 'N/D'}</span>
-                          <span className="text-[10px] font-bold text-slate-600 uppercase truncate">Motorização: {v.motorizacao || 'N/D'}</span>
-                          <span className="text-[10px] font-bold text-slate-600 uppercase truncate">KM: {(v.km || 0).toLocaleString('pt-BR')}</span>
-                          <span className="text-[10px] font-black text-slate-700 uppercase truncate">Placa: {v.placa || 'N/D'}</span>
+                        <div className="flex items-center justify-between">
+                          <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest truncate">
+                            {v.montadora?.nome || 'Montadora'}
+                          </p>
+                          <span className="text-[10px] font-black text-slate-700 bg-slate-200/50 px-2 py-0.5 rounded uppercase tracking-widest">{v.placa || 'SEM PLACA'}</span>
+                        </div>
+                        <div className="flex items-baseline gap-2 truncate">
+                          <h4 className="text-lg font-black text-slate-900 uppercase tracking-tight truncate">
+                            {v.modelo?.nome || 'Modelo'}
+                          </h4>
+                          <span className="text-xs font-bold text-slate-400 truncate border-l border-slate-200 pl-2 leading-none">{v.versao?.nome || 'VERSÃO'}</span>
+                        </div>
+
+                        <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1">
+                          <span className="text-[9px] font-bold text-slate-500 uppercase">Cat: {v.tipo_veiculo?.nome || 'N/D'}</span>
+                          <span className="text-[9px] font-bold text-slate-500 uppercase">Motor: {v.motorizacao || 'N/D'}</span>
+                          <span className="text-[9px] font-bold text-slate-500 uppercase">KM: {(v.km || 0).toLocaleString('pt-BR')}</span>
+                        </div>
+
+                        <div className="mt-3 flex items-center gap-6 pt-3 border-t border-slate-100">
+                          <div className="flex flex-col">
+                            <span className="text-[7px] font-black text-slate-400 uppercase leading-none mb-1">Custo Aquisição</span>
+                            <span className="text-xs font-black text-slate-700">{formatCurrency(v.valor_custo || 0)}</span>
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-[7px] font-black text-slate-400 uppercase leading-none mb-1">Custo Serviços</span>
+                            <span className="text-xs font-black text-indigo-600">{formatCurrency(v.valor_custo_servicos || 0)}</span>
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-[7px] font-black text-emerald-400 uppercase leading-none mb-1">Venda Sugerida</span>
+                            <span className="text-xs font-black text-emerald-600">{formatCurrency(v.valor_venda || 0)}</span>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -142,25 +174,26 @@ const VeiculosVendaList: React.FC<Props> = ({ pedido, veiculosDisponiveis, onLin
       )}
 
       {veiculosList.length === 0 && !showSelector && (
-         <div 
+        <div
           onClick={() => !isConcluido && setShowSelector(true)}
           className="bg-white rounded-[2.5rem] border-2 border-dashed border-indigo-200 p-16 text-center cursor-pointer hover:bg-indigo-50/10 transition-all group"
         >
-            <div className="w-20 h-20 bg-indigo-50 text-indigo-400 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-               <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
-            </div>
-            <h4 className="text-xl font-black text-slate-900 uppercase tracking-tighter">Nenhum veículo vinculado</h4>
-            <p className="text-slate-500 text-sm mt-2">Clique aqui para adicionar o primeiro item desta venda.</p>
-         </div>
+          <div className="w-20 h-20 bg-indigo-50 text-indigo-400 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+            <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+          </div>
+          <h4 className="text-xl font-black text-slate-900 uppercase tracking-tighter">Nenhum veículo vinculado</h4>
+          <p className="text-slate-500 text-sm mt-2">Clique aqui para adicionar o primeiro item desta venda.</p>
+        </div>
       )}
 
       <div className="flex flex-col gap-6">
         {veiculosList.map((v: any) => (
-          <VehicleInSaleCard 
-            key={v.id} 
-            veiculo={v} 
-            isConcluido={isConcluido} 
-            onUnlink={() => onUnlink(v.id)} 
+          <VehicleInSaleCard
+            key={v.id}
+            veiculo={v}
+            isConcluido={isConcluido}
+            isConsignado={pedido.is_consignado}
+            onUnlink={() => onUnlink(v.id)}
             onUpdatePrice={(newPrice) => handleUpdatePrice(v.id, newPrice)}
           />
         ))}
