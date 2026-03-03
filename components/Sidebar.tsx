@@ -146,6 +146,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   )}
+                  {!isOpen && (
+                    <div className="absolute left-16 px-3 py-2 bg-slate-800 text-white text-xs font-bold rounded-lg shadow-xl border border-slate-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-[100] pointer-events-none flex items-center">
+                      {item.label}
+                      <div className="absolute w-2 h-2 bg-slate-800 border-l border-b border-slate-700 transform rotate-45 -left-1 top-1/2 -translate-y-1/2"></div>
+                    </div>
+                  )}
                 </button>
               ) : (
                 <NavLink
@@ -161,6 +167,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
                   <span className={`whitespace-nowrap font-medium transition-all duration-300 ${isOpen ? 'opacity-100 w-auto block' : 'opacity-0 w-0 hidden'}`}>
                     {item.label}
                   </span>
+                  {!isOpen && (
+                    <div className="absolute left-16 px-3 py-2 bg-slate-800 text-white text-xs font-bold rounded-lg shadow-xl border border-slate-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-[100] pointer-events-none flex items-center">
+                      {item.label}
+                      <div className="absolute w-2 h-2 bg-slate-800 border-l border-b border-slate-700 transform rotate-45 -left-1 top-1/2 -translate-y-1/2"></div>
+                    </div>
+                  )}
                 </NavLink>
               )}
 
@@ -204,7 +216,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
             ? 'bg-slate-800/40 hover:bg-rose-500/10 text-slate-400 hover:text-rose-400 border border-transparent hover:border-rose-500/20'
             : 'justify-center text-slate-400 hover:text-rose-400 hover:bg-rose-500/10'
             }`}
-          title="Sair do Sistema"
         >
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -213,6 +224,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
             <span className="ml-3 text-[10px] font-black uppercase tracking-[0.2em] whitespace-nowrap">
               Sair
             </span>
+          )}
+          {!isOpen && (
+            <div className="absolute left-16 px-3 py-2 bg-rose-600 text-white text-xs font-bold rounded-lg shadow-xl border border-rose-500 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-[100] pointer-events-none flex items-center">
+              Sair do Sistema
+              <div className="absolute w-2 h-2 bg-rose-600 border-l border-b border-rose-500 transform rotate-45 -left-1 top-1/2 -translate-y-1/2"></div>
+            </div>
           )}
         </button>
       </div>

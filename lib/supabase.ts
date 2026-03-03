@@ -14,7 +14,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     autoRefreshToken: true,
     detectSessionInUrl: true,
     storageKey: 'nexus_erp_auth_token', // Nome fixo para evitar conflitos
-    storage: window.localStorage
+    storage: window.sessionStorage
   },
   global: {
     headers: { 'x-application-name': 'nexus-erp' }

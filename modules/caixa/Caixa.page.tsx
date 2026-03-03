@@ -115,17 +115,12 @@ const CaixaPage: React.FC = () => {
     window.print();
   };
 
-  const { entradasTotal, saidasTotal, transacoesEntrada, transacoesSaida } = useMemo(() => {
-    if (!data?.transacoes) return { entradasTotal: 0, saidasTotal: 0, transacoesEntrada: [], transacoesSaida: [] };
-
-    const entradas = data.transacoes.filter(t => t.tipo === 'ENTRADA');
-    const saidas = data.transacoes.filter(t => t.tipo === 'SAIDA');
+  const { transacoesEntrada, transacoesSaida } = useMemo(() => {
+    if (!data?.transacoes) return { transacoesEntrada: [], transacoesSaida: [] };
 
     return {
-      transacoesEntrada: entradas,
-      transacoesSaida: saidas,
-      entradasTotal: entradas.reduce((acc, t) => acc + (t.valor || 0), 0),
-      saidasTotal: saidas.reduce((acc, t) => acc + (t.valor || 0), 0)
+      transacoesEntrada: data.transacoes.filter(t => t.tipo === 'ENTRADA'),
+      transacoesSaida: data.transacoes.filter(t => t.tipo === 'SAIDA')
     };
   }, [data?.transacoes]);
 
@@ -238,7 +233,7 @@ const CaixaPage: React.FC = () => {
                   <h3 className="font-bold text-emerald-900 text-sm">Entradas (Crédito)</h3>
                 </div>
                 <span className="text-[10px] font-black text-emerald-600/50 uppercase tracking-widest">
-                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(entradasTotal)}
+                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(data.total_entradas)}
                 </span>
               </div>
               <div className="overflow-x-auto max-h-[400px]">
@@ -283,7 +278,7 @@ const CaixaPage: React.FC = () => {
                   <h3 className="font-bold text-rose-900 text-sm">Saídas (Débito)</h3>
                 </div>
                 <span className="text-[10px] font-black text-rose-600/50 uppercase tracking-widest">
-                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(saidasTotal)}
+                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(data.total_saidas)}
                 </span>
               </div>
               <div className="overflow-x-auto max-h-[400px]">

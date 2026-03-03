@@ -40,18 +40,18 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ initialData, onSubmit, onCons
 
   const formatCNPJ = (value: string) => {
     let v = value.replace(/\D/g, ''); // Remove tudo o que não é dígito
-    
+
     if (v.length > 14) v = v.slice(0, 14); // Limita a 14 dígitos
 
     // Coloca ponto entre o segundo e o terceiro dígitos
     v = v.replace(/^(\d{2})(\d)/, '$1.$2');
-    
+
     // Coloca ponto entre o quinto e o sexto dígitos
     v = v.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
-    
+
     // Coloca uma barra entre o oitavo e o nono dígitos
     v = v.replace(/\.(\d{3})(\d)/, '.$1/$2');
-    
+
     // Coloca um hífen depois do bloco de quatro dígitos
     v = v.replace(/(\d{4})(\d)/, '$1-$2');
 
@@ -123,7 +123,7 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ initialData, onSubmit, onCons
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8 bg-white p-8 sm:p-10 rounded-[2.5rem] border border-slate-200 shadow-sm animate-in slide-in-from-bottom-4 duration-500">
-      
+
       <div className="flex items-center space-x-3 mb-4">
         <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -135,28 +135,28 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ initialData, onSubmit, onCons
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
         {/* Logo Section */}
+        {/* Logo Section */}
         <div className="md:col-span-3">
           <label className="block text-[10px] font-black text-slate-400 uppercase mb-3 tracking-widest ml-1">Logo da Empresa</label>
-          <input 
-            type="file" 
+          <input
+            type="file"
             ref={fileInputRef}
             onChange={handleFileChange}
             accept="image/*"
             className="hidden"
           />
-          <div 
+          <div
             onClick={() => fileInputRef.current?.click()}
-            className={`group relative flex flex-col items-center justify-center border-2 border-dashed rounded-[2rem] p-4 transition-all h-52 cursor-pointer overflow-hidden ${
-              formData.logo_url 
-                ? 'border-indigo-200 bg-white' 
+            className={`group relative flex flex-col items-center justify-center border-2 border-dashed rounded-[2rem] p-4 transition-all h-52 cursor-pointer overflow-hidden ${formData.logo_url
+                ? 'border-indigo-200 bg-white'
                 : 'border-slate-200 bg-slate-50 hover:bg-slate-100 hover:border-indigo-300'
-            }`}
+              }`}
           >
             {formData.logo_url ? (
               <>
                 <img src={formData.logo_url} alt="Logo Preview" className="max-h-full max-w-full object-contain" />
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 rounded-[2rem]">
-                  <button 
+                  <button
                     type="button"
                     onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
                     className="p-2 bg-white rounded-xl text-indigo-600 hover:scale-110 transition-transform shadow-lg"
@@ -166,7 +166,7 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ initialData, onSubmit, onCons
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                     </svg>
                   </button>
-                  <button 
+                  <button
                     type="button"
                     onClick={removeLogo}
                     className="p-2 bg-rose-500 rounded-xl text-white hover:scale-110 transition-transform shadow-lg"

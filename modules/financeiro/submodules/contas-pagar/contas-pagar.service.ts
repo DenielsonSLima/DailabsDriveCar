@@ -17,7 +17,8 @@ export const ContasPagarService = {
         parceiro:parceiros(nome, documento),
         categoria:fin_categorias(nome)
       `, { count: 'exact' })
-      .eq('tipo', 'PAGAR');
+      .eq('tipo', 'PAGAR')
+      .neq('status', 'CANCELADO');
 
     // Lógica de Abas Temporais
     const hoje = new Date().toISOString().split('T')[0];

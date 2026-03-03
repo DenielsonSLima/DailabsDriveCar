@@ -1,22 +1,11 @@
-
 import React from 'react';
+import GlobalSearch from './GlobalSearch';
 
 const Header: React.FC = () => {
   return (
     <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-40">
-      <div className="flex items-center flex-1 max-w-xl">
-        <div className="relative w-full">
-          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </span>
-          <input 
-            type="text" 
-            placeholder="Buscar em todo o sistema..."
-            className="w-full bg-slate-100 border-none rounded-lg py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-indigo-500 transition-all outline-none"
-          />
-        </div>
+      <div className="flex items-center flex-1">
+        <GlobalSearch />
       </div>
 
       <div className="flex items-center space-x-4">
@@ -27,7 +16,7 @@ const Header: React.FC = () => {
           </svg>
           <span className="absolute top-2 right-2 block h-2 w-2 rounded-full bg-rose-500 border-2 border-white"></span>
         </button>
-        
+
         <div className="h-8 w-px bg-slate-200"></div>
 
         {/* Perfil Simplificado */}

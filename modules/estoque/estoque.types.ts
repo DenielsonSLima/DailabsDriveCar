@@ -80,7 +80,12 @@ export const VeiculoSchema = z.object({
   updated_at: z.string().optional()
 });
 
-export interface IVeiculo extends z.infer<typeof VeiculoSchema> { }
+export interface IVeiculo extends z.infer<typeof VeiculoSchema> {
+  montadora?: { nome: string; logo_url: string };
+  modelo?: { nome: string };
+  versao?: { nome: string };
+  tipo_veiculo?: { nome: string };
+}
 
 export interface IEstoqueResponse {
   data: IVeiculo[];

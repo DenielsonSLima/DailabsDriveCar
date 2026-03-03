@@ -139,6 +139,7 @@ export const PerformanceService = {
         categoria:fin_categorias(nome)
       `)
       .eq('tipo', tipo)
+      .neq('status', 'CANCELADO')
       .gte('data_vencimento', startDate)
       .lte('data_vencimento', endDate)
       .order('data_vencimento', { ascending: true });
@@ -187,7 +188,8 @@ export const PerformanceService = {
         id, valor, data_pagamento, descricao,
         socio:parceiros(nome)
       `)
-      .eq('categoria_id', 'RETIRADA_SOCIO') // Ajustar ID se necessário
+      .or('categoria_id.eq.RETIRADA_SOCIO,tipo_transacao.eq.RETIRADA_SOCIO')
+      .neq('tipo_transacao', 'ESTORNO')
       .gte('data_pagamento', startDate)
       .lte('data_pagamento', endDate)
       .order('data_pagamento', { ascending: false });
@@ -267,6 +269,12 @@ export const PerformanceService = {
         onUpdate();
       })
       .on('postgres_changes', { event: '*', schema: 'public', table: 'fin_transacoes' }, () => {
+        onUpdate();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'fin_retiradas' }, () => {
+        onUpdate();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'fin_transferencias' }, () => {
         onUpdate();
       })
       .subscribe();

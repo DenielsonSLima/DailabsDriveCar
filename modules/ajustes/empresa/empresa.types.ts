@@ -21,6 +21,8 @@ export interface IEmpresa {
   uf: string;
 
   logo_url?: string;
+  stories_frame_url?: string;
+  feed_frame_url?: string;
   created_at?: string;
   updated_at?: string;
 }
@@ -43,6 +45,8 @@ export const EmpresaSchema = z.object({
   cidade: z.string(),
   uf: z.string(),
   logo_url: z.string().optional().nullable(),
+  stories_frame_url: z.string().optional().nullable(),
+  feed_frame_url: z.string().optional().nullable(),
   created_at: z.string().optional(),
   updated_at: z.string().optional(),
 });

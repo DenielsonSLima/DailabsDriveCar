@@ -178,6 +178,12 @@ export const CaixaService = {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'est_veiculos_despesas' }, () => {
         onUpdate();
       })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'fin_retiradas' }, () => {
+        onUpdate();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'fin_transferencias' }, () => {
+        onUpdate();
+      })
       .subscribe();
   },
 

@@ -24,8 +24,19 @@ const FinanceiroPage: React.FC = () => {
 
   useEffect(() => {
     loadKpis();
-    const sub = FinanceiroService.subscribeToTable('fin_titulos', () => loadKpis(true));
-    return () => { sub.unsubscribe(); };
+
+    // Assinar múltiplas tabelas para garantir atualização em tempo real dos KPIs
+    const subTitulos = FinanceiroService.subscribeToTable('fin_titulos', () => loadKpis(true));
+    const subTransacoes = FinanceiroService.subscribeToTable('fin_transacoes', () => loadKpis(true));
+    const subRetiradas = FinanceiroService.subscribeToTable('fin_retiradas', () => loadKpis(true));
+    const subTransferencias = FinanceiroService.subscribeToTable('fin_transferencias', () => loadKpis(true));
+
+    return () => {
+      subTitulos.unsubscribe();
+      subTransacoes.unsubscribe();
+      subRetiradas.unsubscribe();
+      subTransferencias.unsubscribe();
+    };
   }, []);
 
   async function loadKpis(silent = false) {

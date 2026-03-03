@@ -18,7 +18,9 @@ export const OutrosCreditosService = {
       .eq('tipo', 'RECEBER')
       .is('categoria_id', null)
       .is('pedido_id', null)
-      .is('venda_pedido_id', null);
+      .is('venda_pedido_id', null)
+      .neq('origem_tipo', 'PEDIDO_VENDA')
+      .in('status', ['PENDENTE', 'PARCIAL', 'ATRASADO']);
 
     if (tab === 'MES_ATUAL') {
       const now = new Date();

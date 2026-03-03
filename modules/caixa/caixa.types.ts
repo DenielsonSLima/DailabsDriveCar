@@ -38,6 +38,8 @@ export interface ICaixaDashboardData {
   total_passivo_circulante: number;
   total_despesas_fixas: number;
   total_despesas_variaveis: number;
+  total_entradas: number;
+  total_saidas: number;
 
   // Detalhamento
   contas: IContaBancaria[];
@@ -58,6 +60,8 @@ export const CaixaDashboardSchema = z.object({
   total_passivo_circulante: z.number().nullable().transform(v => v ?? 0),
   total_despesas_fixas: z.number().nullable().transform(v => v ?? 0),
   total_despesas_variaveis: z.number().nullable().transform(v => v ?? 0),
+  total_entradas: z.number().nullish().transform(v => v ?? 0),
+  total_saidas: z.number().nullish().transform(v => v ?? 0),
   total_compras: z.number().nullish().transform(v => v ?? 0),
   total_vendas: z.number().nullish().transform(v => v ?? 0),
   lucro_mensal: z.number().nullable().transform(v => v ?? 0),

@@ -24,6 +24,7 @@ export const ContasReceberService = {
         )
       `, { count: 'exact' })
       .eq('tipo', 'RECEBER')
+      .neq('status', 'CANCELADO')
       .or('categoria_id.not.is.null,pedido_id.not.is.null,venda_pedido_id.not.is.null');
 
     const hoje = new Date().toISOString().split('T')[0];

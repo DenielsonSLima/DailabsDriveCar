@@ -154,7 +154,7 @@ const OutrosCreditosPage: React.FC = () => {
         onClose={() => setDeleteId(null)}
         onConfirm={handleDelete}
         title="Excluir Lançamento?"
-        message="Deseja remover este registro de crédito? Se o valor já foi baixado, o saldo da conta bancária não será alterado automaticamente por aqui."
+        message="Deseja remover este registro de crédito? Se o valor já foi baixado, o saldo da conta bancária não será alterado automaticamente por aqui. O registro deixará de aparecer na lista."
         confirmText="Sim, Remover"
         variant="danger"
         isLoading={isDeleting}
