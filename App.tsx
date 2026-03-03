@@ -15,6 +15,7 @@ import EstoquePublicoPage from './modules/site-publico/estoque-publico/EstoquePu
 // Auth Module
 import AuthPage from './modules/auth/Auth.page.tsx';
 import SessionTimeoutModal from './components/SessionTimeoutModal.tsx';
+import ForcePasswordChangeModal from './components/ForcePasswordChangeModal.tsx';
 
 // Importação das Páginas ERP
 import InicioPage from './modules/inicio/Inicio.page.tsx';
@@ -179,7 +180,7 @@ const App: React.FC = () => {
     // Atualiza a ref estável para uso externo (handleContinueSession)
     startInactivityTimerRef.current = resetInactivityTimer;
 
-    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+    const events = ['mousedown', 'mousemove', 'keydown', 'click', 'scroll', 'touchstart', 'touchmove', 'touchend'];
     events.forEach(e => document.addEventListener(e, resetInactivityTimer));
     resetInactivityTimer();
 
@@ -327,12 +328,21 @@ const App: React.FC = () => {
         } />
       </Routes>
 
-      <SessionTimeoutModal
-        isOpen={showTimeoutModal}
-        countdown={countdown}
-        onContinue={handleContinueSession}
-        onLogout={handleManualLogout}
-      />
+      {session && (
+        <SessionTimeoutModal
+          isOpen={showTimeoutModal && !profile?.force_password_change}
+          countdown={countdown}
+          onContinue={handleContinueSession}
+          onLogout={handleManualLogout}
+        />
+      )}
+
+      {session && profile?.force_password_change && (
+        <ForcePasswordChangeModal
+          onSuccess={() => loadProfile(session.user.id)}
+          onLogout={handleManualLogout}
+        />
+      )}
     </BrowserRouter>
   );
 };

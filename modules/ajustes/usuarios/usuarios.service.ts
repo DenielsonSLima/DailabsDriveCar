@@ -11,7 +11,7 @@ export const UsuariosService = {
     try {
       const { data, error, status } = await supabase
         .from('profiles')
-        .select('id, nome, sobrenome, cpf, telefone, role, avatar_url, email, ativo')
+        .select('id, nome, sobrenome, cpf, telefone, role, avatar_url, email, ativo, force_password_change')
         .order('nome', { ascending: true });
 
       if (error) {
@@ -36,40 +36,39 @@ export const UsuariosService = {
   /**
    * Salva ou atualiza um usuário.
    */
-  async save(usuario: Partial<IUsuario>): Promise<void> {
+  async save(usuario: Partial<IUsuario>): Promise<{ tempPassword?: string } | void> {
     const isNew = !usuario.id;
 
     if (isNew) {
-      if (!usuario.email || !usuario.senha || usuario.senha.length < 6) {
-        throw new Error("E-mail e senha (mín. 6 caracteres) são obrigatórios.");
+      if (!usuario.email) {
+        throw new Error("E-mail é obrigatório para criar um novo usuário.");
       }
 
-      // 1. Criar no Supabase Auth
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: usuario.email,
-        password: usuario.senha,
-        options: {
-          data: {
-            nome: usuario.nome,
-            sobrenome: usuario.sobrenome,
-            telefone: usuario.telefone,
-            cpf: usuario.cpf,
-            role: usuario.role,
-            ativo: usuario.ativo !== undefined ? usuario.ativo : true
-          }
+      // 1. Chamar a Edge Function 'admin-create-user' para não sobrescrever a sessão atual
+      const { data: authData, error: authError } = await supabase.functions.invoke('admin-create-user', {
+        body: {
+          email: usuario.email,
+          nome: usuario.nome,
+          sobrenome: usuario.sobrenome,
+          telefone: usuario.telefone,
+          cpf: usuario.cpf,
+          role: usuario.role,
+          ativo: usuario.ativo !== undefined ? usuario.ativo : true
         }
       });
 
       if (authError) {
-        if (authError.message.includes('Database error')) {
-          throw new Error("Erro de banco de dados no Supabase Auth. Verifique se o usuário já existe.");
-        }
-        throw authError;
+        console.error("Edge Function Error:", authError);
+        throw new Error("Erro ao criar usuário através da Edge Function.");
       }
 
-      if (!authData.user) throw new Error("Erro ao gerar credenciais de acesso.");
+      if (authData?.error) {
+        throw new Error(authData.error);
+      }
 
-      // O perfil na tabela 'public.profiles' é criado automaticamente pelo TRIGGER 'on_auth_user_created'
+      // Retornar a senha provisória apenas na criação
+      return { tempPassword: authData.tempPassword };
+
     } else {
       // Atualização de usuário existente
       const { error } = await supabase
@@ -98,7 +97,13 @@ export const UsuariosService = {
   },
 
   async delete(id: string): Promise<void> {
-    // Verifica lançamentos em vendas
+    // 1. Proteção absoluta para o usuário de TI
+    const { data: profile } = await supabase.from('profiles').select('email').eq('id', id).single();
+    if (profile?.email === 'denielsonlima201099@gmail.com') {
+      throw new Error("Acesso protegido: O usuário raiz do sistema não pode ser excluído.");
+    }
+
+    // 2. Verifica lançamentos em vendas
     const { count: countVendas, error: errVendas } = await supabase
       .from('venda_pedidos')
       .select('*', { count: 'exact', head: true })

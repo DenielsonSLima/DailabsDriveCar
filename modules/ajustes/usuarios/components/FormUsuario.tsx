@@ -70,15 +70,21 @@ const FormUsuario: React.FC<FormUsuarioProps> = ({ initialData, onSubmit, onCanc
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!initialData && (!formData.senha || formData.senha.length < 6)) {
-      alert('A senha deve ter no mínimo 6 caracteres.');
+    if (!initialData && !formData.email) {
+      alert('E-mail é obrigatório para cadastrar o usuário.');
       return;
     }
 
-    if (formData.senha !== confirmSenha) {
+    if (initialData && formData.senha && formData.senha.length > 0 && formData.senha.length < 6) {
+      alert('A nova senha deve ter no mínimo 6 caracteres.');
+      return;
+    }
+
+    if (initialData && formData.senha && formData.senha !== confirmSenha) {
       alert('As senhas não coincidem!');
       return;
     }
+
     onSubmit(formData);
   };
 
@@ -159,70 +165,84 @@ const FormUsuario: React.FC<FormUsuarioProps> = ({ initialData, onSubmit, onCanc
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1 tracking-widest">Senha *</label>
-            <div className="relative">
-              <input
-                type={showSenha ? "text" : "password"}
-                name="senha"
-                value={formData.senha}
-                onChange={handleChange}
-                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-mono"
-                required={!initialData}
-              />
-              <button
-                type="button"
-                onClick={() => setShowSenha(!showSenha)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600"
-              >
-                {showSenha ? (
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" /></svg>
-                ) : (
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                )}
-              </button>
-            </div>
+        {initialData ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1 tracking-widest">Nova Senha (Opcional)</label>
+              <div className="relative">
+                <input
+                  type={showSenha ? "text" : "password"}
+                  name="senha"
+                  value={formData.senha}
+                  onChange={handleChange}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-mono"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowSenha(!showSenha)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600"
+                >
+                  {showSenha ? (
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" /></svg>
+                  ) : (
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                  )}
+                </button>
+              </div>
 
-            <div className="mt-2 px-1">
-              <div className="flex justify-between items-center mb-1">
-                <span className="text-[9px] font-black uppercase text-slate-400">Força da Senha</span>
-                <span className={`text-[9px] font-black uppercase ${strength.color.replace('bg-', 'text-')}`}>{strength.label}</span>
+              <div className="mt-2 px-1">
+                <div className="flex justify-between items-center mb-1">
+                  <span className="text-[9px] font-black uppercase text-slate-400">Força da Senha</span>
+                  <span className={`text-[9px] font-black uppercase ${strength.color.replace('bg-', 'text-')}`}>{strength.label}</span>
+                </div>
+                <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden flex gap-0.5">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div
+                      key={i}
+                      className={`h-full flex-1 transition-all duration-500 ${i <= strength.score ? strength.color : 'bg-slate-200'}`}
+                    />
+                  ))}
+                </div>
               </div>
-              <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden flex gap-0.5">
-                {[1, 2, 3, 4].map((i) => (
-                  <div
-                    key={i}
-                    className={`h-full flex-1 transition-all duration-500 ${i <= strength.score ? strength.color : 'bg-slate-200'}`}
-                  />
-                ))}
+            </div>
+            <div>
+              <label className="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1 tracking-widest">Confirmar Nova Senha</label>
+              <div className="relative">
+                <input
+                  type={showConfirmSenha ? "text" : "password"}
+                  value={confirmSenha}
+                  onChange={(e) => setConfirmSenha(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-mono"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmSenha(!showConfirmSenha)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600"
+                >
+                  {showConfirmSenha ? (
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" /></svg>
+                  ) : (
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                  )}
+                </button>
               </div>
             </div>
           </div>
-          <div>
-            <label className="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1 tracking-widest">Confirmar Senha *</label>
-            <div className="relative">
-              <input
-                type={showConfirmSenha ? "text" : "password"}
-                value={confirmSenha}
-                onChange={(e) => setConfirmSenha(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-mono"
-                required={!initialData}
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmSenha(!showConfirmSenha)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600"
-              >
-                {showConfirmSenha ? (
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" /></svg>
-                ) : (
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                )}
-              </button>
+        ) : (
+          <div className="bg-amber-50 border border-amber-200 p-4 rounded-2xl flex items-start space-x-3 mb-6">
+            <div className="text-amber-500 mt-0.5">
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+            <div>
+              <h4 className="text-xs font-black text-amber-900 uppercase tracking-widest">Geração de Senha Segura</h4>
+              <p className="text-sm text-amber-700 mt-1 leading-relaxed">
+                A senha de acesso será gerada automaticamente de forma segura. Após a criação, <b>copie as credenciais geradas</b> e repasse ao usuário. Ele será obrigado a alterar a senha no primeiro acesso.
+              </p>
             </div>
           </div>
-        </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>

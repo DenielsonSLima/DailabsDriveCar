@@ -71,7 +71,12 @@ const ListUsuarios: React.FC<ListUsuariosProps> = ({ usuarios, onEdit, onDelete,
               <td className="px-6 py-4">
                 <button
                   onClick={() => onToggleStatus(u.id)}
-                  className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full transition-all ${u.ativo ? 'text-emerald-600 bg-emerald-50 hover:bg-emerald-100' : 'text-slate-400 bg-slate-100 hover:bg-slate-200'
+                  disabled={u.email === 'denielsonlima201099@gmail.com'}
+                  className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full transition-all ${u.email === 'denielsonlima201099@gmail.com'
+                      ? 'text-emerald-500 bg-emerald-50 opacity-60 cursor-not-allowed'
+                      : u.ativo
+                        ? 'text-emerald-600 bg-emerald-50 hover:bg-emerald-100'
+                        : 'text-slate-400 bg-slate-100 hover:bg-slate-200'
                     }`}
                 >
                   <div className={`w-1.5 h-1.5 rounded-full ${u.ativo ? 'bg-emerald-500' : 'bg-slate-400'}`} />
@@ -83,7 +88,15 @@ const ListUsuarios: React.FC<ListUsuariosProps> = ({ usuarios, onEdit, onDelete,
                   <button onClick={() => onEdit(u)} className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all" title="Editar">
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                   </button>
-                  <button onClick={() => onDelete(u.id)} className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all" title="Excluir">
+                  <button
+                    onClick={() => onDelete(u.id)}
+                    disabled={u.email === 'denielsonlima201099@gmail.com'}
+                    className={`p-2 rounded-lg transition-all ${u.email === 'denielsonlima201099@gmail.com'
+                        ? 'text-slate-200 cursor-not-allowed'
+                        : 'text-slate-400 hover:text-rose-600 hover:bg-rose-50'
+                      }`}
+                    title="Excluir"
+                  >
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                   </button>
                 </div>

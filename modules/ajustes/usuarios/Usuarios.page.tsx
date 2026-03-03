@@ -13,6 +13,7 @@ const UsuariosPage: React.FC = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<IUsuario | null>(null);
   const [errorStatus, setErrorStatus] = useState<string | null>(null);
+  const [successCreds, setSuccessCreds] = useState<{ email: string, tempPassword: string } | null>(null);
 
   useEffect(() => {
     loadUsuarios();
@@ -53,20 +54,30 @@ const UsuariosPage: React.FC = () => {
 
   const handleSubmit = async (data: Partial<IUsuario>) => {
     try {
-      await UsuariosService.save(data);
-      // loadUsuarios is now triggered by realtime
+      const result = await UsuariosService.save(data) as { tempPassword?: string } | void;
+      await loadUsuarios(); // garante atualização imediata
       setIsFormOpen(false);
       setEditingUser(null);
+
+      if (result && result.tempPassword && data.email) {
+        setSuccessCreds({ email: data.email, tempPassword: result.tempPassword });
+      }
     } catch (err: any) {
       alert(`Erro ao salvar: ${err.message}`);
     }
   };
 
   const handleDelete = async (id: string) => {
+    const userToDel = usuarios.find(u => u.id === id);
+    if (userToDel?.email === 'denielsonlima201099@gmail.com') {
+      alert('Ação bloqueada: Este usuário é do TI (Sistema) e não pode ser excluído.');
+      return;
+    }
+
     if (confirm('Deseja realmente remover este acesso?')) {
       try {
         await UsuariosService.delete(id);
-        // loadUsuarios is now triggered by realtime
+        await loadUsuarios(); // garante atualização imediata
       } catch (err: any) {
         alert(err.message);
       }
@@ -74,8 +85,15 @@ const UsuariosPage: React.FC = () => {
   };
 
   const handleToggleStatus = async (id: string, currentStatus: boolean) => {
+    const userToToggle = usuarios.find(u => u.id === id);
+    if (userToToggle?.email === 'denielsonlima201099@gmail.com' && currentStatus === true) {
+      alert('Ação bloqueada: O usuário de TI não pode ser inativado.');
+      return;
+    }
+
     try {
       await UsuariosService.toggleStatus(id, currentStatus);
+      await loadUsuarios(); // garante atualização imediata
     } catch (err: any) {
       alert(`Erro ao alterar status: ${err.message}`);
     }
@@ -173,6 +191,49 @@ const UsuariosPage: React.FC = () => {
           </div>
         )}
       </div>
+
+      {successCreds && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="bg-white max-w-md w-full rounded-3xl shadow-xl overflow-hidden animate-in zoom-in-95 duration-300">
+            <div className="bg-emerald-500 p-6 flex items-center justify-center">
+              <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg">
+                <svg className="w-8 h-8 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+            </div>
+
+            <div className="p-8 text-center space-y-4">
+              <h2 className="text-2xl font-black text-slate-800 tracking-tighter uppercase">Acesso Criado!</h2>
+              <p className="text-slate-500 text-sm leading-relaxed">
+                O usuário foi criado com sucesso. Copie a senha provisória abaixo e envie ao novo colaborador. <b>Ele terá que trocá-la no primeiro acesso.</b>
+              </p>
+
+              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-left space-y-3 mt-6">
+                <div>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">E-mail (Login)</label>
+                  <div className="font-mono text-sm text-slate-800 bg-white px-3 py-2 rounded-xl border border-slate-100 select-all">
+                    {successCreds.email}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Senha Gerada</label>
+                  <div className="font-mono text-lg font-bold text-indigo-600 bg-indigo-50 px-3 py-2 rounded-xl border border-indigo-100 select-all tracking-wider text-center">
+                    {successCreds.tempPassword}
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setSuccessCreds(null)}
+                className="w-full py-4 mt-6 bg-slate-900 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg active:scale-95"
+              >
+                Entendi, Fechar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

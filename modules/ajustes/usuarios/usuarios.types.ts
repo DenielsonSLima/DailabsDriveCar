@@ -8,6 +8,7 @@ export interface IUsuario {
   role: UserRole;
   avatar_url?: string;
   ativo?: boolean;
+  force_password_change?: boolean;
   created_at?: string; // Tornado opcional
   updated_at?: string; // Tornado opcional
   // Campos extras para formulário
