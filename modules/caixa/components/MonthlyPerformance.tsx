@@ -5,9 +5,10 @@ interface Props {
    vendas: number;
    compras: number;
    lucro: number;
+   margem: number;
 }
 
-const MonthlyPerformance: React.FC<Props> = ({ vendas, compras, lucro }) => {
+const MonthlyPerformance: React.FC<Props> = ({ vendas, compras, lucro, margem }) => {
    const fmt = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(v);
 
    return (
@@ -44,7 +45,7 @@ const MonthlyPerformance: React.FC<Props> = ({ vendas, compras, lucro }) => {
                   {fmt(lucro)}
                </h4>
                <div className={`mt-2 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${lucro >= 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
-                  {vendas > 0 ? ((lucro / vendas) * 100).toFixed(1) : 0}% Margem
+                  {margem.toFixed(1)}% Margem
                </div>
             </div>
          </div>

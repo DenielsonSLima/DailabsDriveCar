@@ -213,6 +213,7 @@ const CaixaPage: React.FC = () => {
             vendas={data.total_vendas}
             compras={data.total_compras}
             lucro={data.lucro_mensal}
+            margem={data.margem_lucro}
           />
 
           {comparativo && (

@@ -38,13 +38,8 @@ export const CaixaService = {
     // Validate metrics with Zod
     const validatedMetrics = CaixaDashboardSchema.parse(metricsPayload || {});
 
-    const totalAtivos = (validatedMetrics as any).total_ativos_estoque || 0;
-
-    // Post-process partners to add percentage of total stock
-    const processedSocios = (investimentoSocios as any[] || []).map(s => ({
-      ...s,
-      porcentagem_estoque: totalAtivos > 0 ? (Number(s.valor_investido) / totalAtivos) * 100 : 0
-    })).sort((a, b) => b.valor_investido - a.valor_investido);
+    // Values like porcentagem_estoque, porcentagem_participacao and totals come already calculated from the RPC
+    const processedSocios = (investimentoSocios as any[] || []).sort((a, b) => b.valor_investido - a.valor_investido);
 
     return {
       ...(validatedMetrics as any),

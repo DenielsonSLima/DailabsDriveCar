@@ -14,11 +14,18 @@ const UsuariosPage: React.FC = () => {
   const [editingUser, setEditingUser] = useState<IUsuario | null>(null);
   const [errorStatus, setErrorStatus] = useState<string | null>(null);
   const [successCreds, setSuccessCreds] = useState<{ email: string, tempPassword: string } | null>(null);
+  // Modal de sucesso de exclusão
+  const [successDelete, setSuccessDelete] = useState<string | null>(null);
+  // Modal de confirmação de exclusão
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  // guard p/ armazenar o nome do usuário a excluir
+  const [confirmDeleteName, setConfirmDeleteName] = useState<string>('');
+  // Modal de erro in-app
+  const [errorModal, setErrorModal] = useState<string | null>(null);
 
   useEffect(() => {
     loadUsuarios();
 
-    // Inicia subscrição Realtime no Supabase para a tabela profiles
     const channel = UsuariosService.subscribeToChanges(() => {
       loadUsuarios();
     });
@@ -55,7 +62,7 @@ const UsuariosPage: React.FC = () => {
   const handleSubmit = async (data: Partial<IUsuario>) => {
     try {
       const result = await UsuariosService.save(data) as { tempPassword?: string } | void;
-      await loadUsuarios(); // garante atualização imediata
+      await loadUsuarios();
       setIsFormOpen(false);
       setEditingUser(null);
 
@@ -63,39 +70,45 @@ const UsuariosPage: React.FC = () => {
         setSuccessCreds({ email: data.email, tempPassword: result.tempPassword });
       }
     } catch (err: any) {
-      alert(`Erro ao salvar: ${err.message}`);
+      setErrorModal(err.message);
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = (id: string) => {
     const userToDel = usuarios.find(u => u.id === id);
     if (userToDel?.email === 'denielsonlima201099@gmail.com') {
-      alert('Ação bloqueada: Este usuário é do TI (Sistema) e não pode ser excluído.');
+      setErrorModal('Ação bloqueada: Este usuário é do TI (Sistema) e não pode ser excluído.');
       return;
     }
+    setConfirmDeleteName(`${userToDel?.nome ?? ''} ${userToDel?.sobrenome ?? ''}`.trim());
+    setConfirmDeleteId(id);
+  };
 
-    if (confirm('Deseja realmente remover este acesso?')) {
-      try {
-        await UsuariosService.delete(id);
-        await loadUsuarios(); // garante atualização imediata
-      } catch (err: any) {
-        alert(err.message);
-      }
+  const confirmDelete = async () => {
+    if (!confirmDeleteId) return;
+    const deletedName = confirmDeleteName;
+    setConfirmDeleteId(null);
+    try {
+      await UsuariosService.delete(confirmDeleteId);
+      await loadUsuarios();
+      setSuccessDelete(deletedName);
+    } catch (err: any) {
+      setErrorModal(err.message);
     }
   };
 
   const handleToggleStatus = async (id: string, currentStatus: boolean) => {
     const userToToggle = usuarios.find(u => u.id === id);
     if (userToToggle?.email === 'denielsonlima201099@gmail.com' && currentStatus === true) {
-      alert('Ação bloqueada: O usuário de TI não pode ser inativado.');
+      setErrorModal('Ação bloqueada: O usuário de TI não pode ser inativado.');
       return;
     }
 
     try {
       await UsuariosService.toggleStatus(id, currentStatus);
-      await loadUsuarios(); // garante atualização imediata
+      await loadUsuarios();
     } catch (err: any) {
-      alert(`Erro ao alterar status: ${err.message}`);
+      setErrorModal(`Erro ao alterar status: ${err.message}`);
     }
   };
 
@@ -182,7 +195,6 @@ const UsuariosPage: React.FC = () => {
                 onToggleStatus={(id) => {
                   const user = usuarios.find(u => u.id === id);
                   if (user) {
-                    // Impede o usuário de desativar a si mesmo se necessário (opcional)
                     handleToggleStatus(id, user.ativo ?? true);
                   }
                 }}
@@ -192,6 +204,95 @@ const UsuariosPage: React.FC = () => {
         )}
       </div>
 
+      {/* Modal de Confirmação de Exclusão */}
+      {confirmDeleteId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white max-w-sm w-full rounded-3xl shadow-xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="bg-rose-500 p-6 flex items-center justify-center">
+              <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-lg">
+                <svg className="w-7 h-7 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </div>
+            </div>
+            <div className="p-8 text-center space-y-3">
+              <h2 className="text-xl font-black text-slate-800 tracking-tighter uppercase">Remover Acesso</h2>
+              <p className="text-slate-500 text-sm leading-relaxed">
+                Deseja realmente remover o acesso de <strong>{confirmDeleteName || 'este usuário'}</strong>? Esta ação é <strong>irreversível</strong>.
+              </p>
+              <div className="flex gap-3 pt-4">
+                <button
+                  onClick={() => setConfirmDeleteId(null)}
+                  className="flex-1 py-3 border border-slate-200 text-slate-600 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-50 transition-all"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={confirmDelete}
+                  className="flex-1 py-3 bg-rose-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-rose-700 transition-all shadow-lg active:scale-95"
+                >
+                  Sim, Remover
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Sucesso de Exclusão */}
+      {successDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white max-w-sm w-full rounded-3xl shadow-xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="bg-slate-700 p-6 flex items-center justify-center">
+              <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-lg">
+                <svg className="w-7 h-7 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+            </div>
+            <div className="p-8 text-center space-y-3">
+              <h2 className="text-xl font-black text-slate-800 tracking-tighter uppercase">Acesso Removido</h2>
+              <p className="text-slate-500 text-sm leading-relaxed">
+                O acesso de <strong>{successDelete}</strong> foi removido com sucesso do sistema.
+              </p>
+              <button
+                onClick={() => setSuccessDelete(null)}
+                className="w-full py-3 mt-4 bg-slate-900 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg active:scale-95"
+              >
+                Fechar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+
+      {/* Modal de Erro In-App */}
+      {errorModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white max-w-sm w-full rounded-3xl shadow-xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="bg-amber-500 p-6 flex items-center justify-center">
+              <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-lg">
+                <svg className="w-7 h-7 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+            </div>
+            <div className="p-8 text-center space-y-3">
+              <h2 className="text-xl font-black text-slate-800 tracking-tighter uppercase">Atenção</h2>
+              <p className="text-slate-600 text-sm leading-relaxed">{errorModal}</p>
+              <button
+                onClick={() => setErrorModal(null)}
+                className="w-full py-3 mt-4 bg-slate-900 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg active:scale-95"
+              >
+                Fechar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Credenciais de Acesso Criadas */}
       {successCreds && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
           <div className="bg-white max-w-md w-full rounded-3xl shadow-xl overflow-hidden animate-in zoom-in-95 duration-300">

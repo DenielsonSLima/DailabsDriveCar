@@ -59,11 +59,11 @@ export const UsuariosService = {
 
       if (authError) {
         console.error("Edge Function Error:", authError);
-        throw new Error("Erro ao criar usuário através da Edge Function.");
+        throw new Error(`Erro ao criar usuário: ${authError.message || JSON.stringify(authError)}`);
       }
 
       if (authData?.error) {
-        throw new Error(authData.error);
+        throw new Error(`Erro ao criar usuário: ${authData.error}`);
       }
 
       // Retornar a senha provisória apenas na criação

@@ -17,6 +17,9 @@ export interface ISocioStockStats {
   porcentagem_estoque: number;
   quantidade_carros: number;
   lucro_periodo: number; // Lucro nas vendas do mês
+  porcentagem_participacao?: number;
+  total_investido_todos_socios?: number;
+  total_patrimonio_liquido_todos?: number;
   veiculos: {
     id: string;
     montadora: string;
@@ -50,21 +53,23 @@ export interface ICaixaDashboardData {
   total_compras: number;
   total_vendas: number;
   lucro_mensal: number;
+  margem_lucro: number;
 }
 
 export const CaixaDashboardSchema = z.object({
-  patrimonio_liquido: z.number().nullable().transform(v => v ?? 0),
-  saldo_disponivel: z.number().nullable().transform(v => v ?? 0),
-  total_ativos_estoque: z.number().nullable().transform(v => v ?? 0),
-  total_recebiveis: z.number().nullable().transform(v => v ?? 0),
-  total_passivo_circulante: z.number().nullable().transform(v => v ?? 0),
-  total_despesas_fixas: z.number().nullable().transform(v => v ?? 0),
-  total_despesas_variaveis: z.number().nullable().transform(v => v ?? 0),
+  patrimonio_liquido: z.number().nullish().transform(v => v ?? 0),
+  saldo_disponivel: z.number().nullish().transform(v => v ?? 0),
+  total_ativos_estoque: z.number().nullish().transform(v => v ?? 0),
+  total_recebiveis: z.number().nullish().transform(v => v ?? 0),
+  total_passivo_circulante: z.number().nullish().transform(v => v ?? 0),
+  total_despesas_fixas: z.number().nullish().transform(v => v ?? 0),
+  total_despesas_variaveis: z.number().nullish().transform(v => v ?? 0),
   total_entradas: z.number().nullish().transform(v => v ?? 0),
   total_saidas: z.number().nullish().transform(v => v ?? 0),
   total_compras: z.number().nullish().transform(v => v ?? 0),
   total_vendas: z.number().nullish().transform(v => v ?? 0),
-  lucro_mensal: z.number().nullable().transform(v => v ?? 0),
+  lucro_mensal: z.number().nullish().transform(v => v ?? 0),
+  margem_lucro: z.number().nullish().transform(v => v ?? 0),
 });
 
 export interface IComparativoMesData {
