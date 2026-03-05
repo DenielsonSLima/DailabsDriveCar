@@ -7,11 +7,10 @@ interface Props {
 }
 
 const VendaPartnersResultKpis: React.FC<Props> = ({ pedido }) => {
-  const formatCurrency = (val: number) => 
-    new Intl.NumberFormat('pt-BR', { 
-      style: 'currency', 
-      currency: 'BRL',
-      maximumFractionDigits: 0 
+  const formatCurrency = (val: number) =>
+    new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
     }).format(val);
 
   const stats = useMemo(() => {
@@ -74,11 +73,11 @@ const VendaPartnersResultKpis: React.FC<Props> = ({ pedido }) => {
               {/* Barra de Porcentagem à Direita */}
               <div className="flex-1 max-w-md">
                 <div className="flex justify-between items-center mb-1.5 px-1">
-                   <span className="text-[8px] font-black text-slate-400 uppercase">Cota de Participação</span>
-                   <span className="text-[10px] font-black text-indigo-600">{socio.porcentagem}%</span>
+                  <span className="text-[8px] font-black text-slate-400 uppercase">Cota de Participação</span>
+                  <span className="text-[10px] font-black text-indigo-600">{socio.porcentagem}%</span>
                 </div>
                 <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200/50">
-                  <div 
+                  <div
                     className="h-full bg-indigo-500 rounded-full transition-all duration-1000 ease-out shadow-[0_0_8px_rgba(79,70,229,0.3)]"
                     style={{ width: `${socio.porcentagem}%` }}
                   ></div>
@@ -97,14 +96,13 @@ const VendaPartnersResultKpis: React.FC<Props> = ({ pedido }) => {
                 <p className="text-sm font-black text-emerald-700">{formatCurrency(socio.retorno)}</p>
               </div>
               <div className="flex items-center px-4">
-                 <div className={`px-4 py-2 rounded-xl border-2 flex items-center space-x-2 ${
-                   socio.margem >= 0 ? 'bg-white text-emerald-600 border-emerald-50' : 'bg-white text-rose-600 border-rose-50'
-                 }`}>
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                       <path d={socio.margem >= 0 ? "M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" : "M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6"} />
-                    </svg>
-                    <span className="text-xs font-black uppercase tracking-tighter">{socio.margem.toFixed(1)}% Margem Real</span>
-                 </div>
+                <div className={`px-4 py-2 rounded-xl border-2 flex items-center space-x-2 ${socio.margem >= 0 ? 'bg-white text-emerald-600 border-emerald-50' : 'bg-white text-rose-600 border-rose-50'
+                  }`}>
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path d={socio.margem >= 0 ? "M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" : "M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6"} />
+                  </svg>
+                  <span className="text-xs font-black uppercase tracking-tighter">{socio.margem.toFixed(1)}% Margem Real</span>
+                </div>
               </div>
             </div>
           </div>

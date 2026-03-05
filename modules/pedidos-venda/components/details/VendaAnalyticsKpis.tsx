@@ -7,30 +7,29 @@ interface Props {
 }
 
 const VendaAnalyticsKpis: React.FC<Props> = ({ pedido }) => {
-  const formatCurrency = (val: number) => 
-    new Intl.NumberFormat('pt-BR', { 
-      style: 'currency', 
-      currency: 'BRL',
-      maximumFractionDigits: 0 
+  const formatCurrency = (val: number) =>
+    new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
     }).format(val);
 
   const v = pedido.veiculo as any;
-  
+
   // 1. Custo de Aquisição
   const custoAquisicao = v?.valor_custo || 0;
-  
+
   // 2. Custo de Serviços
   const custoServicos = v?.valor_custo_servicos || 0;
-  
+
   // 3. Investimento Total
   const investimentoTotal = custoAquisicao + custoServicos;
-  
+
   // 4. Valor da Venda (FIX: Fallback se o valor do pedido estiver zerado)
   const valorVenda = (pedido.valor_venda > 0 ? pedido.valor_venda : v?.valor_venda) || 0;
-  
+
   // 5. Resultado Bruto
   const lucroBruto = valorVenda - investimentoTotal;
-  
+
   // 6. Margem %
   const margem = investimentoTotal > 0 ? (lucroBruto / investimentoTotal) * 100 : 0;
 
@@ -84,13 +83,12 @@ const VendaAnalyticsKpis: React.FC<Props> = ({ pedido }) => {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 animate-in slide-in-from-bottom-3 duration-500">
       {kpis.map((kpi, idx) => (
-        <div 
-          key={idx} 
-          className={`p-3.5 rounded-[2rem] border transition-all hover:shadow-lg ${
-            kpi.isSpecial 
-              ? `${kpi.bg} border-transparent shadow-xl` 
+        <div
+          key={idx}
+          className={`p-3.5 rounded-[2rem] border transition-all hover:shadow-lg ${kpi.isSpecial
+              ? `${kpi.bg} border-transparent shadow-xl`
               : `${kpi.bg} border-slate-100`
-          }`}
+            }`}
         >
           <div className="flex items-center justify-between mb-1.5">
             <p className={`text-[7px] font-black uppercase tracking-widest ${kpi.isSpecial ? 'text-white/70' : 'text-slate-400'}`}>
@@ -102,7 +100,7 @@ const VendaAnalyticsKpis: React.FC<Props> = ({ pedido }) => {
               </svg>
             </div>
           </div>
-          
+
           <h3 className={`text-sm font-black tracking-tight leading-none ${kpi.text}`}>
             {kpi.isPercent ? `${kpi.value.toFixed(1)}%` : formatCurrency(kpi.value as number)}
           </h3>

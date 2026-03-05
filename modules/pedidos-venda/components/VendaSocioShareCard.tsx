@@ -20,7 +20,7 @@ const VendaSocioShareCard: React.FC<Props> = ({ pedidos, socioIdFiltro }) => {
         v.socios.forEach((s: any) => {
           const valorProporcional = (s.porcentagem / 100) * p.valor_venda;
           const current = map.get(s.socio_id) || { nome: s.nome, totalVendaProporcional: 0, count: 0 };
-          
+
           map.set(s.socio_id, {
             ...current,
             totalVendaProporcional: current.totalVendaProporcional + valorProporcional,
@@ -38,8 +38,8 @@ const VendaSocioShareCard: React.FC<Props> = ({ pedidos, socioIdFiltro }) => {
     })).sort((a, b) => b.totalVendaProporcional - a.totalVendaProporcional);
   }, [pedidos]);
 
-  const formatCurrency = (val: number) => 
-    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(val);
+  const formatCurrency = (val: number) =>
+    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
   if (socioAnalytics.length === 0) return null;
 
@@ -60,20 +60,18 @@ const VendaSocioShareCard: React.FC<Props> = ({ pedidos, socioIdFiltro }) => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {socioAnalytics.map((socio, idx) => {
           const isFiltered = socioIdFiltro && socioAnalytics.find(s => s.nome === socio.nome); // Simplificação, ideal seria por ID
-          
+
           return (
-            <div 
-              key={idx} 
-              className={`p-5 rounded-3xl border transition-all duration-300 ${
-                socioIdFiltro && socio.nome.includes(socioIdFiltro) // Logica de destaque se filtrado
-                  ? 'bg-indigo-600 border-indigo-600 text-white shadow-xl shadow-indigo-200 scale-105 z-10' 
+            <div
+              key={idx}
+              className={`p-5 rounded-3xl border transition-all duration-300 ${socioIdFiltro && socio.nome.includes(socioIdFiltro) // Logica de destaque se filtrado
+                  ? 'bg-indigo-600 border-indigo-600 text-white shadow-xl shadow-indigo-200 scale-105 z-10'
                   : 'bg-slate-50 border-slate-100 hover:bg-white hover:border-indigo-200'
-              }`}
+                }`}
             >
               <div className="flex items-center space-x-3 mb-4">
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm shadow-sm ${
-                  socioIdFiltro && socio.nome.includes(socioIdFiltro) ? 'bg-white/20 text-white' : 'bg-indigo-600 text-white'
-                }`}>
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm shadow-sm ${socioIdFiltro && socio.nome.includes(socioIdFiltro) ? 'bg-white/20 text-white' : 'bg-indigo-600 text-white'
+                  }`}>
                   {socio.nome.charAt(0)}
                 </div>
                 <div className="min-w-0">
@@ -88,10 +86,10 @@ const VendaSocioShareCard: React.FC<Props> = ({ pedidos, socioIdFiltro }) => {
 
               <div className="space-y-1">
                 <div className="flex justify-between items-end">
-                   <p className={`text-[8px] font-black uppercase ${socioIdFiltro && socio.nome.includes(socioIdFiltro) ? 'text-indigo-200' : 'text-slate-400'}`}>VGV Proporcional</p>
-                   <span className={`text-[10px] font-black ${socioIdFiltro && socio.nome.includes(socioIdFiltro) ? 'text-white' : 'text-indigo-600'}`}>
+                  <p className={`text-[8px] font-black uppercase ${socioIdFiltro && socio.nome.includes(socioIdFiltro) ? 'text-indigo-200' : 'text-slate-400'}`}>VGV Proporcional</p>
+                  <span className={`text-[10px] font-black ${socioIdFiltro && socio.nome.includes(socioIdFiltro) ? 'text-white' : 'text-indigo-600'}`}>
                     {socio.percentualDoTotalVendido.toFixed(1)}%
-                   </span>
+                  </span>
                 </div>
                 <p className={`text-lg font-black tracking-tight ${socioIdFiltro && socio.nome.includes(socioIdFiltro) ? 'text-white' : 'text-slate-900'}`}>
                   {formatCurrency(socio.totalVendaProporcional)}
@@ -99,8 +97,8 @@ const VendaSocioShareCard: React.FC<Props> = ({ pedidos, socioIdFiltro }) => {
               </div>
 
               <div className={`h-1.5 w-full rounded-full mt-4 overflow-hidden p-0.5 ${socioIdFiltro && socio.nome.includes(socioIdFiltro) ? 'bg-white/20' : 'bg-slate-200 shadow-inner'}`}>
-                <div 
-                  className={`h-full rounded-full transition-all duration-1000 ${socioIdFiltro && socio.nome.includes(socioIdFiltro) ? 'bg-white' : 'bg-indigo-500'}`} 
+                <div
+                  className={`h-full rounded-full transition-all duration-1000 ${socioIdFiltro && socio.nome.includes(socioIdFiltro) ? 'bg-white' : 'bg-indigo-500'}`}
                   style={{ width: `${socio.percentualDoTotalVendido}%` }}
                 ></div>
               </div>
