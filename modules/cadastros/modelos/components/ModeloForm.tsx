@@ -84,7 +84,10 @@ const ModeloForm: React.FC<FormProps> = ({ initialData, isSaving, onClose, onSub
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value.toUpperCase() }));
+    setFormData(prev => ({
+      ...prev,
+      [name]: name.endsWith('_id') ? value : value.toUpperCase()
+    }));
   };
 
   return (
@@ -94,7 +97,7 @@ const ModeloForm: React.FC<FormProps> = ({ initialData, isSaving, onClose, onSub
         <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50">
           <div>
             <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">
-              {initialData ? 'Editar Modelo' : 'Novo Modelo'}
+              {initialData?.id ? 'Editar Modelo' : 'Novo Modelo'}
             </h2>
             <p className="text-slate-500 text-xs">Vincule o modelo a uma marca, tipo e adicione uma imagem.</p>
           </div>
@@ -137,7 +140,7 @@ const ModeloForm: React.FC<FormProps> = ({ initialData, isSaving, onClose, onSub
               <input
                 type="text"
                 name="nome"
-                value={formData.nome}
+                value={formData.nome || ''}
                 onChange={handleChange}
                 required
                 disabled={isSaving}
@@ -151,7 +154,7 @@ const ModeloForm: React.FC<FormProps> = ({ initialData, isSaving, onClose, onSub
                 <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Montadora *</label>
                 <select
                   name="montadora_id"
-                  value={formData.montadora_id}
+                  value={formData.montadora_id || ''}
                   onChange={handleChange}
                   required
                   disabled={isSaving || loadingOptions}
@@ -168,7 +171,7 @@ const ModeloForm: React.FC<FormProps> = ({ initialData, isSaving, onClose, onSub
                 <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Tipo de Veículo *</label>
                 <select
                   name="tipo_veiculo_id"
-                  value={formData.tipo_veiculo_id}
+                  value={formData.tipo_veiculo_id || ''}
                   onChange={handleChange}
                   required
                   disabled={isSaving || loadingOptions}
@@ -197,7 +200,7 @@ const ModeloForm: React.FC<FormProps> = ({ initialData, isSaving, onClose, onSub
               disabled={isSaving}
               className="px-10 py-3 bg-indigo-600 text-white text-xs font-black uppercase tracking-widest rounded-2xl hover:bg-indigo-700 shadow-xl shadow-indigo-100 transition-all flex items-center justify-center min-w-[180px] disabled:opacity-50 active:scale-95"
             >
-              {isSaving ? 'Salvando...' : (initialData ? 'Atualizar Modelo' : 'Cadastrar Modelo')}
+              {isSaving ? 'Salvando...' : (initialData?.id ? 'Atualizar Modelo' : 'Cadastrar Modelo')}
             </button>
           </div>
         </form>

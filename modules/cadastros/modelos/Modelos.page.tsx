@@ -135,7 +135,16 @@ const ModelosPage: React.FC = () => {
   }, [agrupados, searchTerm, selectedMontadora, selectedTipo, montadorasDisponiveis]);
 
   const handleOpenAdd = () => {
-    setEditingModelo(null);
+    let initialMontadoraId = '';
+    if (selectedMontadora) {
+      const montadora = montadoras.find(m => m.nome === selectedMontadora);
+      if (montadora) {
+        initialMontadoraId = montadora.id;
+      }
+    }
+
+    // We pass it as partial IModelo but without an id, so it represents a "New Model" with pre-filled fields
+    setEditingModelo(initialMontadoraId ? { montadora_id: initialMontadoraId } as IModelo : null);
     setIsFormOpen(true);
   };
 
@@ -271,8 +280,8 @@ const ModelosPage: React.FC = () => {
                 key={m.id}
                 onClick={() => handleSelectMontadora(m.nome)}
                 className={`group flex items-center gap-3 p-3 rounded-xl transition-all w-full text-left ${selectedMontadora === m.nome
-                    ? 'bg-indigo-50 border border-indigo-500 shadow-sm ring-1 ring-indigo-200'
-                    : 'bg-white border border-slate-200 hover:border-indigo-300 hover:shadow-md hover:-translate-y-0.5'
+                  ? 'bg-indigo-50 border border-indigo-500 shadow-sm ring-1 ring-indigo-200'
+                  : 'bg-white border border-slate-200 hover:border-indigo-300 hover:shadow-md hover:-translate-y-0.5'
                   }`}
               >
                 <div className="w-8 h-8 flex-shrink-0 flex items-center justify-center bg-white rounded-lg p-1 border border-slate-100 shadow-sm">
