@@ -136,7 +136,9 @@ const RelatorioExtratoBancarioPage: React.FC = () => {
                             disabled={loadingContas}
                         >
                             {contas.map(c => (
-                                <option key={c.id} value={c.id}>{c.banco_nome}</option>
+                                <option key={c.id} value={c.id}>
+                                    {c.banco_nome} - {c.titular} | Saldo: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(c.saldo_atual || 0)}
+                                </option>
                             ))}
                         </select>
                     </div>

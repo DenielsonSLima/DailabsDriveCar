@@ -28,10 +28,11 @@ const FormCardFinance: React.FC<Props> = ({ formData, formas, onChange, disabled
           <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Forma de Pagamento</label>
           <div className="relative">
             <select
+              required
               disabled={disabled}
               value={formData.forma_pagamento_id || ''}
               onChange={e => onChange({ forma_pagamento_id: e.target.value })}
-              className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 font-bold text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 appearance-none transition-all cursor-pointer shadow-sm hover:shadow-md disabled:opacity-50"
+              className={`w-full bg-white border ${!formData.forma_pagamento_id && !disabled ? 'border-rose-300 focus:ring-rose-500/20 focus:border-rose-500' : 'border-slate-200 focus:ring-indigo-500/20 focus:border-indigo-500'} rounded-2xl px-5 py-4 font-bold text-slate-900 outline-none focus:ring-2 appearance-none transition-all cursor-pointer shadow-sm hover:shadow-md disabled:opacity-50`}
             >
               <option value="">Selecione...</option>
               {formas.map(f => <option key={f.id} value={f.id}>{f.nome}</option>)}

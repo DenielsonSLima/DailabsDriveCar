@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { IContaBancaria } from '../contas.types';
+import { IContaBancaria, TipoConta } from '../contas.types';
 
 interface Props {
   initialData: IContaBancaria | null;
@@ -21,16 +21,21 @@ const bancosPopulares = [
 ];
 
 const ContaForm: React.FC<Props> = ({ initialData, onClose, onSubmit }) => {
-  const [formData, setFormData] = useState<Partial<IContaBancaria>>({
-    banco_nome: '',
-    titular: '',
-    agencia: '',
-    conta: '',
-    tipo: 'CORRENTE',
-    cor_cartao: '#1e293b',
-    permite_negativo: true,
-    ativo: true,
-    ...initialData
+  const [formData, setFormData] = useState<Partial<IContaBancaria>>(() => {
+    const data = {
+      banco_nome: '',
+      titular: '',
+      agencia: '',
+      conta: '',
+      tipo: 'CORRENTE' as TipoConta,
+      cor_cartao: '#1e293b',
+      permite_negativo: true,
+      ativo: true,
+      ...initialData
+    };
+    if (data.banco_nome) data.banco_nome = data.banco_nome.toUpperCase();
+    if (data.titular) data.titular = data.titular.toUpperCase();
+    return data;
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,7 +48,7 @@ const ContaForm: React.FC<Props> = ({ initialData, onClose, onSubmit }) => {
     setFormData(prev => ({
       ...prev,
       banco_codigo: banco.codigo,
-      banco_nome: banco.nome,
+      banco_nome: banco.nome.toUpperCase(),
       cor_cartao: banco.cor,
       tipo: banco.codigo === '000' ? 'CAIXA_FISICO' : 'CORRENTE'
     }));
@@ -56,7 +61,11 @@ const ContaForm: React.FC<Props> = ({ initialData, onClose, onSubmit }) => {
       alert("Por favor, preencha os campos obrigatórios: Instituição e Titular.");
       return;
     }
-    onSubmit(formData);
+    onSubmit({
+      ...formData,
+      banco_nome: formData.banco_nome.toUpperCase(),
+      titular: formData.titular.toUpperCase()
+    });
   };
 
   return (
@@ -126,7 +135,7 @@ const ContaForm: React.FC<Props> = ({ initialData, onClose, onSubmit }) => {
               <input
                 name="banco_nome"
                 value={formData.banco_nome}
-                onChange={handleChange}
+                onChange={(e) => { e.target.value = e.target.value.toUpperCase(); handleChange(e); }}
                 className="mt-3 w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-xs font-bold outline-none focus:ring-2 focus:ring-indigo-500 placeholder:font-normal"
                 placeholder="Ou digite o nome da instituição..."
                 required
@@ -139,7 +148,7 @@ const ContaForm: React.FC<Props> = ({ initialData, onClose, onSubmit }) => {
               <input
                 name="titular"
                 value={formData.titular}
-                onChange={handleChange}
+                onChange={(e) => { e.target.value = e.target.value.toUpperCase(); handleChange(e); }}
                 className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-bold text-slate-800 outline-none focus:ring-2 focus:ring-indigo-500 transition-all uppercase"
                 placeholder="NOME DA EMPRESA OU SÓCIO"
                 required

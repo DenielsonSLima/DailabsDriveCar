@@ -104,7 +104,7 @@ const RetiradaForm: React.FC<Props> = ({ editItem, onClose, onSuccess }) => {
             <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">Conta Bancária de Saída</label>
             <select required value={formData.conta_origem_id} onChange={e => setFormData({ ...formData, conta_origem_id: e.target.value })} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-bold text-[#111827] outline-none appearance-none">
               <option value="">Selecione a conta...</option>
-              {contas.map(c => <option key={c.id} value={c.id}>{c.banco_nome} - Saldo: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(c.saldo_atual || 0)}</option>)}
+              {contas.map(c => <option key={c.id} value={c.id}>{c.banco_nome} - {c.titular} | Saldo: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(c.saldo_atual || 0)}</option>)}
             </select>
           </div>
 

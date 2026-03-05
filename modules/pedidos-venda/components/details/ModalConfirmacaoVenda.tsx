@@ -100,7 +100,7 @@ const ModalConfirmacaoVenda: React.FC<Props> = ({ pedido, valorVendaEfetivo, onC
                   className="w-full bg-white border border-blue-200 rounded-xl px-4 py-3 text-xs font-black text-blue-700 outline-none"
                 >
                   <option value="">Destino do Dinheiro...</option>
-                  {contas.map(c => <option key={c.id} value={c.id}>{c.banco_nome} - CC: {c.conta}</option>)}
+                  {contas.map(c => <option key={c.id} value={c.id}>{c.banco_nome} - {c.titular} | Saldo: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(c.saldo_atual || 0)}</option>)}
                 </select>
               </div>
             )}

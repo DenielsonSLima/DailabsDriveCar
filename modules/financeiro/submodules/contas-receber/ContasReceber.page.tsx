@@ -183,7 +183,12 @@ const ContasReceberPage: React.FC = () => {
         <ModalBaixa
           titulo={selectedTitulo as any}
           onClose={() => setSelectedTitulo(null)}
-          onSuccess={() => { setSelectedTitulo(null); queryClient.invalidateQueries({ queryKey: ['contas-receber'] }); }}
+          onSuccess={() => {
+            setSelectedTitulo(null);
+            queryClient.invalidateQueries({ queryKey: ['contas-receber'] });
+            queryClient.invalidateQueries({ queryKey: ['caixa-transacoes'] });
+            queryClient.invalidateQueries({ queryKey: ['caixa_dashboard'] });
+          }}
         />
       )}
 

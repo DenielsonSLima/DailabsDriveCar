@@ -263,7 +263,7 @@ const ModalPaymentForm: React.FC<Props> = ({ pedidoId, formaPagamentoId, valorSu
                 className="w-full bg-white border-2 border-emerald-200 rounded-2xl px-5 py-4 text-xs font-black text-emerald-700 outline-none shadow-sm"
               >
                 <option value="">Origem do dinheiro...</option>
-                {contas.map(c => <option key={c.id} value={c.id}>{c.banco_nome} - CC: {c.conta}</option>)}
+                {contas.map(c => <option key={c.id} value={c.id}>{c.banco_nome} - {c.titular} | Saldo: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(c.saldo_atual || 0)}</option>)}
               </select>
             </div>
           )}

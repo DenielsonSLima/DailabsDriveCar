@@ -166,7 +166,7 @@ const ModalBaixa: React.FC<Props> = ({ titulo, onClose, onSuccess }) => {
                     className="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-[#111827] outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50"
                   >
                     <option value="">Selecione a conta...</option>
-                    {contas.map(c => <option key={c.id} value={c.id}>{c.banco_nome} - {c.conta}</option>)}
+                    {contas.map(c => <option key={c.id} value={c.id}>{c.banco_nome} - {c.titular} | Saldo: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(c.saldo_atual || 0)}</option>)}
                   </select>
                 </div>
 

@@ -106,6 +106,11 @@ const PedidoCompraFormPage: React.FC = () => {
       return;
     }
 
+    if (!formData.forma_pagamento_id) {
+      alert("Selecione a Forma de Pagamento deste pedido nas Condições Financeiras.");
+      return;
+    }
+
     if (isConcluido) {
       if (!confirm("Este pedido já está CONCLUÍDO. Alterar os dados cadastrais agora pode causar divergências com o financeiro já gerado. Deseja continuar?")) {
         return;

@@ -242,7 +242,7 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
               <option value="">Selecione a conta...</option>
               {contas.map(c => (
                 <option key={c.id} value={c.id}>
-                  {c.banco_nome} - Saldo:{' '}
+                  {c.banco_nome} - {c.titular} | Saldo:{' '}
                   {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(c.saldo_atual || 0)}
                 </option>
               ))}

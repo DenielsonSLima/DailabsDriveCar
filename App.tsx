@@ -271,7 +271,6 @@ const App: React.FC = () => {
                   <Route path="/cadastros/tipos-despesas" element={<TiposDespesasPage />} />
 
                   <Route path="/estoque" element={<EstoquePage />} />
-                  <Route path="/estoque/novo" element={<EstoqueFormPage />} />
                   <Route path="/estoque/:id" element={<EstoqueDetalhesPage />} />
                   <Route path="/estoque/editar/:id" element={<EstoqueFormPage />} />
 

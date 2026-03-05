@@ -84,6 +84,9 @@ const PedidoCompraDetalhesPage: React.FC = () => {
       setShowConfirm(false);
       queryClient.invalidateQueries({ queryKey: ['pedido_compra_detalhes', id] });
       queryClient.invalidateQueries({ queryKey: ['pedidos_compra_list'] });
+      queryClient.invalidateQueries({ queryKey: ['estoque_list'] });
+      queryClient.invalidateQueries({ queryKey: ['estoque_stats'] });
+      queryClient.invalidateQueries({ queryKey: ['contas-pagar'] });
     },
     onError: (e: any) => showNotification('error', "Erro ao confirmar entrada: " + e.message)
   });
@@ -95,6 +98,9 @@ const PedidoCompraDetalhesPage: React.FC = () => {
       setShowReopen(false);
       queryClient.invalidateQueries({ queryKey: ['pedido_compra_detalhes', id] });
       queryClient.invalidateQueries({ queryKey: ['pedidos_compra_list'] });
+      queryClient.invalidateQueries({ queryKey: ['estoque_list'] });
+      queryClient.invalidateQueries({ queryKey: ['estoque_stats'] });
+      queryClient.invalidateQueries({ queryKey: ['contas-pagar'] });
     },
     onError: () => showNotification('error', 'Erro ao reabrir pedido.')
   });
@@ -137,6 +143,8 @@ const PedidoCompraDetalhesPage: React.FC = () => {
     onSuccess: () => {
       setUnlinkTargetId(null);
       queryClient.invalidateQueries({ queryKey: ['pedido_compra_detalhes', id] });
+      queryClient.invalidateQueries({ queryKey: ['estoque_list'] });
+      queryClient.invalidateQueries({ queryKey: ['estoque_stats'] });
     },
     onError: () => showNotification('error', 'Erro ao desvincular veículo.')
   });

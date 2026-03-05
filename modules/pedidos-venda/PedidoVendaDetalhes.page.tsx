@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { PedidosVendaService } from './pedidos-venda.service';
 import { IPedidoVenda, IVendaPagamento } from './pedidos-venda.types';
 import { EstoqueService } from '../estoque/estoque.service';
@@ -19,6 +20,7 @@ import ModalConfirmacaoVenda from './components/details/ModalConfirmacaoVenda';
 const PedidoVendaDetalhesPage: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const queryClient = useQueryClient();
   const [pedido, setPedido] = useState<IPedidoVenda | null>(null);
   const [veiculosDisponiveis, setVeiculosDisponiveis] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -116,6 +118,9 @@ const PedidoVendaDetalhesPage: React.FC = () => {
         updates.valor_venda = veiculoSelecionado.valor_venda;
       }
       await PedidosVendaService.save(updates);
+      queryClient.invalidateQueries({ queryKey: ['pedidos_venda_list'] });
+      queryClient.invalidateQueries({ queryKey: ['estoque_list'] });
+      queryClient.invalidateQueries({ queryKey: ['estoque_stats'] });
       loadData(true);
     } finally {
       setActionLoading(false);
@@ -133,6 +138,9 @@ const PedidoVendaDetalhesPage: React.FC = () => {
     try {
       await PedidosVendaService.save({ id: pedido.id, veiculo_id: null } as any);
       setUnlinkVehicleId(null);
+      queryClient.invalidateQueries({ queryKey: ['pedidos_venda_list'] });
+      queryClient.invalidateQueries({ queryKey: ['estoque_list'] });
+      queryClient.invalidateQueries({ queryKey: ['estoque_stats'] });
       loadData(true);
     } finally {
       setActionLoading(false);
@@ -147,6 +155,8 @@ const PedidoVendaDetalhesPage: React.FC = () => {
         await PedidosVendaService.savePayment(p);
       }
       showNotification('success', `${payments.length} recebimento(s) lançado(s) com sucesso!`);
+      queryClient.invalidateQueries({ queryKey: ['pedidos_venda_list'] });
+      queryClient.invalidateQueries({ queryKey: ['contas-receber'] });
       loadData(true);
     } catch (e) {
       showNotification('error', 'Erro ao processar recebimentos.');
@@ -160,6 +170,8 @@ const PedidoVendaDetalhesPage: React.FC = () => {
     try {
       await PedidosVendaService.deletePayment(payId);
       showNotification('success', 'Lançamento estornado com sucesso.');
+      queryClient.invalidateQueries({ queryKey: ['pedidos_venda_list'] });
+      queryClient.invalidateQueries({ queryKey: ['contas-receber'] });
       loadData(true);
     } catch (e) {
       showNotification('error', 'Erro ao excluir lançamento.');
@@ -222,6 +234,10 @@ const PedidoVendaDetalhesPage: React.FC = () => {
       }
 
       setShowConfirm(false);
+      queryClient.invalidateQueries({ queryKey: ['pedidos_venda_list'] });
+      queryClient.invalidateQueries({ queryKey: ['estoque_list'] });
+      queryClient.invalidateQueries({ queryKey: ['estoque_stats'] });
+      queryClient.invalidateQueries({ queryKey: ['contas-receber'] });
       loadData(true);
     } catch (e: any) {
       showNotification('error', "Erro ao faturar venda: " + e.message);
@@ -237,6 +253,10 @@ const PedidoVendaDetalhesPage: React.FC = () => {
       await PedidosVendaService.cancelSale(pedido.id);
       showNotification('success', 'Venda cancelada com sucesso. Financeiro estornado e veículo liberado.');
       setShowCancel(false);
+      queryClient.invalidateQueries({ queryKey: ['pedidos_venda_list'] });
+      queryClient.invalidateQueries({ queryKey: ['estoque_list'] });
+      queryClient.invalidateQueries({ queryKey: ['estoque_stats'] });
+      queryClient.invalidateQueries({ queryKey: ['contas-receber'] });
       loadData(true);
     } catch (e: any) {
       showNotification('error', "Erro ao cancelar venda: " + e.message);
@@ -335,6 +355,10 @@ const PedidoVendaDetalhesPage: React.FC = () => {
         onClose={() => setShowDelete(false)}
         onConfirm={async () => {
           await PedidosVendaService.delete(pedido.id);
+          queryClient.invalidateQueries({ queryKey: ['pedidos_venda_list'] });
+          queryClient.invalidateQueries({ queryKey: ['estoque_list'] });
+          queryClient.invalidateQueries({ queryKey: ['estoque_stats'] });
+          queryClient.invalidateQueries({ queryKey: ['contas-receber'] });
           navigate('/pedidos-venda');
         }}
         title="Excluir Pedido de Venda?"

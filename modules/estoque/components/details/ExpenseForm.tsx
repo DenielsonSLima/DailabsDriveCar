@@ -273,7 +273,7 @@ const ExpenseForm: React.FC<Props> = ({ onClose, onSubmit }) => {
                 className="w-full bg-white border-2 border-emerald-200 rounded-xl px-5 py-4 text-xs font-black text-emerald-700 outline-none shadow-sm"
               >
                 <option value="">Selecione o Caixa de Saída...</option>
-                {contas.map(c => <option key={c.id} value={c.id}>{c.banco_nome} - Saldo: {formatCurrency(c.saldo_atual || 0)}</option>)}
+                {contas.map(c => <option key={c.id} value={c.id}>{c.banco_nome} - {c.titular} | Saldo: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(c.saldo_atual || 0)}</option>)}
               </select>
             </div>
           )}

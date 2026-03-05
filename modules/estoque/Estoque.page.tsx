@@ -102,13 +102,6 @@ const EstoquePage: React.FC = () => {
           <h1 className="text-3xl font-bold text-slate-900 tracking-tighter">Estoque de Veículos</h1>
           <p className="text-slate-500 text-sm mt-1">Gerencie seu inventário e analise a participação societária.</p>
         </div>
-        <button
-          onClick={() => navigate('/estoque/novo')}
-          className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-sm font-black uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg active:scale-95 flex items-center"
-        >
-          <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
-          Novo Veículo
-        </button>
       </div>
 
       <EstoqueDashboard stats={statsDashboard} socios={socios} />
