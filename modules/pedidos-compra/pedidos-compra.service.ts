@@ -209,10 +209,7 @@ export const PedidosCompraService = {
   },
 
   async delete(id: string): Promise<void> {
-    const { error } = await supabase
-      .from(TABLE)
-      .delete()
-      .eq('id', id);
+    const { error } = await supabase.rpc('excluir_pedido_compra', { p_pedido_id: id });
     if (error) throw error;
   },
 
