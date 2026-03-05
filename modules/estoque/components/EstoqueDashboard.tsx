@@ -24,45 +24,41 @@ const EstoqueDashboard: React.FC<Props> = ({ stats, socios }) => {
   return (
     <div className="space-y-6 mb-12 animate-in fade-in slide-in-from-top-4 duration-700">
 
-      {/* KPIs Numéricos Originais (Refinados) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white p-5 rounded-[2rem] border border-slate-200 shadow-sm">
-          <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Investido (Estoque)</p>
-          <h3 className="text-xl font-black text-slate-900">{formatCurrency(analytics.totalInvestido)}</h3>
-        </div>
-        <div className="bg-white p-5 rounded-[2rem] border border-slate-200 shadow-sm">
-          <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Veículos em Pátio</p>
-          <h3 className="text-xl font-black text-indigo-600">{analytics.count} <span className="text-xs text-slate-400 uppercase">Unidades</span></h3>
-        </div>
-        <div className="bg-white p-5 rounded-[2rem] border border-slate-200 shadow-sm">
-          <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Valor Total Custo Veículos</p>
-          <h3 className="text-xl font-black text-slate-900">{formatCurrency(analytics.totalCustoBase)}</h3>
-        </div>
-        <div className="bg-white p-5 rounded-[2rem] border border-slate-200 shadow-sm">
-          <p className="text-[9px] font-black text-amber-500 uppercase tracking-widest mb-1">Valor Total Serviços</p>
-          <h3 className="text-xl font-black text-amber-600">{formatCurrency(analytics.totalServicos)}</h3>
-        </div>
-      </div>
-
-      {/* Dashboard Visual de Sócios e Ticket Médio */}
+      {/* Dashboard Visual de Sócios e KPIs */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-        {/* Ticket Médio */}
-        <div className="lg:col-span-4">
-          <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white h-full relative overflow-hidden shadow-2xl">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500 rounded-full blur-[80px] opacity-20"></div>
-            <p className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em] mb-4">Métrica de Venda</p>
-            <h2 className="text-2xl font-black tracking-tighter uppercase mb-2">Ticket Médio</h2>
-            <p className="text-4xl font-black text-white tracking-tight">{formatCurrency(analytics.ticketMedioVenda)}</p>
-            <div className="mt-8 pt-8 border-t border-white/10">
-              <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Valor Geral de Venda (VGV)</p>
-              <p className="text-xl font-black text-emerald-400 mt-1">{formatCurrency(analytics.totalVenda)}</p>
+        {/* KPIs (Substituindo Ticket Médio) */}
+        <div className="lg:col-span-5 flex flex-col gap-4 h-full">
+          {/* Linha 1 */}
+          <div className="grid grid-cols-2 gap-4 flex-1">
+            <div className="relative overflow-hidden bg-slate-900 p-5 rounded-[2rem] border border-slate-800 shadow-xl flex flex-col justify-center group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
+              <div className="absolute -top-10 -right-10 w-32 h-32 bg-indigo-500 rounded-full blur-[60px] opacity-20 group-hover:opacity-40 transition-opacity"></div>
+              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 relative z-10">Total Investido (Estoque)</p>
+              <h3 className="text-lg lg:text-xl font-black text-white relative z-10">{formatCurrency(analytics.totalInvestido)}</h3>
+            </div>
+            <div className="relative overflow-hidden bg-indigo-600 p-5 rounded-[2rem] border border-indigo-500 shadow-xl flex flex-col justify-center group transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
+              <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white rounded-full blur-[60px] opacity-20 group-hover:opacity-30 transition-opacity"></div>
+              <p className="text-[9px] font-black text-indigo-200 uppercase tracking-widest mb-1 relative z-10">Veículos em Pátio</p>
+              <h3 className="text-lg lg:text-xl font-black text-white relative z-10">{analytics.count} <span className="text-[10px] text-indigo-200 uppercase">Unidades</span></h3>
+            </div>
+          </div>
+          {/* Linha 2 */}
+          <div className="grid grid-cols-2 gap-4 flex-1">
+            <div className="relative overflow-hidden bg-white p-5 rounded-[2rem] border border-slate-200 shadow-md flex flex-col justify-center group transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+              <div className="absolute inset-0 bg-gradient-to-br from-transparent to-slate-50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1 relative z-10">Valor Custo Veículos</p>
+              <h3 className="text-lg lg:text-xl font-black text-slate-900 relative z-10">{formatCurrency(analytics.totalCustoBase)}</h3>
+            </div>
+            <div className="relative overflow-hidden bg-gradient-to-br from-amber-50 to-orange-50 p-5 rounded-[2rem] border border-orange-100 shadow-md flex flex-col justify-center group transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+              <div className="absolute -top-10 -right-10 w-32 h-32 bg-amber-400 rounded-full blur-[60px] opacity-10 group-hover:opacity-20 transition-opacity"></div>
+              <p className="text-[9px] font-black text-amber-500 uppercase tracking-widest mb-1 relative z-10">Valor Total Serviços</p>
+              <h3 className="text-lg lg:text-xl font-black text-amber-600 relative z-10">{formatCurrency(analytics.totalServicos)}</h3>
             </div>
           </div>
         </div>
 
         {/* Gráfico de Barras: Sócios */}
-        <div className="lg:col-span-8 bg-white rounded-[2.5rem] border border-slate-200 p-8 shadow-sm">
+        <div className="lg:col-span-7 bg-white rounded-[2.5rem] border border-slate-200 p-8 shadow-sm h-full flex flex-col">
           <div className="flex items-center justify-between mb-8">
             <div>
               <h3 className="text-lg font-black text-slate-900 uppercase tracking-tighter">Participação por Sócio</h3>

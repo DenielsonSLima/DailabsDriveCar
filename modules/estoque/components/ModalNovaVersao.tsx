@@ -68,10 +68,10 @@ const ModalNovaVersao: React.FC<Props> = ({ modeloId, modeloNome, onClose, onSuc
     const labelCls = "block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1";
 
     return (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-0 bg-slate-900/70 backdrop-blur-md animate-in fade-in duration-200">
             <div className="bg-white w-full max-w-lg rounded-[2rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
                 {/* Header */}
-                <div className="px-8 pt-8 pb-6 flex items-center justify-between border-b border-slate-100">
+                <div className="px-8 pt-6 pb-5 flex items-center justify-between border-b border-slate-100">
                     <div>
                         <span className="text-[9px] font-black text-indigo-500 uppercase tracking-widest">Cadastro Rápido</span>
                         <h2 className="text-xl font-black text-slate-900 uppercase tracking-tighter">Nova Versão</h2>
@@ -86,7 +86,7 @@ const ModalNovaVersao: React.FC<Props> = ({ modeloId, modeloNome, onClose, onSuc
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="p-8 space-y-4 overflow-y-auto max-h-[70vh]">
+                <form onSubmit={handleSubmit} className="px-8 py-6 space-y-4 overflow-y-auto max-h-[70vh]">
                     {/* Nome da Versão */}
                     <div>
                         <label className={labelCls}>Nome da Versão / Acabamento *</label>

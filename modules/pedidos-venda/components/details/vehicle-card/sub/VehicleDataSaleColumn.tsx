@@ -102,7 +102,7 @@ const VehicleDataSaleColumn: React.FC<Props> = ({
       </div>
 
       {/* Financial KPI Cards */}
-      <div className="grid grid-cols-4 gap-3 mb-8">
+      <div className="grid grid-cols-3 gap-3 mb-8">
         <div className="bg-white border rounded-2xl p-3 shadow-sm border-slate-100 flex flex-col justify-center h-20 min-w-0">
           <p className="text-[7px] font-black text-slate-400 uppercase tracking-widest mb-1 truncate">Custo Aquisição</p>
           <p className="text-xs font-black text-slate-600 tracking-tighter truncate">{formatCurrency(veiculo.valor_custo || 0)}</p>
@@ -115,40 +115,59 @@ const VehicleDataSaleColumn: React.FC<Props> = ({
           <p className="text-[7px] font-black text-slate-400 uppercase tracking-widest mb-1 truncate">Investimento Total</p>
           <p className="text-xs font-black text-amber-600 tracking-tighter truncate">{formatCurrency(totalInvestido)}</p>
         </div>
+      </div>
 
-        {/* Preço de Venda (Editável) */}
-        <div className="bg-emerald-50 border rounded-2xl p-3 shadow-sm border-emerald-200 flex flex-col justify-center h-20 min-w-0 relative group/price">
-          <p className="text-[7px] font-black text-emerald-600 uppercase tracking-widest mb-1 truncate">
+      {/* Preço de Venda (Destaque Editável - Refinado) */}
+      <div
+        className={`mb-8 px-4 py-3 rounded-2xl border-2 border-dashed transition-all duration-300 flex flex-col items-center justify-center min-h-[76px] relative group/price overflow-hidden
+          ${isEditingPrice && !isConcluido
+            ? 'bg-emerald-50 border-emerald-500 shadow-inner'
+            : 'bg-emerald-50/50 border-emerald-300 hover:border-emerald-500 hover:bg-emerald-50 cursor-pointer'
+          }`}
+        onClick={!isEditingPrice && !isConcluido ? onStartEditPrice : undefined}
+      >
+        <div className="absolute top-2.5 left-4 flex items-center gap-1.5">
+          <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
+          <p className="text-[7px] font-black text-emerald-600 uppercase tracking-widest">
             {isConsignado ? 'Preço de Venda' : 'Preço Negociado'}
           </p>
-          {isEditingPrice && !isConcluido ? (
-            <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
+        </div>
+
+        {isEditingPrice && !isConcluido ? (
+          <div className="flex flex-col items-center w-full max-w-sm gap-2 px-2 mt-4" onClick={e => e.stopPropagation()}>
+            <div className="relative w-full">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-lg font-black text-emerald-300 italic">R$</span>
               <input
                 autoFocus
                 type="text"
                 value={new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(localPrice).replace('R$', '').trim()}
                 onChange={(e) => onCurrencyInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && onSavePrice(e as any)}
-                className="w-full bg-white border border-emerald-300 rounded-lg px-2 py-0.5 text-xs font-black text-emerald-700 outline-none text-right"
+                className="w-full bg-white border-2 border-emerald-500 rounded-xl pl-10 pr-3 py-1.5 text-xl font-black text-emerald-700 outline-none shadow-md focus:ring-4 focus:ring-emerald-200 transition-all text-right"
+                placeholder="0,00"
               />
-              <button onClick={onSavePrice} className="p-1 bg-emerald-600 text-white rounded shadow-sm hover:bg-emerald-700">
-                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M5 13l4 4L19 7" /></svg>
-              </button>
             </div>
-          ) : (
-            <div
-              className={`flex items-center justify-between min-w-0 ${!isConcluido ? 'cursor-pointer' : ''}`}
-              onClick={onStartEditPrice}
+            <button
+              onClick={onSavePrice}
+              className="w-full py-1.5 bg-emerald-600 text-white rounded-lg font-black text-[9px] uppercase tracking-widest shadow hover:bg-emerald-700 hover:-translate-y-0.5 transition-all active:translate-y-0 flex items-center justify-center gap-1.5"
             >
-              <p className="text-xs font-black text-emerald-700 tracking-tighter truncate">
-                {formatCurrency(veiculo.valor_venda || 0)}
-              </p>
-              {!isConcluido && (
-                <svg className="w-3 h-3 text-emerald-300 opacity-0 group-hover/price:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-              )}
-            </div>
-          )}
-        </div>
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M5 13l4 4L19 7" /></svg>
+              Confirmar
+            </button>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center mt-3">
+            <h2 className="text-2xl font-black text-emerald-700 tracking-tighter">
+              {formatCurrency(veiculo.valor_venda || 0)}
+            </h2>
+            {!isConcluido && (
+              <div className="flex items-center gap-1 mt-0.5 px-2 py-[1px] bg-emerald-100/50 rounded-full border border-emerald-200 opacity-60 group-hover/price:opacity-100 transition-all">
+                <svg className="w-2 h-2 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                <span className="text-[7px] font-black text-emerald-600 uppercase tracking-wider">Editar</span>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Sócio Shares */}
