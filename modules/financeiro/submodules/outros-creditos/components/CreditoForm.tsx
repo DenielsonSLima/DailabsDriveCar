@@ -60,12 +60,25 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
   }, [formData.valor_total]);
 
   const handleCurrencyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value.replace(/\D/g, '');
-    const numericValue = Number(value) / 100;
+    const val = e.target.value;
+    const cleaned = val.replace(/[^\d,\.]/g, '');
+    if (cleaned === '' || cleaned === ',' || cleaned === '.') {
+      setValorFormatado('');
+      setFormData(prev => ({ ...prev, valor_total: 0 }));
+      return;
+    }
+    const normalized = cleaned.replace(/\./g, '').replace(',', '.');
+    const parsed = parseFloat(normalized);
+    if (!isNaN(parsed)) {
+      setValorFormatado(cleaned);
+      setFormData(prev => ({ ...prev, valor_total: parsed }));
+    }
+  };
+
+  const handleBlur = () => {
     setValorFormatado(
-      new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(numericValue)
+      new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(formData.valor_total)
     );
-    setFormData(prev => ({ ...prev, valor_total: numericValue }));
   };
 
   const toggleSocio = (socio: any) => {
@@ -208,6 +221,7 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
                 type="text"
                 value={valorFormatado}
                 onChange={handleCurrencyChange}
+                onBlur={handleBlur}
                 className="w-full bg-white border-2 border-teal-100 rounded-2xl px-5 py-3.5 text-lg font-black text-teal-600 outline-none focus:border-teal-500 text-center"
                 required
               />

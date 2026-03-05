@@ -11,16 +11,48 @@ interface Props {
 }
 
 const FormCardFinanceVenda: React.FC<Props> = ({ valorVenda, formaPagamentoId, formas, dataVencimento, onChange, disabled }) => {
+  const [valorRaw, setValorRaw] = React.useState('');
   const selectedForma = formas.find(f => f.id === formaPagamentoId);
   const exigeVencimento = selectedForma?.destino_lancamento === 'CONTAS_RECEBER';
+
+  const formatNumber = (val?: number) => {
+    if (val === undefined || val === 0) return '';
+    return new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(val);
+  };
+
+  const handleBlur = () => {
+    setValorRaw(formatNumber(valorVenda));
+  };
+
+  React.useEffect(() => {
+    if (valorVenda !== undefined && !valorRaw) {
+      setValorRaw(formatNumber(valorVenda));
+    }
+  }, [valorVenda]);
 
   const formatCurrency = (val: number) => {
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
   };
 
   const handleValueChange = (val: string) => {
-    const numeric = Number(val.replace(/\D/g, '')) / 100;
-    onChange({ valor_venda: numeric });
+    setValorRaw(val);
+    const cleaned = val.replace(/[^\d,\.]/g, '');
+    if (cleaned === '' || cleaned === ',' || cleaned === '.') {
+      onChange({ valor_venda: 0 });
+      return;
+    }
+    const normalized = cleaned.replace(/\./g, '').replace(',', '.');
+    const parsed = parseFloat(normalized);
+    if (!isNaN(parsed)) {
+      onChange({ valor_venda: parsed });
+    }
+  };
+
+  const displayValue = (val: number) => {
+    return new Intl.NumberFormat('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(val || 0);
   };
 
   return (
@@ -38,8 +70,9 @@ const FormCardFinanceVenda: React.FC<Props> = ({ valorVenda, formaPagamentoId, f
             <input
               type="text"
               disabled={disabled}
-              value={formatCurrency(valorVenda).replace('R$', '').trim()}
+              value={valorRaw}
               onChange={(e) => handleValueChange(e.target.value)}
+              onBlur={handleBlur}
               className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 pl-12 text-2xl font-black text-emerald-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-sm hover:shadow-md"
             />
           </div>

@@ -93,12 +93,25 @@ const DespesaVariavelForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditan
   }, [formData.forma_pagamento_id, formas]);
 
   const handleCurrencyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value.replace(/\D/g, '');
-    const numericValue = Number(value) / 100;
+    const val = e.target.value;
+    const cleaned = val.replace(/[^\d,\.]/g, '');
+    if (cleaned === '' || cleaned === ',' || cleaned === '.') {
+      setValorFormatado('');
+      setFormData(prev => ({ ...prev, valor_total: 0 }));
+      return;
+    }
+    const normalized = cleaned.replace(/\./g, '').replace(',', '.');
+    const parsed = parseFloat(normalized);
+    if (!isNaN(parsed)) {
+      setValorFormatado(cleaned);
+      setFormData(prev => ({ ...prev, valor_total: parsed }));
+    }
+  };
+
+  const handleBlur = () => {
     setValorFormatado(
-      new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(numericValue)
+      new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(formData.valor_total)
     );
-    setFormData(prev => ({ ...prev, valor_total: numericValue }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -222,6 +235,7 @@ const DespesaVariavelForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditan
                 type="text"
                 value={valorFormatado}
                 onChange={handleCurrencyChange}
+                onBlur={handleBlur}
                 className="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl px-5 py-4 text-2xl font-black text-orange-600 outline-none focus:border-orange-500 text-center transition-all"
                 required
               />
