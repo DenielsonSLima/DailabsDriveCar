@@ -104,6 +104,8 @@ const PedidoCompraDetalhesPage: React.FC = () => {
     onSuccess: () => {
       navigate('/pedidos-compra');
       queryClient.invalidateQueries({ queryKey: ['pedidos_compra_list'] });
+      queryClient.invalidateQueries({ queryKey: ['estoque_list'] });
+      queryClient.invalidateQueries({ queryKey: ['estoque_stats'] });
     },
     onError: () => showNotification('error', 'Erro ao excluir pedido.')
   });

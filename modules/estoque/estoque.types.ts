@@ -51,7 +51,7 @@ export const VeiculoSchema = z.object({
   tipo_veiculo_id: z.string().uuid(),
   modelo_id: z.string().uuid(),
   versao_id: z.string().uuid(),
-  cor_id: z.string().uuid(),
+  cor_id: z.string().uuid().optional().nullable(),
   placa: z.string().optional().nullable(),
   chassi: z.string().optional().nullable(),
   renavam: z.string().optional().nullable(),
