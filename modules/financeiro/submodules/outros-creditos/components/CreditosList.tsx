@@ -8,6 +8,7 @@ interface Props {
   onReceber: (titulo: ITituloCredito) => void;
   onEdit: (titulo: ITituloCredito) => void;
   onDelete: (id: string) => void;
+  onBaixa: (titulo: ITituloCredito) => void;
   pagination?: {
     currentPage: number;
     pageSize: number;
@@ -35,8 +36,9 @@ const CreditosList: React.FC<Props> = ({ items, loading, isGrouped, onReceber, o
             <th className="px-8 py-5">Vencimento</th>
             <th className="px-8 py-5">Status</th>
             <th className="px-8 py-5">Descrição / Origem</th>
-            <th className="px-8 py-5">Destino / Conta</th>
             <th className="px-8 py-5 text-right">Valor Total</th>
+            <th className="px-8 py-5 text-right text-emerald-600">Recebido</th>
+            <th className="px-8 py-5 text-right text-rose-600">Pendente</th>
             <th className="px-8 py-5 text-right w-20">Ações</th>
           </tr>
         </thead>
@@ -60,22 +62,28 @@ const CreditosList: React.FC<Props> = ({ items, loading, isGrouped, onReceber, o
                 <p className="text-xs font-bold text-slate-700 uppercase truncate max-w-[200px]">{t.descricao}</p>
                 <p className="text-[9px] text-slate-400 font-bold uppercase mt-0.5">{t.parceiro?.nome || t.categoria?.nome}</p>
               </td>
-              <td className="px-8 py-6">
-                {(() => {
-                  const conta = t.transacoes?.[0]?.conta_origem;
-                  return conta ? (
-                    <div className="flex flex-col">
-                      <p className="text-[10px] font-black text-slate-600 uppercase">{conta.banco_nome}</p>
-                      <p className="text-[9px] text-slate-400 font-mono">CC: {conta.conta}</p>
-                    </div>
-                  ) : <span className="text-[9px] text-slate-300 font-bold uppercase">Não Definida</span>;
-                })()}
+              <td className="px-8 py-6 text-right">
+                <p className="text-sm font-black text-slate-900">{formatCurrency(t.valor_total)}</p>
               </td>
               <td className="px-8 py-6 text-right">
-                <p className="text-sm font-black text-teal-600">{formatCurrency(t.valor_total)}</p>
+                <p className="text-sm font-black text-emerald-600">{formatCurrency(t.valor_pago || 0)}</p>
+              </td>
+              <td className="px-8 py-6 text-right">
+                <p className="text-sm font-black text-rose-600">{formatCurrency(Math.max(0, t.valor_total - (t.valor_pago || 0)))}</p>
               </td>
               <td className="px-8 py-6 text-right" onClick={(e) => e.stopPropagation()}>
                 <div className="flex justify-end space-x-2">
+                  {t.status !== 'PAGO' && (
+                    <button
+                      onClick={() => onBaixa(t)}
+                      className="p-2 text-emerald-500 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors"
+                      title="Receber / Baixar"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </button>
+                  )}
                   <button onClick={() => onEdit(t)} className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="Editar">
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                   </button>

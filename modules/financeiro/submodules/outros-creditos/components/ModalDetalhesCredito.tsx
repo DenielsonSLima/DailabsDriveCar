@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { OutrosCreditosService } from '../outros-creditos.service';
 import { TitulosService } from '../../../services/titulos.service';
+import ModalBaixa from '../../components/ModalBaixa';
 import { ITituloCredito } from '../outros-creditos.types';
 
 interface Props {
@@ -15,6 +16,7 @@ const ModalDetalhesCredito: React.FC<Props> = ({ titulo, onClose, onSuccess }) =
     const [recebimentos, setRecebimentos] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [refreshKey, setRefreshKey] = useState(0);
+    const [showBaixa, setShowBaixa] = useState(false);
 
     // Estados para edição
     const [editandoId, setEditandoId] = useState<string | null>(null);
@@ -137,6 +139,18 @@ const ModalDetalhesCredito: React.FC<Props> = ({ titulo, onClose, onSuccess }) =
                             Histórico de Recebimentos / Baixas
                         </h4>
 
+                        {valorPendente > 0 && (
+                            <button
+                                onClick={() => setShowBaixa(true)}
+                                className="mb-4 w-full py-3 bg-emerald-50 text-emerald-600 rounded-2xl border border-emerald-100 text-[10px] font-black uppercase tracking-widest hover:bg-emerald-100 transition-all flex items-center justify-center"
+                            >
+                                <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                </svg>
+                                Adicionar Novo Recebimento
+                            </button>
+                        )}
+
                         {loading ? (
                             <div className="py-10 flex justify-center"><div className="w-6 h-6 border-2 border-teal-600 border-t-transparent rounded-full animate-spin"></div></div>
                         ) : recebimentos.length === 0 ? (
@@ -227,6 +241,18 @@ const ModalDetalhesCredito: React.FC<Props> = ({ titulo, onClose, onSuccess }) =
                     </button>
                 </div>
             </div>
+
+            {showBaixa && (
+                <ModalBaixa
+                    titulo={titulo as any}
+                    onClose={() => setShowBaixa(false)}
+                    onSuccess={() => {
+                        setShowBaixa(false);
+                        setRefreshKey(prev => prev + 1);
+                        onSuccess();
+                    }}
+                />
+            )}
         </div>
     );
 };

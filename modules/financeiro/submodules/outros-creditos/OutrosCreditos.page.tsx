@@ -6,6 +6,7 @@ import CreditosList from './components/CreditosList';
 import CreditosKpis from './components/CreditosKpis';
 import CreditoForm from './components/CreditoForm';
 import ModalDetalhesCredito from './components/ModalDetalhesCredito';
+import ModalBaixa from '../components/ModalBaixa';
 import ConfirmModal from '../../../../components/ConfirmModal';
 
 // force-refresh-v2
@@ -27,6 +28,7 @@ const OutrosCreditosPage: React.FC = () => {
   });
 
   const [selectedTitulo, setSelectedTitulo] = useState<ITituloCredito | null>(null);
+  const [selectedBaixaTitulo, setSelectedBaixaTitulo] = useState<ITituloCredito | null>(null);
   const [editTitulo, setEditTitulo] = useState<ITituloCredito | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -151,6 +153,7 @@ const OutrosCreditosPage: React.FC = () => {
           onReceber={(t) => setSelectedTitulo(t as any)}
           onEdit={(t) => { setEditTitulo(t); setIsFormOpen(true); }}
           onDelete={setDeleteId}
+          onBaixa={(t) => setSelectedBaixaTitulo(t)}
           pagination={{
             currentPage,
             pageSize,
@@ -165,6 +168,14 @@ const OutrosCreditosPage: React.FC = () => {
           titulo={selectedTitulo as any}
           onClose={() => setSelectedTitulo(null)}
           onSuccess={() => { setSelectedTitulo(null); loadData(true); setToast({ type: 'success', message: 'Operação realizada com sucesso!' }); }}
+        />
+      )}
+
+      {selectedBaixaTitulo && (
+        <ModalBaixa
+          titulo={selectedBaixaTitulo as any}
+          onClose={() => setSelectedBaixaTitulo(null)}
+          onSuccess={() => { setSelectedBaixaTitulo(null); loadData(true); setToast({ type: 'success', message: 'Recebimento realizado com sucesso!' }); }}
         />
       )}
 
