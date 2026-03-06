@@ -1,15 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { ITituloPagar } from '../contas-pagar.types';
+import React, { useState, useEffect } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { ContasPagarService } from '../contas-pagar.service';
+import { TitulosService } from '../../../services/titulos.service';
 
 interface Props {
-    titulo: ITituloPagar;
+    titulo: any;
     onClose: () => void;
 }
 
 const ModalDetalhesTitulo: React.FC<Props> = ({ titulo, onClose }) => {
+    const queryClient = useQueryClient();
     const [pagamentos, setPagamentos] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [refreshKey, setRefreshKey] = useState(0);
+
+    // Estados para edição
+    const [editandoId, setEditandoId] = useState<string | null>(null);
+    const [novoValor, setNovoValor] = useState<number>(0);
+    const [novaData, setNovaData] = useState<string>('');
 
     useEffect(() => {
         async function load() {
@@ -23,12 +31,49 @@ const ModalDetalhesTitulo: React.FC<Props> = ({ titulo, onClose }) => {
             }
         }
         load();
-    }, [titulo.id]);
+    }, [titulo.id, refreshKey]);
 
     const fmt = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
     const formatDate = (date: string) => {
         if (!date) return '---';
         return new Date(date).toLocaleDateString('pt-BR');
+    };
+
+    const handleDeletePayment = async (id: string) => {
+        if (!window.confirm('Tem certeza que deseja estornar este pagamento? O saldo do título será recalculado.')) return;
+
+        try {
+            await TitulosService.excluirPagamento(id, titulo.id);
+            setRefreshKey(prev => prev + 1);
+            queryClient.invalidateQueries({ queryKey: ['contas-pagar'] });
+            queryClient.invalidateQueries({ queryKey: ['caixa-transacoes'] });
+        } catch (err) {
+            console.error('Erro ao excluir pagamento:', err);
+            alert('Erro ao excluir pagamento. Verifique os logs.');
+        }
+    };
+
+    const handleStartEdit = (p: any) => {
+        setEditandoId(p.id);
+        setNovoValor(p.valor);
+        setNovaData(new Date(p.data_pagamento).toISOString().split('T')[0]);
+    };
+
+    const handleSaveEdit = async () => {
+        if (!editandoId) return;
+        try {
+            await TitulosService.editarPagamento(editandoId, titulo.id, {
+                valor: novoValor,
+                data_pagamento: novaData
+            });
+            setEditandoId(null);
+            setRefreshKey(prev => prev + 1);
+            queryClient.invalidateQueries({ queryKey: ['contas-pagar'] });
+            queryClient.invalidateQueries({ queryKey: ['caixa-transacoes'] });
+        } catch (err) {
+            console.error('Erro ao editar pagamento:', err);
+            alert('Erro ao salvar alterações.');
+        }
     };
 
     return (
@@ -47,19 +92,38 @@ const ModalDetalhesTitulo: React.FC<Props> = ({ titulo, onClose }) => {
                 </div>
 
                 <div className="p-8 space-y-8">
-                    {/* Informações Básicas */}
+                    {/* Resumo de Valores */}
+                    <div className="grid grid-cols-3 gap-4">
+                        <div className="bg-slate-50 p-4 rounded-3xl border border-slate-100">
+                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Valor Total</p>
+                            <p className="text-lg font-black text-slate-900">{fmt(titulo.valor_total)}</p>
+                        </div>
+                        <div className="bg-emerald-50/50 p-4 rounded-3xl border border-emerald-100">
+                            <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-1">Valor Pago</p>
+                            <p className="text-lg font-black text-emerald-700">
+                                {fmt(pagamentos.reduce((acc, p) => acc + Number(p.valor), 0))}
+                            </p>
+                        </div>
+                        <div className="bg-rose-50/50 p-4 rounded-3xl border border-rose-100">
+                            <p className="text-[9px] font-black text-rose-600 uppercase tracking-widest mb-1">Valor em Aberto</p>
+                            <p className="text-lg font-black text-rose-700">
+                                {fmt(Math.max(0, titulo.valor_total - pagamentos.reduce((acc, p) => acc + Number(p.valor), 0)))}
+                            </p>
+                        </div>
+                    </div>
+
                     <div className="grid grid-cols-2 gap-6">
                         <div>
                             <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Descrição / Favorecido</p>
                             <p className="text-sm font-bold text-slate-800 uppercase">{titulo.parceiro?.nome || titulo.descricao}</p>
                         </div>
                         <div className="text-right">
-                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Valor Total</p>
-                            <p className="text-xl font-black text-slate-900">{fmt(titulo.valor_total)}</p>
-                        </div>
-                        <div>
                             <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Vencimento</p>
                             <p className="text-sm font-bold text-slate-700">{formatDate(titulo.data_vencimento)}</p>
+                        </div>
+                        <div>
+                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Referência</p>
+                            <p className="text-xs font-bold text-slate-500 uppercase">{titulo.documento_ref || 'NENHUMA'}</p>
                         </div>
                         <div className="text-right">
                             <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Status Atual</p>
@@ -93,12 +157,65 @@ const ModalDetalhesTitulo: React.FC<Props> = ({ titulo, onClose }) => {
                                             <div className="w-10 h-10 bg-white rounded-xl border border-slate-100 flex items-center justify-center text-indigo-500">
                                                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
                                             </div>
-                                            <div>
-                                                <p className="text-[11px] font-black text-slate-800 uppercase tracking-tighter">{p.conta?.banco_nome || 'Conta Direta'}</p>
-                                                <p className="text-[9px] text-slate-400 font-bold uppercase">Pago em: {formatDate(p.data_pagamento)} • {p.forma?.nome || 'Direto'}</p>
-                                            </div>
+                                            {editandoId === p.id ? (
+                                                <div className="flex flex-col space-y-2">
+                                                    <input
+                                                        type="date"
+                                                        value={novaData}
+                                                        onChange={(e) => setNovaData(e.target.value)}
+                                                        className="text-[10px] bg-white border border-slate-200 rounded px-2 py-1 font-bold text-slate-700"
+                                                    />
+                                                    <p className="text-[11px] font-black text-slate-800 uppercase tracking-tighter">{p.conta?.banco_nome || 'Conta Direta'}</p>
+                                                </div>
+                                            ) : (
+                                                <div>
+                                                    <p className="text-[11px] font-black text-slate-800 uppercase tracking-tighter">{p.conta?.banco_nome || 'Conta Direta'}</p>
+                                                    <p className="text-[9px] text-slate-400 font-bold uppercase">Pago em: {formatDate(p.data_pagamento)} • {p.forma?.nome || 'Direto'}</p>
+                                                </div>
+                                            )}
                                         </div>
-                                        <p className="text-sm font-black text-emerald-600">{fmt(p.valor)}</p>
+                                        <div className="flex items-center space-x-4">
+                                            {editandoId === p.id ? (
+                                                <div className="flex items-center space-x-2">
+                                                    <input
+                                                        type="number"
+                                                        value={novoValor}
+                                                        onChange={(e) => setNovoValor(Number(e.target.value))}
+                                                        className="w-24 text-right bg-white border border-slate-200 rounded px-2 py-1 text-sm font-black text-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                                                    />
+                                                    <button onClick={handleSaveEdit} className="p-1.5 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors">
+                                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
+                                                    </button>
+                                                    <button onClick={() => setEditandoId(null)} className="p-1.5 bg-slate-200 text-slate-600 rounded-lg hover:bg-slate-300 transition-colors">
+                                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    <p className="text-sm font-black text-emerald-600">{fmt(p.valor)}</p>
+                                                    <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-all">
+                                                        <button
+                                                            onClick={() => handleStartEdit(p)}
+                                                            className="p-2 text-indigo-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+                                                            title="Editar Pagamento"
+                                                        >
+                                                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                                            </svg>
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleDeletePayment(p.id)}
+                                                            className="p-2 text-rose-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
+                                                            title="Estornar Pagamento"
+                                                        >
+                                                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                </>
+                                            )}
+                                        </div>
                                     </div>
                                 ))}
                             </div>

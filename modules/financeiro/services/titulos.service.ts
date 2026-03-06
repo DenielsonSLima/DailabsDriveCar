@@ -86,5 +86,75 @@ export const TitulosService = {
 
     if (error) throw error;
     return (data || []) as ITitulo[];
+  },
+
+  async excluirPagamento(transacaoId: string, tituloId: string): Promise<void> {
+    // 1. Deleta a transação
+    const { error: deleteError } = await supabase
+      .from('fin_transacoes')
+      .delete()
+      .eq('id', transacaoId);
+
+    if (deleteError) throw deleteError;
+
+    // 2. Recalcula o título
+    await this.recalcularTitulo(tituloId);
+  },
+
+  async editarPagamento(transacaoId: string, tituloId: string, dados: { valor: number, data_pagamento: string }): Promise<void> {
+    // 1. Atualiza a transação
+    const { error: updateTransError } = await supabase
+      .from('fin_transacoes')
+      .update({
+        valor: dados.valor,
+        data_pagamento: dados.data_pagamento,
+      })
+      .eq('id', transacaoId);
+
+    if (updateTransError) throw updateTransError;
+
+    // 2. Recalcula o título
+    await this.recalcularTitulo(tituloId);
+  },
+
+  async recalcularTitulo(tituloId: string): Promise<void> {
+    // 1. Busca todas as transações do título
+    const { data: transacoes, error: transError } = await supabase
+      .from('fin_transacoes')
+      .select('valor')
+      .eq('titulo_id', tituloId);
+
+    if (transError) throw transError;
+
+    const valorPago = (transacoes || []).reduce((acc, t) => acc + Number(t.valor), 0);
+
+    // 2. Busca o valor total do título
+    const { data: titulo, error: tituloError } = await supabase
+      .from('fin_titulos')
+      .select('valor_total')
+      .eq('id', tituloId)
+      .single();
+
+    if (tituloError) throw tituloError;
+
+    // 3. Define novo status
+    let status: 'PENDENTE' | 'PARCIAL' | 'PAGO' = 'PENDENTE';
+    if (valorPago >= titulo.valor_total) {
+      status = 'PAGO';
+    } else if (valorPago > 0) {
+      status = 'PARCIAL';
+    }
+
+    // 4. Atualiza o título
+    const { error: updateError } = await supabase
+      .from('fin_titulos')
+      .update({
+        valor_pago: valorPago,
+        status: status,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', tituloId);
+
+    if (updateError) throw updateError;
   }
 };

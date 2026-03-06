@@ -67,7 +67,7 @@ const GeneralKpis: React.FC<{ stats: IDashboardStats }> = ({ stats }) => {
       <KpiCard
         label="Patrimônio em Estoque"
         valor={formatCurrency(stats.valorGlobalEstoque)}
-        sublabel="Valor de Venda Total"
+        sublabel="Valor de Custo Total"
         color="emerald"
         icon={
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>

@@ -36,6 +36,10 @@ export const ContasReceberService = {
       query = query.gte('data_vencimento', primeiroDia).lte('data_vencimento', ultimoDia);
     } else if (tab === 'ATRASADOS') {
       query = query.lt('data_vencimento', hoje).neq('status', 'PAGO').neq('status', 'CANCELADO');
+    } else if (tab === 'FUTUROS') {
+      const now = new Date();
+      const ultimoDiaMesAtual = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
+      query = query.gt('data_vencimento', ultimoDiaMesAtual);
     }
 
     if (filtros.busca) {

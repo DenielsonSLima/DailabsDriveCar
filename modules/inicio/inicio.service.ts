@@ -4,51 +4,31 @@ import { IDashboardStats, IHistoryData } from './inicio.types';
 
 export const InicioService = {
   async getDashboardStats(): Promise<IDashboardStats> {
-    const now = new Date();
-    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString();
+    const { data, error } = await supabase.rpc('get_inicio_dashboard_stats');
 
-    // Busca dados em paralelo
-    const [veiculosRes, parceirosRes, vendasRes] = await Promise.all([
-      // 1. Veículos disponíveis e valor total
-      supabase
-        .from('est_veiculos')
-        .select('valor_venda')
-        .eq('status', 'DISPONIVEL'),
+    if (error) {
+      console.error('Erro ao buscar estatísticas do dashboard:', error);
+      // Fallback para evitar quebra total da UI
+      return {
+        totalEstoque: 0,
+        valorGlobalEstoque: 0,
+        totalParceiros: 0,
+        vendasMesAtual: 0,
+        lucroProjetado: 0
+      };
+    }
 
-      // 2. Total de parceiros
-      supabase
-        .from('parceiros')
-        .select('*', { count: 'exact', head: true }),
-
-      // 3. Vendas do mês (Concluídas)
-      supabase
-        .from('venda_pedidos')
-        .select(`
-          valor_venda,
-          veiculo:est_veiculos(valor_custo)
-        `)
-        .eq('status', 'CONCLUIDO')
-        .gte('data_venda', firstDay)
-        .lte('data_venda', `${lastDay}T23:59:59`)
-    ]);
-
-    const valorGlobal = (veiculosRes.data || []).reduce((acc, v) => acc + (v.valor_venda || 0), 0);
-
-    // Calcular lucro: Somatória (valor_venda - valor_custo)
-    const vendas = vendasRes.data || [];
-    const lucro = vendas.reduce((acc: number, venda: any) => {
-      const custo = venda.veiculo?.valor_custo || 0;
-      const receita = venda.valor_venda || 0;
-      return acc + (receita - custo);
-    }, 0);
+    // Busca total de parceiros (mantendo a funcionalidade original que não estava no RPC ainda)
+    const { count: parceirosCount } = await supabase
+      .from('parceiros')
+      .select('*', { count: 'exact', head: true });
 
     return {
-      totalEstoque: veiculosRes.data?.length || 0,
-      valorGlobalEstoque: valorGlobal,
-      totalParceiros: parceirosRes.count || 0,
-      vendasMesAtual: vendas.length,
-      lucroProjetado: lucro
+      totalEstoque: data.totalEstoque || 0,
+      valorGlobalEstoque: data.valorGlobalEstoque || 0,
+      totalParceiros: parceirosCount || 0,
+      vendasMesAtual: data.vendasMesAtual || 0,
+      lucroProjetado: data.lucroProjetado || 0
     };
   },
 

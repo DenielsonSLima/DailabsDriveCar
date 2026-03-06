@@ -42,6 +42,8 @@ const ReceberList: React.FC<Props> = ({ items, loading, isGrouped, onBaixa, onDe
             <th className="px-8 py-5">Categoria</th>
             <th className="px-8 py-5">Conta de Destino</th>
             <th className="px-8 py-5 text-right">Valor Total</th>
+            <th className="px-8 py-5 text-right">Valor Recebido</th>
+            <th className=" px-8 py-5 text-right">Pendente</th>
             <th className="px-8 py-5 text-right">Ações</th>
           </tr>
         </thead>
@@ -87,9 +89,16 @@ const ReceberList: React.FC<Props> = ({ items, loading, isGrouped, onBaixa, onDe
               </td>
               <td className="px-8 py-6 text-right">
                 <p className="text-sm font-black text-slate-900">{formatCurrency(t.valor_total)}</p>
-                {t.valor_pago > 0 && t.status !== 'PAGO' && (
-                  <p className="text-[9px] font-bold text-emerald-600 uppercase mt-0.5">Entrou: {formatCurrency(t.valor_pago)}</p>
-                )}
+              </td>
+              <td className="px-8 py-6 text-right">
+                <p className={`text-sm font-black ${t.valor_pago > 0 ? 'text-emerald-600' : 'text-slate-400 opacity-40'}`}>
+                  {formatCurrency(t.valor_pago)}
+                </p>
+              </td>
+              <td className="px-8 py-6 text-right">
+                <p className={`text-sm font-black ${t.valor_total - t.valor_pago > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>
+                  {formatCurrency(t.valor_total - t.valor_pago)}
+                </p>
               </td>
               <td className="px-8 py-6 text-right">
                 <div className="flex justify-end space-x-2" onClick={(e) => e.stopPropagation()}>
@@ -124,7 +133,7 @@ const ReceberList: React.FC<Props> = ({ items, loading, isGrouped, onBaixa, onDe
       {keys.map(groupKey => (
         <div key={groupKey} className="animate-in fade-in slide-in-from-bottom-2 duration-300">
           <div className="bg-slate-50/80 px-8 py-3 sticky top-0 z-10 backdrop-blur-sm border-y border-slate-100 flex items-center">
-            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-3"></div>
+            <div className={`w-1.5 h-1.5 rounded-full mr-3 ${groupKey === 'PAGO' ? 'bg-emerald-500' : 'bg-rose-500'}`}></div>
             <h3 className="text-[11px] font-black text-slate-600 uppercase tracking-[0.2em]">{groupKey}</h3>
             <span className="ml-auto text-[9px] font-black text-slate-400 bg-white px-2 py-0.5 rounded-md border border-slate-100 uppercase">{grouped[groupKey].length} Títulos</span>
           </div>

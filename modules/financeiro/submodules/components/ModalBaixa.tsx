@@ -40,11 +40,26 @@ const ModalBaixa: React.FC<Props> = ({ titulo, onClose, onSuccess }) => {
         FormasPagamentoService.getAll()
       ]);
       setContas(cData.filter(c => c.ativo));
-      setFormas(fData.filter(f => f.ativo));
+
+      // Filtrar apenas formas de movimento imediato (CAIXA) e que batam com o tipo do título
+      const filteredFormas = fData.filter(f => {
+        if (!f.ativo) return false;
+
+        // Só queremos formas que representem movimento de caixa/banco imediato no momento da baixa
+        // (A Prazo e Consignação não devem aparecer aqui pois são condições de origem, não de liquidação)
+        if (f.destino_lancamento !== 'CAIXA') return false;
+
+        if (titulo.tipo === 'PAGAR') {
+          return f.tipo_movimentacao === 'PAGAMENTO' || f.tipo_movimentacao === 'AMBOS';
+        }
+        return f.tipo_movimentacao === 'RECEBIMENTO' || f.tipo_movimentacao === 'AMBOS';
+      });
+
+      setFormas(filteredFormas);
       setLoading(false);
     }
     loadData();
-  }, []);
+  }, [titulo.tipo]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

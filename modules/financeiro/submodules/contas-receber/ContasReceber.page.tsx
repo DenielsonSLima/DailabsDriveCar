@@ -75,6 +75,15 @@ const ContasReceberPage: React.FC = () => {
   const totalPages = data?.totalPages || 1;
 
   const processedData = useMemo(() => {
+    if (activeTab === 'MES_ATUAL') {
+      return titulos.reduce((acc: any, t) => {
+        const key = t.status === 'PAGO' ? 'PAGO' : 'EM ABERTO';
+        if (!acc[key]) acc[key] = [];
+        acc[key].push(t);
+        return acc;
+      }, {});
+    }
+
     if (groupBy === 'nenhum') return titulos;
 
     return titulos.reduce((acc: any, t) => {
@@ -90,7 +99,7 @@ const ContasReceberPage: React.FC = () => {
       acc[key].push(t);
       return acc;
     }, {});
-  }, [titulos, groupBy]);
+  }, [titulos, groupBy, activeTab]);
 
   const handleDelete = async () => {
     if (deleteId) {
@@ -121,6 +130,7 @@ const ContasReceberPage: React.FC = () => {
       <div className="flex bg-white p-1.5 rounded-2xl border border-slate-200 w-fit shadow-sm">
         <button onClick={() => { setActiveTab('MES_ATUAL'); setGroupBy('nenhum'); }} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'MES_ATUAL' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Mês Atual</button>
         <button onClick={() => setActiveTab('ATRASADOS')} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'ATRASADOS' ? 'bg-rose-600 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Vencidos</button>
+        <button onClick={() => setActiveTab('FUTUROS')} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'FUTUROS' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Futuros</button>
         <button onClick={() => setActiveTab('OUTROS')} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'OUTROS' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Todos os Meses</button>
       </div>
 
@@ -137,7 +147,7 @@ const ContasReceberPage: React.FC = () => {
         <ReceberList
           items={processedData}
           loading={isLoading}
-          isGrouped={groupBy !== 'nenhum'}
+          isGrouped={groupBy !== 'nenhum' || activeTab === 'MES_ATUAL'}
           onBaixa={(t) => setSelectedTitulo(t as any)}
           onDelete={setDeleteId}
           onRowClick={(t) => setSelectedQuickView(t as any)}
