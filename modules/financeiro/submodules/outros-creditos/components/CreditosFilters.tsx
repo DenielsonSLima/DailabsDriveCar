@@ -6,9 +6,11 @@ interface Props {
   onChange: (newFiltros: ICreditoFiltros) => void;
   groupBy: GroupByCredito;
   setGroupBy: (val: GroupByCredito) => void;
+  viewMode: 'list' | 'card';
+  setViewMode: (mode: 'list' | 'card') => void;
 }
 
-const CreditosFilters: React.FC<Props> = ({ filtros, onChange, groupBy, setGroupBy }) => {
+const CreditosFilters: React.FC<Props> = ({ filtros, onChange, groupBy, setGroupBy, viewMode, setViewMode }) => {
   const handleChange = (field: keyof ICreditoFiltros, value: string) => {
     onChange({ ...filtros, [field]: value });
   };
@@ -51,6 +53,18 @@ const CreditosFilters: React.FC<Props> = ({ filtros, onChange, groupBy, setGroup
               onChange={e => handleChange('dataFim', e.target.value)}
               className="bg-transparent text-xs font-bold text-[#111827] px-3 py-2 outline-none cursor-pointer"
             />
+          </div>
+        </div>
+
+        <div className="w-full xl:w-auto">
+          <label className="block text-[9px] font-black text-slate-400 uppercase mb-1.5 ml-1 tracking-widest">Visualização</label>
+          <div className="flex bg-slate-100 p-1 rounded-2xl">
+            <button onClick={() => setViewMode('list')} className={`p-2 rounded-xl transition-all ${viewMode === 'list' ? 'bg-white text-teal-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`} title="Lista">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
+            </button>
+            <button onClick={() => setViewMode('card')} className={`p-2 rounded-xl transition-all ${viewMode === 'card' ? 'bg-white text-teal-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`} title="Cards">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+            </button>
           </div>
         </div>
 

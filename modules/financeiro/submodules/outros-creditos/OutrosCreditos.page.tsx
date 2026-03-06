@@ -15,11 +15,12 @@ const OutrosCreditosPage: React.FC = () => {
   const [titulos, setTitulos] = useState<ITituloCredito[]>([]);
   const [loading, setLoading] = useState(true);
   const [groupBy, setGroupBy] = useState<GroupByCredito>('conta');
+  const [viewMode, setViewMode] = useState<'list' | 'card'>('card');
 
   // Pagination State
   const [currentPage, setCurrentPage] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
-  const pageSize = 15;
+  const pageSize = 12;
 
   const [filtros, setFiltros] = useState<ICreditoFiltros>({
     busca: '',
@@ -108,7 +109,7 @@ const OutrosCreditosPage: React.FC = () => {
           onClick={() => setIsFormOpen(true)}
           className="px-8 py-4 bg-teal-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-teal-700 transition-all shadow-xl active:scale-95 flex items-center shadow-teal-200"
         >
-          <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
           </svg>
           Lançar Crédito
@@ -143,13 +144,16 @@ const OutrosCreditosPage: React.FC = () => {
         onChange={(f) => { setFiltros(f); setCurrentPage(0); }}
         groupBy={groupBy}
         setGroupBy={setGroupBy}
+        viewMode={viewMode}
+        setViewMode={setViewMode}
       />
 
-      <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden min-h-[400px]">
+      <div className={`${viewMode === 'list' ? 'bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden min-h-[400px]' : ''}`}>
         <CreditosList
           items={processedData}
           loading={loading}
           isGrouped={groupBy !== 'nenhum'}
+          viewMode={viewMode}
           onReceber={(t) => setSelectedTitulo(t as any)}
           onEdit={(t) => { setEditTitulo(t); setIsFormOpen(true); }}
           onDelete={setDeleteId}

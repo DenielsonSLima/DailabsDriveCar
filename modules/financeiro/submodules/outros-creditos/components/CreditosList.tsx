@@ -1,5 +1,6 @@
 import React from 'react';
 import { ITituloCredito } from '../outros-creditos.types';
+import CreditoCard from './CreditoCard';
 
 interface Props {
   items: ITituloCredito[] | { [key: string]: ITituloCredito[] };
@@ -9,6 +10,7 @@ interface Props {
   onEdit: (titulo: ITituloCredito) => void;
   onDelete: (id: string) => void;
   onBaixa: (titulo: ITituloCredito) => void;
+  viewMode?: 'list' | 'card';
   pagination?: {
     currentPage: number;
     pageSize: number;
@@ -17,7 +19,7 @@ interface Props {
   };
 }
 
-const CreditosList: React.FC<Props> = ({ items, loading, isGrouped, onReceber, onEdit, onDelete, pagination }) => {
+const CreditosList: React.FC<Props> = ({ items, loading, isGrouped, onReceber, onEdit, onDelete, onBaixa, viewMode = 'list', pagination }) => {
   const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
   const formatDate = (date: string) => new Date(date + 'T00:00:00').toLocaleDateString('pt-BR');
 
@@ -25,6 +27,21 @@ const CreditosList: React.FC<Props> = ({ items, loading, isGrouped, onReceber, o
     <div className="py-32 flex flex-col items-center justify-center space-y-4">
       <div className="w-12 h-12 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
       <p className="text-slate-400 font-bold uppercase text-[10px] tracking-widest">Sincronizando aportes...</p>
+    </div>
+  );
+
+  const renderCards = (rows: ITituloCredito[]) => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-8">
+      {rows.map((t) => (
+        <CreditoCard
+          key={t.id}
+          titulo={t}
+          onReceber={onReceber}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          onBaixa={onBaixa}
+        />
+      ))}
     </div>
   );
 
@@ -136,10 +153,12 @@ const CreditosList: React.FC<Props> = ({ items, loading, isGrouped, onReceber, o
   };
 
   const content = () => {
+    const renderItems = (rows: ITituloCredito[]) => viewMode === 'card' ? renderCards(rows) : renderTable(rows);
+
     if (!isGrouped) {
       const list = items as ITituloCredito[];
       if (list.length === 0) return <div className="py-32 text-center text-slate-400 font-bold uppercase text-[10px] tracking-widest border-2 border-dashed border-slate-100 rounded-3xl mx-8">Nenhum crédito extraordinário encontrado</div>;
-      return renderTable(list);
+      return renderItems(list);
     }
 
     const grouped = items as { [key: string]: ITituloCredito[] };
@@ -154,7 +173,7 @@ const CreditosList: React.FC<Props> = ({ items, loading, isGrouped, onReceber, o
               <h3 className="text-[11px] font-black text-slate-600 uppercase tracking-[0.2em]">{groupKey}</h3>
               <span className="ml-auto text-[9px] font-black text-slate-400 bg-white px-2 py-0.5 rounded-md border border-slate-100 uppercase">{grouped[groupKey].length} Créditos</span>
             </div>
-            {renderTable(grouped[groupKey])}
+            {renderItems(grouped[groupKey])}
           </div>
         ))}
       </div>
