@@ -135,6 +135,10 @@ const App: React.FC = () => {
     return () => subscription.unsubscribe();
   }, [setSession, setProfile, setLoading]);
 
+  // Constantes de tempo
+  const INACTIVITY_TIME = 29 * 60 * 1000; // 29 minutos
+  const COUNTDOWN_TIME = 120; // 120 segundos (2 minutos)
+
   // Monitoramento de inatividade (29 minutos + 2 minutos de aviso = 31 minutos total)
   useEffect(() => {
     if (!session) {
@@ -144,28 +148,46 @@ const App: React.FC = () => {
     }
 
     const doLogout = async () => {
-      setShowTimeoutModal(false);
-      showTimeoutModalRef.current = false;
-      setCountdown(120);
-      await AuthService.signOut().catch(console.error);
+      try {
+        setShowTimeoutModal(false);
+        showTimeoutModalRef.current = false;
+        setCountdown(COUNTDOWN_TIME);
+
+        // Se houver intervalo ativo, limpa
+        if (countdownIntervalRef.current) {
+          clearInterval(countdownIntervalRef.current);
+          countdownIntervalRef.current = null;
+        }
+
+        await AuthService.signOut();
+      } catch (err) {
+        console.error('Logout error during session timeout:', err);
+        // Tenta limpar a sessão local caso o signOut falhe
+        window.location.reload();
+      }
     };
 
     const startCountdown = () => {
       // Evita iniciar múltiplos intervalos
-      if (countdownIntervalRef.current) return;
+      if (countdownIntervalRef.current) {
+        clearInterval(countdownIntervalRef.current);
+      }
+
       setShowTimeoutModal(true);
       showTimeoutModalRef.current = true;
-      setCountdown(120);
+      setCountdown(COUNTDOWN_TIME);
 
-      const expTime = Date.now() + 120 * 1000;
+      const expTime = Date.now() + COUNTDOWN_TIME * 1000;
 
       countdownIntervalRef.current = setInterval(() => {
         const remaining = Math.max(0, Math.ceil((expTime - Date.now()) / 1000));
         setCountdown(remaining);
 
         if (remaining <= 0) {
-          clearInterval(countdownIntervalRef.current!);
-          countdownIntervalRef.current = null;
+          if (countdownIntervalRef.current) {
+            clearInterval(countdownIntervalRef.current);
+            countdownIntervalRef.current = null;
+          }
           doLogout();
         }
       }, 1000);
@@ -174,7 +196,7 @@ const App: React.FC = () => {
     const resetInactivityTimer = () => {
       if (showTimeoutModalRef.current) return;
       if (inactivityTimeoutRef.current) clearTimeout(inactivityTimeoutRef.current);
-      inactivityTimeoutRef.current = setTimeout(startCountdown, 29 * 60 * 1000);
+      inactivityTimeoutRef.current = setTimeout(startCountdown, INACTIVITY_TIME);
     };
 
     // Atualiza a ref estável para uso externo (handleContinueSession)
@@ -188,6 +210,11 @@ const App: React.FC = () => {
       if (inactivityTimeoutRef.current) clearTimeout(inactivityTimeoutRef.current);
       if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current);
       events.forEach(e => document.removeEventListener(e, resetInactivityTimer));
+
+      // Reset state on cleanup to avoid freezes on re-runs
+      setShowTimeoutModal(false);
+      showTimeoutModalRef.current = false;
+      setCountdown(COUNTDOWN_TIME);
     };
   }, [session]);
 
@@ -198,7 +225,7 @@ const App: React.FC = () => {
     }
     setShowTimeoutModal(false);
     showTimeoutModalRef.current = false;
-    setCountdown(120);
+    setCountdown(COUNTDOWN_TIME);
     // Garante que o próximo ciclo de inatividade também vai disparar o modal
     startInactivityTimerRef.current();
   };
@@ -214,6 +241,7 @@ const App: React.FC = () => {
     }
     setShowTimeoutModal(false);
     showTimeoutModalRef.current = false;
+    setCountdown(120); // Valor fixo aqui para simplicidade ou usar COUNTDOWN_TIME se movermos a constante para fora do effect
     AuthService.signOut().catch(console.error);
   };
 
