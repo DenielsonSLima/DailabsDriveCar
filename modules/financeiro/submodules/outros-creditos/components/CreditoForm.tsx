@@ -137,13 +137,23 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
     if (!formaPagamendoId) return false;
     const forma = formasPagamento.find(f => f.id === formaPagamendoId);
     if (!forma) return false;
-    // Identifica como vista se for PIX ou se a condição selecionada vencer hoje
+
+    // Identifica como vista se for PIX ou DINHEIRO (CAIXA físico)
     const nomeForma = forma.nome.toUpperCase();
-    if (nomeForma.includes('PIX') || nomeForma.includes('DINHEIRO')) return true;
+    if (nomeForma.includes('PIX') || nomeForma.includes('DINHEIRO') || forma.destino_lancamento === 'CAIXA') {
+      return true;
+    }
+
+    // Se for PRAZO ou CONTAS_RECEBER, nunca é considerado "vista" para efeito de entrada imediata no banco/caixa
+    if (nomeForma.includes('PRAZO') || forma.destino_lancamento === 'CONTAS_RECEBER') {
+      return false;
+    }
 
     if (condicaoId === '__avista__') return true;
+
+    // Se houver apenas uma parcela e o vencimento for hoje ou no passado
     const hoje = new Date().toISOString().split('T')[0];
-    return parcelas.some(p => p.data_vencimento <= hoje);
+    return parcelas.length === 1 && parcelas[0].data_vencimento <= hoje;
   }, [formaPagamendoId, condicaoId, parcelas, formasPagamento]);
 
   // Recalculate valores when valor_total changes
@@ -264,7 +274,10 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
     if (formData.valor_total <= 0) { alert('Informe um valor maior que zero.'); return; }
     if (!formaPagamendoId) { alert('Selecione a forma de recebimento.'); return; }
     if (!condicaoId) { alert('Selecione a condição de pagamento.'); return; }
-    if (isVista && !formData.conta_id) { alert('Selecione uma conta bancária de destino.'); return; }
+    if (isVista && !formData.conta_id) {
+      alert('Selecione uma conta bancária de destino.');
+      return;
+    }
 
     if (dividirSocios && sociosVinculados.length === 0) { alert('Selecione pelo menos um sócio para dividir.'); return; }
     if (dividirSocios && totalPorcentagem < 99.99) { alert('A soma das porcentagens deve ser 100%.'); return; }

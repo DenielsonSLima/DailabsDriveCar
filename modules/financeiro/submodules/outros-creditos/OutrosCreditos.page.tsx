@@ -8,6 +8,7 @@ import CreditoForm from './components/CreditoForm';
 import ModalDetalhesCredito from './components/ModalDetalhesCredito';
 import ConfirmModal from '../../../../components/ConfirmModal';
 
+// force-refresh-v2
 const OutrosCreditosPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<CreditosTab>('ABERTO');
   const [titulos, setTitulos] = useState<ITituloCredito[]>([]);

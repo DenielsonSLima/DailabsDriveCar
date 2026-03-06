@@ -8,9 +8,9 @@ export const OutrosCreditosService = {
   async getAll(tab: CreditosTab, filtros: ICreditoFiltros) {
     let query = supabase
       .from(TABLE)
-      .select('*, transacoes:fin_transacoes(*, conta_origem:fin_contas_bancarias(*), forma:cad_formas_pagamento(*)), categoria:fin_categorias_titulos(*), parceiro:fin_parceiros(*)', { count: 'exact' })
-      .eq('tipo', 'RECEITA')
-      .eq('outros_creditos', true)
+      .select('*, transacoes:fin_transacoes(*, conta_origem:fin_contas_bancarias(*), forma:cad_formas_pagamento(*)), categoria:fin_categorias(*), parceiro:parceiros(*)', { count: 'exact' })
+      .eq('tipo', 'RECEBER')
+      .eq('origem_tipo', 'OUTRO_CREDITO')
       .order('data_vencimento', { ascending: false });
 
     if (tab === 'ABERTO') {
