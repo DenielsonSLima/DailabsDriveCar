@@ -89,7 +89,7 @@ const SocioStockOverview: React.FC<Props> = ({ socios }) => {
                       <div key={vIdx} className="flex items-center justify-between text-[10px] text-slate-300 bg-black/20 px-3 py-2 rounded-lg">
                         <div className="flex items-center space-x-2">
                           <div className="w-1 h-4 bg-indigo-500 rounded-full"></div>
-                          <span className="font-bold uppercase">{v.modelo}</span>
+                          <span className="font-bold uppercase">{v.modelo || v.descricao}</span>
                           <span className="text-slate-500 text-[9px] bg-slate-900 px-1.5 py-0.5 rounded uppercase tracking-wider">{v.placa}</span>
                         </div>
                         <span className="font-bold">{fmt(v.valor)}</span>

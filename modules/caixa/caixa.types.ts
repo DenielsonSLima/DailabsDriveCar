@@ -28,6 +28,7 @@ export interface ISocioStockStats {
     placa: string;
     valor: number;
     imagem?: string;
+    descricao?: string;
   }[];
   patrimonio_pessoal: IPatrimonioItem[];
 }
