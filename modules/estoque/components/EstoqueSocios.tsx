@@ -25,18 +25,25 @@ const EstoqueSocios: React.FC<Props> = ({ sociosDisponiveis, sociosVinculados, v
   const porcentagemLivre = parseFloat(Math.max(0, 100 - totalPorcentagemAlocada).toFixed(4));
 
   const dividirIgualmente = () => {
-    if (sociosVinculados.length === 0) return;
+    if (sociosVinculados.length === 0 || valorCustoTotal <= 0) return;
 
     const count = sociosVinculados.length;
-    const basePercent = Math.floor((100 / count) * 100) / 100; // Precisão de 2 casas
-    const leftover = parseFloat((100 - (basePercent * count)).toFixed(2));
+
+    // Calcula o valor base por sócio decimal por decimal
+    const baseValue = Math.floor((valorCustoTotal / count) * 100) / 100;
+    const leftoverValue = parseFloat((valorCustoTotal - (baseValue * count)).toFixed(2));
+
+    // Calcula a porcentagem base por sócio
+    const basePercent = Math.floor((100 / count) * 100) / 100;
+    const leftoverPercent = parseFloat((100 - (basePercent * count)).toFixed(2));
 
     const novosVinculos = sociosVinculados.map((s, i) => {
-      const p = i === count - 1 ? parseFloat((basePercent + leftover).toFixed(2)) : basePercent;
+      const v = i === count - 1 ? parseFloat((baseValue + leftoverValue).toFixed(2)) : baseValue;
+      const p = i === count - 1 ? parseFloat((basePercent + leftoverPercent).toFixed(2)) : basePercent;
       return {
         ...s,
         porcentagem: p,
-        valor: (p / 100) * valorCustoTotal
+        valor: v
       };
     });
 
@@ -79,34 +86,37 @@ const EstoqueSocios: React.FC<Props> = ({ sociosDisponiveis, sociosVinculados, v
     const socioAtual = sociosVinculados.find(s => s.socio_id === socioId);
     if (!socioAtual) return;
 
-    const totalOutros = sociosVinculados
-      .filter(s => s.socio_id !== socioId)
-      .reduce((acc, s) => acc + s.porcentagem, 0);
-
     let novaPorcentagem = socioAtual.porcentagem;
     let novoValor = socioAtual.valor;
 
     if (updates.porcentagem !== undefined) {
+      const totalOutrosP = sociosVinculados
+        .filter(s => s.socio_id !== socioId)
+        .reduce((acc, s) => acc + s.porcentagem, 0);
+
       const valStr = updates.porcentagem === '' ? '0' : updates.porcentagem;
       let pNum = parseFloat(valStr);
 
-      if (pNum + totalOutros > 100) {
-        pNum = 100 - totalOutros;
+      if (pNum + totalOutrosP > 100) {
+        pNum = parseFloat((100 - totalOutrosP).toFixed(2));
       }
 
       novaPorcentagem = isNaN(pNum) ? 0 : Math.max(0, parseFloat(pNum.toFixed(2)));
-      novoValor = (novaPorcentagem / 100) * valorCustoTotal;
+      novoValor = parseFloat(((novaPorcentagem / 100) * valorCustoTotal).toFixed(2));
     } else if (updates.valor !== undefined) {
-      const valStr = updates.valor === '' ? '0' : updates.valor;
-      let vNum = parseFloat(valStr);
+      const totalOutrosV = sociosVinculados
+        .filter(s => s.socio_id !== socioId)
+        .reduce((acc, s) => acc + s.valor, 0);
+
+      const cleaned = updates.valor.replace(/\D/g, '');
+      let vNum = Number(cleaned) / 100;
+
+      if (vNum + totalOutrosV > valorCustoTotal) {
+        vNum = parseFloat((valorCustoTotal - totalOutrosV).toFixed(2));
+      }
 
       novoValor = isNaN(vNum) ? 0 : Math.max(0, vNum);
-      novaPorcentagem = valorCustoTotal > 0 ? (novoValor / valorCustoTotal) * 100 : 0;
-
-      if (novaPorcentagem + totalOutros > 100) {
-        novaPorcentagem = 100 - totalOutros;
-        novoValor = (novaPorcentagem / 100) * valorCustoTotal;
-      }
+      novaPorcentagem = valorCustoTotal > 0 ? parseFloat(((novoValor / valorCustoTotal) * 100).toFixed(2)) : 0;
     }
 
     const novosVinculos = sociosVinculados.map(s =>
@@ -208,8 +218,8 @@ const EstoqueSocios: React.FC<Props> = ({ sociosDisponiveis, sociosVinculados, v
             <div
               key={socio.id}
               className={`border-2 rounded-[2rem] p-5 transition-all duration-300 ${vinculado
-                  ? 'bg-white border-indigo-100 shadow-xl ring-4 ring-indigo-50/50'
-                  : 'bg-slate-50/50 border-slate-100 opacity-60 hover:opacity-100'
+                ? 'bg-white border-indigo-100 shadow-xl ring-4 ring-indigo-50/50'
+                : 'bg-slate-50/50 border-slate-100 opacity-60 hover:opacity-100'
                 }`}
             >
               <div className="flex items-center justify-between gap-4 mb-5">
@@ -218,8 +228,8 @@ const EstoqueSocios: React.FC<Props> = ({ sociosDisponiveis, sociosVinculados, v
                     type="button"
                     onClick={() => toggleSocio(socio)}
                     className={`w-7 h-7 rounded-lg border-2 flex items-center justify-center transition-all shrink-0 ${vinculado
-                        ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg'
-                        : 'border-slate-200 bg-white hover:border-indigo-400'
+                      ? 'bg-indigo-600 border-indigo-600 text-white shadow-lg'
+                      : 'border-slate-200 bg-white hover:border-indigo-400'
                       }`}
                   >
                     {vinculado && <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
@@ -238,14 +248,11 @@ const EstoqueSocios: React.FC<Props> = ({ sociosDisponiveis, sociosVinculados, v
                 {vinculado && (
                   <div className="flex items-center gap-3 shrink-0">
                     <div className="relative group">
-                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[8px] font-black text-slate-400">R$</span>
                       <input
                         type="text"
-                        inputMode="decimal"
-                        value={valorReais === 0 ? '' : valorReais.toFixed(2)}
+                        value={new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valorReais)}
                         onChange={(e) => updateSocioData(socio.id!, { valor: e.target.value })}
-                        className="w-32 bg-slate-50 border border-slate-200 rounded-xl py-2 pl-7 pr-3 text-xs font-black text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all shadow-sm"
-                        placeholder="0.00"
+                        className="w-32 bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 text-xs font-black text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-all shadow-sm text-right"
                       />
                     </div>
                     <div className="relative group">

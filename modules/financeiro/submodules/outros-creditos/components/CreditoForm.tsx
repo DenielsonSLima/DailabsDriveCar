@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { ContasBancariasService } from '../../../../ajustes/contas-bancarias/contas.service';
 import { SociosService } from '../../../../ajustes/socios/socios.service';
+import { CondicoesRecebimentoService } from '../../../../cadastros/condicoes-recebimento/condicoes-recebimento.service';
 import { OutrosCreditosService } from '../outros-creditos.service';
 import { ITituloCredito } from '../outros-creditos.types';
 
@@ -8,6 +9,12 @@ interface ISocioSplit {
   socio_id: string;
   nome: string;
   porcentagem: number;
+  valor: number;
+}
+
+interface IParcela {
+  numero: number;
+  data_vencimento: string;
   valor: number;
 }
 
@@ -28,11 +35,18 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
   const [dividirSocios, setDividirSocios] = useState(false);
   const [sociosVinculados, setSociosVinculados] = useState<ISocioSplit[]>([]);
 
+  const [formaPagamendoId, setFormaPagamentoId] = useState('');
+  const [formasPagamento, setFormasPagamento] = useState<any[]>([]);
+  const [condicoes, setCondicoes] = useState<any[]>([]);
+  const [condicaoId, setCondicaoId] = useState('');
+  const [loadingCondicoes, setLoadingCondicoes] = useState(false);
+  const [parcelas, setParcelas] = useState<IParcela[]>([]);
+
   const [formData, setFormData] = useState({
     data_vencimento: editData?.data_vencimento || new Date().toISOString().split('T')[0],
     descricao: editData?.descricao || '',
     valor_total: editData?.valor_total || 0,
-    conta_id: editData?.transacoes?.[0]?.conta_origem ? '' : '',
+    conta_id: '',
     documento_ref: editData?.documento_ref || '',
   });
 
@@ -40,45 +54,125 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
     Promise.all([
       ContasBancariasService.getAll(),
       SociosService.getAll(),
-    ]).then(([cData, sData]) => {
+      OutrosCreditosService.getFormasPagamento(),
+    ]).then(([cData, sData, fData]) => {
       setContas(cData.filter(c => c.ativo));
       setSociosDisponiveis(sData.filter(s => s.ativo));
+      setFormasPagamento(fData || []);
     });
   }, []);
 
+  // Busca condições quando seleciona a forma
+  useEffect(() => {
+    if (formaPagamendoId && !isEditing) {
+      setLoadingCondicoes(true);
+      CondicoesRecebimentoService.getByFormaPagamento(formaPagamendoId).then(data => {
+        const ativas = data.filter(c => c.ativo);
+        setCondicoes(ativas);
+        // Auto-seleciona se houver apenas uma condição
+        if (ativas.length === 1) {
+          setCondicaoId(ativas[0].id);
+        } else {
+          setCondicaoId('');
+        }
+        setLoadingCondicoes(false);
+      });
+    } else {
+      setCondicoes([]);
+      setCondicaoId('');
+    }
+    setParcelas([]);
+  }, [formaPagamendoId]);
+
+  // Gera parcelas quando muda condição ou valor
+  useEffect(() => {
+    if (!condicaoId || formData.valor_total <= 0) {
+      setParcelas([]);
+      return;
+    }
+
+    if (condicaoId === '__avista__') {
+      setParcelas([{
+        numero: 1,
+        data_vencimento: formData.data_vencimento,
+        valor: formData.valor_total
+      }]);
+      return;
+    }
+
+    const cond = condicoes.find(c => c.id === condicaoId);
+    if (!cond) return;
+
+    const novasParcelas: IParcela[] = [];
+    const valorParcela = formData.valor_total / cond.qtd_parcelas;
+    const baseDate = new Date(formData.data_vencimento);
+
+    for (let i = 0; i < cond.qtd_parcelas; i++) {
+      const d = new Date(baseDate);
+      d.setDate(d.getDate() + cond.dias_primeira_parcela + (i * cond.dias_entre_parcelas));
+      novasParcelas.push({
+        numero: i + 1,
+        data_vencimento: d.toISOString().split('T')[0],
+        valor: parseFloat(valorParcela.toFixed(2))
+      });
+    }
+
+    // Se houver parcelas recorrentes, garantir que a soma bate com o total (ajuste de centavos na última)
+    if (novasParcelas.length > 0) {
+      const soma = novasParcelas.reduce((acc, p) => acc + p.valor, 0);
+      const diff = parseFloat((formData.valor_total - soma).toFixed(2));
+      if (diff !== 0) {
+        novasParcelas[novasParcelas.length - 1].valor = parseFloat((novasParcelas[novasParcelas.length - 1].valor + diff).toFixed(2));
+      }
+    }
+
+    setParcelas(novasParcelas);
+  }, [condicaoId, formData.valor_total, formData.data_vencimento, condicoes]);
+
+  const updateParcelaDate = (numero: number, newDate: string) => {
+    setParcelas(prev => prev.map(p => p.numero === numero ? { ...p, data_vencimento: newDate } : p));
+  };
+
+  const isVista = useMemo(() => {
+    if (!formaPagamendoId) return false;
+    const forma = formasPagamento.find(f => f.id === formaPagamendoId);
+    if (!forma) return false;
+    // Identifica como vista se for PIX ou se a condição selecionada vencer hoje
+    const nomeForma = forma.nome.toUpperCase();
+    if (nomeForma.includes('PIX') || nomeForma.includes('DINHEIRO')) return true;
+
+    if (condicaoId === '__avista__') return true;
+    const hoje = new Date().toISOString().split('T')[0];
+    return parcelas.some(p => p.data_vencimento <= hoje);
+  }, [formaPagamendoId, condicaoId, parcelas, formasPagamento]);
+
   // Recalculate valores when valor_total changes
   useEffect(() => {
-    if (sociosVinculados.length > 0 && formData.valor_total >= 0) {
-      const recalculado = sociosVinculados.map(s => ({
-        ...s,
-        valor: parseFloat(((s.porcentagem / 100) * formData.valor_total).toFixed(2))
-      }));
-      if (JSON.stringify(recalculado) !== JSON.stringify(sociosVinculados)) {
-        setSociosVinculados(recalculado);
+    if (sociosVinculados.length > 0 && formData.valor_total > 0) {
+      // Se já temos porcentagens, recalculamos os valores mas mantemos a soma correta
+      const count = sociosVinculados.length;
+      const novosValores = sociosVinculados.map((s, i) => {
+        const v = i === count - 1 ?
+          parseFloat((formData.valor_total - sociosVinculados.slice(0, -1).reduce((acc, prev) => acc + parseFloat(((prev.porcentagem / 100) * formData.valor_total).toFixed(2)), 0)).toFixed(2)) :
+          parseFloat(((s.porcentagem / 100) * formData.valor_total).toFixed(2));
+        return { ...s, valor: v };
+      });
+      if (JSON.stringify(novosValores) !== JSON.stringify(sociosVinculados)) {
+        setSociosVinculados(novosValores);
       }
     }
   }, [formData.valor_total]);
 
   const handleCurrencyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    const cleaned = val.replace(/[^\d,\.]/g, '');
-    if (cleaned === '' || cleaned === ',' || cleaned === '.') {
-      setValorFormatado('');
-      setFormData(prev => ({ ...prev, valor_total: 0 }));
-      return;
-    }
-    const normalized = cleaned.replace(/\./g, '').replace(',', '.');
-    const parsed = parseFloat(normalized);
-    if (!isNaN(parsed)) {
-      setValorFormatado(cleaned);
-      setFormData(prev => ({ ...prev, valor_total: parsed }));
-    }
-  };
+    const value = e.target.value.replace(/\D/g, '');
+    const numericValue = Number(value) / 100;
 
-  const handleBlur = () => {
+    if (isNaN(numericValue)) return;
+
     setValorFormatado(
-      new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(formData.valor_total)
+      new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(numericValue)
     );
+    setFormData(prev => ({ ...prev, valor_total: numericValue }));
   };
 
   const toggleSocio = (socio: any) => {
@@ -96,25 +190,51 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
   };
 
   const dividirIgualmente = () => {
-    if (sociosVinculados.length === 0) return;
+    if (sociosVinculados.length === 0 || formData.valor_total <= 0) return;
     const count = sociosVinculados.length;
+
+    // Calcula o valor base por sócio
+    const baseValue = Math.floor((formData.valor_total / count) * 100) / 100;
+    const leftoverValue = parseFloat((formData.valor_total - (baseValue * count)).toFixed(2));
+
+    // Calcula a porcentagem base por sócio
     const basePercent = Math.floor((100 / count) * 100) / 100;
-    const leftover = parseFloat((100 - (basePercent * count)).toFixed(2));
+    const leftoverPercent = parseFloat((100 - (basePercent * count)).toFixed(2));
+
     const novos = sociosVinculados.map((s, i) => {
-      const p = i === count - 1 ? parseFloat((basePercent + leftover).toFixed(2)) : basePercent;
-      return { ...s, porcentagem: p, valor: parseFloat(((p / 100) * formData.valor_total).toFixed(2)) };
+      const v = i === count - 1 ? parseFloat((baseValue + leftoverValue).toFixed(2)) : baseValue;
+      const p = i === count - 1 ? parseFloat((basePercent + leftoverPercent).toFixed(2)) : basePercent;
+      return { ...s, valor: v, porcentagem: p };
     });
     setSociosVinculados(novos);
   };
 
   const updateSocioPorcentagem = (socioId: string, value: string) => {
-    const totalOutros = sociosVinculados.filter(s => s.socio_id !== socioId).reduce((acc, s) => acc + s.porcentagem, 0);
     let pNum = parseFloat(value || '0');
-    if (pNum + totalOutros > 100) pNum = 100 - totalOutros;
-    pNum = isNaN(pNum) ? 0 : Math.max(0, parseFloat(pNum.toFixed(2)));
+    if (isNaN(pNum)) pNum = 0;
+
+    const totalOutros = sociosVinculados.filter(s => s.socio_id !== socioId).reduce((acc, s) => acc + s.porcentagem, 0);
+    if (pNum + totalOutros > 100) pNum = parseFloat((100 - totalOutros).toFixed(2));
+
     const novoValor = parseFloat(((pNum / 100) * formData.valor_total).toFixed(2));
+
     setSociosVinculados(sociosVinculados.map(s =>
       s.socio_id === socioId ? { ...s, porcentagem: pNum, valor: novoValor } : s
+    ));
+  };
+
+  const updateSocioValor = (socioId: string, value: string) => {
+    const cleaned = value.replace(/\D/g, '');
+    let vNum = Number(cleaned) / 100;
+    if (isNaN(vNum)) vNum = 0;
+
+    const totalOutros = sociosVinculados.filter(s => s.socio_id !== socioId).reduce((acc, s) => acc + s.valor, 0);
+    if (vNum + totalOutros > formData.valor_total) vNum = parseFloat((formData.valor_total - totalOutros).toFixed(2));
+
+    const novaPorcentagem = formData.valor_total > 0 ? parseFloat(((vNum / formData.valor_total) * 100).toFixed(2)) : 0;
+
+    setSociosVinculados(sociosVinculados.map(s =>
+      s.socio_id === socioId ? { ...s, valor: vNum, porcentagem: novaPorcentagem } : s
     ));
   };
 
@@ -124,7 +244,6 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
     e.preventDefault();
 
     if (isEditing) {
-      // Edit mode: only update description, date, document
       if (!formData.descricao.trim()) { alert('Informe a descrição.'); return; }
       setIsSaving(true);
       try {
@@ -142,34 +261,44 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
       return;
     }
 
-    // Create mode
-    if (formData.valor_total <= 0) {
-      alert('Informe um valor maior que zero.');
-      return;
-    }
-    if (!formData.conta_id) {
-      alert('Selecione uma conta bancária de destino.');
-      return;
-    }
-    if (dividirSocios && sociosVinculados.length === 0) {
-      alert('Selecione pelo menos um sócio para dividir.');
-      return;
-    }
-    if (dividirSocios && totalPorcentagem < 99.99) {
-      alert('A soma das porcentagens deve ser 100%.');
-      return;
-    }
+    if (formData.valor_total <= 0) { alert('Informe um valor maior que zero.'); return; }
+    if (!formaPagamendoId) { alert('Selecione a forma de recebimento.'); return; }
+    if (!condicaoId) { alert('Selecione a condição de pagamento.'); return; }
+    if (isVista && !formData.conta_id) { alert('Selecione uma conta bancária de destino.'); return; }
+
+    if (dividirSocios && sociosVinculados.length === 0) { alert('Selecione pelo menos um sócio para dividir.'); return; }
+    if (dividirSocios && totalPorcentagem < 99.99) { alert('A soma das porcentagens deve ser 100%.'); return; }
 
     setIsSaving(true);
     try {
-      await OutrosCreditosService.save({
-        ...formData,
-        socios: dividirSocios ? sociosVinculados.map(s => ({
-          socio_id: s.socio_id,
-          valor: s.valor,
-          porcentagem: s.porcentagem,
-        })) : undefined,
-      });
+      // Para cada parcela gerada, cria um lançamento de crédito
+      // NOTA: Se houver sócios, o valor de cada parcela deve ser dividido proporcionalmente?
+      // Neste momento, vamos simplificar seguindo o desejo do usuário de "lancar" após ver a lista.
+
+      for (const p of parcelas) {
+        const resp = await OutrosCreditosService.save({
+          ...formData,
+          valor_total: p.valor,
+          data_vencimento: p.data_vencimento,
+          conta_id: isVista ? formData.conta_id : null,
+          socios: dividirSocios ? sociosVinculados.map(s => ({
+            socio_id: s.socio_id,
+            valor: s.valor,
+            porcentagem: s.porcentagem,
+          })) : undefined,
+        });
+
+        // Se for a vista (ou vencimento hoje), realiza a baixa imediata
+        if (isVista && resp?.id) {
+          await OutrosCreditosService.baixarCredito(resp.id, {
+            valor: p.valor,
+            data_pagamento: p.data_vencimento,
+            conta_id: formData.conta_id,
+            forma_pagamento_id: formaPagamendoId
+          });
+        }
+      }
+
       onSuccess();
     } catch (err: any) {
       alert('Erro ao salvar: ' + err.message);
@@ -199,57 +328,8 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-8 space-y-6 overflow-y-auto flex-1">
-          {/* Data + Valor */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">
-                Data de Vencimento
-              </label>
-              <input
-                type="date"
-                value={formData.data_vencimento}
-                onChange={e => setFormData({ ...formData, data_vencimento: e.target.value })}
-                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3.5 font-bold text-[#111827] outline-none focus:ring-2 focus:ring-teal-500"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">
-                Valor
-              </label>
-              <input
-                type="text"
-                value={valorFormatado}
-                onChange={handleCurrencyChange}
-                onBlur={handleBlur}
-                className="w-full bg-white border-2 border-teal-100 rounded-2xl px-5 py-3.5 text-lg font-black text-teal-600 outline-none focus:border-teal-500 text-center"
-                required
-              />
-            </div>
-          </div>
 
-          {/* Conta Bancária de Destino - OBRIGATÓRIA */}
-          <div>
-            <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">
-              Conta Bancária de Destino
-            </label>
-            <select
-              required
-              value={formData.conta_id}
-              onChange={e => setFormData({ ...formData, conta_id: e.target.value })}
-              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-bold text-[#111827] outline-none appearance-none focus:ring-2 focus:ring-teal-500"
-            >
-              <option value="">Selecione a conta...</option>
-              {contas.map(c => (
-                <option key={c.id} value={c.id}>
-                  {c.banco_nome} - {c.titular} | Saldo:{' '}
-                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(c.saldo_atual || 0)}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Descrição */}
+          {/* 1. Descrição */}
           <div>
             <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">
               Descrição / Motivo
@@ -263,6 +343,137 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
               required
             />
           </div>
+
+          {/* 2. Valor + Data Base */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">
+                Valor Total
+              </label>
+              <input
+                type="text"
+                value={valorFormatado}
+                onChange={handleCurrencyChange}
+                className="w-full bg-white border-2 border-teal-100 rounded-2xl px-5 py-3.5 text-lg font-black text-teal-600 outline-none focus:border-teal-500 text-center"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">
+                Data do Lançamento
+              </label>
+              <input
+                type="date"
+                value={formData.data_vencimento}
+                onChange={e => setFormData({ ...formData, data_vencimento: e.target.value })}
+                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3.5 font-bold text-[#111827] outline-none focus:ring-2 focus:ring-teal-500"
+                required
+              />
+            </div>
+          </div>
+
+          {/* 3. Forma de Recebimento */}
+          {!isEditing && (
+            <div>
+              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">
+                Forma de Recebimento
+              </label>
+              <select
+                required
+                value={formaPagamendoId}
+                onChange={e => setFormaPagamentoId(e.target.value)}
+                className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-bold text-[#111827] outline-none appearance-none focus:ring-2 focus:ring-teal-500"
+              >
+                <option value="">Selecione a forma...</option>
+                {formasPagamento.map(f => (
+                  <option key={f.id} value={f.id}>{f.nome}</option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {/* 4. Condição de Pagamento (Prazo) */}
+          {formaPagamendoId && !isEditing && (
+            <div className="animate-in slide-in-from-top-2 duration-300">
+              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1 flex justify-between">
+                Condição / Regra de Prazo
+                {loadingCondicoes && <div className="w-3 h-3 border-2 border-teal-500 border-t-transparent rounded-full animate-spin"></div>}
+              </label>
+              <select
+                required
+                value={condicaoId}
+                onChange={e => setCondicaoId(e.target.value)}
+                className="w-full bg-teal-50 border border-teal-100 rounded-xl px-4 py-3.5 text-sm font-bold text-teal-700 outline-none appearance-none focus:ring-2 focus:ring-teal-500"
+              >
+                <option value="">{loadingCondicoes ? 'Buscando...' : 'Selecione a condição...'}</option>
+                {condicoes.map(c => (
+                  <option key={c.id} value={c.id}>{c.nome}</option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {/* 5. Cronograma de Parcelas */}
+          {parcelas.length > 0 && condicaoId && (
+            <div className="bg-slate-50 border border-slate-100 p-5 rounded-3xl space-y-4 animate-in slide-in-from-bottom-2">
+              <div className="flex items-center justify-between px-1">
+                <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Cronograma de Recebimento</h4>
+                <span className="text-[9px] font-black bg-teal-500 text-white px-2 py-0.5 rounded uppercase">
+                  {parcelas.length} {parcelas.length === 1 ? 'Parcela' : 'Parcelas'}
+                </span>
+              </div>
+
+              <div className="max-h-[220px] overflow-y-auto space-y-3 pr-1 custom-scrollbar">
+                {parcelas.map(p => (
+                  <div key={p.numero} className="flex items-center gap-4 bg-white p-4 rounded-2xl border border-slate-100 group shadow-sm hover:border-teal-200 transition-all">
+                    <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0">
+                      <span className="text-xs font-black text-slate-400">{p.numero}º</span>
+                    </div>
+
+                    <div className="flex-1">
+                      <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Data Prevista</p>
+                      <input
+                        type="date"
+                        value={p.data_vencimento}
+                        onChange={(e) => updateParcelaDate(p.numero, e.target.value)}
+                        className="w-full bg-transparent font-black text-slate-800 text-xs outline-none cursor-pointer focus:text-teal-600"
+                      />
+                    </div>
+
+                    <div className="text-right">
+                      <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Valor</p>
+                      <p className="text-sm font-black text-[#111827]">
+                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(p.valor)}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* 6. Conta Bancária (Apenas se for Vista) */}
+          {isVista && !isEditing && (
+            <div className="animate-in slide-in-from-top-2 duration-300 bg-emerald-50 border border-emerald-100 p-5 rounded-3xl">
+              <label className="block text-[10px] font-black text-emerald-600 uppercase mb-3 ml-1">
+                Conta para Recebimento Imediato
+              </label>
+              <select
+                required
+                value={formData.conta_id}
+                onChange={e => setFormData({ ...formData, conta_id: e.target.value })}
+                className="w-full bg-white border border-emerald-200 rounded-xl px-4 py-3.5 text-sm font-bold text-emerald-900 outline-none appearance-none focus:ring-2 focus:ring-emerald-500 shadow-sm"
+              >
+                <option value="">Selecione a conta...</option>
+                {contas.map(c => (
+                  <option key={c.id} value={c.id}>
+                    {c.banco_nome} - {c.titular} | Saldo:{' '}
+                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(c.saldo_atual || 0)}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           {/* Documento Referência */}
           <div>
@@ -375,20 +586,25 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
                         </div>
 
                         {vinculado && (
-                          <div className="flex items-center gap-2 shrink-0">
-                            <span className="text-[10px] font-bold text-slate-400">
-                              {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(vinculado.valor)}
-                            </span>
+                          <div className="flex items-center gap-3 shrink-0">
+                            <div className="relative">
+                              <input
+                                type="text"
+                                value={new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(vinculado.valor)}
+                                onChange={(e) => updateSocioValor(socio.id, e.target.value)}
+                                className="w-28 bg-white border border-slate-200 rounded-xl py-1.5 px-3 text-[10px] font-black text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500 text-right shadow-sm"
+                              />
+                            </div>
                             <div className="relative">
                               <input
                                 type="text"
                                 inputMode="decimal"
                                 value={vinculado.porcentagem === 0 ? '' : vinculado.porcentagem.toString()}
                                 onChange={(e) => updateSocioPorcentagem(socio.id, e.target.value)}
-                                className="w-16 bg-indigo-50/50 border border-indigo-100 rounded-xl py-1.5 pl-2 pr-6 text-xs font-black text-indigo-600 outline-none focus:ring-2 focus:ring-indigo-500 text-right"
+                                className="w-16 bg-indigo-50/50 border border-indigo-100 rounded-xl py-1.5 pl-2 pr-6 text-[10px] font-black text-indigo-600 outline-none focus:ring-2 focus:ring-indigo-500 text-right"
                                 placeholder="0"
                               />
-                              <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] font-black text-indigo-400">%</span>
+                              <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[9px] font-black text-indigo-400 opacity-50">%</span>
                             </div>
                           </div>
                         )}

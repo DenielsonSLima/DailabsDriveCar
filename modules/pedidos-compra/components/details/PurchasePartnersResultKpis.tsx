@@ -11,7 +11,7 @@ const PurchasePartnersResultKpis: React.FC<Props> = ({ pedido }) => {
     new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL',
-      maximumFractionDigits: 0
+      maximumFractionDigits: 2
     }).format(val);
 
   const stats = useMemo(() => {
@@ -31,8 +31,10 @@ const PurchasePartnersResultKpis: React.FC<Props> = ({ pedido }) => {
     const lucroProjetadoLote = valorVendaProjetado > 0 ? valorVendaProjetado - investimentoTotalLote : 0;
 
     return v.socios.map((s: any) => {
+      // Usar o valor já calculado e rebalanceado no banco
+      const investidoSocio = Number(s.valor) || 0;
+
       const perc = (Number(s.porcentagem) || 0) / 100;
-      const investidoSocio = investimentoTotalLote * perc;
       const retornoSocio = lucroProjetadoLote * perc;
       const margemSocio = investidoSocio > 0 ? (retornoSocio / investidoSocio) * 100 : 0;
 

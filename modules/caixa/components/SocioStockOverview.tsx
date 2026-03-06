@@ -7,7 +7,12 @@ interface Props {
 }
 
 const SocioStockOverview: React.FC<Props> = ({ socios }) => {
-  const fmt = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
+  const fmt = (v: number) => new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(v);
 
   return (
     <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden h-full">
@@ -43,7 +48,7 @@ const SocioStockOverview: React.FC<Props> = ({ socios }) => {
                     <h4 className="text-sm font-black uppercase text-slate-100">{s.nome}</h4>
                     <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">
                       {s.quantidade_carros > 0
-                        ? `${s.quantidade_carros} ${s.quantidade_carros === 1 ? 'veículo' : 'veículos'} • ${s.porcentagem_estoque.toFixed(1)}% do Pátio`
+                        ? `${s.quantidade_carros} ${s.quantidade_carros === 1 ? 'veículo' : 'veículos'} • ${s.porcentagem_estoque.toFixed(2)}% do Pátio`
                         : 'Sem veículos no pátio'}
                     </p>
                   </div>

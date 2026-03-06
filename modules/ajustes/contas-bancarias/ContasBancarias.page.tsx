@@ -14,7 +14,7 @@ const ContasBancariasPage: React.FC = () => {
   const [editingConta, setEditingConta] = useState<IContaBancaria | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
-  
+
   // Estado de notificação
   const [toast, setToast] = useState<{ type: 'success' | 'error' | 'info', message: string } | null>(null);
 
@@ -23,7 +23,7 @@ const ContasBancariasPage: React.FC = () => {
     const sub = ContasBancariasService.subscribe((eventType) => {
       loadData(true);
       if (eventType !== 'Em local') {
-         showToast('info', 'Sincronizado: Lista atualizada remotamente.');
+        showToast('info', 'Sincronizado: Lista atualizada remotamente.');
       }
     });
     return () => { sub.unsubscribe(); };
@@ -81,7 +81,7 @@ const ContasBancariasPage: React.FC = () => {
       await ContasBancariasService.save(data);
       setIsFormOpen(false);
       showToast('success', data.id ? 'Conta atualizada com sucesso!' : 'Nova conta criada com sucesso!');
-      loadData(true); 
+      loadData(true);
     } catch (error: any) {
       console.error(error);
       showToast('error', 'Erro ao salvar: ' + (error.message || 'Verifique os dados'));
@@ -92,16 +92,14 @@ const ContasBancariasPage: React.FC = () => {
     <div className="space-y-6 animate-in fade-in duration-500 relative">
       {/* Toast Notification */}
       {toast && (
-        <div className={`fixed top-6 right-6 z-[250] px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 animate-in slide-in-from-right duration-300 border backdrop-blur-md ${
-          toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' : 
-          toast.type === 'info' ? 'bg-indigo-600/95 text-white border-indigo-400/50' :
-          'bg-rose-600 text-white border-rose-400/50'
-        }`}>
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-            toast.type === 'success' ? 'bg-emerald-500 text-white' : 
-            toast.type === 'info' ? 'bg-white text-indigo-600' :
-            'bg-white text-rose-600'
+        <div className={`fixed top-6 right-6 z-[250] px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 animate-in slide-in-from-right duration-300 border backdrop-blur-md ${toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' :
+            toast.type === 'info' ? 'bg-indigo-600/95 text-white border-indigo-400/50' :
+              'bg-rose-600 text-white border-rose-400/50'
           }`}>
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${toast.type === 'success' ? 'bg-emerald-500 text-white' :
+              toast.type === 'info' ? 'bg-white text-indigo-600' :
+                'bg-white text-rose-600'
+            }`}>
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
               <path strokeLinecap="round" strokeLinejoin="round" d={toast.type === 'success' ? "M5 13l4 4L19 7" : toast.type === 'info' ? "M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" : "M6 18L18 6M6 6l12 12"} />
             </svg>
@@ -123,8 +121,8 @@ const ContasBancariasPage: React.FC = () => {
             <p className="text-slate-500 mt-1">Gerencie suas contas correntes e caixas.</p>
           </div>
         </div>
-        <button 
-          onClick={() => { setEditingConta(null); setIsFormOpen(true); }} 
+        <button
+          onClick={() => { setEditingConta(null); setIsFormOpen(true); }}
           className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-sm font-black uppercase tracking-widest hover:bg-indigo-700 shadow-lg active:scale-95 flex items-center transition-all"
         >
           <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
@@ -137,7 +135,7 @@ const ContasBancariasPage: React.FC = () => {
       ) : contas.length === 0 ? (
         <div className="bg-white rounded-[2.5rem] p-20 text-center border border-slate-200 border-dashed">
           <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
-             <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
+            <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
           </div>
           <p className="text-slate-400 font-bold uppercase text-sm">Nenhuma conta cadastrada.</p>
         </div>
@@ -145,18 +143,18 @@ const ContasBancariasPage: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {contas.map(conta => (
             <div key={conta.id} className={`relative group rounded-[2rem] shadow-lg transition-all hover:-translate-y-1 hover:shadow-2xl overflow-hidden cursor-default ${!conta.ativo ? 'grayscale opacity-75' : ''}`}>
-              
+
               {/* Card Face */}
-              <div 
+              <div
                 className="p-6 h-full flex flex-col justify-between text-white min-h-[200px]"
                 style={{ background: `linear-gradient(135deg, ${conta.cor_cartao} 0%, ${conta.cor_cartao}dd 100%)` }}
               >
                 <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] pointer-events-none"></div>
-                
+
                 {/* Header Card */}
                 <div className="relative z-10 flex justify-between items-start">
                   <div>
-                    <h3 className="text-lg font-bold leading-tight">{conta.banco_nome}</h3>
+                    <h3 className="text-lg font-bold leading-tight uppercase tracking-wider">{conta.banco_nome}</h3>
                     <p className="text-[10px] uppercase opacity-70 tracking-widest">Instituição {conta.ativo ? '' : '(Inativa)'}</p>
                   </div>
                   {/* Fake Chip */}
@@ -165,16 +163,16 @@ const ContasBancariasPage: React.FC = () => {
 
                 {/* Middle - Account Info */}
                 <div className="relative z-10 mt-6 font-mono tracking-wider opacity-90 text-sm">
-                   <div className="flex items-center space-x-4">
-                      <div>
-                        <span className="text-[8px] uppercase block opacity-60">Agência</span>
-                        {conta.agencia || '---'}
-                      </div>
-                      <div>
-                        <span className="text-[8px] uppercase block opacity-60">Conta</span>
-                        {conta.conta || '---'}
-                      </div>
-                   </div>
+                  <div className="flex items-center space-x-4">
+                    <div>
+                      <span className="text-[8px] uppercase block opacity-60">Agência</span>
+                      {conta.agencia || '---'}
+                    </div>
+                    <div>
+                      <span className="text-[8px] uppercase block opacity-60">Conta</span>
+                      {conta.conta || '---'}
+                    </div>
+                  </div>
                 </div>
 
                 {/* Bottom - Holder */}
@@ -188,9 +186,9 @@ const ContasBancariasPage: React.FC = () => {
                   <button onClick={() => handleEdit(conta)} className="bg-white text-slate-900 px-3 py-2.5 rounded-xl text-xs font-black uppercase hover:scale-105 transition-transform flex items-center" title="Editar">
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
                   </button>
-                  
-                  <button 
-                    onClick={() => handleToggleStatus(conta)} 
+
+                  <button
+                    onClick={() => handleToggleStatus(conta)}
                     className={`px-3 py-2.5 rounded-xl text-xs font-black uppercase hover:scale-105 transition-transform flex items-center text-white ${conta.ativo ? 'bg-amber-500' : 'bg-emerald-500'}`}
                     title={conta.ativo ? 'Inativar Conta' : 'Ativar Conta'}
                   >
@@ -210,14 +208,14 @@ const ContasBancariasPage: React.FC = () => {
       )}
 
       {isFormOpen && (
-        <ContaForm 
+        <ContaForm
           initialData={editingConta}
           onClose={() => setIsFormOpen(false)}
           onSubmit={handleSave}
         />
       )}
 
-      <ConfirmModal 
+      <ConfirmModal
         isOpen={!!deleteId}
         onClose={() => setDeleteId(null)}
         onConfirm={handleDelete}

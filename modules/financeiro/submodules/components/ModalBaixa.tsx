@@ -3,6 +3,7 @@ import { ITitulo } from '../../financeiro.types';
 import { FinanceiroService } from '../../financeiro.service';
 import { ContasBancariasService } from '../../../ajustes/contas-bancarias/contas.service';
 import { FormasPagamentoService } from '../../../cadastros/formas-pagamento/formas-pagamento.service';
+import { maskCurrency, parseCurrencyToNumber } from '../../../../utils/currency';
 
 interface Props {
   titulo: ITitulo;
@@ -26,11 +27,17 @@ const ModalBaixa: React.FC<Props> = ({ titulo, onClose, onSuccess }) => {
   const [formaId, setFormaId] = useState('');
   const [dataPagamento, setDataPagamento] = useState(new Date().toISOString().split('T')[0]);
 
+  // Raw states for masked inputs
+  const [descontoRaw, setDescontoRaw] = useState('0,00');
+  const [acrescimoRaw, setAcrescimoRaw] = useState('0,00');
+  const [pagoRaw, setPagoRaw] = useState(maskCurrency(saldoDevedorOriginal));
+
   // Update valorPago automatically when acréscimo or desconto changes
   useEffect(() => {
     let newValor = saldoDevedorOriginal + valorAcrescimo - valorDesconto;
     if (newValor < 0) newValor = 0;
     setValorPago(newValor);
+    setPagoRaw(maskCurrency(newValor));
   }, [valorDesconto, valorAcrescimo, saldoDevedorOriginal]);
 
   useEffect(() => {
@@ -115,11 +122,13 @@ const ModalBaixa: React.FC<Props> = ({ titulo, onClose, onSuccess }) => {
                 <div className="relative">
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">R$</span>
                   <input
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    value={valorDesconto}
-                    onChange={e => setValorDesconto(Number(e.target.value))}
+                    type="text"
+                    value={descontoRaw}
+                    onChange={e => {
+                      const masked = maskCurrency(e.target.value);
+                      setDescontoRaw(masked);
+                      setValorDesconto(parseCurrencyToNumber(masked));
+                    }}
                     className="w-full bg-white border-2 border-slate-100 rounded-2xl px-5 py-3 pl-10 text-lg font-black text-[#111827] outline-none focus:border-emerald-500 transition-all text-right"
                   />
                 </div>
@@ -130,11 +139,13 @@ const ModalBaixa: React.FC<Props> = ({ titulo, onClose, onSuccess }) => {
                 <div className="relative">
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">R$</span>
                   <input
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    value={valorAcrescimo}
-                    onChange={e => setValorAcrescimo(Number(e.target.value))}
+                    type="text"
+                    value={acrescimoRaw}
+                    onChange={e => {
+                      const masked = maskCurrency(e.target.value);
+                      setAcrescimoRaw(masked);
+                      setValorAcrescimo(parseCurrencyToNumber(masked));
+                    }}
                     className="w-full bg-white border-2 border-slate-100 rounded-2xl px-5 py-3 pl-10 text-lg font-black text-[#111827] outline-none focus:border-rose-500 transition-all text-right"
                   />
                 </div>
@@ -146,11 +157,13 @@ const ModalBaixa: React.FC<Props> = ({ titulo, onClose, onSuccess }) => {
               <div className="relative">
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">R$</span>
                 <input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={valorPago}
-                  onChange={e => setValorPago(Number(e.target.value))}
+                  type="text"
+                  value={pagoRaw}
+                  onChange={e => {
+                    const masked = maskCurrency(e.target.value);
+                    setPagoRaw(masked);
+                    setValorPago(parseCurrencyToNumber(masked));
+                  }}
                   className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 pl-12 text-2xl font-black text-[#111827] outline-none focus:border-indigo-500 transition-all"
                 />
               </div>

@@ -5,14 +5,19 @@ import CreditosFilters from './components/CreditosFilters';
 import CreditosList from './components/CreditosList';
 import CreditosKpis from './components/CreditosKpis';
 import CreditoForm from './components/CreditoForm';
-import ModalBaixa from '../components/ModalBaixa';
+import ModalDetalhesCredito from './components/ModalDetalhesCredito';
 import ConfirmModal from '../../../../components/ConfirmModal';
 
 const OutrosCreditosPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<CreditosTab>('MES_ATUAL');
+  const [activeTab, setActiveTab] = useState<CreditosTab>('ABERTO');
   const [titulos, setTitulos] = useState<ITituloCredito[]>([]);
   const [loading, setLoading] = useState(true);
   const [groupBy, setGroupBy] = useState<GroupByCredito>('conta');
+
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalItems, setTotalItems] = useState(0);
+  const pageSize = 15;
 
   const [filtros, setFiltros] = useState<ICreditoFiltros>({
     busca: '',
@@ -27,23 +32,22 @@ const OutrosCreditosPage: React.FC = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [toast, setToast] = useState<{ type: 'success' | 'error', message: string } | null>(null);
 
-  // Lógica de Agrupamento Padrão por Aba
-  useEffect(() => {
-    if (activeTab === 'MES_ATUAL') setGroupBy('conta');
-    else if (activeTab === 'OUTROS') setGroupBy('mes');
-  }, [activeTab]);
-
   useEffect(() => {
     loadData();
     const sub = OutrosCreditosService.subscribe(() => loadData(true));
     return () => { sub.unsubscribe(); };
-  }, [activeTab, filtros]);
+  }, [activeTab, filtros, currentPage]);
 
   async function loadData(silent = false) {
     if (!silent) setLoading(true);
     try {
-      const data = await OutrosCreditosService.getAll(activeTab, filtros);
-      setTitulos(data);
+      const result = await OutrosCreditosService.getAll(activeTab, {
+        ...filtros,
+        page: currentPage,
+        pageSize
+      });
+      setTitulos(result.data);
+      setTotalItems(result.count);
     } finally {
       setLoading(false);
     }
@@ -111,13 +115,29 @@ const OutrosCreditosPage: React.FC = () => {
       <CreditosKpis titulos={titulos} />
 
       <div className="flex bg-white p-1.5 rounded-2xl border border-slate-200 w-fit shadow-sm">
-        <button onClick={() => setActiveTab('MES_ATUAL')} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'MES_ATUAL' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Mês Atual</button>
-        <button onClick={() => setActiveTab('OUTROS')} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'OUTROS' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Todos os Meses</button>
+        <button
+          onClick={() => { setActiveTab('ABERTO'); setCurrentPage(0); }}
+          className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'ABERTO' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}
+        >
+          Em Aberto
+        </button>
+        <button
+          onClick={() => { setActiveTab('PAGO'); setCurrentPage(0); }}
+          className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'PAGO' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}
+        >
+          Pagos
+        </button>
+        <button
+          onClick={() => { setActiveTab('TODOS'); setCurrentPage(0); }}
+          className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'TODOS' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}
+        >
+          Todos
+        </button>
       </div>
 
       <CreditosFilters
         filtros={filtros}
-        onChange={setFiltros}
+        onChange={(f) => { setFiltros(f); setCurrentPage(0); }}
         groupBy={groupBy}
         setGroupBy={setGroupBy}
       />
@@ -130,14 +150,20 @@ const OutrosCreditosPage: React.FC = () => {
           onReceber={(t) => setSelectedTitulo(t as any)}
           onEdit={(t) => { setEditTitulo(t); setIsFormOpen(true); }}
           onDelete={setDeleteId}
+          pagination={{
+            currentPage,
+            pageSize,
+            totalItems,
+            onPageChange: setCurrentPage
+          }}
         />
       </div>
 
       {selectedTitulo && (
-        <ModalBaixa
+        <ModalDetalhesCredito
           titulo={selectedTitulo as any}
           onClose={() => setSelectedTitulo(null)}
-          onSuccess={() => { setSelectedTitulo(null); loadData(true); setToast({ type: 'success', message: 'Baixa realizada com sucesso!' }); }}
+          onSuccess={() => { setSelectedTitulo(null); loadData(true); setToast({ type: 'success', message: 'Operação realizada com sucesso!' }); }}
         />
       )}
 

@@ -1,44 +1,55 @@
 import { supabase } from '../../../../lib/supabase';
+import { TitulosService } from '../../services/titulos.service';
 import { ITituloCredito, CreditosTab, ICreditoFiltros } from './outros-creditos.types';
 
 const TABLE = 'fin_titulos';
 
 export const OutrosCreditosService = {
-  async getAll(tab: CreditosTab, filtros: ICreditoFiltros): Promise<ITituloCredito[]> {
+  async getAll(tab: CreditosTab, filtros: ICreditoFiltros) {
     let query = supabase
       .from(TABLE)
-      .select(`
-        *,
-        parceiro:parceiros(nome),
-        transacoes:fin_transacoes(
-          id,
-          conta_origem:fin_contas_bancarias(banco_nome, conta)
-        )
-      `)
-      .eq('tipo', 'RECEBER')
-      .is('categoria_id', null)
-      .is('pedido_id', null)
-      .is('venda_pedido_id', null)
-      .neq('origem_tipo', 'PEDIDO_VENDA')
-      .in('status', ['PENDENTE', 'PARCIAL', 'ATRASADO']);
+      .select('*, transacoes:fin_transacoes(*, conta_origem:fin_contas_bancarias(*), forma:cad_formas_pagamento(*)), categoria:fin_categorias_titulos(*), parceiro:fin_parceiros(*)', { count: 'exact' })
+      .eq('tipo', 'RECEITA')
+      .eq('outros_creditos', true)
+      .order('data_vencimento', { ascending: false });
 
-    if (tab === 'MES_ATUAL') {
-      const now = new Date();
-      const primeiroDia = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
-      const ultimoDia = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
-      query = query.gte('data_vencimento', primeiroDia).lte('data_vencimento', ultimoDia);
+    if (tab === 'ABERTO') {
+      query = query.neq('status', 'PAGO');
+    } else if (tab === 'PAGO') {
+      query = query.eq('status', 'PAGO');
     }
 
     if (filtros.busca) {
-      query = query.or(`descricao.ilike.%${filtros.busca}%, documento_ref.ilike.%${filtros.busca}%`);
+      query = query.ilike('descricao', `%${filtros.busca}%`);
     }
-    if (filtros.dataInicio) query = query.gte('data_vencimento', filtros.dataInicio);
-    if (filtros.dataFim) query = query.lte('data_vencimento', filtros.dataFim);
+    if (filtros.dataInicio) {
+      query = query.gte('data_vencimento', filtros.dataInicio);
+    }
+    if (filtros.dataFim) {
+      query = query.lte('data_vencimento', filtros.dataFim);
+    }
 
-    const { data, error } = await query.order('data_vencimento', { ascending: false });
+    // Pagination
+    if (filtros.page !== undefined && filtros.pageSize !== undefined) {
+      const from = filtros.page * filtros.pageSize;
+      const to = from + filtros.pageSize - 1;
+      query = query.range(from, to);
+    }
+
+    const { data, count, error } = await query;
+    if (error) throw error;
+    return { data: data as ITituloCredito[], count: count || 0 };
+  },
+
+  async getRecebimentos(tituloId: string) {
+    const { data, error } = await supabase
+      .from('fin_transacoes')
+      .select('*, conta:fin_contas_bancarias(*), forma:cad_formas_pagamento(*)')
+      .eq('titulo_id', tituloId)
+      .order('data_pagamento', { ascending: false });
 
     if (error) throw error;
-    return data as any as ITituloCredito[];
+    return data;
   },
 
   async save(payload: {
@@ -48,8 +59,8 @@ export const OutrosCreditosService = {
     conta_id: string;
     documento_ref?: string;
     socios?: { socio_id: string; valor: number; porcentagem: number }[];
-  }): Promise<void> {
-    const { error } = await supabase.rpc('lancar_credito', {
+  }) {
+    const { data, error } = await supabase.rpc('lancar_credito', {
       p_descricao: payload.descricao,
       p_valor: payload.valor_total,
       p_data_vencimento: payload.data_vencimento,
@@ -58,37 +69,55 @@ export const OutrosCreditosService = {
       p_socios: payload.socios && payload.socios.length > 0 ? payload.socios : null,
     });
     if (error) throw error;
+    return data;
   },
 
   async update(id: string, payload: {
     descricao: string;
     data_vencimento: string;
     documento_ref?: string;
-  }): Promise<void> {
+  }) {
     const { error } = await supabase
       .from(TABLE)
       .update({
         descricao: payload.descricao,
         data_vencimento: payload.data_vencimento,
-        documento_ref: payload.documento_ref || null,
-        updated_at: new Date().toISOString(),
+        documento_ref: payload.documento_ref,
       })
       .eq('id', id);
+
     if (error) throw error;
   },
 
-  async delete(id: string): Promise<void> {
-    const { error } = await supabase.rpc('excluir_titulo', { p_id: id });
-    if (error) {
-      console.error('Erro ao excluir título via RPC:', error);
-      throw error;
-    }
+  async delete(id: string) {
+    const { error } = await supabase.from(TABLE).delete().eq('id', id);
+    if (error) throw error;
   },
 
-  subscribe(onUpdate: () => void) {
+  async getFormasPagamento() {
+    const { data } = await supabase
+      .from('cad_formas_pagamento')
+      .select('*')
+      .eq('ativo', true)
+      .in('tipo_movimentacao', ['RECEBIMENTO', 'AMBOS'])
+      .neq('destino_lancamento', 'CONSIGNACAO')
+      .order('nome');
+    return data;
+  },
+
+  async baixarCredito(tituloId: string, payload: {
+    valor: number;
+    data_pagamento: string;
+    conta_id: string;
+    forma_pagamento_id: string;
+  }) {
+    return TitulosService.baixarTitulo({ id: tituloId } as any, payload.valor, payload.conta_id, payload.forma_pagamento_id, 0, 0, payload.data_pagamento);
+  },
+
+  subscribe(callback: () => void) {
     return supabase
       .channel('fin_outros_creditos_sync')
-      .on('postgres_changes', { event: '*', schema: 'public', table: TABLE }, () => onUpdate())
+      .on('postgres_changes', { event: '*', schema: 'public', table: TABLE }, () => callback())
       .subscribe();
   }
 };

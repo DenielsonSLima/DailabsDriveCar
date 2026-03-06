@@ -1,9 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { IVeiculo } from '../estoque.types';
 import { SociosService } from '../../ajustes/socios/socios.service';
 import { ISocio } from '../../ajustes/socios/socios.types';
 import EstoqueSocios from './EstoqueSocios';
+import { maskCurrency, parseCurrencyToNumber } from '../../../utils/currency';
 
 interface Props {
   formData: Partial<IVeiculo>;
@@ -17,26 +17,13 @@ const FormCardFinance: React.FC<Props> = ({ formData, onChange, onNotification, 
   const [custoRaw, setCustoRaw] = useState('');
   const [vendaRaw, setVendaRaw] = useState('');
 
-  // Formata o valor para exibição padrão
-  const formatNumber = (val?: number) => {
-    if (val === undefined || val === 0) return '';
-    return new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(val);
-  };
-
-  // Formata ao sair do campo (Blur)
-  const handleBlur = (field: 'valor_custo' | 'valor_venda') => {
-    const val = field === 'valor_custo' ? formData.valor_custo : formData.valor_venda;
-    if (field === 'valor_custo') setCustoRaw(formatNumber(val));
-    else setVendaRaw(formatNumber(val));
-  };
-
   // Formata o valor inicial para o input
   useEffect(() => {
-    if (formData.valor_custo !== undefined && !custoRaw) {
-      setCustoRaw(formatNumber(formData.valor_custo));
+    if (formData.valor_custo !== undefined) {
+      setCustoRaw(maskCurrency(formData.valor_custo));
     }
-    if (formData.valor_venda !== undefined && !vendaRaw) {
-      setVendaRaw(formatNumber(formData.valor_venda));
+    if (formData.valor_venda !== undefined) {
+      setVendaRaw(maskCurrency(formData.valor_venda));
     }
   }, [formData.valor_custo, formData.valor_venda]);
 
@@ -45,24 +32,12 @@ const FormCardFinance: React.FC<Props> = ({ formData, onChange, onNotification, 
   }, []);
 
   const handleCurrencyChange = (val: string, field: 'valor_custo' | 'valor_venda') => {
-    // Atualiza o estado local BRUTO (exatamente o que o usuário digita)
-    if (field === 'valor_custo') setCustoRaw(val);
-    else setVendaRaw(val);
+    const masked = maskCurrency(val);
+    if (field === 'valor_custo') setCustoRaw(masked);
+    else setVendaRaw(masked);
 
-    // Tenta converter para número para o pai
-    const cleaned = val.replace(/[^\d,\.]/g, '');
-    if (cleaned === '' || cleaned === ',' || cleaned === '.') {
-      onChange({ [field]: 0 });
-      return;
-    }
-
-    // Se tiver mais de um separador decimal, pega o último
-    // Remove os pontos de milhar e troca a vírgula decimal por ponto
-    const normalized = cleaned.replace(/\./g, '').replace(',', '.');
-    const parsed = parseFloat(normalized);
-    if (!isNaN(parsed)) {
-      onChange({ [field]: parsed });
-    }
+    const parsed = parseCurrencyToNumber(masked);
+    onChange({ [field]: parsed });
   };
 
   return (
@@ -85,7 +60,6 @@ const FormCardFinance: React.FC<Props> = ({ formData, onChange, onNotification, 
                 type="text"
                 value={custoRaw}
                 onChange={e => handleCurrencyChange(e.target.value, 'valor_custo')}
-                onBlur={() => handleBlur('valor_custo')}
                 className="w-full bg-white border-2 border-slate-100 rounded-3xl px-6 py-5 pl-14 text-2xl font-black text-[#111827] outline-none focus:border-indigo-500 transition-all shadow-inner"
               />
             </div>
@@ -98,7 +72,6 @@ const FormCardFinance: React.FC<Props> = ({ formData, onChange, onNotification, 
                 type="text"
                 value={vendaRaw}
                 onChange={e => handleCurrencyChange(e.target.value, 'valor_venda')}
-                onBlur={() => handleBlur('valor_venda')}
                 className="w-full bg-white border-2 border-emerald-100 rounded-3xl px-6 py-6 pl-16 text-4xl font-black text-[#111827] outline-none focus:border-emerald-500 transition-all shadow-sm"
               />
             </div>

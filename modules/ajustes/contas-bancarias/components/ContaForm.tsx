@@ -9,15 +9,15 @@ interface Props {
 }
 
 const bancosPopulares = [
-  { codigo: '001', nome: 'Banco do Brasil', cor: '#fbbf24' }, // Amarelo BB
-  { codigo: '237', nome: 'Bradesco', cor: '#dc2626' },        // Vermelho Bradesco
-  { codigo: '104', nome: 'Caixa', cor: '#2563eb' },           // Azul Caixa
-  { codigo: '341', nome: 'Itaú', cor: '#ea580c' },            // Laranja Itaú
-  { codigo: '033', nome: 'Santander', cor: '#ef4444' },       // Vermelho Santander
-  { codigo: '260', nome: 'Nubank', cor: '#8b5cf6' },          // Roxo Nu
-  { codigo: '077', nome: 'Inter', cor: '#f97316' },           // Laranja Inter
-  { codigo: '336', nome: 'C6 Bank', cor: '#1e293b' },         // Preto C6
-  { codigo: '000', nome: 'Dinheiro / Cofre', cor: '#10b981' },// Verde
+  { codigo: '001', nome: 'BANCO DO BRASIL', cor: '#fbbf24' }, // Amarelo BB
+  { codigo: '237', nome: 'BRADESCO', cor: '#dc2626' },        // Vermelho Bradesco
+  { codigo: '104', nome: 'CAIXA', cor: '#2563eb' },           // Azul Caixa
+  { codigo: '341', nome: 'ITAÚ', cor: '#ea580c' },            // Laranja Itaú
+  { codigo: '033', nome: 'SANTANDER', cor: '#ef4444' },       // Vermelho Santander
+  { codigo: '260', nome: 'NUBANK', cor: '#8b5cf6' },          // Roxo Nu
+  { codigo: '077', nome: 'INTER', cor: '#f97316' },           // Laranja Inter
+  { codigo: '336', nome: 'C6 BANK', cor: '#1e293b' },         // Preto C6
+  { codigo: '000', nome: 'DINHEIRO / COFRE', cor: '#10b981' },// Verde
 ];
 
 const ContaForm: React.FC<Props> = ({ initialData, onClose, onSubmit }) => {
@@ -122,13 +122,13 @@ const ContaForm: React.FC<Props> = ({ initialData, onClose, onSubmit }) => {
                     key={b.codigo}
                     type="button"
                     onClick={() => handleBancoSelect(b)}
-                    className={`flex items-center p-3 rounded-xl border transition-all ${formData.banco_codigo === b.codigo
-                      ? 'bg-slate-900 border-slate-900 text-white shadow-lg scale-[1.02]'
-                      : 'bg-white border-slate-200 text-slate-600 hover:border-indigo-300'
+                    className={`flex items-center p-3 rounded-xl border transition-all ${formData.banco_codigo === b.codigo || (formData.banco_nome?.toUpperCase() === b.nome)
+                        ? 'bg-slate-900 border-slate-900 text-white shadow-lg scale-[1.02]'
+                        : 'bg-white border-slate-200 text-slate-600 hover:border-indigo-300'
                       }`}
                   >
                     <div className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: b.cor }}></div>
-                    <span className="text-xs font-bold truncate">{b.nome}</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest truncate">{b.nome}</span>
                   </button>
                 ))}
               </div>

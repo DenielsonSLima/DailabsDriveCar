@@ -7,7 +7,12 @@ interface Props {
 }
 
 const SocioPatrimonioCards: React.FC<Props> = ({ socios }) => {
-    const fmt = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
+    const fmt = (v: number) => new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }).format(v);
     const [expandedSocio, setExpandedSocio] = useState<string | null>(null);
 
     const totalEmEstoque = socios[0]?.total_investido_todos_socios || 0;
@@ -77,7 +82,7 @@ const SocioPatrimonioCards: React.FC<Props> = ({ socios }) => {
                                             <div className="flex items-center gap-2 mt-1">
                                                 <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Participação:</span>
                                                 <span className="text-[10px] font-black text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-lg border border-indigo-100/50">
-                                                    {s.porcentagem_participacao?.toFixed(1) || 0}%
+                                                    {s.porcentagem_participacao?.toFixed(2) || "0.00"}%
                                                 </span>
                                             </div>
                                         </div>
