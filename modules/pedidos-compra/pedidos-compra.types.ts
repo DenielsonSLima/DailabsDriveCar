@@ -5,6 +5,7 @@ import { ICondicaoPagamento } from '../cadastros/condicoes-pagamento/condicoes-p
 import { ICorretor } from '../cadastros/corretores/corretores.types';
 import { IVeiculo } from '../estoque/estoque.types';
 import { IContaBancaria } from '../ajustes/contas-bancarias/contas.types';
+import { ITitulo } from '../financeiro/financeiro.types';
 
 export type StatusPedidoCompra = 'RASCUNHO' | 'CONCLUIDO' | 'CANCELADO';
 
@@ -59,6 +60,7 @@ export interface IPedidoCompra {
   forma_pagamento?: IFormaPagamento;
   veiculos?: IVeiculo[];
   pagamentos?: IPedidoPagamento[];
+  titulos?: ITitulo[];
 }
 
 export interface IPedidoFiltros {

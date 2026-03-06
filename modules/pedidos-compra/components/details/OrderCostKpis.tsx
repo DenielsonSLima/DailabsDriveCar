@@ -9,19 +9,17 @@ interface Props {
 const OrderCostKpis: React.FC<Props> = ({ pedido, isConsignacao = false }) => {
   const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
-  const veiculos = pedido.veiculos || [];
+  const veiculos = pedido?.veiculos || [];
+  const valorNegociadoPedido = Number(pedido?.valor_negociado) || 0;
 
   // Lógica de Custo: Soma o custo de aquisição gravado no cadastro de cada veículo vinculado
-  const custoAquisicaoVeiculos = veiculos.reduce((acc, v) => acc + (Number(v.valor_custo) || 0), 0);
-
-  // Se não houver veículos vinculados ainda, mostra o valor negociado no cabeçalho do pedido
-  const valorNegociadoPedido = Number(pedido.valor_negociado) || 0;
+  const custoAquisicaoVeiculos = veiculos.reduce((acc, v) => acc + (Number(v?.valor_custo) || 0), 0);
 
   // O "Custo de Compra" exibido será o maior entre o negociado e o real dos veículos (evita exibir zero se um estiver preenchido)
   const custoCompraFinal = custoAquisicaoVeiculos > 0 ? custoAquisicaoVeiculos : valorNegociadoPedido;
 
-  const valorServicos = veiculos.reduce((acc, v: any) => acc + (Number(v.valor_custo_servicos) || 0), 0);
-  const custoTotalAtivo = custoCompraFinal + valorServicos;
+  const valorServicos = veiculos.reduce((acc, v: any) => acc + (Number(v?.valor_custo_servicos) || 0), 0);
+  const custoTotalAtivo = (Number(custoCompraFinal) || 0) + (Number(valorServicos) || 0);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in slide-in-from-bottom-3 duration-500">

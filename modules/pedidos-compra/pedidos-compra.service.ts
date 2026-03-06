@@ -109,20 +109,29 @@ export const PedidosCompraService = {
       .from(TABLE)
       .select(`
         *,
-        fornecedor:parceiros(*),
-        veiculos:est_veiculos!est_veiculos_pedido_id_fkey(
+        fornecedor:parceiros!fornecedor_id(*),
+        veiculos:est_veiculos!pedido_id(
           *,
           montadora:cad_montadoras(*),
           modelo:cad_modelos(*),
           versao:cad_versoes(*)
         ),
-        forma_pagamento:cad_formas_pagamento(id, nome),
-        pagamentos:cmp_pedidos_pagamentos(
+        forma_pagamento:cad_formas_pagamento!forma_pagamento_id(id, nome),
+        pagamentos:cmp_pedidos_pagamentos!pedido_id(
           *,
           forma_pagamento:cad_formas_pagamento(*),
           conta_bancaria:fin_contas_bancarias(*)
         ),
-        corretor:cad_corretores(*)
+        corretor:cad_corretores!corretor_id(*),
+        titulos:fin_titulos!pedido_id(
+          *,
+          categoria:fin_categorias(*),
+          transacoes:fin_transacoes!titulo_id(
+            *,
+            conta:fin_contas_bancarias!conta_origem_id(*),
+            forma:cad_formas_pagamento!forma_pagamento_id(*)
+          )
+        )
       `)
       .eq('id', id)
       .single();

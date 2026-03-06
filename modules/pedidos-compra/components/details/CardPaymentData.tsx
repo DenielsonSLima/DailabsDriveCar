@@ -18,9 +18,11 @@ const CardPaymentData: React.FC<Props> = ({ pedido, totalAquisicaoReferencia, on
   const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
   const valorTotalPagos = (pedido.pagamentos || []).reduce((acc, p) => acc + p.valor, 0);
+  const valorRealPago = (pedido.titulos || []).reduce((acc, t) => acc + (t.valor_pago || 0), 0);
   const valorReferencia = totalAquisicaoReferencia || pedido.valor_negociado || 0;
   const valorRestante = valorReferencia - valorTotalPagos;
-  const percentualPago = Math.min(100, (valorTotalPagos / (valorReferencia || 1)) * 100);
+  const percentualLancado = Math.min(100, (valorTotalPagos / (valorReferencia || 1)) * 100);
+  const percentualRealPago = Math.min(100, (valorRealPago / (valorReferencia || 1)) * 100);
 
   return (
     <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm p-8 animate-in slide-in-from-bottom-10 duration-700">
@@ -45,32 +47,50 @@ const CardPaymentData: React.FC<Props> = ({ pedido, totalAquisicaoReferencia, on
       </div>
 
       {/* Resumo Quitação */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-10">
+        <div className="bg-slate-50 p-5 rounded-3xl border border-slate-100">
           <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Custo do Veículo</p>
-          <p className="text-xl font-black text-slate-900">{formatCurrency(valorReferencia)}</p>
+          <p className="text-lg font-black text-slate-900">{formatCurrency(valorReferencia)}</p>
         </div>
-        <div className="bg-emerald-50 p-6 rounded-3xl border border-emerald-100">
-          <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-1">Total Lançado</p>
-          <p className="text-xl font-black text-emerald-700">{formatCurrency(valorTotalPagos)}</p>
+        <div className="bg-indigo-50 p-5 rounded-3xl border border-indigo-100">
+          <p className="text-[9px] font-black text-indigo-600 uppercase tracking-widest mb-1">Total Lançado (Negociado)</p>
+          <p className="text-lg font-black text-indigo-700">{formatCurrency(valorTotalPagos)}</p>
         </div>
-        <div className={`p-6 rounded-3xl border ${valorRestante > 0.05 ? 'bg-rose-50 border-rose-100' : 'bg-indigo-50 border-indigo-100'}`}>
-          <p className={`text-[9px] font-black uppercase tracking-widest mb-1 ${valorRestante > 0.05 ? 'text-rose-600' : 'text-indigo-600'}`}>
-            {valorRestante > 0.05 ? 'Saldo a Compor' : 'Quitação Confirmada'}
+        <div className="bg-emerald-50 p-5 rounded-3xl border border-emerald-100">
+          <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-1">Total Pago (Real)</p>
+          <p className="text-lg font-black text-emerald-700">{formatCurrency(valorRealPago)}</p>
+        </div>
+        <div className={`p-5 rounded-3xl border ${valorReferencia - valorRealPago > 0.05 ? 'bg-rose-50 border-rose-100' : 'bg-blue-50 border-blue-100'}`}>
+          <p className={`text-[9px] font-black uppercase tracking-widest mb-1 ${valorReferencia - valorRealPago > 0.05 ? 'text-rose-600' : 'text-blue-600'}`}>
+            {valorReferencia - valorRealPago > 0.05 ? 'Saldo em Aberto' : 'Quitação Confirmada'}
           </p>
-          <p className={`text-xl font-black ${valorRestante > 0.05 ? 'text-rose-700' : 'text-indigo-700'}`}>{formatCurrency(Math.max(0, valorRestante))}</p>
+          <p className={`text-lg font-black ${valorReferencia - valorRealPago > 0.05 ? 'text-rose-700' : 'text-blue-700'}`}>{formatCurrency(Math.max(0, valorReferencia - valorRealPago))}</p>
         </div>
 
-        <div className="md:col-span-3">
-          <div className="flex justify-between items-center text-[10px] font-black uppercase text-slate-400 mb-2 px-1">
-            <span>Cobertura Financeira do Contrato</span>
-            <span className={percentualPago >= 100 ? 'text-emerald-500' : 'text-indigo-500'}>{percentualPago.toFixed(1)}%</span>
+        <div className="md:col-span-4 grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
+          <div>
+            <div className="flex justify-between items-center text-[9px] font-black uppercase text-slate-400 mb-2 px-1">
+              <span>Cobertura do Contrato (Programado)</span>
+              <span className="text-indigo-500">{percentualLancado.toFixed(1)}%</span>
+            </div>
+            <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden p-0.5">
+              <div
+                className="h-full rounded-full transition-all duration-1000 ease-out bg-indigo-600"
+                style={{ width: `${percentualLancado}%` }}
+              />
+            </div>
           </div>
-          <div className="h-3 w-full bg-slate-100 rounded-full overflow-hidden shadow-inner p-0.5">
-            <div
-              className={`h-full rounded-full transition-all duration-1000 ease-out ${percentualPago >= 99.9 ? 'bg-emerald-500' : 'bg-indigo-600'}`}
-              style={{ width: `${percentualPago}%` }}
-            />
+          <div>
+            <div className="flex justify-between items-center text-[9px] font-black uppercase text-slate-400 mb-2 px-1">
+              <span>Quitação Financeira Real</span>
+              <span className="text-emerald-500">{percentualRealPago.toFixed(1)}%</span>
+            </div>
+            <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden p-0.5">
+              <div
+                className="h-full rounded-full transition-all duration-1000 ease-out bg-emerald-500"
+                style={{ width: `${percentualRealPago}%` }}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -134,6 +154,98 @@ const CardPaymentData: React.FC<Props> = ({ pedido, totalAquisicaoReferencia, on
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* Espelho do Financeiro */}
+      <div className="mt-12">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-2 bg-emerald-100 text-emerald-600 rounded-lg">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          </div>
+          <div>
+            <h4 className="text-md font-black text-slate-900 uppercase tracking-tighter">Espelho Financeiro (Titulos & Baixas)</h4>
+            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Acompanhamento em tempo real do contas a pagar</p>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          {pedido?.titulos && pedido.titulos.length > 0 ? (
+            pedido.titulos.map((titulo) => {
+              const statusColors = {
+                PAGO: 'bg-emerald-100 text-emerald-700',
+                PARCIAL: 'bg-amber-100 text-amber-700',
+                PENDENTE: 'bg-slate-100 text-slate-600',
+                ATRASADO: 'bg-rose-100 text-rose-700',
+                CANCELADO: 'bg-slate-200 text-slate-400'
+              };
+
+              const dataVencimento = titulo?.data_vencimento ? new Date(titulo.data_vencimento).toLocaleDateString('pt-BR') : '---';
+
+              return (
+                <div key={titulo.id} className="border border-slate-100 rounded-2xl p-5 hover:border-indigo-100 transition-colors bg-slate-50/30">
+                  <div className="flex flex-col md:flex-row justify-between gap-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className={`text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter ${statusColors[titulo?.status as keyof typeof statusColors] || 'bg-slate-100'}`}>
+                          {titulo?.status || 'PENDENTE'}
+                        </span>
+                        <span className="text-xs font-black text-slate-800 uppercase">
+                          {titulo?.descricao || `Parcela ${titulo?.parcela_numero || 0}/${titulo?.parcela_total || 0}`}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-4 text-[10px] text-slate-500 font-bold uppercase tracking-widest">
+                        <span>Vencimento: <span className="text-slate-900">{dataVencimento}</span></span>
+                        {titulo?.categoria && <span>Categoria: <span className="text-indigo-600">{titulo.categoria?.nome || '---'}</span></span>}
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col items-end justify-center px-4 border-r border-slate-200">
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Valor Total</p>
+                      <p className="text-sm font-black text-slate-900">{formatCurrency(titulo?.valor_total || 0)}</p>
+                    </div>
+
+                    <div className="flex flex-col items-end justify-center px-4">
+                      <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-1">Valor Pago</p>
+                      <p className="text-sm font-black text-emerald-700">{formatCurrency(titulo?.valor_pago || 0)}</p>
+                    </div>
+                  </div>
+
+                  {/* Transações deste título */}
+                  {(titulo as any)?.transacoes && (titulo as any).transacoes.length > 0 && (
+                    <div className="mt-4 pt-4 border-t border-slate-100">
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3">Histórico de Baixas</p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                        {(titulo as any).transacoes.map((tx: any) => {
+                          const dataPagamento = tx?.data_pagamento ? new Date(tx.data_pagamento).toLocaleDateString('pt-BR') : '---';
+                          return (
+                            <div key={tx?.id} className="bg-white border border-slate-100 rounded-xl p-3 flex justify-between items-center shadow-sm">
+                              <div className="flex flex-col">
+                                <span className="text-[10px] font-black text-slate-900">{dataPagamento}</span>
+                                <span className="text-[9px] font-bold text-slate-400 uppercase truncate max-w-[120px]">
+                                  {tx?.conta?.banco_nome || tx?.forma?.nome || 'CAIXA'}
+                                </span>
+                              </div>
+                              <span className="text-xs font-black text-emerald-600">{formatCurrency(tx?.valor || 0)}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          ) : (
+            <div className="px-6 py-10 text-center border-2 border-dashed border-slate-100 rounded-3xl">
+              <p className="text-xs text-slate-400 font-bold uppercase tracking-widest italic">
+                Aguardando integração com o financeiro...
+              </p>
+              <p className="text-[9px] text-slate-300 font-bold uppercase tracking-widest mt-1">
+                Os títulos aparecerão aqui após a confirmação do pedido.
+              </p>
+            </div>
+          )}
+        </div>
       </div>
 
       {isModalOpen && (
