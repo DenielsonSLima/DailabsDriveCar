@@ -105,7 +105,12 @@ const FormCardIdentification: React.FC<Props> = ({ formData, onChange }) => {
             <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Montadora</label>
             <select
               value={formData.montadora_id || ''}
-              onChange={e => onChange({ montadora_id: e.target.value, modelo_id: '', versao_id: '' })}
+              onChange={e => {
+                const newValue = e.target.value;
+                if (newValue !== formData.montadora_id) {
+                  onChange({ montadora_id: newValue, modelo_id: '', versao_id: '' });
+                }
+              }}
               className={selectCls}
               disabled={isLoadingMontadoras}
             >
@@ -122,7 +127,12 @@ const FormCardIdentification: React.FC<Props> = ({ formData, onChange }) => {
             <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Categoria (Tipo)</label>
             <select
               value={formData.tipo_veiculo_id || ''}
-              onChange={e => onChange({ tipo_veiculo_id: e.target.value, modelo_id: '', versao_id: '' })}
+              onChange={e => {
+                const newValue = e.target.value;
+                if (newValue !== formData.tipo_veiculo_id) {
+                  onChange({ tipo_veiculo_id: newValue, modelo_id: '', versao_id: '' });
+                }
+              }}
               disabled={!formData.montadora_id || isLoadingTipos}
               className={selectCls}
             >
@@ -142,7 +152,12 @@ const FormCardIdentification: React.FC<Props> = ({ formData, onChange }) => {
             </label>
             <select
               value={formData.modelo_id || ''}
-              onChange={e => onChange({ modelo_id: e.target.value, versao_id: '' })}
+              onChange={e => {
+                const newValue = e.target.value;
+                if (newValue !== formData.modelo_id) {
+                  onChange({ modelo_id: newValue, versao_id: '' });
+                }
+              }}
               disabled={!formData.tipo_veiculo_id || isLoadingModelos}
               className={selectCls}
             >

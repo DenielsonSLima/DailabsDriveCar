@@ -94,8 +94,8 @@ const EstoqueFormPage: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    if (!formData.montadora_id || !formData.modelo_id || !formData.tipo_veiculo_id || !formData.versao_id || !formData.cor_id) {
-      showToast('error', "Preencha todos os campos obrigatórios (Marca, Modelo, Tipo, Versão e Cor).");
+    if (!formData.montadora_id || !formData.modelo_id || !formData.tipo_veiculo_id || !formData.versao_id) {
+      showToast('error', "Preencha todos os campos obrigatórios (Marca, Modelo, Tipo e Versão).");
       return;
     }
 
