@@ -28,7 +28,7 @@ const PurchasePartnersResultKpis: React.FC<Props> = ({ pedido }) => {
     const investimentoTotalLote = custoAquisicao + custoServicos;
 
     const valorVendaProjetado = Number(v.valor_venda) || 0;
-    const lucroProjetadoLote = valorVendaProjetado - investimentoTotalLote;
+    const lucroProjetadoLote = valorVendaProjetado > 0 ? valorVendaProjetado - investimentoTotalLote : 0;
 
     return v.socios.map((s: any) => {
       const perc = (Number(s.porcentagem) || 0) / 100;
