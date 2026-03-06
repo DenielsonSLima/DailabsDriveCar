@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { ITitulo, TituloSchema } from '../../financeiro.types';
 
-export type ReceberTab = 'MES_ATUAL' | 'ATRASADOS' | 'OUTROS' | 'FUTUROS';
+export type ReceberTab = 'EM_ABERTO' | 'PAGOS' | 'TODOS';
 
 export interface IReceberFiltros {
   busca?: string;

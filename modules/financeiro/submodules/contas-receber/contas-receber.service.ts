@@ -29,18 +29,12 @@ export const ContasReceberService = {
 
     const hoje = new Date().toISOString().split('T')[0];
 
-    if (tab === 'MES_ATUAL') {
-      const now = new Date();
-      const primeiroDia = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
-      const ultimoDia = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
-      query = query.gte('data_vencimento', primeiroDia).lte('data_vencimento', ultimoDia);
-    } else if (tab === 'ATRASADOS') {
-      query = query.lt('data_vencimento', hoje).neq('status', 'PAGO').neq('status', 'CANCELADO');
-    } else if (tab === 'FUTUROS') {
-      const now = new Date();
-      const ultimoDiaMesAtual = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
-      query = query.gt('data_vencimento', ultimoDiaMesAtual);
+    if (tab === 'EM_ABERTO') {
+      query = query.neq('status', 'PAGO');
+    } else if (tab === 'PAGOS') {
+      query = query.eq('status', 'PAGO');
     }
+    // Para 'TODOS', não adicionamos filtro de status (já removemos CANCELADO acima)
 
     if (filtros.busca) {
       query = query.or(`descricao.ilike.%${filtros.busca}%, documento_ref.ilike.%${filtros.busca}%`);
@@ -74,6 +68,20 @@ export const ContasReceberService = {
       console.error('Erro ao excluir título via RPC:', error);
       throw error;
     }
+  },
+
+  async getKpis() {
+    const { data, error } = await supabase.rpc('get_submodule_kpis', {
+      p_tipo: 'RECEBER',
+      p_exclude_origem_tipo: 'OUTRO_CREDITO'
+    });
+
+    if (error) {
+      console.error('Erro ao buscar KPIs de contas a receber:', error);
+      throw error;
+    }
+
+    return data;
   },
 
   subscribe(onUpdate: () => void) {

@@ -3,9 +3,8 @@ import { ITituloCredito } from '../outros-creditos.types';
 import CreditoCard from './CreditoCard';
 
 interface Props {
-  items: ITituloCredito[] | { [key: string]: ITituloCredito[] };
+  items: ITituloCredito[];
   loading: boolean;
-  isGrouped: boolean;
   onReceber: (titulo: ITituloCredito) => void;
   onEdit: (titulo: ITituloCredito) => void;
   onDelete: (id: string) => void;
@@ -19,7 +18,7 @@ interface Props {
   };
 }
 
-const CreditosList: React.FC<Props> = ({ items, loading, isGrouped, onReceber, onEdit, onDelete, onBaixa, viewMode = 'list', pagination }) => {
+const CreditosList: React.FC<Props> = ({ items, loading, onReceber, onEdit, onDelete, onBaixa, viewMode = 'list', pagination }) => {
   const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
   const formatDate = (date: string) => new Date(date + 'T00:00:00').toLocaleDateString('pt-BR');
 
@@ -153,31 +152,9 @@ const CreditosList: React.FC<Props> = ({ items, loading, isGrouped, onReceber, o
   };
 
   const content = () => {
-    const renderItems = (rows: ITituloCredito[]) => viewMode === 'card' ? renderCards(rows) : renderTable(rows);
-
-    if (!isGrouped) {
-      const list = items as ITituloCredito[];
-      if (list.length === 0) return <div className="py-32 text-center text-slate-400 font-bold uppercase text-[10px] tracking-widest border-2 border-dashed border-slate-100 rounded-3xl mx-8">Nenhum crédito extraordinário encontrado</div>;
-      return renderItems(list);
-    }
-
-    const grouped = items as { [key: string]: ITituloCredito[] };
-    const keys = Object.keys(grouped).sort();
-
-    return (
-      <div className="divide-y divide-slate-100">
-        {keys.map(groupKey => (
-          <div key={groupKey} className="animate-in fade-in slide-in-from-bottom-2 duration-300">
-            <div className="bg-slate-50/80 px-8 py-3 sticky top-0 z-10 backdrop-blur-sm border-y border-slate-100 flex items-center">
-              <div className="w-1.5 h-1.5 rounded-full bg-teal-500 mr-3"></div>
-              <h3 className="text-[11px] font-black text-slate-600 uppercase tracking-[0.2em]">{groupKey}</h3>
-              <span className="ml-auto text-[9px] font-black text-slate-400 bg-white px-2 py-0.5 rounded-md border border-slate-100 uppercase">{grouped[groupKey].length} Créditos</span>
-            </div>
-            {renderItems(grouped[groupKey])}
-          </div>
-        ))}
-      </div>
-    );
+    const list = items as ITituloCredito[];
+    if (list.length === 0) return <div className="py-32 text-center text-slate-400 font-bold uppercase text-[10px] tracking-widest border-2 border-dashed border-slate-100 rounded-3xl mx-8">Nenhum crédito extraordinário encontrado</div>;
+    return viewMode === 'card' ? renderCards(list) : renderTable(list);
   };
 
   return (

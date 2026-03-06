@@ -76,6 +76,7 @@ export const OutrosCreditosService = {
     descricao: string;
     data_vencimento: string;
     documento_ref?: string;
+    socios?: { socio_id: string; valor: number; porcentagem: number }[];
   }) {
     const { error } = await supabase
       .from(TABLE)
@@ -83,6 +84,7 @@ export const OutrosCreditosService = {
         descricao: payload.descricao,
         data_vencimento: payload.data_vencimento,
         documento_ref: payload.documento_ref,
+        socios: payload.socios
       })
       .eq('id', id);
 
@@ -112,6 +114,20 @@ export const OutrosCreditosService = {
     forma_pagamento_id: string;
   }) {
     return TitulosService.baixarTitulo({ id: tituloId } as any, payload.valor, payload.conta_id, payload.forma_pagamento_id, 0, 0, payload.data_pagamento);
+  },
+
+  async getKpis() {
+    const { data, error } = await supabase.rpc('get_submodule_kpis', {
+      p_tipo: 'RECEBER',
+      p_origem_tipo: 'OUTRO_CREDITO'
+    });
+
+    if (error) {
+      console.error('Erro ao buscar KPIs de outros créditos:', error);
+      throw error;
+    }
+
+    return data;
   },
 
   subscribe(callback: () => void) {

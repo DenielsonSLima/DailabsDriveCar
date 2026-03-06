@@ -14,7 +14,7 @@ const ITEMS_PER_PAGE = 10;
 
 const ContasReceberPage: React.FC = () => {
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState<ReceberTab>('MES_ATUAL');
+  const [activeTab, setActiveTab] = useState<ReceberTab>('EM_ABERTO');
   const [currentPage, setCurrentPage] = useState(1);
   const [groupBy, setGroupBy] = useState<'nenhum' | 'mes' | 'parceiro'>('nenhum');
 
@@ -41,6 +41,13 @@ const ContasReceberPage: React.FC = () => {
     staleTime: 1000 * 60 * 5, // 5 minutos (Surgical Realtime handle invalidation)
   });
 
+  // Query: KPIs do Backend
+  const { data: kpis } = useQuery({
+    queryKey: ['contas-receber-kpis'],
+    queryFn: () => ContasReceberService.getKpis(),
+    staleTime: 1000 * 60 * 5,
+  });
+
   // Query: Categorias
   const { data: categorias = [] } = useQuery({
     queryKey: ['financeiro-categorias'],
@@ -53,6 +60,7 @@ const ContasReceberPage: React.FC = () => {
     mutationFn: (id: string) => ContasReceberService.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['contas-receber'] });
+      queryClient.invalidateQueries({ queryKey: ['contas-receber-kpis'] });
       setDeleteId(null);
     }
   });
@@ -61,6 +69,7 @@ const ContasReceberPage: React.FC = () => {
   useEffect(() => {
     const sub = ContasReceberService.subscribe(() => {
       queryClient.invalidateQueries({ queryKey: ['contas-receber'] });
+      queryClient.invalidateQueries({ queryKey: ['contas-receber-kpis'] });
     });
     return () => { sub.unsubscribe(); };
   }, [queryClient]);
@@ -75,7 +84,7 @@ const ContasReceberPage: React.FC = () => {
   const totalPages = data?.totalPages || 1;
 
   const processedData = useMemo(() => {
-    if (activeTab === 'MES_ATUAL') {
+    if (activeTab === 'TODOS') {
       return titulos.reduce((acc: any, t) => {
         const key = t.status === 'PAGO' ? 'PAGO' : 'EM ABERTO';
         if (!acc[key]) acc[key] = [];
@@ -125,13 +134,12 @@ const ContasReceberPage: React.FC = () => {
 
       </div>
 
-      <ReceberKpis titulos={titulos} />
+      <ReceberKpis kpis={kpis} />
 
       <div className="flex bg-white p-1.5 rounded-2xl border border-slate-200 w-fit shadow-sm">
-        <button onClick={() => { setActiveTab('MES_ATUAL'); setGroupBy('nenhum'); }} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'MES_ATUAL' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Mês Atual</button>
-        <button onClick={() => setActiveTab('ATRASADOS')} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'ATRASADOS' ? 'bg-rose-600 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Vencidos</button>
-        <button onClick={() => setActiveTab('FUTUROS')} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'FUTUROS' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Futuros</button>
-        <button onClick={() => setActiveTab('OUTROS')} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'OUTROS' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Todos os Meses</button>
+        <button onClick={() => { setActiveTab('EM_ABERTO'); setGroupBy('nenhum'); }} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'EM_ABERTO' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Em Aberto</button>
+        <button onClick={() => { setActiveTab('PAGOS'); setGroupBy('nenhum'); }} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'PAGOS' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Pagos</button>
+        <button onClick={() => { setActiveTab('TODOS'); setGroupBy('nenhum'); }} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'TODOS' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Todos</button>
       </div>
 
       <ReceberFilters
@@ -140,14 +148,14 @@ const ContasReceberPage: React.FC = () => {
         categorias={categorias}
         groupBy={groupBy}
         setGroupBy={setGroupBy}
-        showGrouping={activeTab === 'OUTROS'}
+        showGrouping={activeTab === 'TODOS'}
       />
 
       <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden min-h-[400px]">
         <ReceberList
           items={processedData}
           loading={isLoading}
-          isGrouped={groupBy !== 'nenhum' || activeTab === 'MES_ATUAL'}
+          isGrouped={groupBy !== 'nenhum' || activeTab === 'TODOS'}
           onBaixa={(t) => setSelectedTitulo(t as any)}
           onDelete={setDeleteId}
           onRowClick={(t) => setSelectedQuickView(t as any)}
@@ -196,6 +204,7 @@ const ContasReceberPage: React.FC = () => {
           onSuccess={() => {
             setSelectedTitulo(null);
             queryClient.invalidateQueries({ queryKey: ['contas-receber'] });
+            queryClient.invalidateQueries({ queryKey: ['contas-receber-kpis'] });
             queryClient.invalidateQueries({ queryKey: ['caixa-transacoes'] });
             queryClient.invalidateQueries({ queryKey: ['caixa_dashboard'] });
           }}

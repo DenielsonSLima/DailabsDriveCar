@@ -1,16 +1,18 @@
 import React from 'react';
-import { ICreditoFiltros, GroupByCredito } from '../outros-creditos.types';
+import { ICreditoFiltros, SortFieldCredito, SortOrder } from '../outros-creditos.types';
 
 interface Props {
   filtros: ICreditoFiltros;
   onChange: (newFiltros: ICreditoFiltros) => void;
-  groupBy: GroupByCredito;
-  setGroupBy: (val: GroupByCredito) => void;
+  sortBy: SortFieldCredito;
+  setSortBy: (val: SortFieldCredito) => void;
+  sortOrder: SortOrder;
+  setSortOrder: (order: SortOrder) => void;
   viewMode: 'list' | 'card';
   setViewMode: (mode: 'list' | 'card') => void;
 }
 
-const CreditosFilters: React.FC<Props> = ({ filtros, onChange, groupBy, setGroupBy, viewMode, setViewMode }) => {
+const CreditosFilters: React.FC<Props> = ({ filtros, onChange, sortBy, setSortBy, sortOrder, setSortOrder, viewMode, setViewMode }) => {
   const handleChange = (field: keyof ICreditoFiltros, value: string) => {
     onChange({ ...filtros, [field]: value });
   };
@@ -70,10 +72,22 @@ const CreditosFilters: React.FC<Props> = ({ filtros, onChange, groupBy, setGroup
 
         <div className="w-full xl:w-auto">
           <label className="block text-[9px] font-black text-slate-400 uppercase mb-1.5 ml-1 tracking-widest">Organizar por</label>
-          <div className="flex bg-slate-100 p-1 rounded-2xl">
-            <button onClick={() => setGroupBy('nenhum')} className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all ${groupBy === 'nenhum' ? 'bg-white text-teal-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Lista</button>
-            <button onClick={() => setGroupBy('mes')} className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all ${groupBy === 'mes' ? 'bg-white text-teal-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Mês</button>
-            <button onClick={() => setGroupBy('conta')} className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all ${groupBy === 'conta' ? 'bg-white text-teal-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Conta</button>
+          <div className="flex bg-slate-100 p-1 rounded-2xl items-center">
+            <button onClick={() => setSortBy('alfabeto')} className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all ${sortBy === 'alfabeto' ? 'bg-white text-teal-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Alfabeto</button>
+            <button onClick={() => setSortBy('data')} className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all ${sortBy === 'data' ? 'bg-white text-teal-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Data</button>
+            <button onClick={() => setSortBy('valor')} className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all ${sortBy === 'valor' ? 'bg-white text-teal-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Valor</button>
+
+            <div className="w-[1px] h-4 bg-slate-200 mx-1" />
+
+            <button
+              onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+              className="p-2 rounded-xl text-slate-400 hover:text-teal-600 hover:bg-white transition-all flex items-center justify-center"
+              title={sortOrder === 'asc' ? 'Crescente' : 'Decrescente'}
+            >
+              <svg className={`w-4 h-4 transition-transform duration-300 ${sortOrder === 'desc' ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+              </svg>
+            </button>
           </div>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { OutrosCreditosService } from './outros-creditos.service';
-import { ITituloCredito, CreditosTab, ICreditoFiltros, GroupByCredito } from './outros-creditos.types';
+import { ITituloCredito, CreditosTab, ICreditoFiltros, SortFieldCredito, SortOrder } from './outros-creditos.types';
 import CreditosFilters from './components/CreditosFilters';
 import CreditosList from './components/CreditosList';
 import CreditosKpis from './components/CreditosKpis';
@@ -13,8 +13,10 @@ import ConfirmModal from '../../../../components/ConfirmModal';
 const OutrosCreditosPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<CreditosTab>('ABERTO');
   const [titulos, setTitulos] = useState<ITituloCredito[]>([]);
+  const [kpis, setKpis] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [groupBy, setGroupBy] = useState<GroupByCredito>('conta');
+  const [sortBy, setSortBy] = useState<SortFieldCredito>('alfabeto');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
   const [viewMode, setViewMode] = useState<'list' | 'card'>('card');
 
   // Pagination State
@@ -45,35 +47,36 @@ const OutrosCreditosPage: React.FC = () => {
   async function loadData(silent = false) {
     if (!silent) setLoading(true);
     try {
-      const result = await OutrosCreditosService.getAll(activeTab, {
-        ...filtros,
-        page: currentPage,
-        pageSize
-      });
+      const [result, kpisResult] = await Promise.all([
+        OutrosCreditosService.getAll(activeTab, {
+          ...filtros,
+          page: currentPage,
+          pageSize
+        }),
+        OutrosCreditosService.getKpis()
+      ]);
       setTitulos(result.data);
       setTotalItems(result.count);
+      setKpis(kpisResult);
     } finally {
       setLoading(false);
     }
   }
 
   const processedData = useMemo(() => {
-    if (groupBy === 'nenhum') return titulos;
-
-    return titulos.reduce((acc: any, t) => {
-      let key = 'Diversos';
-      if (groupBy === 'mes') {
-        const d = new Date(t.data_vencimento);
-        key = d.toLocaleString('pt-BR', { month: 'long', year: 'numeric' }).toUpperCase();
-      } else if (groupBy === 'conta') {
-        key = t.transacoes?.[0]?.conta_origem?.banco_nome || 'SEM CONTA DEFINIDA';
+    return [...titulos].sort((a, b) => {
+      let comparison = 0;
+      if (sortBy === 'alfabeto') {
+        comparison = (a.descricao || '').localeCompare(b.descricao || '');
+      } else if (sortBy === 'data') {
+        comparison = new Date(a.data_vencimento).getTime() - new Date(b.data_vencimento).getTime();
+      } else if (sortBy === 'valor') {
+        comparison = (a.valor_total || 0) - (b.valor_total || 0);
       }
 
-      if (!acc[key]) acc[key] = [];
-      acc[key].push(t);
-      return acc;
-    }, {});
-  }, [titulos, groupBy]);
+      return sortOrder === 'asc' ? comparison : -comparison;
+    });
+  }, [titulos, sortBy, sortOrder]);
 
   const handleDelete = async () => {
     if (!deleteId) return;
@@ -116,7 +119,7 @@ const OutrosCreditosPage: React.FC = () => {
         </button>
       </div>
 
-      <CreditosKpis titulos={titulos} />
+      <CreditosKpis kpis={kpis} />
 
       <div className="flex bg-white p-1.5 rounded-2xl border border-slate-200 w-fit shadow-sm">
         <button
@@ -142,8 +145,10 @@ const OutrosCreditosPage: React.FC = () => {
       <CreditosFilters
         filtros={filtros}
         onChange={(f) => { setFiltros(f); setCurrentPage(0); }}
-        groupBy={groupBy}
-        setGroupBy={setGroupBy}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
         viewMode={viewMode}
         setViewMode={setViewMode}
       />
@@ -152,7 +157,6 @@ const OutrosCreditosPage: React.FC = () => {
         <CreditosList
           items={processedData}
           loading={loading}
-          isGrouped={groupBy !== 'nenhum'}
           viewMode={viewMode}
           onReceber={(t) => setSelectedTitulo(t as any)}
           onEdit={(t) => { setEditTitulo(t); setIsFormOpen(true); }}

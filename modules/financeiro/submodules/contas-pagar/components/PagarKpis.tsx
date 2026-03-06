@@ -2,27 +2,35 @@ import React from 'react';
 import { ITituloPagar } from '../contas-pagar.types';
 
 interface Props {
-  titulos: ITituloPagar[];
+  kpis?: {
+    total_liquidar: number;
+    vencendo_hoje: number;
+    total_atrasado: number;
+  };
 }
 
-const PagarKpis: React.FC<Props> = ({ titulos }) => {
+const PagarKpis: React.FC<Props> = ({ kpis }) => {
   const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
-  const hoje = new Date().toISOString().split('T')[0];
-  
-  // Total que ainda precisa ser pago (valor_total - valor_pago)
-  const totalAberto = titulos.filter(t => t.status !== 'PAGO').reduce((acc, t) => acc + (t.valor_total - (t.valor_pago || 0)), 0);
-  
-  // Apenas o que vence hoje e está aberto
-  const totalVencendoHoje = titulos.filter(t => t.data_vencimento === hoje && t.status !== 'PAGO').reduce((acc, t) => acc + (t.valor_total - (t.valor_pago || 0)), 0);
-  
-  // O que já venceu e está aberto
-  const totalAtrasado = titulos.filter(t => t.data_vencimento < hoje && t.status !== 'PAGO').reduce((acc, t) => acc + (t.valor_total - (t.valor_pago || 0)), 0);
-
   const stats = [
-    { label: 'Total a Liquidar', value: totalAberto, color: 'slate', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
-    { label: 'Vencendo Hoje', value: totalVencendoHoje, color: 'amber', icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z' },
-    { label: 'Total em Atraso', value: totalAtrasado, color: 'rose', icon: 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z' }
+    {
+      label: 'Total a Liquidar',
+      value: kpis?.total_liquidar || 0,
+      color: 'slate',
+      icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z'
+    },
+    {
+      label: 'Vencendo Hoje',
+      value: kpis?.vencendo_hoje || 0,
+      color: 'amber',
+      icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'
+    },
+    {
+      label: 'Total em Atraso',
+      value: kpis?.total_atrasado || 0,
+      color: 'rose',
+      icon: 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z'
+    }
   ];
 
   return (

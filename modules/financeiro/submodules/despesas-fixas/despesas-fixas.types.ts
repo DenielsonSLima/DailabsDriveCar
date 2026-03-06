@@ -1,6 +1,6 @@
 import { ITitulo } from '../../financeiro.types';
 
-export type FixasTab = 'MES_ATUAL' | 'ATRASADOS' | 'OUTROS' | 'FUTUROS';
+export type FixasTab = 'EM_ABERTO' | 'PAGOS' | 'TODOS';
 export type GroupByFixa = 'nenhum' | 'mes' | 'categoria';
 
 export interface IFixasFiltros {

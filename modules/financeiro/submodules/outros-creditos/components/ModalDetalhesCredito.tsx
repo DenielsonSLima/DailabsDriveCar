@@ -4,6 +4,8 @@ import { OutrosCreditosService } from '../outros-creditos.service';
 import { TitulosService } from '../../../services/titulos.service';
 import ModalBaixa from '../../components/ModalBaixa';
 import { ITituloCredito } from '../outros-creditos.types';
+import { SociosService } from '../../../../ajustes/socios/socios.service';
+import { ISocio } from '../../../../ajustes/socios/socios.types';
 
 interface Props {
     titulo: ITituloCredito;
@@ -17,6 +19,7 @@ const ModalDetalhesCredito: React.FC<Props> = ({ titulo, onClose, onSuccess }) =
     const [loading, setLoading] = useState(true);
     const [refreshKey, setRefreshKey] = useState(0);
     const [showBaixa, setShowBaixa] = useState(false);
+    const [sociosList, setSociosList] = useState<ISocio[]>([]);
 
     // Estados para edição
     const [editandoId, setEditandoId] = useState<string | null>(null);
@@ -26,8 +29,12 @@ const ModalDetalhesCredito: React.FC<Props> = ({ titulo, onClose, onSuccess }) =
     useEffect(() => {
         async function load() {
             try {
-                const data = await OutrosCreditosService.getRecebimentos(titulo.id);
+                const [data, sData] = await Promise.all([
+                    OutrosCreditosService.getRecebimentos(titulo.id),
+                    SociosService.getAll()
+                ]);
                 setRecebimentos(data || []);
+                setSociosList(sData || []);
             } catch (err) {
                 console.error(err);
             } finally {
@@ -36,6 +43,11 @@ const ModalDetalhesCredito: React.FC<Props> = ({ titulo, onClose, onSuccess }) =
         }
         load();
     }, [titulo.id, refreshKey]);
+
+    const getSocioNome = (id: string, fallback: string) => {
+        const s = sociosList.find(item => item.id === id);
+        return s?.nome || fallback;
+    };
 
     const fmt = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
     const formatDate = (date: string) => {
@@ -88,17 +100,25 @@ const ModalDetalhesCredito: React.FC<Props> = ({ titulo, onClose, onSuccess }) =
             <div className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 border border-slate-200">
 
                 {/* Header */}
-                <div className="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                    <div>
-                        <h3 className="text-lg font-black text-slate-900 uppercase tracking-tighter">Detalhes do Crédito</h3>
-                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Ref: {titulo.documento_ref || 'N/D'}</p>
+                <div className="px-10 py-8 border-b border-slate-100 flex justify-between items-center bg-white sticky top-0 z-20">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-teal-50 rounded-2xl flex items-center justify-center text-teal-600 shadow-sm border border-teal-100">
+                            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        </div>
+                        <div>
+                            <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter">Detalhes do Crédito</h3>
+                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5 flex items-center">
+                                <span className="w-1.5 h-1.5 rounded-full bg-teal-500 mr-2"></span>
+                                Ref: {titulo.documento_ref || 'N/D'}
+                            </p>
+                        </div>
                     </div>
-                    <button onClick={onClose} className="p-2 hover:bg-slate-200 rounded-full transition-colors text-slate-400 hover:text-slate-600">
-                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
+                    <button onClick={onClose} className="p-3 hover:bg-slate-100 rounded-2xl transition-all text-slate-400 hover:text-slate-600 active:scale-95 group">
+                        <svg className="w-6 h-6 group-hover:rotate-90 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
                 </div>
 
-                <div className="p-8 space-y-8">
+                <div className="max-h-[70vh] overflow-y-auto custom-scrollbar p-10 space-y-10">
                     {/* Resumo de Valores */}
                     <div className="grid grid-cols-3 gap-4">
                         <div className="bg-slate-50 p-4 rounded-3xl border border-slate-100">
@@ -129,6 +149,41 @@ const ModalDetalhesCredito: React.FC<Props> = ({ titulo, onClose, onSuccess }) =
                             <p className="text-sm font-bold text-slate-700">{formatDate(titulo.data_vencimento)}</p>
                         </div>
                     </div>
+
+                    {/* Divisão entre Sócios */}
+                    {titulo.socios && titulo.socios.length > 0 && (
+                        <div className="bg-indigo-50/30 p-6 rounded-[2rem] border border-indigo-100">
+                            <h4 className="text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-5 flex items-center">
+                                <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                                Divisão entre Sócios
+                            </h4>
+                            <div className="space-y-3">
+                                {titulo.socios.map((s, idx) => {
+                                    const nomeSocio = getSocioNome(s.socio_id, s.socio?.nome || 'Sócio');
+                                    return (
+                                        <div key={idx} className="flex items-center justify-between bg-white p-5 rounded-2xl border border-indigo-50 shadow-sm hover:border-indigo-200 transition-all">
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center shadow-inner">
+                                                    <span className="text-xs font-black text-indigo-600">{(nomeSocio[0] || 'S').toUpperCase()}</span>
+                                                </div>
+                                                <div>
+                                                    <p className="text-[11px] font-black text-slate-800 uppercase tracking-tight">{nomeSocio}</p>
+                                                    <div className="flex items-center mt-0.5">
+                                                        <span className="text-[9px] font-bold text-indigo-500 uppercase tracking-widest bg-indigo-50 px-1.5 py-0.5 rounded-md">{s.porcentagem.toFixed(1)}%</span>
+                                                        <span className="mx-2 text-slate-200 text-xs">|</span>
+                                                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Participação</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="text-right">
+                                                <p className="text-sm font-black text-slate-900">{fmt(s.valor)}</p>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
 
                     <hr className="border-slate-100" />
 

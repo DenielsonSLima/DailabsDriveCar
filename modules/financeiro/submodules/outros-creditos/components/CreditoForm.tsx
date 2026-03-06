@@ -32,7 +32,7 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
   const [valorFormatado, setValorFormatado] = useState(
     editData ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(editData.valor_total) : 'R$ 0,00'
   );
-  const [dividirSocios, setDividirSocios] = useState(false);
+  const [dividirSocios, setDividirSocios] = useState(true);
   const [sociosVinculados, setSociosVinculados] = useState<ISocioSplit[]>([]);
 
   const [formaPagamendoId, setFormaPagamentoId] = useState('');
@@ -261,6 +261,11 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
           descricao: formData.descricao,
           data_vencimento: formData.data_vencimento,
           documento_ref: formData.documento_ref,
+          socios: sociosVinculados.map(s => ({
+            socio_id: s.socio_id,
+            valor: s.valor,
+            porcentagem: s.porcentagem
+          }))
         });
         onSuccess();
       } catch (err: any) {
@@ -502,132 +507,122 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
             />
           </div>
 
-          {/* Toggle Dividir Sócios */}
-          <div
-            className={`border-2 rounded-2xl p-4 transition-all cursor-pointer ${dividirSocios ? 'border-indigo-200 bg-indigo-50/30' : 'border-slate-100 bg-slate-50/50'}`}
-            onClick={() => { setDividirSocios(!dividirSocios); if (dividirSocios) setSociosVinculados([]); }}
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className={`w-10 h-6 rounded-full flex items-center transition-all duration-300 ${dividirSocios ? 'bg-indigo-600 justify-end' : 'bg-slate-200 justify-start'}`}>
-                  <div className={`w-5 h-5 bg-white rounded-full shadow-md mx-0.5 transition-transform`} />
-                </div>
-                <div>
-                  <p className="text-xs font-black text-slate-700 uppercase tracking-tight">Dividir entre Sócios</p>
-                  <p className="text-[9px] text-slate-400 font-bold">Distribuir o valor entre os sócios da empresa</p>
-                </div>
+          {/* Divisão entre Sócios - Tornada obrigatória */}
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center">
+              <div className="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mr-4">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
               </div>
-              {dividirSocios && (
-                <span className="text-[8px] font-black bg-indigo-100 text-indigo-600 px-2 py-1 rounded-lg uppercase tracking-widest">
-                  Ativo
-                </span>
-              )}
+              <div>
+                <h3 className="text-sm font-black text-slate-800 uppercase tracking-tight">Divisão entre Sócios</h3>
+                <p className="text-[10px] text-slate-500 font-medium">Selecione os sócios e defina as participações</p>
+              </div>
             </div>
           </div>
 
-          {/* Partner Split Section */}
-          {dividirSocios && (
-            <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
-              {/* Progress Bar */}
-              {sociosVinculados.length > 0 && (
-                <div className="bg-slate-900 rounded-2xl p-4 text-white">
-                  <div className="flex justify-between items-end mb-3">
-                    <div>
-                      <p className="text-[8px] font-black uppercase tracking-widest opacity-50">Alocado</p>
-                      <h4 className="text-xl font-black tracking-tight">
-                        {totalPorcentagem.toFixed(1)}<span className="text-xs text-indigo-400 ml-0.5">%</span>
-                      </h4>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-[8px] font-black uppercase tracking-widest opacity-50">Livre</p>
-                      <h4 className={`text-xl font-black tracking-tight ${(100 - totalPorcentagem) <= 0.01 ? 'text-slate-600' : 'text-emerald-400'}`}>
-                        {Math.max(0, 100 - totalPorcentagem).toFixed(1)}<span className="text-xs opacity-50 ml-0.5">%</span>
-                      </h4>
-                    </div>
+          {/* Partner Split Section - Always visible now */}
+          <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+            {/* Progress Bar */}
+            {sociosVinculados.length > 0 && (
+              <div className="bg-slate-900 rounded-2xl p-4 text-white">
+                <div className="flex justify-between items-end mb-3">
+                  <div>
+                    <p className="text-[8px] font-black uppercase tracking-widest opacity-50">Alocado</p>
+                    <h4 className="text-xl font-black tracking-tight">
+                      {totalPorcentagem.toFixed(1)}<span className="text-xs text-indigo-400 ml-0.5">%</span>
+                    </h4>
                   </div>
-                  <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden flex">
-                    {sociosVinculados.map((s, i) => (
-                      <div
-                        key={s.socio_id}
-                        className={`h-full bg-gradient-to-r ${gradients[i % gradients.length]}`}
-                        style={{ width: `${s.porcentagem}%`, transition: 'width 0.3s ease' }}
-                      />
-                    ))}
+                  <div className="text-right">
+                    <p className="text-[8px] font-black uppercase tracking-widest opacity-50">Livre</p>
+                    <h4 className={`text-xl font-black tracking-tight ${(100 - totalPorcentagem) <= 0.01 ? 'text-slate-600' : 'text-emerald-400'}`}>
+                      {Math.max(0, 100 - totalPorcentagem).toFixed(1)}<span className="text-xs opacity-50 ml-0.5">%</span>
+                    </h4>
                   </div>
                 </div>
-              )}
-
-              {/* Quick Actions */}
-              {sociosVinculados.length >= 2 && (
-                <button
-                  type="button"
-                  onClick={dividirIgualmente}
-                  className="w-full py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-2xl text-[9px] font-black uppercase tracking-widest border border-indigo-200/50 transition-all"
-                >
-                  ⚡ Dividir Igualmente
-                </button>
-              )}
-
-              {/* Partner List */}
-              <div className="space-y-3 max-h-[200px] overflow-y-auto pr-1">
-                {sociosDisponiveis.map((socio) => {
-                  const vinculado = sociosVinculados.find(v => v.socio_id === socio.id);
-
-                  return (
+                <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden flex">
+                  {sociosVinculados.map((s, i) => (
                     <div
-                      key={socio.id}
-                      className={`border-2 rounded-2xl p-4 transition-all duration-200 ${vinculado
-                        ? 'bg-white border-indigo-100 shadow-lg'
-                        : 'bg-slate-50/50 border-slate-100 opacity-60 hover:opacity-100'
-                        }`}
-                    >
-                      <div className="flex items-center justify-between gap-3">
-                        <div className="flex items-center space-x-3 flex-1 min-w-0">
-                          <button
-                            type="button"
-                            onClick={() => toggleSocio(socio)}
-                            className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all shrink-0 ${vinculado
-                              ? 'bg-indigo-600 border-indigo-600 text-white shadow-md'
-                              : 'border-slate-200 bg-white hover:border-indigo-400'
-                              }`}
-                          >
-                            {vinculado && <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
-                          </button>
-                          <p className={`text-xs font-black uppercase tracking-tight truncate ${vinculado ? 'text-slate-900' : 'text-slate-400'}`}>
-                            {socio.nome}
-                          </p>
-                        </div>
-
-                        {vinculado && (
-                          <div className="flex items-center gap-3 shrink-0">
-                            <div className="relative">
-                              <input
-                                type="text"
-                                value={new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(vinculado.valor)}
-                                onChange={(e) => updateSocioValor(socio.id, e.target.value)}
-                                className="w-28 bg-white border border-slate-200 rounded-xl py-1.5 px-3 text-[10px] font-black text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500 text-right shadow-sm"
-                              />
-                            </div>
-                            <div className="relative">
-                              <input
-                                type="text"
-                                inputMode="decimal"
-                                value={vinculado.porcentagem === 0 ? '' : vinculado.porcentagem.toString()}
-                                onChange={(e) => updateSocioPorcentagem(socio.id, e.target.value)}
-                                className="w-16 bg-indigo-50/50 border border-indigo-100 rounded-xl py-1.5 pl-2 pr-6 text-[10px] font-black text-indigo-600 outline-none focus:ring-2 focus:ring-indigo-500 text-right"
-                                placeholder="0"
-                              />
-                              <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[9px] font-black text-indigo-400 opacity-50">%</span>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
+                      key={s.socio_id}
+                      className={`h-full bg-gradient-to-r ${gradients[i % gradients.length]}`}
+                      style={{ width: `${s.porcentagem}%`, transition: 'width 0.3s ease' }}
+                    />
+                  ))}
+                </div>
               </div>
+            )}
+
+            {/* Quick Actions */}
+            {sociosVinculados.length >= 2 && (
+              <button
+                type="button"
+                onClick={dividirIgualmente}
+                className="w-full py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-2xl text-[9px] font-black uppercase tracking-widest border border-indigo-200/50 transition-all"
+              >
+                ⚡ Dividir Igualmente
+              </button>
+            )}
+
+            {/* Partner List */}
+            <div className="space-y-3 max-h-[200px] overflow-y-auto pr-1">
+              {sociosDisponiveis.map((socio) => {
+                const vinculado = sociosVinculados.find(v => v.socio_id === socio.id);
+
+                return (
+                  <div
+                    key={socio.id}
+                    className={`border-2 rounded-2xl p-4 transition-all duration-200 ${vinculado
+                      ? 'bg-white border-indigo-100 shadow-lg'
+                      : 'bg-slate-50/50 border-slate-100 opacity-60 hover:opacity-100'
+                      }`}
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center space-x-3 flex-1 min-w-0">
+                        <button
+                          type="button"
+                          onClick={() => toggleSocio(socio)}
+                          className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all shrink-0 ${vinculado
+                            ? 'bg-indigo-600 border-indigo-600 text-white shadow-md'
+                            : 'border-slate-200 bg-white hover:border-indigo-400'
+                            }`}
+                        >
+                          {vinculado && <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
+                        </button>
+                        <p className={`text-xs font-black uppercase tracking-tight truncate ${vinculado ? 'text-slate-900' : 'text-slate-400'}`}>
+                          {socio.nome}
+                        </p>
+                      </div>
+
+                      {vinculado && (
+                        <div className="flex items-center gap-3 shrink-0">
+                          <div className="relative">
+                            <input
+                              type="text"
+                              value={new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(vinculado.valor)}
+                              onChange={(e) => updateSocioValor(socio.id, e.target.value)}
+                              className="w-28 bg-white border border-slate-200 rounded-xl py-1.5 px-3 text-[10px] font-black text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500 text-right shadow-sm"
+                            />
+                          </div>
+                          <div className="relative">
+                            <input
+                              type="text"
+                              inputMode="decimal"
+                              value={vinculado.porcentagem === 0 ? '' : vinculado.porcentagem.toString()}
+                              onChange={(e) => updateSocioPorcentagem(socio.id, e.target.value)}
+                              className="w-16 bg-indigo-50/50 border border-indigo-100 rounded-xl py-1.5 pl-2 pr-6 text-[10px] font-black text-indigo-600 outline-none focus:ring-2 focus:ring-indigo-500 text-right"
+                              placeholder="0"
+                            />
+                            <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[9px] font-black text-indigo-400 opacity-50">%</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-          )}
+          </div>
 
           {/* Actions */}
           <div className="flex space-x-3 pt-4">

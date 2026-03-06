@@ -21,9 +21,9 @@ export const TitulosService = {
       p_valor: valor,
       p_conta_id: contaId,
       p_forma_pagamento_id: formaId,
+      p_data_pagamento: dataPagamento || new Date().toISOString().split('T')[0],
       p_desconto: desconto,
-      p_acrescimo: acrescimo,
-      p_data_pagamento: dataPagamento || new Date().toISOString().split('T')[0]
+      p_acrescimo: acrescimo
     });
 
     if (error) {

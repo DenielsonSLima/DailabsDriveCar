@@ -1,7 +1,8 @@
 import { ITitulo } from '../../financeiro.types';
 
 export type CreditosTab = 'ABERTO' | 'PAGO' | 'TODOS';
-export type GroupByCredito = 'nenhum' | 'mes' | 'conta';
+export type SortFieldCredito = 'alfabeto' | 'data' | 'valor';
+export type SortOrder = 'asc' | 'desc';
 
 export interface ICreditoFiltros {
   busca: string;
@@ -31,6 +32,14 @@ export interface ITituloCredito extends Omit<ITitulo, 'parceiro' | 'categoria'> 
       conta: string;
     } | null;
     forma_pagamento?: {
+      nome: string;
+    };
+  }[];
+  socios?: {
+    socio_id: string;
+    valor: number;
+    porcentagem: number;
+    socio?: {
       nome: string;
     };
   }[];

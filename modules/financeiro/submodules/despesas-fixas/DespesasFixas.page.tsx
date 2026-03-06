@@ -10,11 +10,12 @@ import ModalBaixa from '../components/ModalBaixa';
 import ConfirmModal from '../../../../components/ConfirmModal';
 
 const DespesasFixasPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<FixasTab>('MES_ATUAL');
+  const [activeTab, setActiveTab] = useState<FixasTab>('EM_ABERTO');
   const [titulos, setTitulos] = useState<ITituloFixa[]>([]);
   const [categorias, setCategorias] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [groupBy, setGroupBy] = useState<GroupByFixa>('categoria');
+  const [groupBy, setGroupBy] = useState<GroupByFixa>('nenhum');
+  const [kpis, setKpis] = useState<any>(null);
 
   const [filtros, setFiltros] = useState<IFixasFiltros>({
     busca: '',
@@ -33,9 +34,8 @@ const DespesasFixasPage: React.FC = () => {
 
   // Sincroniza agrupamento padrão ao mudar de aba
   useEffect(() => {
-    if (activeTab === 'OUTROS') setGroupBy('mes');
-    if (activeTab === 'MES_ATUAL') setGroupBy('categoria');
-    if (activeTab === 'ATRASADOS') setGroupBy('nenhum');
+    if (activeTab === 'TODOS') setGroupBy('mes');
+    else setGroupBy('nenhum');
   }, [activeTab]);
 
   useEffect(() => {
@@ -50,15 +50,33 @@ const DespesasFixasPage: React.FC = () => {
   async function loadData(silent = false) {
     if (!silent) setLoading(true);
     try {
-      const data = await DespesasFixasService.getAll(activeTab, filtros);
+      const [data, kpisData] = await Promise.all([
+        DespesasFixasService.getAll(activeTab, filtros),
+        DespesasFixasService.getKpis()
+      ]);
       setTitulos(data);
+      setKpis(kpisData);
     } finally {
       setLoading(false);
     }
   }
 
   const processedData = useMemo(() => {
-    if (groupBy === 'nenhum') return titulos;
+    if (activeTab !== 'TODOS' && groupBy === 'nenhum') return titulos;
+
+    // Forçar agrupamento por status se não for TODOS e nenhum groupBy definido? 
+    // Na verdade, o requisito diz que quer abas em aberto, pagos e todos.
+    // Vamos seguir o padrão de Contas Pagar/Receber: se for TODOS, agrupar por status se groupBy for nenhum?
+    // Mas despesas fixas já tem groupBy mes/categoria.
+
+    if (activeTab === 'TODOS' && groupBy === 'nenhum') {
+      return titulos.reduce((acc: any, t) => {
+        const key = t.status === 'PAGO' ? 'PAGO' : 'EM ABERTO';
+        if (!acc[key]) acc[key] = [];
+        acc[key].push(t);
+        return acc;
+      }, {});
+    }
 
     return titulos.reduce((acc: any, t) => {
       let key = 'DIVERSOS';
@@ -116,13 +134,12 @@ const DespesasFixasPage: React.FC = () => {
         </button>
       </div>
 
-      <FixasKpis titulos={titulos} />
+      <FixasKpis kpis={kpis} />
 
       <div className="flex bg-white p-1.5 rounded-2xl border border-slate-200 w-fit shadow-sm overflow-x-auto max-w-full">
-        <button onClick={() => setActiveTab('MES_ATUAL')} className={`px-6 py-2.5 rounded-xl text-[10px] whitespace-nowrap font-black uppercase tracking-widest transition-all ${activeTab === 'MES_ATUAL' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Mês Atual</button>
-        <button onClick={() => setActiveTab('ATRASADOS')} className={`px-6 py-2.5 rounded-xl text-[10px] whitespace-nowrap font-black uppercase tracking-widest transition-all ${activeTab === 'ATRASADOS' ? 'bg-rose-600 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Vencidas</button>
-        <button onClick={() => setActiveTab('FUTUROS')} className={`px-6 py-2.5 rounded-xl text-[10px] whitespace-nowrap font-black uppercase tracking-widest transition-all ${activeTab === 'FUTUROS' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Futuros</button>
-        <button onClick={() => setActiveTab('OUTROS')} className={`px-6 py-2.5 rounded-xl text-[10px] whitespace-nowrap font-black uppercase tracking-widest transition-all ${activeTab === 'OUTROS' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Todos os Meses</button>
+        <button onClick={() => setActiveTab('EM_ABERTO')} className={`px-6 py-2.5 rounded-xl text-[10px] whitespace-nowrap font-black uppercase tracking-widest transition-all ${activeTab === 'EM_ABERTO' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Em Aberto</button>
+        <button onClick={() => setActiveTab('PAGOS')} className={`px-6 py-2.5 rounded-xl text-[10px] whitespace-nowrap font-black uppercase tracking-widest transition-all ${activeTab === 'PAGOS' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Pagos</button>
+        <button onClick={() => setActiveTab('TODOS')} className={`px-6 py-2.5 rounded-xl text-[10px] whitespace-nowrap font-black uppercase tracking-widest transition-all ${activeTab === 'TODOS' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Todos</button>
       </div>
 
       <FixasFilters
@@ -137,7 +154,7 @@ const DespesasFixasPage: React.FC = () => {
         <FixasList
           items={processedData}
           loading={loading}
-          isGrouped={groupBy !== 'nenhum'}
+          isGrouped={groupBy !== 'nenhum' || activeTab === 'TODOS'}
           onPagar={(t) => setSelectedTitulo(t as any)}
           onEdit={(t) => { setTituloEditando(t); setIsFormOpen(true); }}
           onDelete={setDeleteId}

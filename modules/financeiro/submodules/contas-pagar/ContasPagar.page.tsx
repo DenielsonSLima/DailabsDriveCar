@@ -15,7 +15,7 @@ const ITEMS_PER_PAGE = 10;
 
 const ContasPagarPage: React.FC = () => {
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState<PagarTab>('MES_ATUAL');
+  const [activeTab, setActiveTab] = useState<PagarTab>('EM_ABERTO');
   const [currentPage, setCurrentPage] = useState(1);
   const [filtros, setFiltros] = useState<IPagarFiltros>({
     busca: '',
@@ -42,6 +42,13 @@ const ContasPagarPage: React.FC = () => {
     staleTime: 1000 * 60 * 5, // 5 minutos (Surgical Realtime handle invalidation)
   });
 
+  // Query: KPIs do Backend
+  const { data: kpis } = useQuery({
+    queryKey: ['contas-pagar-kpis'],
+    queryFn: () => ContasPagarService.getKpis(),
+    staleTime: 1000 * 60 * 5,
+  });
+
   // Query: Categorias
   const { data: categorias = [] } = useQuery({
     queryKey: ['financeiro-categorias'],
@@ -54,6 +61,7 @@ const ContasPagarPage: React.FC = () => {
     mutationFn: (id: string) => ContasPagarService.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['contas-pagar'] });
+      queryClient.invalidateQueries({ queryKey: ['contas-pagar-kpis'] });
       setDeleteId(null);
     }
   });
@@ -62,6 +70,7 @@ const ContasPagarPage: React.FC = () => {
   useEffect(() => {
     const sub = ContasPagarService.subscribe(() => {
       queryClient.invalidateQueries({ queryKey: ['contas-pagar'] });
+      queryClient.invalidateQueries({ queryKey: ['contas-pagar-kpis'] });
     });
     return () => { sub.unsubscribe(); };
   }, [queryClient]);
@@ -89,7 +98,7 @@ const ContasPagarPage: React.FC = () => {
   const totalPages = data?.totalPages || 1;
 
   const processedData = useMemo(() => {
-    if (activeTab !== 'MES_ATUAL') return titulos;
+    if (activeTab !== 'TODOS') return titulos;
 
     return titulos.reduce((acc: { [key: string]: ITituloPagar[] }, t) => {
       const key = t.status === 'PAGO' ? 'PAGO' : 'EM ABERTO';
@@ -110,13 +119,12 @@ const ContasPagarPage: React.FC = () => {
 
       </div>
 
-      <PagarKpis titulos={titulos} />
+      <PagarKpis kpis={kpis} />
 
       <div className="flex bg-white p-1.5 rounded-2xl border border-slate-200 w-fit shadow-sm">
-        <button onClick={() => setActiveTab('MES_ATUAL')} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'MES_ATUAL' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Mês Atual</button>
-        <button onClick={() => setActiveTab('ATRASADOS')} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'ATRASADOS' ? 'bg-rose-600 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Em Atraso</button>
-        <button onClick={() => setActiveTab('FUTUROS')} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'FUTUROS' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Futuros</button>
-        <button onClick={() => setActiveTab('OUTROS')} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'OUTROS' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Outros Meses</button>
+        <button onClick={() => setActiveTab('EM_ABERTO')} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'EM_ABERTO' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Em Aberto</button>
+        <button onClick={() => setActiveTab('PAGOS')} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'PAGOS' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Pagos</button>
+        <button onClick={() => setActiveTab('TODOS')} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'TODOS' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Todos</button>
       </div>
 
       <PagarFilters filtros={filtros} onChange={setFiltros} categorias={categorias} />
@@ -125,7 +133,7 @@ const ContasPagarPage: React.FC = () => {
         <PagarList
           items={processedData}
           loading={isLoading}
-          isGrouped={activeTab === 'MES_ATUAL'}
+          isGrouped={activeTab === 'TODOS'}
           onPagar={setSelectedTitulo}
           onViewDetails={setViewingTitulo}
           onEdit={setEditingTitulo}
@@ -175,6 +183,7 @@ const ContasPagarPage: React.FC = () => {
           onSuccess={() => {
             setSelectedTitulo(null);
             queryClient.invalidateQueries({ queryKey: ['contas-pagar'] });
+            queryClient.invalidateQueries({ queryKey: ['contas-pagar-kpis'] });
             queryClient.invalidateQueries({ queryKey: ['caixa-transacoes'] });
             queryClient.invalidateQueries({ queryKey: ['caixa_dashboard'] });
           }}
@@ -192,7 +201,11 @@ const ContasPagarPage: React.FC = () => {
         <ModalEditarTitulo
           titulo={editingTitulo}
           onClose={() => setEditingTitulo(null)}
-          onSuccess={() => { setEditingTitulo(null); queryClient.invalidateQueries({ queryKey: ['contas-pagar'] }); }}
+          onSuccess={() => {
+            setEditingTitulo(null);
+            queryClient.invalidateQueries({ queryKey: ['contas-pagar'] });
+            queryClient.invalidateQueries({ queryKey: ['contas-pagar-kpis'] });
+          }}
         />
       )}
 
