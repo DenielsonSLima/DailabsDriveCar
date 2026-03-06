@@ -13,7 +13,7 @@ const CaixaKpis: React.FC<Props> = ({ data }) => {
     { label: 'Saldo Disponível', val: data.saldo_disponivel, color: 'emerald', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
     { label: 'Ativos (Estoque)', val: data.total_ativos_estoque, color: 'blue', icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10' },
     { label: 'Contas a Receber', val: data.total_recebiveis, color: 'amber', icon: 'M9 14l6-6m-5.5 .5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z' },
-    { label: 'Passivo Circulante', val: data.total_passivo_circulante, color: 'rose', icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6' },
+    { label: 'Contas a Pagar', val: data.total_passivo_circulante, color: 'rose', icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6' },
   ];
 
   const kpisRow2 = [
