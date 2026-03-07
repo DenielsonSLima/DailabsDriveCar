@@ -17,6 +17,8 @@ export const TituloSchema = z.object({
   status: z.enum(['PENDENTE', 'PARCIAL', 'PAGO', 'ATRASADO', 'CANCELADO']),
   valor_total: z.number(),
   valor_pago: z.number().default(0),
+  valor_desconto: z.number().optional().nullable().default(0),
+  valor_acrescimo: z.number().optional().nullable().default(0),
   data_emissao: z.string(),
   data_vencimento: z.string(),
   parcela_numero: z.number().default(1),

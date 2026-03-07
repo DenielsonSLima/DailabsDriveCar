@@ -116,9 +116,26 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                             </div>
                             <div className="bg-rose-50 p-4 rounded-2xl border border-rose-100">
                                 <p className="text-[9px] font-black text-rose-600 uppercase tracking-widest mb-1">Saldo em Aberto</p>
-                                <p className="text-lg font-black text-rose-700">{formatCurrency(Math.max(0, titulo.valor_total - valorPagoTotal))}</p>
+                                <p className="text-lg font-black text-rose-700">{formatCurrency(Math.max(0, titulo.valor_total + (titulo.valor_acrescimo || 0) - valorPagoTotal - (titulo.valor_desconto || 0)))}</p>
                             </div>
                         </div>
+
+                        {(titulo.valor_desconto > 0 || titulo.valor_acrescimo > 0) && (
+                            <div className="grid grid-cols-2 gap-3">
+                                {titulo.valor_desconto > 0 && (
+                                    <div className="bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Descontos Aplicados</p>
+                                        <p className="text-sm font-black text-emerald-600">-{formatCurrency(titulo.valor_desconto)}</p>
+                                    </div>
+                                )}
+                                {titulo.valor_acrescimo > 0 && (
+                                    <div className="bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Acréscimos (Juros)</p>
+                                        <p className="text-sm font-black text-rose-600">+{formatCurrency(titulo.valor_acrescimo)}</p>
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     {/* Dados do Cliente */}
@@ -176,9 +193,39 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                                                     </div>
                                                 </div>
                                             ) : (
-                                                <div>
-                                                    <p className="text-[10px] font-bold text-emerald-700 uppercase">{formatDate(t.data_pagamento)}</p>
-                                                    <p className="text-sm font-black text-emerald-900">{formatCurrency(t.valor)}</p>
+                                                <div className="flex items-center gap-3">
+                                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black ${t.tipo_transacao === 'DESCONTO_TITULO'
+                                                            ? 'bg-emerald-100 text-emerald-600'
+                                                            : t.tipo_transacao === 'ACRESCIMO_TITULO'
+                                                                ? 'bg-amber-100 text-amber-600'
+                                                                : 'bg-indigo-100 text-indigo-600'
+                                                        }`}>
+                                                        {t.tipo_transacao === 'DESCONTO_TITULO' ? '%' : t.tipo_transacao === 'ACRESCIMO_TITULO' ? '+' : '$'}
+                                                    </div>
+                                                    <div>
+                                                        <div className="flex items-center gap-1.5">
+                                                            <p className="text-[10px] font-bold text-slate-500 uppercase">
+                                                                {t.tipo_transacao === 'DESCONTO_TITULO'
+                                                                    ? 'Desconto'
+                                                                    : t.tipo_transacao === 'ACRESCIMO_TITULO'
+                                                                        ? 'Juros'
+                                                                        : formatDate(t.data_pagamento)}
+                                                            </p>
+                                                            {(t.tipo_transacao === 'DESCONTO_TITULO' || t.tipo_transacao === 'ACRESCIMO_TITULO') && (
+                                                                <span className="text-[8px] font-black underline uppercase tracking-tighter text-slate-400">
+                                                                    {formatDate(t.data_pagamento)}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                        <p className={`text-sm font-black ${t.tipo_transacao === 'DESCONTO_TITULO'
+                                                                ? 'text-emerald-700'
+                                                                : t.tipo_transacao === 'ACRESCIMO_TITULO'
+                                                                    ? 'text-amber-700'
+                                                                    : 'text-indigo-900'
+                                                            }`}>
+                                                            {t.tipo_transacao === 'DESCONTO_TITULO' ? '-' : ''}{formatCurrency(t.valor)}
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             )}
                                             {editandoId !== t.id && (

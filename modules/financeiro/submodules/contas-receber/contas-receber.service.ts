@@ -19,6 +19,7 @@ export const ContasReceberService = {
         transacoes:fin_transacoes(
           id,
           valor,
+          tipo_transacao,
           data_pagamento,
           conta:fin_contas_bancarias(titular, conta, agencia, banco_nome)
         )

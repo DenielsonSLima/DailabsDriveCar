@@ -107,10 +107,27 @@ const ModalDetalhesTitulo: React.FC<Props> = ({ titulo, onClose }) => {
                         <div className="bg-rose-50/50 p-4 rounded-3xl border border-rose-100">
                             <p className="text-[9px] font-black text-rose-600 uppercase tracking-widest mb-1">Valor em Aberto</p>
                             <p className="text-lg font-black text-rose-700">
-                                {fmt(Math.max(0, titulo.valor_total - pagamentos.reduce((acc, p) => acc + Number(p.valor), 0)))}
+                                {fmt(Math.max(0, titulo.valor_total + (titulo.valor_acrescimo || 0) - pagamentos.reduce((acc, p) => acc + Number(p.valor), 0) - (titulo.valor_desconto || 0)))}
                             </p>
                         </div>
                     </div>
+
+                    {(titulo.valor_desconto > 0 || titulo.valor_acrescimo > 0) && (
+                        <div className="grid grid-cols-2 gap-3">
+                            {titulo.valor_desconto > 0 && (
+                                <div className="bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Descontos Aplicados</p>
+                                    <p className="text-sm font-black text-emerald-600">-{fmt(titulo.valor_desconto)}</p>
+                                </div>
+                            )}
+                            {titulo.valor_acrescimo > 0 && (
+                                <div className="bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Acréscimos (Juros)</p>
+                                    <p className="text-sm font-black text-rose-600">+{fmt(titulo.valor_acrescimo)}</p>
+                                </div>
+                            )}
+                        </div>
+                    )}
 
                     <div className="grid grid-cols-2 gap-6">
                         <div>
@@ -168,9 +185,42 @@ const ModalDetalhesTitulo: React.FC<Props> = ({ titulo, onClose }) => {
                                                     <p className="text-[11px] font-black text-slate-800 uppercase tracking-tighter">{p.conta?.banco_nome || 'Conta Direta'}</p>
                                                 </div>
                                             ) : (
-                                                <div>
-                                                    <p className="text-[11px] font-black text-slate-800 uppercase tracking-tighter">{p.conta?.banco_nome || 'Conta Direta'}</p>
-                                                    <p className="text-[9px] text-slate-400 font-bold uppercase">Pago em: {formatDate(p.data_pagamento)} • {p.forma?.nome || 'Direto'}</p>
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500">
+                                                        {p.tipo_transacao === 'DESCONTO_TITULO' ? (
+                                                            <span className="text-emerald-500">%</span>
+                                                        ) : p.tipo_transacao === 'ACRESCIMO_TITULO' ? (
+                                                            <span className="text-amber-500">+</span>
+                                                        ) : (
+                                                            <span className="text-red-500">$</span>
+                                                        )}
+                                                    </div>
+                                                    <div>
+                                                        <div className="flex items-center gap-2">
+                                                            <p className="text-sm font-medium text-slate-900 dark:text-white">
+                                                                {p.tipo_transacao === 'DESCONTO_TITULO'
+                                                                    ? 'Desconto Obtido'
+                                                                    : p.tipo_transacao === 'ACRESCIMO_TITULO'
+                                                                        ? 'Acréscimo Pago'
+                                                                        : 'Pagamento Realizado'}
+                                                            </p>
+                                                            <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold uppercase ${p.tipo_transacao === 'DESCONTO_TITULO'
+                                                                    ? 'bg-emerald-100 text-emerald-700'
+                                                                    : p.tipo_transacao === 'ACRESCIMO_TITULO'
+                                                                        ? 'bg-amber-100 text-amber-700'
+                                                                        : 'bg-red-100 text-red-700'
+                                                                }`}>
+                                                                {p.tipo_transacao === 'DESCONTO_TITULO'
+                                                                    ? 'Desconto'
+                                                                    : p.tipo_transacao === 'ACRESCIMO_TITULO'
+                                                                        ? 'Juros'
+                                                                        : 'Baixa'}
+                                                            </span>
+                                                        </div>
+                                                        <p className="text-xs text-slate-500">
+                                                            {new Date(p.data_pagamento).toLocaleDateString('pt-BR')}
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             )}
                                         </div>

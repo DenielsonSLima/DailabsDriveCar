@@ -74,6 +74,7 @@ export const ContasPagarService = {
       .select(`
         id,
         valor,
+        tipo_transacao,
         data_pagamento,
         descricao,
         conta:fin_contas_bancarias(banco_nome, titular),

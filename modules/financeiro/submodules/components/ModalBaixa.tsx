@@ -17,7 +17,7 @@ const ModalBaixa: React.FC<Props> = ({ titulo, onClose, onSuccess }) => {
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
-  const saldoDevedorOriginal = titulo.valor_total - titulo.valor_pago;
+  const saldoDevedorOriginal = titulo.valor_total + (titulo.valor_acrescimo || 0) - titulo.valor_pago - (titulo.valor_desconto || 0);
 
   // Form State
   const [valorDesconto, setValorDesconto] = useState(0);

@@ -92,8 +92,8 @@ const PagarList: React.FC<Props> = ({ items, loading, isGrouped, onPagar, onView
                 </p>
               </td>
               <td className="px-8 py-6 text-right">
-                <p className={`text-sm font-black ${t.valor_total - t.valor_pago > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>
-                  {formatCurrency(t.valor_total - t.valor_pago)}
+                <p className={`text-sm font-black ${t.valor_total + (t.valor_acrescimo || 0) - t.valor_pago - (t.valor_desconto || 0) > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>
+                  {formatCurrency(t.valor_total + (t.valor_acrescimo || 0) - t.valor_pago - (t.valor_desconto || 0))}
                 </p>
               </td>
               <td className="px-8 py-6 text-right" onClick={(e) => e.stopPropagation()}>
