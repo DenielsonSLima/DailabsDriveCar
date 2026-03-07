@@ -156,6 +156,7 @@ const ContasReceberPage: React.FC = () => {
           items={processedData}
           loading={isLoading}
           isGrouped={groupBy !== 'nenhum' || activeTab === 'TODOS'}
+          showDestinationAccount={activeTab !== 'EM_ABERTO'}
           onBaixa={(t) => setSelectedTitulo(t as any)}
           onDelete={setDeleteId}
           onRowClick={(t) => setSelectedQuickView(t as any)}

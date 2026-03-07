@@ -6,12 +6,13 @@ interface Props {
   items: ITituloReceber[] | { [key: string]: ITituloReceber[] };
   loading: boolean;
   isGrouped: boolean;
+  showDestinationAccount?: boolean;
   onBaixa: (titulo: ITituloReceber) => void;
   onDelete: (id: string) => void;
   onRowClick: (titulo: ITituloReceber) => void;
 }
 
-const ReceberList: React.FC<Props> = ({ items, loading, isGrouped, onBaixa, onDelete, onRowClick }) => {
+const ReceberList: React.FC<Props> = ({ items, loading, isGrouped, showDestinationAccount = true, onBaixa, onDelete, onRowClick }) => {
   const navigate = useNavigate();
   const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
   const formatDate = (date: string) => new Date(date).toLocaleDateString('pt-BR');
@@ -40,7 +41,7 @@ const ReceberList: React.FC<Props> = ({ items, loading, isGrouped, onBaixa, onDe
             <th className="px-8 py-5">Status</th>
             <th className="px-8 py-5">Cliente / Documento</th>
             <th className="px-8 py-5">Categoria</th>
-            <th className="px-8 py-5">Conta de Destino</th>
+            {showDestinationAccount && <th className="px-8 py-5">Conta de Destino</th>}
             <th className="px-8 py-5 text-right">Valor Total</th>
             <th className="px-8 py-5 text-right">Valor Recebido</th>
             <th className=" px-8 py-5 text-right">Pendente</th>
@@ -73,20 +74,22 @@ const ReceberList: React.FC<Props> = ({ items, loading, isGrouped, onBaixa, onDe
                   {t.categoria?.nome || 'RECEITA'}
                 </span>
               </td>
-              <td className="px-8 py-6">
-                {t.transacoes && t.transacoes.length > 0 ? (
-                  <div className="flex flex-col">
-                    <span className="text-[10px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 uppercase tracking-widest w-fit truncate max-w-[150px]">
-                      {t.transacoes[0].conta?.nome || t.transacoes[0].conta?.banco_nome || 'CONTA'}
-                    </span>
-                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">
-                      {t.transacoes[0].conta?.agencia || '-'} / {t.transacoes[0].conta?.conta || '-'}
-                    </span>
-                  </div>
-                ) : (
-                  <span className="text-[10px] font-bold text-slate-300 italic">Pendente</span>
-                )}
-              </td>
+              {showDestinationAccount && (
+                <td className="px-8 py-6">
+                  {t.transacoes && t.transacoes.length > 0 ? (
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 uppercase tracking-widest w-fit truncate max-w-[150px]">
+                        {t.transacoes[0].conta?.nome || t.transacoes[0].conta?.banco_nome || 'CONTA'}
+                      </span>
+                      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">
+                        {t.transacoes[0].conta?.agencia || '-'} / {t.transacoes[0].conta?.conta || '-'}
+                      </span>
+                    </div>
+                  ) : (
+                    <span className="text-[10px] font-bold text-slate-300 italic">Pendente</span>
+                  )}
+                </td>
+              )}
               <td className="px-8 py-6 text-right">
                 <p className="text-sm font-black text-slate-900">{formatCurrency(t.valor_total)}</p>
               </td>

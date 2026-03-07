@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ITituloReceber } from '../contas-receber.types';
 import { useQueryClient } from '@tanstack/react-query';
 import { TitulosService } from '../../../services/titulos.service';
+import ConfirmModal from '../../../../../components/ConfirmModal';
 
 interface ReceberQuickViewProps {
     titulo: ITituloReceber;
@@ -17,6 +18,8 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
     const [editandoId, setEditandoId] = useState<string | null>(null);
     const [novoValor, setNovoValor] = useState<number>(0);
     const [novaData, setNovaData] = useState<string>('');
+    const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     if (!isOpen) return null;
 
@@ -27,17 +30,25 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
     const transacoes = titulo.transacoes || [];
     const valorPagoTotal = transacoes.reduce((acc, t) => acc + Number(t.valor), 0);
 
-    const handleDeletePayment = async (id: string) => {
-        if (!window.confirm('Tem certeza que deseja estornar este recebimento? O saldo do título será recalculado.')) return;
+    const handleDeletePayment = (id: string) => {
+        setConfirmDeleteId(id);
+    };
 
+    const onConfirmDelete = async () => {
+        if (!confirmDeleteId) return;
+
+        setIsDeleting(true);
         try {
-            await TitulosService.excluirPagamento(id, titulo.id);
+            await TitulosService.excluirPagamento(confirmDeleteId, titulo.id);
             queryClient.invalidateQueries({ queryKey: ['contas-receber'] });
             queryClient.invalidateQueries({ queryKey: ['caixa-transacoes'] });
+            setConfirmDeleteId(null);
             onClose();
         } catch (err) {
             console.error('Erro ao excluir recebimento:', err);
             alert('Erro ao excluir recebimento.');
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -195,10 +206,10 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                                             ) : (
                                                 <div className="flex items-center gap-3">
                                                     <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black ${t.tipo_transacao === 'DESCONTO_TITULO'
-                                                            ? 'bg-emerald-100 text-emerald-600'
-                                                            : t.tipo_transacao === 'ACRESCIMO_TITULO'
-                                                                ? 'bg-amber-100 text-amber-600'
-                                                                : 'bg-indigo-100 text-indigo-600'
+                                                        ? 'bg-emerald-100 text-emerald-600'
+                                                        : t.tipo_transacao === 'ACRESCIMO_TITULO'
+                                                            ? 'bg-amber-100 text-amber-600'
+                                                            : 'bg-indigo-100 text-indigo-600'
                                                         }`}>
                                                         {t.tipo_transacao === 'DESCONTO_TITULO' ? '%' : t.tipo_transacao === 'ACRESCIMO_TITULO' ? '+' : '$'}
                                                     </div>
@@ -218,10 +229,10 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                                                             )}
                                                         </div>
                                                         <p className={`text-sm font-black ${t.tipo_transacao === 'DESCONTO_TITULO'
-                                                                ? 'text-emerald-700'
-                                                                : t.tipo_transacao === 'ACRESCIMO_TITULO'
-                                                                    ? 'text-amber-700'
-                                                                    : 'text-indigo-900'
+                                                            ? 'text-emerald-700'
+                                                            : t.tipo_transacao === 'ACRESCIMO_TITULO'
+                                                                ? 'text-amber-700'
+                                                                : 'text-indigo-900'
                                                             }`}>
                                                             {t.tipo_transacao === 'DESCONTO_TITULO' ? '-' : ''}{formatCurrency(t.valor)}
                                                         </p>
@@ -279,6 +290,17 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                 </div>
 
             </div>
+
+            <ConfirmModal
+                isOpen={!!confirmDeleteId}
+                onClose={() => setConfirmDeleteId(null)}
+                onConfirm={onConfirmDelete}
+                title="Estornar Recebimento?"
+                message="Tem certeza que deseja estornar este recebimento? O saldo do título será recalculado."
+                confirmText="Sim, Estornar"
+                variant="danger"
+                isLoading={isDeleting}
+            />
         </>
     );
 };
