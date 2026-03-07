@@ -15,7 +15,12 @@ export const ContasPagarService = {
       .select(`
         *,
         parceiro:parceiros(nome, documento),
-        categoria:fin_categorias(nome)
+        categoria:fin_categorias(nome),
+        veiculo:est_veiculos(
+          placa,
+          modelo:cad_modelos(nome),
+          montadora:cad_montadoras(nome)
+        )
       `, { count: 'exact' })
       .eq('tipo', 'PAGAR')
       .neq('status', 'CANCELADO');

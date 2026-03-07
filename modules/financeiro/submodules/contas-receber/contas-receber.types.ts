@@ -21,6 +21,11 @@ export const TituloReceberSchema = TituloSchema.extend({
   categoria: z.object({
     nome: z.string().optional().nullable(),
   }).optional().nullable(),
+  veiculo: z.object({
+    placa: z.string().optional().nullable(),
+    modelo: z.object({ nome: z.string() }).optional().nullable(),
+    montadora: z.object({ nome: z.string() }).optional().nullable(),
+  }).optional().nullable(),
   transacoes: z.array(z.any()).optional().nullable(),
 });
 
@@ -31,6 +36,11 @@ export interface ITituloReceber extends Omit<ITitulo, 'parceiro' | 'categoria'> 
   };
   categoria?: {
     nome: string;
+  };
+  veiculo?: {
+    placa: string;
+    modelo?: { nome: string };
+    montadora?: { nome: string };
   };
   transacoes?: any[];
 }

@@ -16,6 +16,11 @@ export const ContasReceberService = {
         *,
         parceiro:parceiros(nome, documento),
         categoria:fin_categorias(nome),
+        veiculo:est_veiculos(
+          placa,
+          modelo:cad_modelos(nome),
+          montadora:cad_montadoras(nome)
+        ),
         transacoes:fin_transacoes(
           id,
           valor,

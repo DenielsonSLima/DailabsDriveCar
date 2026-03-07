@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { ContasPagarService } from '../contas-pagar.service';
 import { TitulosService } from '../../../services/titulos.service';
+import ConfirmModal from '../../../../../components/ConfirmModal';
 
 interface Props {
     titulo: any;
@@ -18,6 +19,8 @@ const ModalDetalhesTitulo: React.FC<Props> = ({ titulo, onClose }) => {
     const [editandoId, setEditandoId] = useState<string | null>(null);
     const [novoValor, setNovoValor] = useState<number>(0);
     const [novaData, setNovaData] = useState<string>('');
+    const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         async function load() {
@@ -39,17 +42,25 @@ const ModalDetalhesTitulo: React.FC<Props> = ({ titulo, onClose }) => {
         return new Date(date).toLocaleDateString('pt-BR');
     };
 
-    const handleDeletePayment = async (id: string) => {
-        if (!window.confirm('Tem certeza que deseja estornar este pagamento? O saldo do título será recalculado.')) return;
+    const handleDeletePayment = (id: string) => {
+        setConfirmDeleteId(id);
+    };
 
+    const onConfirmDelete = async () => {
+        if (!confirmDeleteId) return;
+
+        setIsDeleting(true);
         try {
-            await TitulosService.excluirPagamento(id, titulo.id);
+            await TitulosService.excluirPagamento(confirmDeleteId, titulo.id);
             setRefreshKey(prev => prev + 1);
             queryClient.invalidateQueries({ queryKey: ['contas-pagar'] });
             queryClient.invalidateQueries({ queryKey: ['caixa-transacoes'] });
+            setConfirmDeleteId(null);
         } catch (err) {
             console.error('Erro ao excluir pagamento:', err);
-            alert('Erro ao excluir pagamento. Verifique os logs.');
+            alert('Erro ao excluir pagamento.');
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -129,6 +140,45 @@ const ModalDetalhesTitulo: React.FC<Props> = ({ titulo, onClose }) => {
                         </div>
                     )}
 
+                    {/* Veículo Vinculado - Premium Dark Theme Alignment */}
+                    {titulo.veiculo || titulo.origem_tipo === 'PEDIDO_COMPRA' || titulo.origem_tipo === 'DESPESA_VEICULO' ? (
+                        <div className="animate-in fade-in zoom-in-95 duration-500">
+                            <div className="bg-slate-900 p-6 rounded-[2.5rem] shadow-xl relative overflow-hidden group border border-slate-800">
+                                <div className="absolute top-0 right-0 w-40 h-40 bg-indigo-500 rounded-full blur-[100px] opacity-20 group-hover:opacity-30 transition-opacity"></div>
+                                <div className="relative z-10 flex justify-between items-center">
+                                    <div>
+                                        <p className="text-[10px] text-indigo-400 font-black uppercase tracking-[0.2em] mb-1.5">Veículo Vinculado</p>
+                                        {titulo.veiculo ? (
+                                            <>
+                                                <h4 className="text-2xl font-black text-white uppercase tracking-tighter leading-none mb-3">
+                                                    {titulo.veiculo.modelo?.nome || 'Modelo'}
+                                                    <span className="text-indigo-400/50 ml-2">—</span>
+                                                    <span className="text-indigo-300 ml-2">{titulo.veiculo.montadora?.nome || ''}</span>
+                                                </h4>
+                                                <div className="flex bg-white/10 w-fit px-4 py-2 rounded-2xl border border-white/20 shadow-inner">
+                                                    <p className="text-white font-black text-base tracking-[0.25em] uppercase">{titulo.veiculo.placa}</p>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <h4 className="text-lg font-black text-white uppercase tracking-tight leading-snug max-w-[300px]">
+                                                {titulo.descricao}
+                                            </h4>
+                                        )}
+                                    </div>
+                                    <div className="w-16 h-16 rounded-[2rem] bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 shadow-xl">
+                                        <svg className="w-8 h-8 transition-transform group-hover:scale-110 duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="p-5 bg-slate-50 rounded-3xl border border-dashed border-slate-200 flex items-center justify-center">
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest italic">Sem veículo vinculado ao título</p>
+                        </div>
+                    )}
+
                     <div className="grid grid-cols-2 gap-6">
                         <div>
                             <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Descrição / Favorecido</p>
@@ -197,7 +247,7 @@ const ModalDetalhesTitulo: React.FC<Props> = ({ titulo, onClose }) => {
                                                     </div>
                                                     <div>
                                                         <div className="flex items-center gap-2">
-                                                            <p className="text-sm font-medium text-slate-900 dark:text-white">
+                                                            <p className="text-sm font-black text-slate-900">
                                                                 {p.tipo_transacao === 'DESCONTO_TITULO'
                                                                     ? 'Desconto Obtido'
                                                                     : p.tipo_transacao === 'ACRESCIMO_TITULO'
@@ -205,10 +255,10 @@ const ModalDetalhesTitulo: React.FC<Props> = ({ titulo, onClose }) => {
                                                                         : 'Pagamento Realizado'}
                                                             </p>
                                                             <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold uppercase ${p.tipo_transacao === 'DESCONTO_TITULO'
-                                                                    ? 'bg-emerald-100 text-emerald-700'
-                                                                    : p.tipo_transacao === 'ACRESCIMO_TITULO'
-                                                                        ? 'bg-amber-100 text-amber-700'
-                                                                        : 'bg-red-100 text-red-700'
+                                                                ? 'bg-emerald-100 text-emerald-700'
+                                                                : p.tipo_transacao === 'ACRESCIMO_TITULO'
+                                                                    ? 'bg-amber-100 text-amber-700'
+                                                                    : 'bg-red-100 text-red-700'
                                                                 }`}>
                                                                 {p.tipo_transacao === 'DESCONTO_TITULO'
                                                                     ? 'Desconto'
@@ -217,9 +267,19 @@ const ModalDetalhesTitulo: React.FC<Props> = ({ titulo, onClose }) => {
                                                                         : 'Baixa'}
                                                             </span>
                                                         </div>
-                                                        <p className="text-xs text-slate-500">
-                                                            {new Date(p.data_pagamento).toLocaleDateString('pt-BR')}
-                                                        </p>
+                                                        <div className="flex items-center gap-2">
+                                                            <p className="text-xs text-slate-500 font-bold">
+                                                                {new Date(p.data_pagamento).toLocaleDateString('pt-BR')}
+                                                            </p>
+                                                            {p.conta && (
+                                                                <>
+                                                                    <span className="text-slate-300">•</span>
+                                                                    <p className="text-[10px] text-indigo-500 font-black uppercase tracking-tight">
+                                                                        {p.conta.banco_nome || p.conta.titular}
+                                                                    </p>
+                                                                </>
+                                                            )}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             )}
@@ -283,7 +343,18 @@ const ModalDetalhesTitulo: React.FC<Props> = ({ titulo, onClose }) => {
                     </button>
                 </div>
             </div>
-        </div>
+
+            <ConfirmModal
+                isOpen={!!confirmDeleteId}
+                onClose={() => setConfirmDeleteId(null)}
+                onConfirm={onConfirmDelete}
+                title="Estornar Pagamento?"
+                message="Tem certeza que deseja estornar este pagamento? O saldo do título será recalculado."
+                confirmText="Sim, Estornar"
+                variant="danger"
+                isLoading={isDeleting}
+            />
+        </div >
     );
 };
 

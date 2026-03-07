@@ -17,6 +17,7 @@ const ContasReceberPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<ReceberTab>('EM_ABERTO');
   const [currentPage, setCurrentPage] = useState(1);
   const [groupBy, setGroupBy] = useState<'nenhum' | 'mes' | 'parceiro'>('nenhum');
+  const [viewMode, setViewMode] = useState<'table' | 'card'>('card');
 
   const [filtros, setFiltros] = useState<IReceberFiltros>({
     busca: '',
@@ -130,8 +131,26 @@ const ContasReceberPage: React.FC = () => {
           <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter leading-none">Contas a Receber</h2>
           <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mt-2">Gestão de fluxo de caixa e entradas de faturamento</p>
         </div>
-
-
+        <div className="flex bg-slate-100 p-1 rounded-xl">
+          <button
+            onClick={() => setViewMode('card')}
+            className={`p-2 rounded-lg transition-all ${viewMode === 'card' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+            title="Visualização em Cards"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+            </svg>
+          </button>
+          <button
+            onClick={() => setViewMode('table')}
+            className={`p-2 rounded-lg transition-all ${viewMode === 'table' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+            title="Visualização em Tabela"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       <ReceberKpis kpis={kpis} />
@@ -157,6 +176,7 @@ const ContasReceberPage: React.FC = () => {
           loading={isLoading}
           isGrouped={groupBy !== 'nenhum' || activeTab === 'TODOS'}
           showDestinationAccount={activeTab !== 'EM_ABERTO'}
+          viewMode={viewMode}
           onBaixa={(t) => setSelectedTitulo(t as any)}
           onDelete={setDeleteId}
           onRowClick={(t) => setSelectedQuickView(t as any)}

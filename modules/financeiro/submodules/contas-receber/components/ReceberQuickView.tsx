@@ -164,6 +164,54 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                         </div>
                     </div>
 
+                    {/* Dados do Veículo */}
+                    {titulo.veiculo ? (
+                        <div className="animate-in fade-in slide-in-from-right duration-500">
+                            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Veículo Vinculado</h4>
+                            <div className="bg-slate-900 p-5 rounded-3xl shadow-xl relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500 rounded-full blur-[80px] opacity-20"></div>
+                                <div className="relative z-10 flex justify-between items-start">
+                                    <div>
+                                        <p className="text-[10px] text-indigo-400 font-black uppercase tracking-widest mb-1">
+                                            {titulo.veiculo.montadora?.nome || 'Marca N/D'}
+                                        </p>
+                                        <h3 className="text-xl font-black text-white uppercase tracking-tight leading-none mb-2">
+                                            {titulo.veiculo.modelo?.nome || 'Modelo N/D'}
+                                        </h3>
+                                        <div className="flex bg-white/10 w-fit px-3 py-1.5 rounded-xl border border-white/20">
+                                            <p className="text-white font-black text-sm tracking-[0.2em] uppercase">{titulo.veiculo.placa}</p>
+                                        </div>
+                                    </div>
+                                    <div className="bg-indigo-500/20 p-3 rounded-2xl border border-indigo-500/30">
+                                        <svg className="w-6 h-6 text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ) : titulo.origem_tipo === 'OUTRO_CREDITO' ? (
+                        <div className="animate-in fade-in slide-in-from-right duration-500">
+                            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Referência do Veículo</h4>
+                            <div className="bg-slate-100 p-5 rounded-3xl border border-slate-200">
+                                <div className="flex justify-between items-center">
+                                    <div>
+                                        <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-1">Identificado pela Descrição</p>
+                                        <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight">
+                                            {titulo.descricao}
+                                        </h3>
+                                    </div>
+                                    <div className="bg-slate-200 p-3 rounded-2xl">
+                                        <svg className="w-6 h-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1" />
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ) : null}
+
                     {/* Histórico de Liquidações */}
                     <div>
                         <h4 className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-3 flex items-center">

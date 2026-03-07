@@ -24,6 +24,7 @@ const ContasPagarPage: React.FC = () => {
     categoriaId: '',
     status: ''
   });
+  const [viewMode, setViewMode] = useState<'table' | 'card'>('card');
 
   // Estados de Modais
   const [selectedTitulo, setSelectedTitulo] = useState<ITituloPagar | null>(null);
@@ -115,8 +116,26 @@ const ContasPagarPage: React.FC = () => {
           <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter leading-none">Contas a Pagar</h2>
           <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mt-2">Agenda de compromissos financeiros e liquidação de pedidos</p>
         </div>
-
-
+        <div className="flex items-center bg-white p-1 rounded-2xl border border-slate-200 shadow-sm">
+          <button
+            onClick={() => setViewMode('card')}
+            className={`p-2.5 rounded-xl transition-all ${viewMode === 'card' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}
+            title="Visualização em Cards"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+            </svg>
+          </button>
+          <button
+            onClick={() => setViewMode('table')}
+            className={`p-2.5 rounded-xl transition-all ${viewMode === 'table' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}
+            title="Visualização em Tabela"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       <PagarKpis kpis={kpis} />
@@ -138,6 +157,7 @@ const ContasPagarPage: React.FC = () => {
           onViewDetails={setViewingTitulo}
           onEdit={setEditingTitulo}
           onDelete={setDeleteId}
+          viewMode={viewMode}
         />
 
         {/* Pagination Controls inside the card */}

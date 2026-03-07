@@ -21,6 +21,15 @@ export const TituloPagarSchema = TituloSchema.extend({
   categoria: z.object({
     nome: z.string().optional().nullable(),
   }).optional().nullable(),
+  veiculo: z.object({
+    placa: z.string().optional().nullable(),
+    modelo: z.object({
+      nome: z.string().optional().nullable(),
+    }).optional().nullable(),
+    montadora: z.object({
+      nome: z.string().optional().nullable(),
+    }).optional().nullable(),
+  }).optional().nullable(),
 });
 
 export interface ITituloPagar extends Omit<ITitulo, 'parceiro' | 'categoria'> {
@@ -31,6 +40,11 @@ export interface ITituloPagar extends Omit<ITitulo, 'parceiro' | 'categoria'> {
   categoria?: {
     nome: string;
   };
+  veiculo?: {
+    placa: string | null;
+    modelo: { nome: string } | null;
+    montadora: { nome: string } | null;
+  } | null;
 }
 
 export interface IPagarResponse {

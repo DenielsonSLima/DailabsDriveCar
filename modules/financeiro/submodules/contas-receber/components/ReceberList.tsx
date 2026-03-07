@@ -1,18 +1,20 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ITituloReceber } from '../contas-receber.types';
+import ReceberCard from './ReceberCard';
 
 interface Props {
   items: ITituloReceber[] | { [key: string]: ITituloReceber[] };
   loading: boolean;
   isGrouped: boolean;
   showDestinationAccount?: boolean;
+  viewMode?: 'table' | 'card';
   onBaixa: (titulo: ITituloReceber) => void;
   onDelete: (id: string) => void;
   onRowClick: (titulo: ITituloReceber) => void;
 }
 
-const ReceberList: React.FC<Props> = ({ items, loading, isGrouped, showDestinationAccount = true, onBaixa, onDelete, onRowClick }) => {
+const ReceberList: React.FC<Props> = ({ items, loading, isGrouped, showDestinationAccount = true, viewMode = 'card', onBaixa, onDelete, onRowClick }) => {
   const navigate = useNavigate();
   const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
   const formatDate = (date: string) => new Date(date).toLocaleDateString('pt-BR');
@@ -122,10 +124,29 @@ const ReceberList: React.FC<Props> = ({ items, loading, isGrouped, showDestinati
     </div>
   );
 
+  const renderCards = (rows: ITituloReceber[]) => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-8 bg-slate-50/30">
+      {rows.map((t) => (
+        <ReceberCard
+          key={t.id}
+          titulo={t}
+          onBaixa={onBaixa}
+          onDelete={onDelete}
+          onClick={onRowClick}
+        />
+      ))}
+    </div>
+  );
+
+  const renderContent = (rows: ITituloReceber[]) => {
+    if (viewMode === 'table') return renderTable(rows);
+    return renderCards(rows);
+  };
+
   if (!isGrouped) {
     const list = items as ITituloReceber[];
     if (list.length === 0) return <div className="py-32 text-center text-slate-400 font-bold uppercase text-[10px] tracking-widest">Nenhum título a receber encontrado</div>;
-    return renderTable(list);
+    return renderContent(list);
   }
 
   const grouped = items as { [key: string]: ITituloReceber[] };
@@ -140,7 +161,7 @@ const ReceberList: React.FC<Props> = ({ items, loading, isGrouped, showDestinati
             <h3 className="text-[11px] font-black text-slate-600 uppercase tracking-[0.2em]">{groupKey}</h3>
             <span className="ml-auto text-[9px] font-black text-slate-400 bg-white px-2 py-0.5 rounded-md border border-slate-100 uppercase">{grouped[groupKey].length} Títulos</span>
           </div>
-          {renderTable(grouped[groupKey])}
+          {renderContent(grouped[groupKey])}
         </div>
       ))}
     </div>

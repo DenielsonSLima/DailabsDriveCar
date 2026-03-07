@@ -10,9 +10,12 @@ interface Props {
   onViewDetails: (titulo: ITituloPagar) => void;
   onEdit: (titulo: ITituloPagar) => void;
   onDelete: (id: string) => void;
+  viewMode?: 'table' | 'card';
 }
 
-const PagarList: React.FC<Props> = ({ items, loading, isGrouped, onPagar, onViewDetails, onEdit, onDelete }) => {
+import PagarCard from './PagarCard';
+
+const PagarList: React.FC<Props> = ({ items, loading, isGrouped, onPagar, onViewDetails, onEdit, onDelete, viewMode = 'table' }) => {
   const navigate = useNavigate();
   const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
   const formatDate = (date: string) => {
@@ -138,6 +141,22 @@ const PagarList: React.FC<Props> = ({ items, loading, isGrouped, onPagar, onView
         <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mt-1">Sua agenda financeira está em dia para este filtro.</p>
       </div>
     );
+
+    if (viewMode === 'card') {
+      return (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-8">
+          {list.map((t) => (
+            <PagarCard
+              key={t.id}
+              titulo={t}
+              onOpenDetails={onViewDetails}
+              onDelete={onDelete}
+            />
+          ))}
+        </div>
+      );
+    }
+
     return renderTable(list);
   }
 
@@ -153,7 +172,20 @@ const PagarList: React.FC<Props> = ({ items, loading, isGrouped, onPagar, onView
             <h3 className="text-[11px] font-black text-slate-600 uppercase tracking-[0.2em]">{groupKey}</h3>
             <span className="ml-auto text-[9px] font-black text-slate-400 bg-white px-2 py-0.5 rounded-md border border-slate-100 uppercase">{grouped[groupKey].length} Títulos</span>
           </div>
-          {renderTable(grouped[groupKey])}
+          {viewMode === 'card' ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-8">
+              {grouped[groupKey].map((t) => (
+                <PagarCard
+                  key={t.id}
+                  titulo={t}
+                  onOpenDetails={onViewDetails}
+                  onDelete={onDelete}
+                />
+              ))}
+            </div>
+          ) : (
+            renderTable(grouped[groupKey])
+          )}
         </div>
       ))}
     </div>
