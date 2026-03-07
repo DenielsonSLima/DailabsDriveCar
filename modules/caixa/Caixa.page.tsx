@@ -210,7 +210,7 @@ const CaixaPage: React.FC = () => {
           <SocioPatrimonioCards socios={data.investimento_socios} />
 
           <MonthlyPerformance
-            vendas={data.total_vendas}
+            vendas={data.total_vendas_recebido}
             compras={data.total_compras}
             lucro={data.lucro_mensal}
             margem={data.margem_lucro}

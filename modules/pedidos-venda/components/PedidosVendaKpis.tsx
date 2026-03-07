@@ -1,6 +1,7 @@
 
 import React, { useMemo } from 'react';
 import { IPedidoVenda } from '../pedidos-venda.types';
+import { calculateNormalizedValue } from '../utils/profit-distribution';
 
 interface Props {
   pedidos: IPedidoVenda[];
@@ -29,9 +30,8 @@ const PedidosVendaKpis: React.FC<Props> = ({ pedidos }) => {
       const lucroDaVenda = (p.valor_venda || 0) - custoV;
 
       v.socios.forEach((s: any) => {
-        const perc = (s.porcentagem || 0) / 100;
-        const lucroSocio = lucroDaVenda * perc;
-        const vgvSocio = (p.valor_venda || 0) * perc;
+        const lucroSocio = calculateNormalizedValue(lucroDaVenda, s.porcentagem, v.socios);
+        const vgvSocio = calculateNormalizedValue(p.valor_venda, s.porcentagem, v.socios);
 
         const current = socioMap.get(s.socio_id) || { nome: s.nome, lucroReal: 0, vgvRef: 0, count: 0 };
         socioMap.set(s.socio_id, {

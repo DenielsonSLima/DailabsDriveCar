@@ -77,7 +77,7 @@ export const PedidosVendaService = {
         id,
         valor_venda,
         status,
-        veiculo:est_veiculos(valor_custo, valor_custo_servicos, valor_venda)
+        veiculo:est_veiculos(valor_custo, valor_custo_servicos, valor_venda, socios)
       `);
 
     if (tab === 'RASCUNHO') {

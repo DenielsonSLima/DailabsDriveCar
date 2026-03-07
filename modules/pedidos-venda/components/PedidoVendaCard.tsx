@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { IPedidoVenda } from '../pedidos-venda.types';
+import { calculateNormalizedValue } from '../utils/profit-distribution';
 
 interface Props {
   pedido: IPedidoVenda;
@@ -32,7 +33,7 @@ const PedidoVendaCard: React.FC<Props> = ({ pedido, onClick }) => {
     if (!v?.socios) return [];
     return v.socios.map((s: any) => ({
       ...s,
-      lucroProporcional: (s.porcentagem / 100) * lucroBruto
+      lucroProporcional: calculateNormalizedValue(lucroBruto, s.porcentagem, v.socios)
     }));
   }, [v?.socios, lucroBruto]);
 
@@ -88,8 +89,8 @@ const PedidoVendaCard: React.FC<Props> = ({ pedido, onClick }) => {
         {/* Status Badge */}
         <div className="absolute top-4 right-4">
           <span className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-xl border-2 ${pedido.status === 'CONCLUIDO'
-              ? 'bg-emerald-600 text-white border-emerald-500'
-              : 'bg-indigo-500 text-white border-indigo-400 animate-pulse'
+            ? 'bg-emerald-600 text-white border-emerald-500'
+            : 'bg-indigo-500 text-white border-indigo-400 animate-pulse'
             }`}>
             {pedido.status === 'CONCLUIDO' ? 'FATURADO' : 'EM ABERTO'}
           </span>

@@ -117,9 +117,9 @@ const CaixaPrint: React.FC<Props> = ({ data, empresa, watermark, periodo, foreca
                     <div className="grid grid-cols-3 gap-4">
                         <div className="p-4 rounded-xl border border-emerald-100 bg-emerald-50/50 flex items-center justify-between" style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' as any }}>
                             <div>
-                                <p className="text-[8px] font-black text-emerald-600 uppercase tracking-widest">Vendas</p>
+                                <p className="text-[8px] font-black text-emerald-600 uppercase tracking-widest">Vendas (Recebido)</p>
                             </div>
-                            <p className="text-lg font-[900] text-slate-900 tracking-tight">{fmtShort(data.total_vendas)}</p>
+                            <p className="text-lg font-[900] text-slate-900 tracking-tight">{fmtShort(data.total_vendas_recebido)}</p>
                         </div>
                         <div className="p-4 rounded-xl border border-rose-100 bg-rose-50/50 flex items-center justify-between" style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' as any }}>
                             <div>
@@ -131,7 +131,7 @@ const CaixaPrint: React.FC<Props> = ({ data, empresa, watermark, periodo, foreca
                             <div>
                                 <p className="text-[8px] font-black text-indigo-300 uppercase tracking-widest">Lucro Realizado</p>
                                 <p className="text-[7px] font-bold text-slate-500 mt-0.5">
-                                    {data.total_vendas > 0 ? ((data.lucro_mensal / data.total_vendas) * 100).toFixed(1) : 0}% margem
+                                    {data.total_vendas_recebido > 0 ? ((data.lucro_mensal / data.total_vendas_recebido) * 100).toFixed(1) : 0}% margem
                                 </p>
                             </div>
                             <p className={`text-lg font-[900] tracking-tight ${data.lucro_mensal >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>

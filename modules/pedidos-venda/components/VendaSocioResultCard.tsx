@@ -1,6 +1,7 @@
 
 import React, { useMemo } from 'react';
 import { IPedidoVenda } from '../pedidos-venda.types';
+import { calculateNormalizedValue } from '../utils/profit-distribution';
 
 interface Props {
   pedidos: IPedidoVenda[];
@@ -22,13 +23,14 @@ const VendaSocioResultCard: React.FC<Props> = ({ pedidos, socioIdFiltro }) => {
 
       if (v?.socios && Array.isArray(v.socios)) {
         const participacao = v.socios.find((s: any) => s.socio_id === socioIdFiltro);
-        
+
         if (participacao) {
-          const perc = (participacao.porcentagem || 0) / 100;
           const custoBase = (v.valor_custo || 0) + (v.valor_custo_servicos || 0);
-          
-          vgvProporcional += valorVenda * perc;
-          custoProporcional += custoBase * perc;
+          const vgvS = calculateNormalizedValue(valorVenda, participacao.porcentagem, v.socios);
+          const custoS = calculateNormalizedValue(custoBase, participacao.porcentagem, v.socios);
+
+          vgvProporcional += vgvS;
+          custoProporcional += custoS;
         }
       }
     });
@@ -46,7 +48,7 @@ const VendaSocioResultCard: React.FC<Props> = ({ pedidos, socioIdFiltro }) => {
     };
   }, [pedidos, socioIdFiltro]);
 
-  const formatCurrency = (val: number) => 
+  const formatCurrency = (val: number) =>
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
   if (!analytics) return null;
@@ -67,8 +69,8 @@ const VendaSocioResultCard: React.FC<Props> = ({ pedidos, socioIdFiltro }) => {
             <p className="text-indigo-200 text-[10px] font-black uppercase tracking-widest mt-1">Valores baseados na cota de participação de cada veículo</p>
           </div>
           <div className="bg-white/20 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/10">
-             <p className="text-[9px] font-black uppercase opacity-60">Representatividade no Lote</p>
-             <p className="text-lg font-black">{analytics.participacaoNoLote.toFixed(1)}%</p>
+            <p className="text-[9px] font-black uppercase opacity-60">Representatividade no Lote</p>
+            <p className="text-lg font-black">{analytics.participacaoNoLote.toFixed(1)}%</p>
           </div>
         </div>
 

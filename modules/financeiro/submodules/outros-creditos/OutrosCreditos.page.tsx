@@ -55,21 +55,30 @@ const OutrosCreditosPage: React.FC = () => {
         }),
         OutrosCreditosService.getKpis()
       ]);
-      setTitulos(result.data);
-      setTotalItems(result.count);
+      setTitulos(result?.data || []);
+      setTotalItems(result?.count || 0);
       setKpis(kpisResult);
+    } catch (error) {
+      console.error('Erro ao carregar dados:', error);
+      setTitulos([]);
+      setTotalItems(0);
     } finally {
       setLoading(false);
     }
   }
 
   const processedData = useMemo(() => {
+    if (!Array.isArray(titulos)) return [];
+
     return [...titulos].sort((a, b) => {
+      if (!a || !b) return 0;
       let comparison = 0;
       if (sortBy === 'alfabeto') {
         comparison = (a.descricao || '').localeCompare(b.descricao || '');
       } else if (sortBy === 'data') {
-        comparison = new Date(a.data_vencimento).getTime() - new Date(b.data_vencimento).getTime();
+        const dateA = a.data_vencimento ? new Date(a.data_vencimento).getTime() : 0;
+        const dateB = b.data_vencimento ? new Date(b.data_vencimento).getTime() : 0;
+        comparison = dateA - dateB;
       } else if (sortBy === 'valor') {
         comparison = (a.valor_total || 0) - (b.valor_total || 0);
       }

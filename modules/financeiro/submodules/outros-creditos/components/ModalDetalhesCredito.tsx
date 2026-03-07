@@ -6,6 +6,7 @@ import ModalBaixa from '../../components/ModalBaixa';
 import { ITituloCredito } from '../outros-creditos.types';
 import { SociosService } from '../../../../ajustes/socios/socios.service';
 import { ISocio } from '../../../../ajustes/socios/socios.types';
+import ConfirmModal from '../../../../../components/ConfirmModal';
 
 interface Props {
     titulo: ITituloCredito;
@@ -25,6 +26,8 @@ const ModalDetalhesCredito: React.FC<Props> = ({ titulo, onClose, onSuccess }) =
     const [editandoId, setEditandoId] = useState<string | null>(null);
     const [novoValor, setNovoValor] = useState<number>(0);
     const [novaData, setNovaData] = useState<string>('');
+    const [deleteId, setDeleteId] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         async function load() {
@@ -55,17 +58,19 @@ const ModalDetalhesCredito: React.FC<Props> = ({ titulo, onClose, onSuccess }) =
         return new Date(date).toLocaleDateString('pt-BR');
     };
 
-    const handleDeleteReceipt = async (id: string) => {
-        if (!window.confirm('Tem certeza que deseja estornar este recebimento? O saldo do título será recalculado.')) return;
-
+    const handleDeleteReceipt = async () => {
+        if (!deleteId) return;
+        setIsDeleting(true);
         try {
-            await TitulosService.excluirPagamento(id, titulo.id);
+            await TitulosService.excluirPagamento(deleteId, titulo.id);
+            setDeleteId(null);
             setRefreshKey(prev => prev + 1);
             onSuccess(); // Triggers reload on parent
             queryClient.invalidateQueries({ queryKey: ['fin_outros_creditos_sync'] });
         } catch (err) {
             console.error('Erro ao excluir recebimento:', err);
-            alert('Erro ao excluir recebimento.');
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -267,7 +272,7 @@ const ModalDetalhesCredito: React.FC<Props> = ({ titulo, onClose, onSuccess }) =
                                                             </svg>
                                                         </button>
                                                         <button
-                                                            onClick={() => handleDeleteReceipt(r.id)}
+                                                            onClick={() => setDeleteId(r.id)}
                                                             className="p-2 text-rose-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
                                                             title="Estornar Recebimento"
                                                         >
@@ -308,6 +313,17 @@ const ModalDetalhesCredito: React.FC<Props> = ({ titulo, onClose, onSuccess }) =
                     }}
                 />
             )}
+
+            <ConfirmModal
+                isOpen={!!deleteId}
+                onClose={() => setDeleteId(null)}
+                onConfirm={handleDeleteReceipt}
+                title="Estornar Recebimento?"
+                message="Tem certeza que deseja cancelar este recebimento? O valor retornará para o saldo devedor do título."
+                confirmText="Sim, Estornar"
+                variant="danger"
+                isLoading={isDeleting}
+            />
         </div>
     );
 };

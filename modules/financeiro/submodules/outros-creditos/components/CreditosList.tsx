@@ -152,7 +152,7 @@ const CreditosList: React.FC<Props> = ({ items, loading, onReceber, onEdit, onDe
   };
 
   const content = () => {
-    const list = items as ITituloCredito[];
+    const list = Array.isArray(items) ? items : [];
     if (list.length === 0) return <div className="py-32 text-center text-slate-400 font-bold uppercase text-[10px] tracking-widest border-2 border-dashed border-slate-100 rounded-3xl mx-8">Nenhum crédito extraordinário encontrado</div>;
     return viewMode === 'card' ? renderCards(list) : renderTable(list);
   };

@@ -1,6 +1,7 @@
 
 import React, { useMemo } from 'react';
 import { IPedidoVenda } from '../pedidos-venda.types';
+import { calculateNormalizedValue } from '../utils/profit-distribution';
 
 interface Props {
   pedidos: IPedidoVenda[];
@@ -21,9 +22,8 @@ const VendaRankingSociosCard: React.FC<Props> = ({ pedidos }) => {
 
       if (v.socios && Array.isArray(v.socios)) {
         v.socios.forEach((s: any) => {
-          const perc = s.porcentagem / 100;
-          const lucroSocio = lucroVenda * perc;
-          const vgvSocio = p.valor_venda * perc;
+          const lucroSocio = calculateNormalizedValue(lucroVenda, s.porcentagem, v.socios);
+          const vgvSocio = calculateNormalizedValue(p.valor_venda, s.porcentagem, v.socios);
 
           const current = map.get(s.socio_id) || { nome: s.nome, lucroAcumulado: 0, vgvProporcional: 0 };
           map.set(s.socio_id, {
@@ -41,7 +41,7 @@ const VendaRankingSociosCard: React.FC<Props> = ({ pedidos }) => {
     })).sort((a, b) => b.lucroAcumulado - a.lucroAcumulado);
   }, [pedidos]);
 
-  const formatCurrency = (val: number) => 
+  const formatCurrency = (val: number) =>
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
   if (ranking.length === 0) return null;
@@ -80,24 +80,24 @@ const VendaRankingSociosCard: React.FC<Props> = ({ pedidos }) => {
             </div>
 
             <div className="space-y-4">
-               <div className="flex justify-between items-end">
-                  <div>
-                    <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Lucro Bruto (Bolso)</p>
-                    <p className="text-xl font-black text-slate-800 tracking-tight">{formatCurrency(socio.lucroAcumulado)}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-[8px] font-black text-slate-400 uppercase mb-1">VGV Ref.</p>
-                    <p className="text-xs font-bold text-slate-500">{formatCurrency(socio.vgvProporcional)}</p>
-                  </div>
-               </div>
+              <div className="flex justify-between items-end">
+                <div>
+                  <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Lucro Bruto (Bolso)</p>
+                  <p className="text-xl font-black text-slate-800 tracking-tight">{formatCurrency(socio.lucroAcumulado)}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-[8px] font-black text-slate-400 uppercase mb-1">VGV Ref.</p>
+                  <p className="text-xs font-bold text-slate-500">{formatCurrency(socio.vgvProporcional)}</p>
+                </div>
+              </div>
 
-               {/* Barra de Progresso de representatividade */}
-               <div className="h-2 w-full bg-slate-200 rounded-full overflow-hidden p-0.5">
-                  <div 
-                    className="h-full bg-emerald-500 rounded-full transition-all duration-1000 ease-out"
-                    style={{ width: `${socio.percentualNoLucroTotal}%` }}
-                  ></div>
-               </div>
+              {/* Barra de Progresso de representatividade */}
+              <div className="h-2 w-full bg-slate-200 rounded-full overflow-hidden p-0.5">
+                <div
+                  className="h-full bg-emerald-500 rounded-full transition-all duration-1000 ease-out"
+                  style={{ width: `${socio.percentualNoLucroTotal}%` }}
+                ></div>
+              </div>
             </div>
           </div>
         ))}

@@ -24,7 +24,7 @@ const MonthlyPerformance: React.FC<Props> = ({ vendas, compras, lucro, margem })
                   <div className="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center">
                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
                   </div>
-                  <span className="text-xs font-black text-slate-500 uppercase tracking-widest">Vendas</span>
+                  <span className="text-xs font-black text-slate-500 uppercase tracking-widest">Vendas (Recebido)</span>
                </div>
                <span className="text-xl font-black text-slate-900">{fmt(vendas)}</span>
             </div>
