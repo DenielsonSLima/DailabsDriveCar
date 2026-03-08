@@ -88,6 +88,8 @@ const ModalBaixa: React.FC<Props> = ({ titulo, onClose, onSuccess }) => {
         valorAcrescimo,
         dataPagamento
       );
+      // Sincroniza valor_desconto e valor_acrescimo em fin_titulos após a baixa
+      await FinanceiroService.recalcularTitulo(titulo.id);
       onSuccess();
     } catch (e: any) {
       alert("Erro ao processar baixa: " + e.message);

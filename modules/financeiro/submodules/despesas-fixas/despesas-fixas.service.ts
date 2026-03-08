@@ -12,10 +12,10 @@ export const DespesasFixasService = {
       .select(`
         *,
         parceiro:parceiros(nome),
-        categoria:fin_categorias!inner(id, nome, tipo)
+        categoria:fin_categorias(id, nome)
       `)
       .eq('tipo', 'PAGAR')
-      .eq('fin_categorias.tipo', 'FIXA')
+      .eq('origem_tipo', 'DESPESA_FIXA')
       .neq('status', 'CANCELADO');
 
     const hoje = new Date().toISOString().split('T')[0];
@@ -90,17 +90,26 @@ export const DespesasFixasService = {
   },
 
   async getKpis() {
-    const { data, error } = await supabase.rpc('get_submodule_kpis', {
-      p_tipo: 'PAGAR',
-      p_categoria_tipo: 'FIXA'
-    });
+    const hoje = new Date().toISOString().split('T')[0];
+
+    const { data, error } = await supabase
+      .from('fin_titulos')
+      .select('valor_total, valor_pago, data_vencimento, status')
+      .eq('tipo', 'PAGAR')
+      .eq('origem_tipo', 'DESPESA_FIXA')
+      .neq('status', 'CANCELADO');
 
     if (error) {
       console.error('Erro ao buscar KPIs de despesas fixas:', error);
       throw error;
     }
 
-    return data;
+    const pendentes = (data || []).filter(t => t.status !== 'PAGO');
+    const total_liquidar = pendentes.reduce((sum, t) => sum + (t.valor_total - (t.valor_pago || 0)), 0);
+    const vencendo_hoje = pendentes.filter(t => t.data_vencimento === hoje).reduce((sum, t) => sum + (t.valor_total - (t.valor_pago || 0)), 0);
+    const total_atrasado = pendentes.filter(t => t.data_vencimento < hoje).reduce((sum, t) => sum + (t.valor_total - (t.valor_pago || 0)), 0);
+
+    return { total_liquidar, vencendo_hoje, total_atrasado };
   },
 
   subscribe(onUpdate: () => void) {

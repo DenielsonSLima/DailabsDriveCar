@@ -19,6 +19,9 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
   const [formaSelecionada, setFormaSelecionada] = useState<any>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [valorFormatado, setValorFormatado] = useState('R$ 0,00');
+  const [isAddingGrupo, setIsAddingGrupo] = useState(false);
+  const [isAddingCategoria, setIsAddingCategoria] = useState(false);
+  const [newItemName, setNewItemName] = useState('');
 
   const [formData, setFormData] = useState({
     data_vencimento: new Date().toISOString().split('T')[0],
@@ -94,24 +97,64 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
 
   const handleCurrencyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
-    const cleaned = val.replace(/[^\d,\.]/g, '');
-    if (cleaned === '' || cleaned === ',' || cleaned === '.') {
-      setValorFormatado('');
+    // Remove tudo que não for dígito
+    const digits = val.replace(/\D/g, '');
+
+    if (digits === '') {
+      setValorFormatado('R$ 0,00');
       setFormData(prev => ({ ...prev, valor_total: 0 }));
       return;
     }
-    const normalized = cleaned.replace(/\./g, '').replace(',', '.');
-    const parsed = parseFloat(normalized);
-    if (!isNaN(parsed)) {
-      setValorFormatado(cleaned); // Mantém o que o usuário digitou (com vírgula se for o caso)
-      setFormData(prev => ({ ...prev, valor_total: parsed }));
+
+    const parsed = parseInt(digits, 10) / 100;
+
+    setValorFormatado(new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(parsed));
+
+    setFormData(prev => ({ ...prev, valor_total: parsed }));
+  };
+
+  const handleAddGrupo = async () => {
+    if (!newItemName) return;
+    try {
+      await TiposDespesasService.saveGrupo({
+        nome: newItemName.toUpperCase(),
+        tipo: 'FIXA'
+      });
+      const novosGrupos = await TiposDespesasService.getByTipo('FIXA');
+      setGrupos(novosGrupos);
+      const grupoCriado = novosGrupos.find(g => g.nome === newItemName.toUpperCase());
+      if (grupoCriado) {
+        setFormData(prev => ({ ...prev, grupo_id: grupoCriado.id, categoria_id: '' }));
+      }
+      setIsAddingGrupo(false);
+      setNewItemName('');
+    } catch (err: any) {
+      alert('Erro ao criar grupo: ' + err.message);
     }
   };
 
-  const handleBlur = () => {
-    setValorFormatado(
-      new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(formData.valor_total)
-    );
+  const handleAddCategoria = async () => {
+    if (!newItemName || !formData.grupo_id) return;
+    try {
+      await TiposDespesasService.saveCategoria({
+        nome: newItemName.toUpperCase(),
+        grupo_id: formData.grupo_id
+      });
+      const novosGrupos = await TiposDespesasService.getByTipo('FIXA');
+      setGrupos(novosGrupos);
+      const categoriasDesteGrupo = novosGrupos.find(g => g.id === formData.grupo_id)?.categorias || [];
+      const catCriada = categoriasDesteGrupo.find(c => c.nome === newItemName.toUpperCase());
+      if (catCriada) {
+        setFormData(prev => ({ ...prev, categoria_id: catCriada.id }));
+      }
+      setIsAddingCategoria(false);
+      setNewItemName('');
+    } catch (err: any) {
+      alert('Erro ao criar categoria: ' + err.message);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -173,8 +216,18 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
             {/* Grupo e Categoria */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">
+                <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1 flex justify-between items-center">
                   Grupo
+                  <button
+                    type="button"
+                    onClick={() => { setIsAddingGrupo(true); setNewItemName(''); }}
+                    className="text-slate-900 hover:text-slate-700 font-black text-[9px] uppercase tracking-widest flex items-center"
+                  >
+                    <svg className="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                    Novo
+                  </button>
                 </label>
                 <select
                   required
@@ -192,8 +245,20 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
               </div>
 
               <div>
-                <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">
+                <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1 flex justify-between items-center">
                   Categoria (Subgrupo)
+                  {formData.grupo_id && (
+                    <button
+                      type="button"
+                      onClick={() => { setIsAddingCategoria(true); setNewItemName(''); }}
+                      className="text-slate-900 hover:text-slate-700 font-black text-[9px] uppercase tracking-widest flex items-center"
+                    >
+                      <svg className="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                      </svg>
+                      Novo
+                    </button>
+                  )}
                 </label>
                 <select
                   required
@@ -235,7 +300,6 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
                 type="text"
                 value={valorFormatado}
                 onChange={handleCurrencyChange}
-                onBlur={handleBlur}
                 className="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl px-5 py-4 text-2xl font-black text-slate-800 outline-none focus:border-slate-500 text-center transition-all"
                 required
               />
@@ -366,6 +430,53 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
           </form>
         </div>
       </div>
+
+      {/* Quick Add Modal */}
+      {(isAddingGrupo || isAddingCategoria) && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="bg-white w-full max-w-sm rounded-[2rem] shadow-2xl overflow-hidden animate-in zoom-in-95 border border-slate-100 p-8">
+            <h4 className="text-lg font-black uppercase tracking-tighter text-slate-900 mb-2">
+              {isAddingGrupo ? 'Novo Grupo' : 'Nova Categoria'}
+            </h4>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-6">
+              {isAddingGrupo ? 'Para custos fixos' : `Para o grupo: ${grupos.find(g => g.id === formData.grupo_id)?.nome}`}
+            </p>
+
+            <div className="space-y-6">
+              <div>
+                <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">
+                  Nome do {isAddingGrupo ? 'Grupo' : 'Subgrupo'}
+                </label>
+                <input
+                  type="text"
+                  autoFocus
+                  value={newItemName}
+                  onChange={e => setNewItemName(e.target.value)}
+                  placeholder="EX: ALUGUEL, MANUTENÇÃO..."
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3.5 font-bold outline-none focus:ring-2 focus:ring-slate-500 uppercase"
+                />
+              </div>
+
+              <div className="flex space-x-3">
+                <button
+                  type="button"
+                  onClick={() => { setIsAddingGrupo(false); setIsAddingCategoria(false); setNewItemName(''); }}
+                  className="flex-1 py-3.5 text-slate-500 font-black text-[10px] uppercase bg-slate-50 rounded-xl hover:bg-slate-100 transition-all"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  onClick={isAddingGrupo ? handleAddGrupo : handleAddCategoria}
+                  className="flex-1 py-3.5 text-white font-black text-[10px] uppercase tracking-widest bg-slate-900 rounded-xl hover:bg-slate-800 shadow-lg shadow-slate-200 transition-all"
+                >
+                  Cadastrar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

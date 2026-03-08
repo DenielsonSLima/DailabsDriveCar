@@ -16,6 +16,7 @@ export const FinanceiroService = {
   // ── TITULOS & DESPESAS ──
   getTitulos: TitulosService.getTitulos,
   baixarTitulo: TitulosService.baixarTitulo,
+  recalcularTitulo: TitulosService.recalcularTitulo,
   lancarDespesa: TitulosService.lancarDespesa,
   previewCronograma: TitulosService.previewCronograma,
   getTitulosByPedidoId: TitulosService.getTitulosByPedidoId,

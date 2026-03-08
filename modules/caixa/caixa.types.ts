@@ -38,6 +38,7 @@ export interface ICaixaDashboardData {
   patrimonio_liquido: number;
   saldo_disponivel: number;
   total_ativos_estoque: number;
+  qtd_veiculos_estoque: number;
   total_recebiveis: number;
   total_passivo_circulante: number;
   total_despesas_fixas: number;
@@ -61,6 +62,7 @@ export const CaixaDashboardSchema = z.object({
   patrimonio_liquido: z.number().nullish().transform(v => v ?? 0),
   saldo_disponivel: z.number().nullish().transform(v => v ?? 0),
   total_ativos_estoque: z.number().nullish().transform(v => v ?? 0),
+  qtd_veiculos_estoque: z.number().nullish().transform(v => v ?? 0),
   total_recebiveis: z.number().nullish().transform(v => v ?? 0),
   total_passivo_circulante: z.number().nullish().transform(v => v ?? 0),
   total_despesas_fixas: z.number().nullish().transform(v => v ?? 0),
