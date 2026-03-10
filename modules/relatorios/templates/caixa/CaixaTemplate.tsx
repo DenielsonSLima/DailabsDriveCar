@@ -103,6 +103,7 @@ const CaixaTemplate: React.FC<Props> = ({ data, empresa, watermark, periodo }) =
                                 <div style={{ minWidth: 0, flex: 1 }}>
                                     <p style={{ fontSize: '7px', fontWeight: 'black', textTransform: 'uppercase', color: i < 2 ? 'rgba(255,255,255,0.8)' : '#94a3b8', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{k.label}</p>
                                     <h4 style={{ fontSize: '11px', fontWeight: 'black', margin: 0 }}>{fmt(k.val)}</h4>
+                                    {k.sub && <span style={{ fontSize: '6px', fontWeight: 'bold', color: i < 2 ? 'rgba(255,255,255,0.7)' : '#94a3b8', textTransform: 'uppercase', display: 'block', marginTop: '1px' }}>{k.sub}</span>}
                                 </div>
                             </div>
                         ))}
@@ -176,10 +177,19 @@ const CaixaTemplate: React.FC<Props> = ({ data, empresa, watermark, periodo }) =
                                 {/* Profit line - SVG curve + HTML dots */}
                                 {history.length > 0 && (() => {
                                     const profitMax = Math.max(...history.map((m: any) => Math.abs(m.lucro || 0)), 50000);
+                                    const svgWidth = 350;
+                                    const svgHeight = 150;
+                                    
                                     const dots = history.map((m: any, i: number) => {
-                                        const xPercent = ((i + 0.5) / history.length) * 100;
-                                        const yPercent = Math.max(5, Math.min(85, 100 - ((m.lucro || 0) / profitMax) * 70 - 15));
-                                        return { x: xPercent, y: yPercent, value: m.lucro || 0 };
+                                        const xPercent = (i + 0.5) / history.length;
+                                        const yPercent = Math.max(0.05, Math.min(0.85, 1 - ((m.lucro || 0) / profitMax) * 0.7 - 0.15));
+                                        return { 
+                                            x: xPercent * svgWidth, 
+                                            y: yPercent * svgHeight, 
+                                            px: xPercent * 100, 
+                                            py: yPercent * 100, 
+                                            value: m.lucro || 0 
+                                        };
                                     });
 
                                     let pathData = `M ${dots[0].x},${dots[0].y}`;
@@ -193,22 +203,22 @@ const CaixaTemplate: React.FC<Props> = ({ data, empresa, watermark, periodo }) =
 
                                     return (
                                         <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
-                                            <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', overflow: 'visible', zIndex: 5 }}>
-                                                <path d={pathData} fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+                                            <svg viewBox={`0 0 ${svgWidth} ${svgHeight}`} preserveAspectRatio="none" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', overflow: 'visible', zIndex: 5 }}>
+                                                <path d={pathData} fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                                             </svg>
                                             {dots.map((dot, i) => (
                                                 <React.Fragment key={`profit-${i}`}>
                                                     {/* Dot */}
                                                     <div style={{
-                                                        position: 'absolute', left: `${dot.x}%`, top: `${dot.y}%`,
+                                                        position: 'absolute', left: `${dot.px}%`, top: `${dot.py}%`,
                                                         width: '8px', height: '8px', background: '#064e3b', borderRadius: '50%',
                                                         transform: 'translate(-50%, -50%)', zIndex: 10,
                                                         border: '2px solid #10b981', boxShadow: '0 0 4px rgba(16,185,129,0.3)'
                                                     }}></div>
                                                     {/* Value label */}
                                                     <div style={{
-                                                        position: 'absolute', left: `${dot.x}%`, top: `${dot.y - 7}%`,
-                                                        transform: 'translateX(-50%)', fontSize: '8px', fontWeight: 'bold',
+                                                        position: 'absolute', left: `${dot.px}%`, top: `calc(${dot.py}% - 14px)`,
+                                                        transform: 'translateX(-50%)', fontSize: '8px', fontWeight: 'black',
                                                         color: '#10b981', whiteSpace: 'nowrap', zIndex: 11
                                                     }}>{fmtK(dot.value)}</div>
                                                 </React.Fragment>
@@ -251,21 +261,84 @@ const CaixaTemplate: React.FC<Props> = ({ data, empresa, watermark, periodo }) =
                     {/* SOCIO SUMMARY - Page 1 */}
                     <div>
                         <h3 style={{ fontSize: '10px', fontWeight: 'black', textTransform: 'uppercase', marginBottom: '0.75rem' }}>Participação de Sócios</h3>
-                        <div style={{ display: 'flex', gap: '0.75rem' }}>
+                        <div style={{ display: 'flex', gap: '0.75rem', width: '100%' }}>
                             {(data.socios || []).map((socio: any, idx: number) => {
+                                const margin = socio.valor_investido > 0
+                                    ? ((socio.lucro_periodo / socio.valor_investido) * 100).toFixed(1)
+                                    : '0.0';
+
                                 return (
-                                    <div key={idx} className="report-card" style={{ padding: '0.75rem', flex: 1, marginBottom: 0 }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                                            <div style={{ width: '1.5rem', height: '1.5rem', background: '#4f46e5', borderRadius: '0.4rem', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
-                                                <svg xmlns="http://www.w3.org/2000/svg" style={{ width: '0.75rem', height: '0.75rem' }} fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={2.5}>
-                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                                </svg>
+                                    <div key={idx} className="report-card" style={{ padding: '0.75rem', flex: 1, marginBottom: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                        {/* HEADER */}
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                                <div style={{ width: '1.8rem', height: '1.8rem', background: '#4f46e5', borderRadius: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" style={{ width: '0.9rem', height: '0.9rem' }} fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={2.5}>
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                                    </svg>
+                                                </div>
+                                                <div>
+                                                    <h4 style={{ fontSize: '10px', fontWeight: 'black', textTransform: 'uppercase', margin: 0, color: '#0f172a' }}>{socio.nome ? socio.nome.split(' ')[0] : 'Sócio'}</h4>
+                                                    <p style={{ fontSize: '6px', color: '#94a3b8', fontWeight: 'bold', textTransform: 'uppercase', margin: 0 }}>Sócio Hidrocar</p>
+                                                </div>
                                             </div>
-                                            <h4 style={{ fontSize: '10px', fontWeight: 'black', textTransform: 'uppercase', margin: 0 }}>{socio.nome ? socio.nome.split(' ')[0] : 'Sócio'}</h4>
+                                            <div style={{ background: '#ecfdf5', color: '#059669', padding: '2px 6px', borderRadius: '4px', fontSize: '6px', fontWeight: 'black', textTransform: 'uppercase', border: '1px solid #d1fae5' }}>
+                                                {socio.porcentagem_participacao?.toFixed(1) || '33.3'}% Cotas
+                                            </div>
                                         </div>
-                                        <div style={{ background: '#f8fafc', padding: '0.5rem', borderRadius: '0.5rem', border: '1px solid #f1f5f9' }}>
-                                            <p style={{ fontSize: '11px', fontWeight: 'black', margin: 0 }}>{fmt(socio.valor_investido)}</p>
-                                            <p style={{ fontSize: '7px', color: '#94a3b8', fontWeight: 'bold', textTransform: 'uppercase', margin: 0 }}>Exposto ({socio.porcentagem_participacao?.toFixed(0)}%)</p>
+
+                                        {/* CORPO */}
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                            {/* Exposição */}
+                                            <div style={{ background: '#f8fafc', padding: '6px', borderRadius: '6px', border: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                                                <div>
+                                                    <p style={{ fontSize: '6px', color: '#94a3b8', fontWeight: 'black', textTransform: 'uppercase', margin: '0 0 2px 0' }}>Exposição de Capital</p>
+                                                    <h4 style={{ fontSize: '11px', fontWeight: 'black', color: '#0f172a', margin: 0 }}>{fmt(socio.valor_investido)}</h4>
+                                                </div>
+                                                <div style={{ width: '1rem', height: '1rem', background: 'white', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" style={{ width: '0.6rem', height: '0.6rem', color: '#4f46e5' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                                    </svg>
+                                                </div>
+                                            </div>
+
+                                            {/* Ativos / Margem */}
+                                            <div style={{ display: 'flex', gap: '4px' }}>
+                                                <div style={{ flex: 1, background: '#f8fafc', padding: '6px', borderRadius: '6px', border: '1px solid #f1f5f9' }}>
+                                                    <p style={{ fontSize: '6px', color: '#94a3b8', fontWeight: 'black', textTransform: 'uppercase', margin: '0 0 2px 0' }}>Ativos Envolv.</p>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+                                                        <span style={{ fontSize: '10px', fontWeight: 'black', color: '#0f172a' }}>{socio.quantidade_carros}</span>
+                                                        <span style={{ fontSize: '6px', fontWeight: 'bold', color: '#64748b', textTransform: 'uppercase' }}>Veículos</span>
+                                                    </div>
+                                                </div>
+                                                <div style={{ flex: 1, background: '#f8fafc', padding: '6px', borderRadius: '6px', border: '1px solid #f1f5f9' }}>
+                                                    <p style={{ fontSize: '6px', color: '#94a3b8', fontWeight: 'black', textTransform: 'uppercase', margin: '0 0 2px 0' }}>Margem Ref.</p>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '2px', color: '#059669' }}>
+                                                        <span style={{ fontSize: '10px', fontWeight: 'black' }}>{margin}%</span>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" style={{ width: '0.6rem', height: '0.6rem' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* RODAPÉ E LUCROS */}
+                                        <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '6px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f8fafc', padding: '4px 6px', borderRadius: '4px', border: '1px solid #f1f5f9' }}>
+                                                <span style={{ fontSize: '6px', fontWeight: 'black', color: '#94a3b8', textTransform: 'uppercase' }}>Lucro a Receber</span>
+                                                <span style={{ fontSize: '9px', fontWeight: 'black', color: '#4f46e5' }}>{fmt(socio.lucro_pendente)}</span>
+                                            </div>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2px' }}>
+                                                <div>
+                                                    <p style={{ fontSize: '6px', fontWeight: 'black', color: '#94a3b8', textTransform: 'uppercase', margin: '0 0 1px 0' }}>Lucro Gerado</p>
+                                                    <p style={{ fontSize: '8px', fontWeight: 'black', color: '#0f172a', margin: 0, opacity: 0.8 }}>{fmt(socio.lucro_periodo)}</p>
+                                                </div>
+                                                <div style={{ textAlign: 'right' }}>
+                                                    <p style={{ fontSize: '6px', fontWeight: 'black', color: '#059669', textTransform: 'uppercase', margin: '0 0 1px 0' }}>Dinheiro em Caixa</p>
+                                                    <p style={{ fontSize: '10px', fontWeight: 'black', color: '#059669', margin: 0 }}>{fmt(socio.lucro_caixa)}</p>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 );
