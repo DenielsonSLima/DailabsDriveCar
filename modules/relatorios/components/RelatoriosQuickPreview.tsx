@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 // toPng was replaced by html2pdf for real PDF generation
 
 interface Props {
@@ -40,11 +41,11 @@ const RelatoriosQuickPreview: React.FC<Props> = ({ isOpen, onClose, title, child
           letterRendering: true,
           logging: false,
           onclone: (clonedDoc: Document) => {
-            // REMOVE ABSOLUTAMENTE TUDO QUE NÃO DEVE SAIR NO PDF
+            // REMOVE elementos visuais do preview que não devem sair no PDF
             const elementsToRemove = clonedDoc.querySelectorAll('.no-print, .page-divide, .page-indicator');
-            elementsToRemove.forEach(el => (el as HTMLElement).style.display = 'none');
+            elementsToRemove.forEach(el => (el as HTMLElement).remove());
 
-            // Garante que o fundo do wrapper clonado esteja limpo de elementos visuais do modal
+            // Limpa o wrapper principal
             const wrapper = clonedDoc.getElementById('print-content-wrapper');
             if (wrapper) {
               wrapper.style.boxShadow = 'none';
@@ -53,27 +54,28 @@ const RelatoriosQuickPreview: React.FC<Props> = ({ isOpen, onClose, title, child
               wrapper.style.backgroundColor = '#ffffff';
               wrapper.style.margin = '0';
               wrapper.style.padding = '0';
-              wrapper.style.width = '210mm'; // Força largura A4 exata no clone
+              wrapper.style.width = '210mm';
             }
 
-            // Força cada página a começar em uma nova folha e evita quebras internas
-            const pages = clonedDoc.querySelectorAll('.base-report-layout');
-            pages.forEach((page, idx) => {
-              const htmlPage = page as HTMLElement;
-              htmlPage.style.pageBreakAfter = 'always';
-              htmlPage.style.breakAfter = 'page';
-              htmlPage.style.marginBottom = '0';
-              htmlPage.style.marginTop = '0';
-              // A última página não precisa de quebra extra
-              if (idx === pages.length - 1) {
-                htmlPage.style.pageBreakAfter = 'auto';
-                htmlPage.style.breakAfter = 'auto';
-              }
+            // CRÍTICO: Remove TODAS as regras de quebra de página CSS dos containers.
+            // O html2pdf.js já pagina naturalmente pelo h-[297mm] de cada BaseReportLayout.
+            // Se deixarmos break-after-page, ele cria uma quebra EXTRA = página em branco.
+            const allContainers = clonedDoc.querySelectorAll('.report-container, .break-after-page');
+            allContainers.forEach((el) => {
+              const htmlEl = el as HTMLElement;
+              htmlEl.style.pageBreakAfter = 'auto';
+              htmlEl.style.breakAfter = 'auto';
+              htmlEl.style.pageBreakBefore = 'auto';
+              htmlEl.style.breakBefore = 'auto';
+              htmlEl.classList.remove('break-after-page');
+              // Garante que o container não tenha margens ou bordas extras
+              htmlEl.style.margin = '0';
+              htmlEl.style.border = 'none';
             });
           }
         },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+        pagebreak: { mode: ['avoid-all'] }
       };
 
       // @ts-ignore
@@ -91,7 +93,7 @@ const RelatoriosQuickPreview: React.FC<Props> = ({ isOpen, onClose, title, child
     }
   };
 
-  return (
+  const modalContent = (
     <div className="fixed inset-0 z-[200] bg-slate-950/95 flex flex-col no-print animate-in fade-in duration-300 print:bg-white print:static print:block print:inset-auto print:h-auto">
       <style>{`
         @media screen {
@@ -275,6 +277,11 @@ const RelatoriosQuickPreview: React.FC<Props> = ({ isOpen, onClose, title, child
       </div>
     </div>
   );
+
+  if (typeof document !== 'undefined') {
+    return createPortal(modalContent, document.body);
+  }
+  return modalContent;
 };
 
 export default RelatoriosQuickPreview;

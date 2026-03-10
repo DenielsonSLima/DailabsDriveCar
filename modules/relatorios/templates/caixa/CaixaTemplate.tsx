@@ -51,10 +51,10 @@ const CaixaTemplate: React.FC<Props> = ({ data, empresa, watermark, periodo }) =
     });
     const sortedVehicles = allVehicles.sort((a, b) => (a.modelo || '').localeCompare(b.modelo || ''));
 
-    // Split vehicles into chunks of 5 per page
-    const vehicleChunks = [];
-    for (let i = 0; i < sortedVehicles.length; i += 5) {
-        vehicleChunks.push(sortedVehicles.slice(i, i + 5));
+    // Split vehicles into chunks of 4 per page (5 overflows with header/footer)
+    const vehicleChunks: any[][] = [];
+    for (let i = 0; i < sortedVehicles.length; i += 4) {
+        vehicleChunks.push(sortedVehicles.slice(i, i + 4));
     }
 
     return (
@@ -84,14 +84,14 @@ const CaixaTemplate: React.FC<Props> = ({ data, empresa, watermark, periodo }) =
 
             {/* PAGE 1: KPIs, Charts, and Accounts */}
             <BaseReportLayout title="Relatório Financeiro & Patrimônio" empresa={empresa} watermark={watermark} subtitle={periodo} pageNumber={1} totalPages={1 + vehicleChunks.length} isManualPagination={true}>
-                <div style={{ padding: '0.5rem 2rem 2rem 2rem' }}>
+                <div style={{ padding: '0.4rem 1.5rem 1rem 1.5rem' }}>
                     {/* KPIs Section */}
                     <div className="kpi-grid" style={{
                         display: 'grid',
                         gridTemplateColumns: 'repeat(4, 1fr)',
-                        gap: '0.75rem',
+                        gap: '0.5rem',
                         width: '100%',
-                        marginBottom: '1.5rem'
+                        marginBottom: '1rem'
                     }}>
                         {kpis.map((k, i) => (
                             <div key={i} className={`kpi-card ${i < 2 ? 'kpi-card-main' : ''}`} style={{ marginBottom: 0, minWidth: 0 }}>
@@ -108,56 +108,117 @@ const CaixaTemplate: React.FC<Props> = ({ data, empresa, watermark, periodo }) =
                         ))}
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '0.75rem', marginBottom: '1rem' }}>
                         {/* PERFORMANCE CHART */}
                         <div className="report-card" style={{ marginBottom: 0 }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
                                 <div>
                                     <h3 style={{ fontSize: '10px', fontWeight: 'black', textTransform: 'uppercase', margin: 0 }}>Desempenho Trimestral</h3>
-                                    <p style={{ fontSize: '7px', color: '#94a3b8', fontWeight: 'bold', textTransform: 'uppercase', margin: '1px 0 0 0' }}>Histórico faturado, custos e lucro</p>
+                                    <p style={{ fontSize: '7px', color: '#94a3b8', fontWeight: 'bold', textTransform: 'uppercase', margin: '1px 0 0 0' }}>Histórico de faturamento, custos e lucro</p>
                                 </div>
-                                <div style={{ display: 'flex', gap: '8px' }}>
-                                    {['FAT', 'CUS', 'DES'].map((l, i) => (
-                                        <div key={l} style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
-                                            <div style={{ width: '6px', height: '6px', backgroundColor: i === 0 ? '#2563eb' : i === 1 ? '#64748b' : '#f43f5e' }}></div>
-                                            <span style={{ fontSize: '7px', fontWeight: 'bold', color: '#64748b' }}>{l}</span>
-                                        </div>
-                                    ))}
+                                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
+                                        <div style={{ width: '7px', height: '7px', borderRadius: '2px', backgroundColor: '#4f46e5' }}></div>
+                                        <span style={{ fontSize: '7px', fontWeight: 'bold', color: '#64748b', textTransform: 'uppercase' }}>Faturado</span>
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
+                                        <div style={{ width: '7px', height: '7px', borderRadius: '2px', backgroundColor: '#f59e0b' }}></div>
+                                        <span style={{ fontSize: '7px', fontWeight: 'bold', color: '#64748b', textTransform: 'uppercase' }}>Custo</span>
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
+                                        <div style={{ width: '7px', height: '7px', borderRadius: '2px', backgroundColor: '#f43f5e' }}></div>
+                                        <span style={{ fontSize: '7px', fontWeight: 'bold', color: '#64748b', textTransform: 'uppercase' }}>Despesas</span>
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '3px', marginLeft: '4px' }}>
+                                        <div style={{ width: '12px', height: '2px', borderRadius: '1px', backgroundColor: '#10b981' }}></div>
+                                        <span style={{ fontSize: '7px', fontWeight: 'bold', color: '#64748b', textTransform: 'uppercase' }}>Lucro</span>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="chart-container" style={{ height: '180px', marginTop: '1rem' }}>
-                                <div className="y-axis">
+                            <div style={{ position: 'relative', height: '150px', borderLeft: '1px solid #e2e8f0', borderBottom: '1px solid #e2e8f0', marginLeft: '2.5rem' }}>
+                                {/* Y-axis labels */}
+                                <div style={{ position: 'absolute', left: '-2.8rem', top: 0, bottom: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', fontSize: '7px', fontWeight: 'bold', color: '#cbd5e1', textAlign: 'right', width: '2.5rem' }}>
                                     <span>{fmtK(maxVal)}</span>
+                                    <span>{fmtK(maxVal * 0.75)}</span>
                                     <span>{fmtK(maxVal * 0.5)}</span>
+                                    <span>{fmtK(maxVal * 0.25)}</span>
                                     <span>0</span>
                                 </div>
-                                <div className="bars-area">
+
+                                {/* Bars */}
+                                <div style={{ position: 'absolute', inset: 0, display: 'flex' }}>
                                     {history.map((m: any, i: number) => {
-                                        const hF = (m.faturado / maxVal) * 100;
-                                        const hC = (m.custo / maxVal) * 100;
-                                        const hD = (m.despesas / maxVal) * 100;
+                                        const hF = Math.max((m.faturado / maxVal) * 100, 0);
+                                        const hC = Math.max((m.custo / maxVal) * 100, 0);
+                                        const hD = Math.max((m.despesas / maxVal) * 100, 0);
                                         return (
-                                            <div key={i} className="bar-group">
-                                                <div className="bar" style={{ height: `${hF}%`, background: '#2563eb' }}></div>
-                                                <div className="bar" style={{ height: `${hC}%`, background: '#64748b' }}></div>
-                                                <div className="bar" style={{ height: `${hD}%`, background: '#f43f5e' }}></div>
-                                                <div className="bar-label" style={{ fontSize: '7px', bottom: '-1.2rem' }}>{m.label}</div>
+                                            <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', height: '100%', position: 'relative', padding: '0 10px' }}>
+                                                {/* Bar group */}
+                                                <div style={{ display: 'flex', alignItems: 'flex-end', gap: '3px', width: '100%', maxWidth: '60px', height: '100%', justifyContent: 'center', paddingBottom: '18px' }}>
+                                                    <div style={{ flex: 1, height: `${hF}%`, background: '#4f46e5', borderTopLeftRadius: '2px', borderTopRightRadius: '2px', minHeight: hF > 0 ? '3px' : '0', position: 'relative' }}>
+                                                        {hF > 5 && <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: '#818cf8', borderTopLeftRadius: '2px', borderTopRightRadius: '2px' }}></div>}
+                                                    </div>
+                                                    <div style={{ flex: 1, height: `${hC}%`, background: '#f59e0b', borderTopLeftRadius: '2px', borderTopRightRadius: '2px', minHeight: hC > 0 ? '3px' : '0', position: 'relative' }}>
+                                                        {hC > 5 && <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: '#fbbf24', borderTopLeftRadius: '2px', borderTopRightRadius: '2px' }}></div>}
+                                                    </div>
+                                                    <div style={{ flex: 1, height: `${hD}%`, background: '#f43f5e', borderTopLeftRadius: '2px', borderTopRightRadius: '2px', minHeight: hD > 0 ? '3px' : '0', position: 'relative' }}>
+                                                        {hD > 5 && <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: '#fda4af', borderTopLeftRadius: '2px', borderTopRightRadius: '2px' }}></div>}
+                                                    </div>
+                                                </div>
+                                                {/* Month label */}
+                                                <div style={{ position: 'absolute', bottom: '0', fontSize: '8px', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', textAlign: 'center' }}>{m.label}</div>
                                             </div>
                                         );
                                     })}
                                 </div>
-                                <svg className="profit-line" preserveAspectRatio="none" viewBox="0 0 100 100" style={{ height: '100%', width: '100%', top: 0, left: 0 }}>
-                                    {(() => {
-                                        const profitMax = Math.max(...history.map((m: any) => m.lucro), 50000);
-                                        const getX = (i: number) => (i + 0.5) * (100 / history.length);
-                                        const getY = (v: number) => 100 - (v / profitMax) * 60 - 20;
-                                        const points = history.map((m: any, i: number) => `${getX(i)},${getY(m.lucro)}`).join(' ');
-                                        return <polyline points={points} fill="none" stroke="#10b981" strokeWidth="2" />;
-                                    })()}
-                                </svg>
+
+                                {/* Profit line - SVG curve + HTML dots */}
+                                {history.length > 0 && (() => {
+                                    const profitMax = Math.max(...history.map((m: any) => Math.abs(m.lucro || 0)), 50000);
+                                    const dots = history.map((m: any, i: number) => {
+                                        const xPercent = ((i + 0.5) / history.length) * 100;
+                                        const yPercent = Math.max(5, Math.min(85, 100 - ((m.lucro || 0) / profitMax) * 70 - 15));
+                                        return { x: xPercent, y: yPercent, value: m.lucro || 0 };
+                                    });
+
+                                    let pathData = `M ${dots[0].x},${dots[0].y}`;
+                                    for (let i = 0; i < dots.length - 1; i++) {
+                                        const curr = dots[i];
+                                        const next = dots[i + 1];
+                                        const cp1x = curr.x + (next.x - curr.x) / 3;
+                                        const cp2x = curr.x + (next.x - curr.x) * 2 / 3;
+                                        pathData += ` C ${cp1x},${curr.y} ${cp2x},${next.y} ${next.x},${next.y}`;
+                                    }
+
+                                    return (
+                                        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
+                                            <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', overflow: 'visible', zIndex: 5 }}>
+                                                <path d={pathData} fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+                                            </svg>
+                                            {dots.map((dot, i) => (
+                                                <React.Fragment key={`profit-${i}`}>
+                                                    {/* Dot */}
+                                                    <div style={{
+                                                        position: 'absolute', left: `${dot.x}%`, top: `${dot.y}%`,
+                                                        width: '8px', height: '8px', background: '#064e3b', borderRadius: '50%',
+                                                        transform: 'translate(-50%, -50%)', zIndex: 10,
+                                                        border: '2px solid #10b981', boxShadow: '0 0 4px rgba(16,185,129,0.3)'
+                                                    }}></div>
+                                                    {/* Value label */}
+                                                    <div style={{
+                                                        position: 'absolute', left: `${dot.x}%`, top: `${dot.y - 7}%`,
+                                                        transform: 'translateX(-50%)', fontSize: '8px', fontWeight: 'bold',
+                                                        color: '#10b981', whiteSpace: 'nowrap', zIndex: 11
+                                                    }}>{fmtK(dot.value)}</div>
+                                                </React.Fragment>
+                                            ))}
+                                        </div>
+                                    );
+                                })()}
                             </div>
                         </div>
+
 
                         {/* BANK ACCOUNTS */}
                         <div className="report-card" style={{ marginBottom: 0 }}>

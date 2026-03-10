@@ -98,7 +98,7 @@ const BaseReportLayout: React.FC<Props> = ({
   );
 
   return (
-    <div className={`report-container relative bg-white text-slate-900 flex flex-col font-sans print:p-0 print:border-0 ${isManualPagination ? 'w-[210mm] min-h-[297mm] h-[297mm] break-after-page' : 'min-h-[297mm]'}`}>
+    <div className={`report-container relative bg-white text-slate-900 flex flex-col font-sans print:p-0 print:border-0 ${isManualPagination ? 'w-[210mm] min-h-[297mm] h-[297mm]' : 'min-h-[297mm]'}`}>
 
       {/* Cabeçalho de Estilo - Capturado pelo PDF */}
       <style>{`
@@ -157,11 +157,11 @@ const BaseReportLayout: React.FC<Props> = ({
       {isManualPagination ? (
         <>
           {renderHeader()}
-          <div style={{ height: '40px' }} className="bg-white w-full" />
-          <main className="relative z-10 w-full flex-1 px-10 pt-0 pb-10 overflow-hidden">
+          <div style={{ height: '15px' }} className="bg-white w-full" />
+          <main className="relative z-10 w-full flex-1 px-10 pt-0 pb-4 overflow-hidden">
             {children}
           </main>
-          <div style={{ height: '40px' }} className="bg-white w-full" />
+          <div style={{ height: '10px' }} className="bg-white w-full" />
           {renderFooter()}
         </>
       ) : (
