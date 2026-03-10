@@ -28,7 +28,9 @@ const AuthPage: React.FC = () => {
 
   const checkUser = async () => {
     const session = await AuthService.getSession();
-    if (session) navigate('/inicio');
+    if (session) {
+      navigate(window.innerWidth < 768 ? '/caixa' : '/inicio');
+    }
   };
 
   const handleLogin = async (email: string, pass: string) => {
@@ -36,7 +38,7 @@ const AuthPage: React.FC = () => {
     setError(null);
     try {
       await AuthService.signIn(email, pass);
-      navigate('/inicio');
+      navigate(window.innerWidth < 768 ? '/caixa' : '/inicio');
     } catch (err: any) {
       console.error('Erro de login:', err);
       let message = 'Verifique seu e-mail e senha e tente novamente.';

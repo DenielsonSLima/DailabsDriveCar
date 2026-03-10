@@ -135,6 +135,7 @@ const EstoquePage: React.FC = () => {
                   id: v.id,
                   placa: v.placa || '—',
                   montadora: v.montadora?.nome || 'N/I',
+                  montadora_logo: v.montadora?.logo_url || '',
                   modelo: v.modelo?.nome || '—',
                   versao: v.versao?.nome || '—',
                   socios: (v.socios || []).map((s: any) => ({

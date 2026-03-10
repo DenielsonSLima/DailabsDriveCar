@@ -270,7 +270,7 @@ const App: React.FC = () => {
         <Route path="/veiculo/:id" element={<PublicVehicleDetailsPage />} />
 
         {/* Auth */}
-        <Route path="/login" element={session ? <Navigate to="/inicio" /> : <AuthPage />} />
+        <Route path="/login" element={session ? <Navigate to={window.innerWidth < 768 ? '/caixa' : '/inicio'} /> : <AuthPage />} />
 
         {/* Módulos Administrativos (ERP) */}
         <Route path="/*" element={
@@ -345,7 +345,7 @@ const App: React.FC = () => {
                   <Route path="/marketing/stories" element={<StoryGeneratorPage />} />
                   <Route path="/marketing/feed" element={<FeedGeneratorPage />} />
 
-                  <Route path="*" element={<Navigate to="/inicio" />} />
+                  <Route path="*" element={<Navigate to={window.innerWidth < 768 ? '/caixa' : '/inicio'} />} />
                 </Routes>
               </Suspense>
             </Layout>

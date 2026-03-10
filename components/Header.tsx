@@ -1,10 +1,22 @@
 import React from 'react';
 import GlobalSearch from './GlobalSearch';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  onOpenMobileMenu?: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
   return (
     <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-40">
-      <div className="flex items-center flex-1">
+      <div className="flex items-center flex-1 space-x-2 md:space-x-0">
+        <button 
+          onClick={onOpenMobileMenu}
+          className="p-2 -ml-2 text-slate-500 hover:bg-slate-100 rounded-md md:hidden"
+        >
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
         <GlobalSearch />
       </div>
 

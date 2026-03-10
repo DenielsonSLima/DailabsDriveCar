@@ -57,6 +57,18 @@ const RelatoriosQuickPreview: React.FC<Props> = ({ isOpen, onClose, title, child
               wrapper.style.width = '210mm';
             }
 
+            // CRÍTICO: Remove TODOS os SVGs problemáticos (Lucide icons do sidebar, etc.)
+            // que causam "Expected number" errors no html2canvas SVG path parser.
+            // Mantém apenas SVGs simples como a watermark (que usam <image>, não <path>).
+            const allSvgs = clonedDoc.querySelectorAll('svg');
+            allSvgs.forEach((svg) => {
+              const hasPaths = svg.querySelectorAll('path, circle, line, polyline, polygon, rect').length > 0;
+              const isWatermark = svg.getAttribute('width')?.includes('mm');
+              if (hasPaths && !isWatermark) {
+                (svg as unknown as HTMLElement).remove();
+              }
+            });
+
             // CRÍTICO: Remove TODAS as regras de quebra de página CSS dos containers.
             // O html2pdf.js já pagina naturalmente pelo h-[297mm] de cada BaseReportLayout.
             // Se deixarmos break-after-page, ele cria uma quebra EXTRA = página em branco.

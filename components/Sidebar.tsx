@@ -7,6 +7,8 @@ import ConfirmModal from './ConfirmModal';
 interface SidebarProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
+  isMobileOpen?: boolean;
+  setIsMobileOpen?: (isOpen: boolean) => void;
 }
 
 interface MenuItem {
@@ -55,7 +57,7 @@ const menuItems: MenuItem[] = [
 
 import { useAuthStore } from '../store/auth.store';
 
-const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
+const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setIsMobileOpen }) => {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -87,9 +89,21 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
   };
 
   return (
-    <aside
-      className={`fixed left-0 top-0 h-full bg-slate-900 text-white transition-all duration-300 z-50 flex flex-col ${isOpen ? 'w-64' : 'w-20'}`}
-    >
+    <>
+      {/* Overlay Mobile */}
+      {isMobileOpen && (
+        <div 
+          className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[60] md:hidden"
+          onClick={() => setIsMobileOpen?.(false)}
+        />
+      )}
+      
+      <aside
+        className={`fixed left-0 top-0 h-full bg-slate-900 text-white transition-all duration-300 z-[70] flex flex-col 
+          ${isOpen ? 'w-64' : 'w-20'}
+          ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+        `}
+      >
       <div className="p-4 flex items-center justify-between border-b border-slate-800">
         <div className={`flex items-center space-x-3 overflow-hidden transition-all ${isOpen ? 'opacity-100 w-auto' : 'opacity-0 w-0'}`}>
           <div className="flex-shrink-0">
@@ -106,12 +120,19 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
         </div>
         <button
           onClick={() => {
-            setIsOpen(!isOpen);
-            if (isOpen) setExpanded(null);
+            if (window.innerWidth < 768) {
+              setIsMobileOpen?.(false);
+            } else {
+              setIsOpen(!isOpen);
+              if (isOpen) setExpanded(null);
+            }
           }}
           className="p-1 hover:bg-slate-800 rounded-md"
         >
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-6 h-6 md:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+          <svg className="w-6 h-6 hidden md:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             {isOpen ? (
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7m0 0l7-7m-7 7h18" />
             ) : (
@@ -246,6 +267,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen }) => {
         isLoading={isLoggingOut}
       />
     </aside>
+    </>
   );
 };
 

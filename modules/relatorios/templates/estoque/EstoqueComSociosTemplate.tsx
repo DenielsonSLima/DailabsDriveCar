@@ -17,6 +17,7 @@ interface Props {
       id: string;
       placa: string;
       montadora?: string;
+      montadora_logo?: string;
       modelo?: string;
       versao?: string;
       socios: Array<{
@@ -28,301 +29,254 @@ interface Props {
 }
 
 const EstoqueComSociosTemplate: React.FC<Props> = ({ empresa, watermark, data }) => {
-  const formatCur = (v: number) =>
-    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
+  const fmt = (v: number) =>
+    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v || 0);
 
-  const formatPct = (v: number) =>
+  const fmtPct = (v: number) =>
     new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(v) + '%';
 
-
   // ── PAGINAÇÃO MANUAL ───────────────────────────────────────────
-  const VEHICLES_PAGE_1 = 6;  // menos por causa do resumo e stats globais
-  const VEHICLES_PAGE_N = 10; // mais nas páginas seguintes
+  // Página 1: resumo + primeiros 2 veículos
+  // Páginas seguintes: 5 veículos cada
+  const VEHICLES_PAGE_1 = 4;
+  const VEHICLES_PAGE_N = 5;
 
-  const pages: any[][] = [];
-  let currentPos = 0;
+  const page1Vehicles = data.veiculos.slice(0, VEHICLES_PAGE_1);
+  const remainingVehicles = data.veiculos.slice(VEHICLES_PAGE_1);
 
-  // Página 1
-  pages.push(data.veiculos.slice(0, VEHICLES_PAGE_1));
-  currentPos = VEHICLES_PAGE_1;
-
-  // Páginas seguintes
-  while (currentPos < data.veiculos.length) {
-    pages.push(data.veiculos.slice(currentPos, currentPos + VEHICLES_PAGE_N));
-    currentPos += VEHICLES_PAGE_N;
+  const vehicleChunks: any[][] = [];
+  for (let i = 0; i < remainingVehicles.length; i += VEHICLES_PAGE_N) {
+    vehicleChunks.push(remainingVehicles.slice(i, i + VEHICLES_PAGE_N));
   }
 
+  const totalPages = 1 + vehicleChunks.length;
+
+  // Cores por sócio para visual premium
+  const partnerColors = ['#4f46e5', '#10b981', '#f59e0b', '#f43f5e', '#06b6d4', '#8b5cf6'];
+
+  // ── Componente reutilizável para card de veículo ──
+  const VehicleCard = ({ veiculo, vIdx }: { veiculo: any; vIdx: number }) => (
+    <div style={{
+      display: 'flex', gap: '0', borderRadius: '1rem',
+      border: '1px solid #e2e8f0', overflow: 'hidden', background: 'white',
+    }}>
+      {/* Info do Veículo */}
+      <div style={{
+        flex: 1, padding: '1rem 1.25rem',
+        borderRight: '1px solid #f1f5f9',
+        display: 'flex', alignItems: 'center', gap: '1rem',
+      }}>
+        {/* Logo da Montadora */}
+        <div style={{
+          width: '2.5rem', height: '2.5rem', borderRadius: '0.75rem',
+          background: '#f8fafc', border: '1px solid #e2e8f0',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          flexShrink: 0, overflow: 'hidden',
+        }}>
+          {veiculo.montadora_logo ? (
+            <img src={veiculo.montadora_logo} style={{ width: '22px', height: '22px', objectFit: 'contain' }} alt="" />
+          ) : (
+            <span style={{ fontSize: '10px', fontWeight: 900, color: '#94a3b8', textTransform: 'uppercase' }}>
+              {(veiculo.montadora || '').substring(0, 2)}
+            </span>
+          )}
+        </div>
+        <div>
+          <span style={{ fontSize: '7px', fontWeight: 900, color: partnerColors[vIdx % partnerColors.length], textTransform: 'uppercase', letterSpacing: '1px' }}>{veiculo.montadora}</span>
+          <h4 style={{ fontSize: '13px', fontWeight: 900, color: '#0f172a', margin: '0 0 2px 0', lineHeight: 1.1 }}>{veiculo.modelo}</h4>
+          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+            {veiculo.versao && (
+              <span style={{ fontSize: '8px', fontWeight: 800, color: '#64748b', background: '#f1f5f9', padding: '2px 6px', borderRadius: '4px' }}>{veiculo.versao}</span>
+            )}
+            {veiculo.placa && veiculo.placa !== '—' && (
+              <span style={{ fontSize: '8px', fontWeight: 800, color: '#64748b', background: '#f1f5f9', padding: '2px 6px', borderRadius: '4px' }}>{veiculo.placa}</span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Equity / Custo Total */}
+      <div style={{
+        width: '140px', padding: '1rem',
+        background: '#f8fafc', textAlign: 'center',
+        borderRight: '1px solid #f1f5f9',
+        display: 'flex', flexDirection: 'column', justifyContent: 'center',
+      }}>
+        <span style={{ fontSize: '7px', fontWeight: 900, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1px' }}>Custo Total</span>
+        <p style={{ fontSize: '13px', fontWeight: 900, color: '#0f172a', margin: '4px 0 0 0' }}>
+          {fmt(veiculo.socios.reduce((acc: number, s: any) => acc + (s.valor || 0), 0))}
+        </p>
+      </div>
+
+      {/* Participações por Sócio */}
+      <div style={{
+        width: '220px', padding: '0.75rem 1rem',
+        display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '4px',
+      }}>
+        {veiculo.socios.map((socio: any, sIdx: number) => (
+          <div key={sIdx} style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            padding: '4px 8px', background: '#f8fafc', borderRadius: '6px',
+            fontSize: '9px',
+          }}>
+            <span style={{ fontWeight: 900, color: '#334155', textTransform: 'uppercase', letterSpacing: '0.3px' }}>{socio.nome}</span>
+            <span style={{ fontWeight: 900, color: '#0f172a' }}>{fmt(socio.valor)}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
-    <>
+    <div className="report-container" style={{ backgroundColor: '#f8fafc' }}>
       <style>{`
-        /* ── SUMMARY ── */
-        .summary-grid {
-          display: grid;
-          grid-template-columns: 2fr 1fr;
-          gap: 12px;
-          margin-bottom: 24px;
-        }
-        .summary-card {
-          border: 1.5px solid #e8ecf3;
-          border-radius: 12px;
-          padding: 16px 20px;
-          background: #f8fafd;
-        }
-        .card-label {
-          font-size: 8px;
-          text-transform: uppercase;
-          letter-spacing: 1.5px;
-          color: #94a3b8;
-          margin-bottom: 6px;
-          font-weight: 800;
-        }
-        .card-value {
-          font-size: 24px;
-          font-weight: 900;
-          color: #1a2e5a;
-          line-height: 1;
-        }
-        .card-sub {
-          font-size: 9px;
-          color: #64748b;
-          margin-top: 6px;
-          font-weight: 600;
-        }
-
-        /* ── SECTION TITLES ── */
-        .section-title {
-          font-size: 10px;
-          font-weight: 900;
-          text-transform: uppercase;
-          letter-spacing: 2px;
-          color: #1a2e5a;
-          margin-bottom: 4px;
-        }
-        .section-desc {
-          font-size: 8px;
-          color: #94a3b8;
-          margin-bottom: 16px;
-          font-weight: 600;
-        }
-
-        /* ── PARTNERS ── */
-        .partner-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 12px;
-          margin-bottom: 32px;
-        }
-        .partner-card {
-          border: 1.5px solid #e8ecf3;
-          border-radius: 12px;
-          padding: 14px 16px;
-          background: #f8fafd;
-        }
-        .partner-name  { font-size: 9px; font-weight: 900; color: #334155; text-transform: uppercase; }
-        .partner-pct   { font-size: 9px; font-weight: 800; color: #3b6bc7; float: right; }
-        .partner-value { font-size: 15px; font-weight: 900; color: #1a2e5a; margin-top: 6px; }
-        .partner-units { font-size: 8px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-top: 2px; }
-
-        /* ── VEHICLE INVENTORY GRID ─────────────────────────────────── */
-        .inventory-grid {
-          display: flex;
-          flex-direction: column;
-          width: 100%;
-        }
-
-        .inventory-header {
-          display: grid;
-          grid-template-columns: 38% 24% 10% 28%;
-          background: #1a2e5a;
-          padding: 10px 12px;
-          border-radius: 6px 6px 0 0;
-          margin-bottom: 2px;
-        }
-        .inventory-header span {
-          font-size: 8px;
-          font-weight: 800;
-          text-transform: uppercase;
-          letter-spacing: 1.5px;
-          color: #c8d6f0;
-        }
-        .header-right { text-align: right; }
-
-        .vehicle-card {
-          display: flex;
-          flex-direction: column;
-          break-inside: avoid !important;
-          page-break-inside: avoid !important;
-          border-bottom: 1.5px solid #f1f5f9;
-          padding: 12px 0;
-        }
-        .vehicle-card:last-child { border-bottom: none; }
-
-        .vehicle-main-row {
-          display: grid;
-          grid-template-columns: 38% 24% 10% 28%;
-          padding: 0 12px 6px 12px;
-          align-items: flex-end;
-        }
-
-        .partner-row {
-          display: grid;
-          grid-template-columns: 38% 24% 10% 28%;
-          padding: 2px 12px;
-        }
-
-        /* Labels & Elements */
-        .brand-label {
-          font-size: 8px;
-          font-weight: 800;
-          text-transform: uppercase;
-          letter-spacing: 1.2px;
-          color: #3b6bc7;
-          margin-bottom: 2px;
-        }
-        .model-label {
-          font-size: 13px;
-          font-weight: 900;
-          color: #1a2e5a;
-          line-height: 1.1;
-        }
-        .version-label {
-          font-size: 9px;
-          color: #64748b;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-          font-weight: 600;
-        }
-        .badge {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          width: 24px;
-          height: 24px;
-          background: #3b6bc7;
-          color: #fff;
-          border-radius: 8px;
-          font-size: 11px;
-          font-weight: 900;
-        }
-        .socio-name {
-          font-size: 9px;
-          font-weight: 700;
-          color: #475569;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-        }
-        .socio-value {
-          font-size: 9.5px;
-          font-weight: 800;
-          color: #1a2e5a;
-          text-align: right;
-        }
-        .socio-divider {
-          border-bottom: 1px solid #f8fafd;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding-bottom: 2px;
+        @media print {
+          .page-break { page-break-before: always; }
         }
       `}</style>
 
-      {pages.map((vehicleChunk, pIdx) => (
-        <BaseReportLayout
-          key={pIdx}
-          empresa={empresa}
-          watermark={watermark}
-          title="Relatório de Estoque com Sócios"
-          subtitle="Posição Analítica de Ativos e Participações"
-          isManualPagination={true}
-          pageNumber={pIdx + 1}
-          totalPages={pages.length}
-        >
-          {/* Apenas na Página 1: Resumo e Parceiros */}
-          {pIdx === 0 && (
-            <>
-              {/* ── Summary cards ── */}
-              <div className="summary-grid">
-                <div className="summary-card">
-                  <div className="card-label">Valor Total do Estoque</div>
-                  <div className="card-value">{formatCur(data.totalEstoque)}</div>
-                  <div className="card-sub">Capital consolidado entre empresa e parceiros</div>
+      {/* ═══ PAGE 1: RESUMO + PRIMEIROS VEÍCULOS ═══ */}
+      <BaseReportLayout
+        title="Relatório de Estoque com Sócios"
+        empresa={empresa}
+        watermark={watermark}
+        subtitle="Posição Analítica de Ativos e Participações"
+        pageNumber={1}
+        totalPages={totalPages}
+        isManualPagination={true}
+      >
+        <div style={{ padding: '0.4rem 1.5rem 1rem 1.5rem' }}>
+          {/* ── KPI Cards ── */}
+          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '0.75rem', marginBottom: '1rem' }}>
+            {/* Valor Total do Estoque */}
+            <div style={{
+              background: '#4f46e5', borderRadius: '1rem',
+              padding: '1rem 1.25rem', color: 'white', border: '1px solid #4338ca',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <div style={{
+                  width: '2rem', height: '2rem', borderRadius: '0.5rem',
+                  background: 'rgba(255,255,255,0.15)', display: 'flex',
+                  alignItems: 'center', justifyContent: 'center',
+                  fontSize: '12px', fontWeight: 900, color: 'white',
+                }}>
+                  R$
                 </div>
-                <div className="summary-card" style={{ textAlign: 'center' }}>
-                  <div className="card-label">Volume de Veículos</div>
-                  <div className="card-value" style={{ fontSize: '32px' }}>{data.volumeVeiculos}</div>
-                  <div className="card-sub" style={{ textTransform: 'uppercase', letterSpacing: '1px', fontSize: '8px' }}>
-                    Unidades
-                  </div>
+                <div>
+                  <p style={{ fontSize: '7px', fontWeight: 900, textTransform: 'uppercase', color: 'rgba(255,255,255,0.7)', margin: 0, letterSpacing: '1.5px' }}>Valor Total do Estoque</p>
+                  <h4 style={{ fontSize: '20px', fontWeight: 900, margin: 0, lineHeight: 1.2 }}>{fmt(data.totalEstoque)}</h4>
+                  <p style={{ fontSize: '7px', fontWeight: 700, color: 'rgba(255,255,255,0.6)', margin: '2px 0 0 0' }}>Capital consolidado entre empresa e parceiros</p>
                 </div>
               </div>
-
-              {/* ── Partners ── */}
-              <div className="section-title">Participação Global por Investidor</div>
-              <div className="section-desc">Visão consolidada do capital distribuído</div>
-              <div className="partner-grid">
-                {data.partnerGlobalStats.map((partner, idx) => (
-                  <div key={idx} className="partner-card">
-                    <span className="partner-pct">{formatPct(partner.porcentagem)}</span>
-                    <div className="partner-name">{partner.nome}</div>
-                    <div className="partner-value">{formatCur(partner.valor)}</div>
-                    <div className="partner-units">{partner.veiculosCount} veículos</div>
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-
-          {/* Cabeçalho do Inventário sempre aparece se houver veículos na página */}
-          <div className="section-title">Inventário Analítico de Veículos</div>
-          <div className="section-desc" style={{ marginBottom: '12px' }}>
-            Detalhamento por ativo e participações individuais {pIdx > 0 && `(Continuação)`}
-          </div>
-
-          <div className="inventory-grid">
-            {/* Header */}
-            <div className="inventory-header">
-              <span>Veículo / Marca</span>
-              <span>Versão</span>
-              <span style={{ textAlign: 'center' }}>Sócios</span>
-              <span className="header-right">Participações Individuais</span>
             </div>
 
-            {/* Vehicles in this chunk */}
-            {vehicleChunk.map((veiculo) => (
-              <div key={veiculo.id} className="vehicle-card">
-                {/* Main Row */}
-                <div className="vehicle-main-row">
-                  <div>
-                    <div className="brand-label">{veiculo.montadora}</div>
-                    <div className="model-label">{veiculo.modelo}</div>
-                  </div>
-                  <div className="version-label">{veiculo.versao || '—'}</div>
-                  <div style={{ display: 'flex', justifyContent: 'center' }}>
-                    <span className="badge">{veiculo.socios.length}</span>
-                  </div>
-                  <div></div>
-                </div>
+            {/* Volume de Veículos */}
+            <div style={{
+              background: '#4f46e5', borderRadius: '1rem',
+              padding: '1rem 1.25rem', color: 'white', border: '1px solid #4338ca',
+              textAlign: 'center', display: 'flex', flexDirection: 'column',
+              alignItems: 'center', justifyContent: 'center',
+            }}>
+              <p style={{ fontSize: '7px', fontWeight: 900, textTransform: 'uppercase', color: 'rgba(255,255,255,0.7)', margin: 0, letterSpacing: '1.5px' }}>Volume de Veículos</p>
+              <h4 style={{ fontSize: '28px', fontWeight: 900, margin: 0, lineHeight: 1 }}>{data.volumeVeiculos}</h4>
+              <p style={{ fontSize: '7px', fontWeight: 800, color: 'rgba(255,255,255,0.6)', margin: '2px 0 0 0', textTransform: 'uppercase', letterSpacing: '2px' }}>Unidades</p>
+            </div>
+          </div>
 
-                {/* Partner Rows */}
-                {veiculo.socios.map((socio, sIdx) => (
-                  <div key={sIdx} className="partner-row">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div>
-                      <div className="socio-divider">
-                        <span className="socio-name">{socio.nome}</span>
-                        <span className="socio-value">{formatCur(socio.valor)}</span>
-                      </div>
-                    </div>
+          {/* ── Participação Global por Investidor ── */}
+          <div style={{ marginBottom: '1rem' }}>
+            <h3 style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', color: '#0f172a', margin: '0 0 3px 0' }}>Participação Global por Investidor</h3>
+            <p style={{ fontSize: '7px', color: '#94a3b8', fontWeight: 700, margin: '0 0 8px 0', textTransform: 'uppercase', letterSpacing: '1px' }}>Visão consolidada do capital distribuído</p>
+
+            <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(data.partnerGlobalStats.length, 3)}, 1fr)`, gap: '0.5rem' }}>
+              {data.partnerGlobalStats.map((partner, idx) => (
+                <div key={idx} style={{
+                  background: '#f8fafc', border: '1px solid #e2e8f0',
+                  borderRadius: '0.75rem', padding: '0.75rem 1rem',
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                    <span style={{ fontSize: '8px', fontWeight: 900, color: '#334155', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{partner.nome}</span>
+                    <span style={{
+                      fontSize: '7px', fontWeight: 900, color: partnerColors[idx % partnerColors.length],
+                      background: `${partnerColors[idx % partnerColors.length]}15`,
+                      padding: '2px 6px', borderRadius: '4px',
+                    }}>{fmtPct(partner.porcentagem)}</span>
                   </div>
+                  <h4 style={{ fontSize: '14px', fontWeight: 900, color: '#0f172a', margin: '0 0 2px 0' }}>{fmt(partner.valor)}</h4>
+                  <p style={{ fontSize: '7px', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1px', margin: 0 }}>{partner.veiculosCount} veículos</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ── Inventário: Primeiros veículos na página 1 ── */}
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+              <div>
+                <h3 style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', color: '#0f172a', margin: '0 0 3px 0' }}>Inventário Analítico de Veículos</h3>
+                <p style={{ fontSize: '7px', color: '#94a3b8', fontWeight: 700, margin: 0, textTransform: 'uppercase', letterSpacing: '1px' }}>Detalhamento por ativo e participações individuais</p>
+              </div>
+              <span style={{
+                fontSize: '7px', fontWeight: 900, color: '#64748b',
+                background: '#f1f5f9', padding: '3px 8px', borderRadius: '4px',
+                textTransform: 'uppercase', letterSpacing: '1px',
+              }}>
+                1–{Math.min(VEHICLES_PAGE_1, data.veiculos.length)} de {data.veiculos.length}
+              </span>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              {page1Vehicles.map((veiculo, vIdx) => (
+                <VehicleCard key={veiculo.id} veiculo={veiculo} vIdx={vIdx} />
+              ))}
+            </div>
+          </div>
+        </div>
+      </BaseReportLayout>
+
+      {/* ═══ PAGES 2+: INVENTÁRIO DE VEÍCULOS (CHUNKS) ═══ */}
+      {vehicleChunks.map((chunk, chunkIdx) => {
+        const startIdx = VEHICLES_PAGE_1 + chunkIdx * VEHICLES_PAGE_N;
+        const endIdx = Math.min(startIdx + VEHICLES_PAGE_N, data.veiculos.length);
+
+        return (
+          <BaseReportLayout
+            key={chunkIdx}
+            title="Relatório de Estoque com Sócios"
+            empresa={empresa}
+            watermark={watermark}
+            subtitle="Posição Analítica de Ativos e Participações"
+            pageNumber={2 + chunkIdx}
+            totalPages={totalPages}
+            isManualPagination={true}
+          >
+            <div style={{ padding: '0.4rem 1.5rem 1rem 1.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                <div>
+                  <h3 style={{ fontSize: '12px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', color: '#0f172a', margin: '0 0 4px 0' }}>Inventário Analítico de Veículos</h3>
+                  <p style={{ fontSize: '8px', color: '#94a3b8', fontWeight: 700, margin: 0, textTransform: 'uppercase', letterSpacing: '1px' }}>
+                    Detalhamento por ativo e participações individuais {chunkIdx > 0 && '(Continuação)'}
+                  </p>
+                </div>
+                <span style={{
+                  fontSize: '8px', fontWeight: 900, color: '#64748b',
+                  background: '#f1f5f9', padding: '4px 10px', borderRadius: '6px',
+                  textTransform: 'uppercase', letterSpacing: '1px',
+                }}>
+                  {startIdx + 1}–{endIdx} de {data.veiculos.length}
+                </span>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                {chunk.map((veiculo: any, vIdx: number) => (
+                  <VehicleCard key={veiculo.id} veiculo={veiculo} vIdx={vIdx} />
                 ))}
               </div>
-            ))}
-          </div>
-        </BaseReportLayout>
-      ))}
-    </>
+            </div>
+          </BaseReportLayout>
+        );
+      })}
+    </div>
   );
 };
 

@@ -26,7 +26,7 @@ export const RelatoriosService = {
     async getEstoqueParaRelatorio(statusFiltro: string) {
         let query = supabase.from('est_veiculos').select(`
       id, placa, ano_fabricacao, ano_modelo, valor_custo, valor_custo_servicos, valor_venda, status, socios,
-      montadora:cad_montadoras(nome),
+      montadora:cad_montadoras(nome, logo_url),
       modelo:cad_modelos(nome),
       versao:cad_versoes(nome)
     `);
