@@ -35,21 +35,31 @@ const CaixaTemplate: React.FC<Props> = ({ data, empresa, watermark, periodo }) =
 
     const allVehicles: any[] = [];
     const vehicleMap = new Map();
+    const partnerTotalsMap = new Map<string, number>();
+
     (data.socios || []).forEach((socio: any) => {
+        let socioTotalValue = 0;
+        const shortName = socio.nome ? socio.nome.split(' ')[0] : 'Sócio';
+
         (socio.veiculos || []).forEach((v: any) => {
             if (!v || !v.id) return;
+            socioTotalValue += (v.valor || 0);
+
             if (!vehicleMap.has(v.id)) {
                 vehicleMap.set(v.id, { ...v, partners: [] });
                 allVehicles.push(vehicleMap.get(v.id));
             }
             vehicleMap.get(v.id).partners.push({
-                nome: socio.nome ? socio.nome.split(' ')[0] : 'Sócio',
+                nome: shortName,
                 valor: v.valor,
                 percent: v.valor_total_custo > 0 ? (v.valor / v.valor_total_custo) * 100 : 0
             });
         });
+        partnerTotalsMap.set(shortName, socioTotalValue);
     });
     const sortedVehicles = allVehicles.sort((a, b) => (a.modelo || '').localeCompare(b.modelo || ''));
+    const partnerTotals = Array.from(partnerTotalsMap.entries()).map(([nome, total]) => ({ nome, total }));
+    const totalEstoque = partnerTotals.reduce((acc, pt) => acc + pt.total, 0);
 
     // Split vehicles into chunks of 4 per page (5 overflows with header/footer)
     const vehicleChunks: any[][] = [];
@@ -82,8 +92,8 @@ const CaixaTemplate: React.FC<Props> = ({ data, empresa, watermark, periodo }) =
         .partner-row { display: flex; align-items: center; justify-content: space-between; padding: 0.5rem; background: #f8fafc; border-radius: 0.75rem; font-size: 10px; }
       `}</style>
 
-            {/* PAGE 1: KPIs, Charts, and Accounts */}
-            <BaseReportLayout title="Relatório Financeiro & Patrimônio" empresa={empresa} watermark={watermark} subtitle={periodo} pageNumber={1} totalPages={1 + vehicleChunks.length} isManualPagination={true}>
+            {/* PAGE 1: KPIs and Charts */}
+            <BaseReportLayout title="Relatório Financeiro & Patrimônio" empresa={empresa} watermark={watermark} subtitle={periodo} pageNumber={1} totalPages={3 + vehicleChunks.length} isManualPagination={true}>
                 <div style={{ padding: '0.4rem 1.5rem 1rem 1.5rem' }}>
                     {/* KPIs Section */}
                     <div className="kpi-grid" style={{
@@ -258,93 +268,133 @@ const CaixaTemplate: React.FC<Props> = ({ data, empresa, watermark, periodo }) =
                         </div>
                     </div>
 
-                    {/* SOCIO SUMMARY - Page 1 */}
+                </div>
+            </BaseReportLayout>
+
+            {/* PAGE 2: Contas Pendentes */}
+            <BaseReportLayout title="Contas Pendentes (A Pagar e A Receber)" empresa={empresa} watermark={watermark} subtitle={periodo} pageNumber={2} totalPages={3 + vehicleChunks.length} isManualPagination={true}>
+                <div style={{ padding: '0.4rem 2rem 2rem 2rem', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                    
+                    {/* Contas a Pagar */}
                     <div>
-                        <h3 style={{ fontSize: '10px', fontWeight: 'black', textTransform: 'uppercase', marginBottom: '0.75rem' }}>Participação de Sócios</h3>
-                        <div style={{ display: 'flex', gap: '0.75rem', width: '100%' }}>
-                            {(data.socios || []).map((socio: any, idx: number) => {
-                                const margin = socio.valor_investido > 0
-                                    ? ((socio.lucro_periodo / socio.valor_investido) * 100).toFixed(1)
-                                    : '0.0';
-
-                                return (
-                                    <div key={idx} className="report-card" style={{ padding: '0.75rem', flex: 1, marginBottom: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                        {/* HEADER */}
-                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                                <div style={{ width: '1.8rem', height: '1.8rem', background: '#4f46e5', borderRadius: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" style={{ width: '0.9rem', height: '0.9rem' }} fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={2.5}>
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                                    </svg>
-                                                </div>
-                                                <div>
-                                                    <h4 style={{ fontSize: '10px', fontWeight: 'black', textTransform: 'uppercase', margin: 0, color: '#0f172a' }}>{socio.nome ? socio.nome.split(' ')[0] : 'Sócio'}</h4>
-                                                    <p style={{ fontSize: '6px', color: '#94a3b8', fontWeight: 'bold', textTransform: 'uppercase', margin: 0 }}>Sócio Hidrocar</p>
-                                                </div>
-                                            </div>
-                                            <div style={{ background: '#ecfdf5', color: '#059669', padding: '2px 6px', borderRadius: '4px', fontSize: '6px', fontWeight: 'black', textTransform: 'uppercase', border: '1px solid #d1fae5' }}>
-                                                {socio.porcentagem_participacao?.toFixed(1) || '33.3'}% Cotas
-                                            </div>
-                                        </div>
-
-                                        {/* CORPO */}
-                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                            {/* Exposição */}
-                                            <div style={{ background: '#f8fafc', padding: '6px', borderRadius: '6px', border: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-                                                <div>
-                                                    <p style={{ fontSize: '6px', color: '#94a3b8', fontWeight: 'black', textTransform: 'uppercase', margin: '0 0 2px 0' }}>Exposição de Capital</p>
-                                                    <h4 style={{ fontSize: '11px', fontWeight: 'black', color: '#0f172a', margin: 0 }}>{fmt(socio.valor_investido)}</h4>
-                                                </div>
-                                                <div style={{ width: '1rem', height: '1rem', background: 'white', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" style={{ width: '0.6rem', height: '0.6rem', color: '#4f46e5' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                                                    </svg>
-                                                </div>
-                                            </div>
-
-                                            {/* Ativos / Margem */}
-                                            <div style={{ display: 'flex', gap: '4px' }}>
-                                                <div style={{ flex: 1, background: '#f8fafc', padding: '6px', borderRadius: '6px', border: '1px solid #f1f5f9' }}>
-                                                    <p style={{ fontSize: '6px', color: '#94a3b8', fontWeight: 'black', textTransform: 'uppercase', margin: '0 0 2px 0' }}>Ativos Envolv.</p>
-                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
-                                                        <span style={{ fontSize: '10px', fontWeight: 'black', color: '#0f172a' }}>{socio.quantidade_carros}</span>
-                                                        <span style={{ fontSize: '6px', fontWeight: 'bold', color: '#64748b', textTransform: 'uppercase' }}>Veículos</span>
-                                                    </div>
-                                                </div>
-                                                <div style={{ flex: 1, background: '#f8fafc', padding: '6px', borderRadius: '6px', border: '1px solid #f1f5f9' }}>
-                                                    <p style={{ fontSize: '6px', color: '#94a3b8', fontWeight: 'black', textTransform: 'uppercase', margin: '0 0 2px 0' }}>Margem Ref.</p>
-                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '2px', color: '#059669' }}>
-                                                        <span style={{ fontSize: '10px', fontWeight: 'black' }}>{margin}%</span>
-                                                        <svg xmlns="http://www.w3.org/2000/svg" style={{ width: '0.6rem', height: '0.6rem' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                                                        </svg>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {/* RODAPÉ E LUCROS */}
-                                        <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '6px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f8fafc', padding: '4px 6px', borderRadius: '4px', border: '1px solid #f1f5f9' }}>
-                                                <span style={{ fontSize: '6px', fontWeight: 'black', color: '#94a3b8', textTransform: 'uppercase' }}>Lucro a Receber</span>
-                                                <span style={{ fontSize: '9px', fontWeight: 'black', color: '#4f46e5' }}>{fmt(socio.lucro_pendente)}</span>
-                                            </div>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2px' }}>
-                                                <div>
-                                                    <p style={{ fontSize: '6px', fontWeight: 'black', color: '#94a3b8', textTransform: 'uppercase', margin: '0 0 1px 0' }}>Lucro Gerado</p>
-                                                    <p style={{ fontSize: '8px', fontWeight: 'black', color: '#0f172a', margin: 0, opacity: 0.8 }}>{fmt(socio.lucro_periodo)}</p>
-                                                </div>
-                                                <div style={{ textAlign: 'right' }}>
-                                                    <p style={{ fontSize: '6px', fontWeight: 'black', color: '#059669', textTransform: 'uppercase', margin: '0 0 1px 0' }}>Dinheiro em Caixa</p>
-                                                    <p style={{ fontSize: '10px', fontWeight: 'black', color: '#059669', margin: 0 }}>{fmt(socio.lucro_caixa)}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                );
-                            })}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem', borderBottom: '2px solid #f43f5e', paddingBottom: '0.5rem' }}>
+                            <div style={{ width: '1.5rem', height: '1.5rem', background: '#fff1f2', borderRadius: '0.4rem', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#e11d48' }}>
+                                <svg xmlns="http://www.w3.org/2000/svg" style={{ width: '0.8rem', height: '0.8rem' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                                </svg>
+                            </div>
+                            <h3 style={{ fontSize: '12px', fontWeight: 'black', textTransform: 'uppercase', color: '#e11d48', margin: 0 }}>Contas a Pagar</h3>
                         </div>
+                        <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: '0 4px', fontSize: '9px' }}>
+                            <thead>
+                                <tr style={{ color: '#94a3b8', textAlign: 'left' }}>
+                                    <th style={{ padding: '4px 8px', textTransform: 'uppercase', fontSize: '8px', fontWeight: 'black', width: '15%' }}>Vencimento</th>
+                                    <th style={{ padding: '4px 8px', textTransform: 'uppercase', fontSize: '8px', fontWeight: 'black', width: '45%' }}>Descrição</th>
+                                    <th style={{ padding: '4px 8px', textTransform: 'uppercase', fontSize: '8px', fontWeight: 'black', width: '20%' }}>Veículo Relacionado</th>
+                                    <th style={{ padding: '4px 8px', textTransform: 'uppercase', fontSize: '8px', fontWeight: 'black', width: '20%', textAlign: 'right' }}>Valor em Aberto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {((data.contasPendentes || []) as any[]).filter(t => t.tipo === 'PAGAR').map((c, idx) => {
+                                    const pendente = (c.valor_total || 0) + (c.valor_acrescimo || 0) - (c.valor_pago || 0) - (c.valor_desconto || 0);
+                                    return (
+                                        <tr key={idx} style={{ background: '#f8fafc' }}>
+                                            <td style={{ padding: '8px', fontWeight: 'bold', borderTopLeftRadius: '6px', borderBottomLeftRadius: '6px', border: '1px solid #f1f5f9', borderRight: 'none' }}>
+                                                {new Date(c.data_vencimento.includes('T') ? c.data_vencimento : `${c.data_vencimento}T12:00:00`).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}
+                                            </td>
+                                            <td style={{ padding: '8px', borderTop: '1px solid #f1f5f9', borderBottom: '1px solid #f1f5f9' }}>
+                                                <span style={{ fontWeight: 'bold', color: '#334155' }}>{c.descricao}</span>
+                                            </td>
+                                            <td style={{ padding: '8px', textTransform: 'uppercase', fontSize: '8px', fontWeight: 'bold', color: '#64748b', borderTop: '1px solid #f1f5f9', borderBottom: '1px solid #f1f5f9' }}>
+                                                {c.veiculo?.modelo ? `${c.veiculo.modelo} (${c.veiculo.placa})` : '—'}
+                                            </td>
+                                            <td style={{ padding: '8px', textAlign: 'right', fontWeight: 'black', color: '#e11d48', fontSize: '10px', borderTopRightRadius: '6px', borderBottomRightRadius: '6px', border: '1px solid #f1f5f9', borderLeft: 'none' }}>
+                                                {fmt(pendente)}
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                                {((data.contasPendentes || []) as any[]).filter(t => t.tipo === 'PAGAR').length === 0 && (
+                                    <tr>
+                                        <td colSpan={4} style={{ padding: '12px', textAlign: 'center', color: '#94a3b8', fontSize: '9px', fontWeight: 'bold', textTransform: 'uppercase', background: '#f8fafc', borderRadius: '6px', border: '1px solid #f1f5f9' }}>
+                                            Nenhuma conta a pagar no período
+                                        </td>
+                                    </tr>
+                                )}
+                                {((data.contasPendentes || []) as any[]).filter(t => t.tipo === 'PAGAR').length > 0 && (
+                                    <tr style={{ background: '#fff1f2' }}>
+                                        <td colSpan={3} style={{ padding: '8px', textAlign: 'right', fontWeight: 'black', color: '#e11d48', fontSize: '9px', textTransform: 'uppercase', borderTopLeftRadius: '6px', borderBottomLeftRadius: '6px', border: '1px solid #ffe4e6', borderRight: 'none' }}>
+                                            Total a Pagar:
+                                        </td>
+                                        <td style={{ padding: '8px', textAlign: 'right', fontWeight: 'black', color: '#e11d48', fontSize: '11px', borderTopRightRadius: '6px', borderBottomRightRadius: '6px', border: '1px solid #ffe4e6', borderLeft: 'none' }}>
+                                            {fmt(((data.contasPendentes || []) as any[]).filter(t => t.tipo === 'PAGAR').reduce((acc, c) => acc + ((c.valor_total || 0) + (c.valor_acrescimo || 0) - (c.valor_pago || 0) - (c.valor_desconto || 0)), 0))}
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
                     </div>
+
+                    {/* Contas a Receber */}
+                    <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem', borderBottom: '2px solid #10b981', paddingBottom: '0.5rem' }}>
+                            <div style={{ width: '1.5rem', height: '1.5rem', background: '#ecfdf5', borderRadius: '0.4rem', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#059669' }}>
+                                <svg xmlns="http://www.w3.org/2000/svg" style={{ width: '0.8rem', height: '0.8rem' }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                                </svg>
+                            </div>
+                            <h3 style={{ fontSize: '12px', fontWeight: 'black', textTransform: 'uppercase', color: '#059669', margin: 0 }}>Contas a Receber</h3>
+                        </div>
+                        <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: '0 4px', fontSize: '9px' }}>
+                            <thead>
+                                <tr style={{ color: '#94a3b8', textAlign: 'left' }}>
+                                    <th style={{ padding: '4px 8px', textTransform: 'uppercase', fontSize: '8px', fontWeight: 'black', width: '15%' }}>Vencimento</th>
+                                    <th style={{ padding: '4px 8px', textTransform: 'uppercase', fontSize: '8px', fontWeight: 'black', width: '45%' }}>Descrição</th>
+                                    <th style={{ padding: '4px 8px', textTransform: 'uppercase', fontSize: '8px', fontWeight: 'black', width: '20%' }}>Veículo Relacionado</th>
+                                    <th style={{ padding: '4px 8px', textTransform: 'uppercase', fontSize: '8px', fontWeight: 'black', width: '20%', textAlign: 'right' }}>Valor em Aberto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {((data.contasPendentes || []) as any[]).filter(t => t.tipo === 'RECEBER').map((c, idx) => {
+                                    const pendente = (c.valor_total || 0) + (c.valor_acrescimo || 0) - (c.valor_pago || 0) - (c.valor_desconto || 0);
+                                    return (
+                                        <tr key={idx} style={{ background: '#f8fafc' }}>
+                                            <td style={{ padding: '8px', fontWeight: 'bold', borderTopLeftRadius: '6px', borderBottomLeftRadius: '6px', border: '1px solid #f1f5f9', borderRight: 'none' }}>
+                                                {new Date(c.data_vencimento.includes('T') ? c.data_vencimento : `${c.data_vencimento}T12:00:00`).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}
+                                            </td>
+                                            <td style={{ padding: '8px', borderTop: '1px solid #f1f5f9', borderBottom: '1px solid #f1f5f9' }}>
+                                                <span style={{ fontWeight: 'bold', color: '#334155' }}>{c.descricao}</span>
+                                            </td>
+                                            <td style={{ padding: '8px', textTransform: 'uppercase', fontSize: '8px', fontWeight: 'bold', color: '#64748b', borderTop: '1px solid #f1f5f9', borderBottom: '1px solid #f1f5f9' }}>
+                                                {c.veiculo?.modelo ? `${c.veiculo.modelo} (${c.veiculo.placa})` : '—'}
+                                            </td>
+                                            <td style={{ padding: '8px', textAlign: 'right', fontWeight: 'black', color: '#059669', fontSize: '10px', borderTopRightRadius: '6px', borderBottomRightRadius: '6px', border: '1px solid #f1f5f9', borderLeft: 'none' }}>
+                                                {fmt(pendente)}
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                                {((data.contasPendentes || []) as any[]).filter(t => t.tipo === 'RECEBER').length === 0 && (
+                                    <tr>
+                                        <td colSpan={4} style={{ padding: '12px', textAlign: 'center', color: '#94a3b8', fontSize: '9px', fontWeight: 'bold', textTransform: 'uppercase', background: '#f8fafc', borderRadius: '6px', border: '1px solid #f1f5f9' }}>
+                                            Nenhuma conta a receber no período
+                                        </td>
+                                    </tr>
+                                )}
+                                {((data.contasPendentes || []) as any[]).filter(t => t.tipo === 'RECEBER').length > 0 && (
+                                    <tr style={{ background: '#ecfdf5' }}>
+                                        <td colSpan={3} style={{ padding: '8px', textAlign: 'right', fontWeight: 'black', color: '#059669', fontSize: '9px', textTransform: 'uppercase', borderTopLeftRadius: '6px', borderBottomLeftRadius: '6px', border: '1px solid #d1fae5', borderRight: 'none' }}>
+                                            Total a Receber:
+                                        </td>
+                                        <td style={{ padding: '8px', textAlign: 'right', fontWeight: 'black', color: '#059669', fontSize: '11px', borderTopRightRadius: '6px', borderBottomRightRadius: '6px', border: '1px solid #d1fae5', borderLeft: 'none' }}>
+                                            {fmt(((data.contasPendentes || []) as any[]).filter(t => t.tipo === 'RECEBER').reduce((acc, c) => acc + ((c.valor_total || 0) + (c.valor_acrescimo || 0) - (c.valor_pago || 0) - (c.valor_desconto || 0)), 0))}
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+
                 </div>
             </BaseReportLayout>
 
@@ -356,8 +406,8 @@ const CaixaTemplate: React.FC<Props> = ({ data, empresa, watermark, periodo }) =
                     empresa={empresa}
                     watermark={watermark}
                     subtitle={periodo}
-                    pageNumber={2 + chunkIdx}
-                    totalPages={1 + vehicleChunks.length}
+                    pageNumber={3 + chunkIdx}
+                    totalPages={3 + vehicleChunks.length}
                     isManualPagination={true}
                 >
                     <div style={{ padding: '0.5rem 2rem 2rem 2rem' }}>
@@ -397,6 +447,47 @@ const CaixaTemplate: React.FC<Props> = ({ data, empresa, watermark, periodo }) =
                     </div>
                 </BaseReportLayout>
             ))}
+
+            {/* FINAL PAGE: Visão Consolidada */}
+            <BaseReportLayout
+                title="Visão Consolidada de Equity"
+                empresa={empresa}
+                watermark={watermark}
+                subtitle={periodo}
+                pageNumber={3 + vehicleChunks.length}
+                totalPages={3 + vehicleChunks.length}
+                isManualPagination={true}
+            >
+                <div style={{ padding: '2rem' }}>
+                    <div style={{ padding: '2rem', background: '#0f172a', borderRadius: '1.5rem', color: 'white', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div>
+                                <h4 style={{ fontSize: '14px', fontWeight: 'black', textTransform: 'uppercase', margin: 0 }}>Visão Consolidada</h4>
+                                <p style={{ fontSize: '9px', fontWeight: 'bold', color: '#818cf8', textTransform: 'uppercase', letterSpacing: '2px', marginTop: '4px' }}>Capital Alocado por Sócio em Todo Estoque</p>
+                            </div>
+                            <div style={{ textAlign: 'right' }}>
+                                <p style={{ fontSize: '9px', fontWeight: 'bold', color: '#cbd5e1', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '4px' }}>Valor Total dos Carros</p>
+                                <h4 style={{ fontSize: '18px', fontWeight: 'black', color: '#10b981', margin: 0 }}>{fmt(totalEstoque)}</h4>
+                            </div>
+                        </div>
+                        
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem' }}>
+                            {partnerTotals.map((pt, i) => {
+                                const percentage = totalEstoque > 0 ? ((pt.total / totalEstoque) * 100).toFixed(1) : '0.0';
+                                return (
+                                    <div key={i} style={{ flex: '1', minWidth: '140px', padding: '1.25rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', marginBottom: '8px', alignItems: 'center' }}>
+                                            <span style={{ fontSize: '10px', fontWeight: 'black', color: '#818cf8', textTransform: 'uppercase', letterSpacing: '1px' }}>{pt.nome}</span>
+                                            <span style={{ fontSize: '8px', fontWeight: 'black', color: '#cbd5e1', background: 'rgba(255,255,255,0.1)', padding: '2px 6px', borderRadius: '4px' }}>{percentage}%</span>
+                                        </div>
+                                        <span style={{ fontSize: '16px', fontWeight: 'black', width: '100%', textAlign: 'center' }}>{fmt(pt.total)}</span>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            </BaseReportLayout>
         </div>
     );
 };

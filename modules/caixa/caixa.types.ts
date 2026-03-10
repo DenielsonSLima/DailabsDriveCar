@@ -2,6 +2,23 @@ import { z } from 'zod';
 import { IContaBancaria } from '../ajustes/contas-bancarias/contas.types';
 import { ITransacao } from '../financeiro/financeiro.types';
 
+export interface IPendingAccount {
+  id: string;
+  tipo: 'PAGAR' | 'RECEBER';
+  descricao: string;
+  data_vencimento: string;
+  valor_total: number;
+  valor_pago: number;
+  valor_desconto?: number;
+  valor_acrescimo?: number;
+  status: string;
+  veiculo_id?: string;
+  veiculo?: {
+    modelo: string;
+    placa: string;
+  };
+}
+
 export interface IPatrimonioItem {
   id: string;
   descricao: string;

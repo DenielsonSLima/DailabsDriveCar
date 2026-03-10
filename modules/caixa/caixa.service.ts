@@ -1,6 +1,6 @@
 import { supabase } from '../../lib/supabase';
 import { PerformanceResumoSchema } from '../performance/performance.types';
-import { ICaixaDashboardData, ISocioStockStats, IForecastMes, IComparativoMensal, CaixaDashboardSchema } from './caixa.types';
+import { ICaixaDashboardData, ISocioStockStats, IForecastMes, IComparativoMensal, CaixaDashboardSchema, IPendingAccount } from './caixa.types';
 import { FinanceiroService } from '../financeiro/financeiro.service';
 
 export const CaixaService = {
@@ -363,5 +363,41 @@ export const CaixaService = {
 
   unsubscribe(channel: any) {
     if (channel) supabase.removeChannel(channel);
+  },
+
+  async getContasPendentes(p_data_inicio: string, p_data_fim: string): Promise<IPendingAccount[]> {
+    const { data, error } = await supabase
+      .from('fin_titulos')
+      .select(`
+        id,
+        tipo,
+        descricao,
+        data_vencimento,
+        valor_total,
+        valor_pago,
+        valor_desconto,
+        valor_acrescimo,
+        status,
+        veiculo_id,
+        veiculo:est_veiculos(placa, modelo:cad_modelos(nome))
+      `)
+      .in('status', ['PENDENTE', 'PARCIAL', 'ATRASADO'])
+      .order('data_vencimento', { ascending: true });
+
+    if (error) {
+      console.error('Erro ao buscar contas pendentes:', error);
+      throw error;
+    }
+
+    return (data || []).map((t: any) => {
+      const v = Array.isArray(t.veiculo) ? t.veiculo[0] : t.veiculo;
+      return {
+        ...t,
+        veiculo: v ? {
+          placa: v.placa,
+          modelo: v.modelo?.nome || 'N/A'
+        } : undefined
+      };
+    });
   }
 };

@@ -15,6 +15,7 @@ import PerformanceChart from './components/PerformanceChart';
 import AccountBalances from './components/AccountBalances';
 import SocioSummary from './components/SocioSummary';
 import SocioStockTable from './components/SocioStockTable';
+import PendingAccountsCards from './components/PendingAccountsCards';
 
 const CaixaPage: React.FC = () => {
   const queryClient = useQueryClient();
@@ -77,6 +78,12 @@ const CaixaPage: React.FC = () => {
     queryKey: ['caixa_performance_history', selectedMonth],
     queryFn: () => CaixaService.getPerformanceHistory(selectedMonth),
     placeholderData: keepPreviousData,
+  });
+
+  const { data: contasPendentes } = useQuery({
+    queryKey: ['caixa_contas_pendentes', startDate, endDate],
+    queryFn: () => CaixaService.getContasPendentes(startDate, endDate),
+    enabled: !!startDate && !!endDate,
   });
 
   const { data: empresa } = useQuery({
@@ -196,6 +203,10 @@ const CaixaPage: React.FC = () => {
           </div>
 
           <div className="pt-4">
+            <PendingAccountsCards startDate={startDate} endDate={endDate} />
+          </div>
+
+          <div className="pt-4">
             <div className="mb-6">
               <h2 className="text-lg font-black text-slate-900 uppercase tracking-tighter">Detalhamento do Estoque</h2>
               <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-0.5">Participação individual e exposição de capital por veículo</p>
@@ -211,7 +222,7 @@ const CaixaPage: React.FC = () => {
             title="Relatório Financeiro & Patrimônio"
           >
             <CaixaTemplate
-              data={{ ...data, history: performanceHistory, socios: data.investimento_socios }}
+              data={{ ...data, history: performanceHistory, socios: data.investimento_socios, contasPendentes: contasPendentes || [] }}
               empresa={empresa}
               watermark={watermark}
               periodo={formattedPeriod}
