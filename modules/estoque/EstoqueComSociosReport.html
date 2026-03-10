@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Relatório de Estoque com Sócios — Hidrocar Veículos</title>
+  <style>
+    /* ═══════════════════════════════════════════════════════════
+       CONFIGURAÇÃO RÁPIDA — altere apenas aqui
+       ═══════════════════════════════════════════════════════════
+       LOGO_URL  : caminho ou URL da imagem da logomarca
+       WM_OPACITY: opacidade da marca d'água (0.0 a 1.0)
+       WM_SCALE  : largura da marca d'água em % da página
+    ══════════════════════════════════════════════════════════════ */
+    :root {
+      --logo-url:    url("logo_hidrocar.png");   /* ← troque aqui */
+      --wm-opacity:  0.08;
+      --wm-scale:    62%;
+    }
+
+    /* ─── RESET & BASE ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #2a2a2a;
+      padding: 30px 0;
+    }
+
+    /* ─── PAGE CONTAINER ───────────────────────────────────────── */
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      padding: 12mm 15mm 12mm 15mm;
+      margin: 0 auto 24px auto;
+      background: #ffffff;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.35);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ─── WATERMARK (per page, truly centered) ──────────────────── */
+    .watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-20deg);
+      width: var(--wm-scale);
+      aspect-ratio: 16 / 9;
+      opacity: var(--wm-opacity);
+      pointer-events: none;
+      z-index: 0;
+      background-image: var(--logo-url);
+      background-repeat: no-repeat;
+      background-size: contain;
+      background-position: center;
+      user-select: none;
+    }
+    .watermark-logo { display: none; }
+    .watermark-sub  { display: none; }
+
+    /* ─── ALL CONTENT ABOVE WATERMARK ──────────────────────────── */
+    .page-header,
+    .page-body,
+    .page-footer,
+    .section-title,
+    .summary-grid,
+    .partner-grid,
+    .vehicle-table {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ─── HEADER ────────────────────────────────────────────────── */
+    .page-header {
+      display: flex;
+      align-items: stretch;
+      border-bottom: 2.5px solid #1a2e5a;
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+      gap: 0;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 0 0 auto;
+      padding-right: 20px;
+      border-right: 2px solid #dde2eb;
+    }
+    /* LOGO BOX — 30% maior que baseline (baseline ~52px → 68px) */
+    .logo-box {
+      width: 68px;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .logo-box img {
+      width: 68px;
+      height: 68px;
+      object-fit: contain;
+    }
+    /* Company name GLUED to the right of logo */
+    .company-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 2px;
+    }
+    .company-name {
+      font-size: 16px;
+      font-weight: 900;
+      color: #1a2e5a;
+      letter-spacing: 0.5px;
+      line-height: 1.1;
+      text-transform: uppercase;
+    }
+    .company-address {
+      font-size: 8.5px;
+      color: #666;
+      line-height: 1.4;
+    }
+    .company-cnpj {
+      font-size: 8px;
+      color: #3b6bc7;
+      font-weight: 600;
+    }
+    .header-right {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-end;
+      padding-left: 20px;
+    }
+    .report-title {
+      font-size: 14px;
+      font-weight: 900;
+      color: #1a2e5a;
+      text-transform: uppercase;
+      text-align: right;
+      letter-spacing: 0.3px;
+      line-height: 1.2;
+    }
+    .report-subtitle {
+      font-size: 7.5px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      text-align: right;
+      margin-top: 3px;
+    }
+    .report-date {
+      font-size: 8px;
+      color: #555;
+      text-align: right;
+      margin-top: 4px;
+    }
+
+    /* ─── PAGE BODY ─────────────────────────────────────────────── */
+    .page-body {
+      flex: 1;
+    }
+
+    /* ─── SUMMARY CARDS ─────────────────────────────────────────── */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .summary-card {
+      border: 1.5px solid #e8ecf3;
+      border-radius: 10px;
+      padding: 12px 16px;
+      background: #f8fafd;
+    }
+    .summary-card .card-label {
+      font-size: 7.5px;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: #888;
+      margin-bottom: 4px;
+    }
+    .summary-card .card-value {
+      font-size: 22px;
+      font-weight: 800;
+      color: #1a2e5a;
+      line-height: 1;
+    }
+    .summary-card .card-sub {
+      font-size: 8px;
+      color: #888;
+      margin-top: 3px;
+    }
+    .summary-card .unit-label {
+      font-size: 10px;
+      color: #888;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* ─── PARTNER SECTION ───────────────────────────────────────── */
+    .section-title {
+      font-size: 9px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #1a2e5a;
+      margin-bottom: 3px;
+    }
+    .section-desc {
+      font-size: 7.5px;
+      color: #aaa;
+      margin-bottom: 10px;
+    }
+    .partner-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .partner-card {
+      border: 1.5px solid #e8ecf3;
+      border-radius: 8px;
+      padding: 10px 12px;
+      background: #f8fafd;
+    }
+    .partner-name {
+      font-size: 8px;
+      font-weight: 800;
+      color: #333;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .partner-pct {
+      font-size: 8px;
+      font-weight: 700;
+      color: #3b6bc7;
+      float: right;
+    }
+    .partner-value {
+      font-size: 13px;
+      font-weight: 800;
+      color: #1a2e5a;
+      margin-top: 4px;
+    }
+    .partner-units {
+      font-size: 7px;
+      color: #aaa;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    /* ─── VEHICLE TABLE ─────────────────────────────────────────── */
+    .vehicle-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .vehicle-table thead tr {
+      background: #1a2e5a;
+    }
+    .vehicle-table thead th {
+      font-size: 7.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #c8d6f0;
+      padding: 7px 10px;
+      text-align: left;
+    }
+    .vehicle-table thead th:last-child { text-align: right; }
+
+    /* Each vehicle block = 1 model + its 3 partner rows — never split */
+    .vehicle-group {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    .vehicle-group .vehicle-main td {
+      padding: 8px 10px 3px 10px;
+      vertical-align: bottom;
+      border-top: 1.5px solid #e8ecf3;
+    }
+    .vehicle-group .partner-row td {
+      padding: 2px 10px;
+      vertical-align: top;
+    }
+    .vehicle-group .partner-row:last-child td {
+      padding-bottom: 8px;
+    }
+
+    .brand-label {
+      font-size: 7px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #3b6bc7;
+    }
+    .model-label {
+      font-size: 11px;
+      font-weight: 800;
+      color: #1a2e5a;
+      line-height: 1.1;
+    }
+    .version-label {
+      font-size: 7.5px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      background: #3b6bc7;
+      color: #fff;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 800;
+    }
+    .partner-name-cell {
+      font-size: 8px;
+      font-weight: 600;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .partner-value-cell {
+      font-size: 8.5px;
+      font-weight: 700;
+      color: #1a2e5a;
+      text-align: right;
+    }
+
+    /* ─── FOOTER ────────────────────────────────────────────────── */
+    .page-footer {
+      border-top: 1.5px solid #e0e5f0;
+      padding-top: 8px;
+      margin-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer-left {
+      font-size: 6.5px;
+      color: #aaa;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+    }
+    .footer-center {
+      font-size: 7px;
+      color: #888;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+    .footer-right {
+      font-size: 7px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    /* ─── PRINT / PDF EXPORT ────────────────────────────────────── */
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+      .page {
+        margin: 0;
+        box-shadow: none;
+        page-break-after: always;
+        break-after: page;
+      }
+      .page:last-child {
+        page-break-after: avoid;
+        break-after: avoid;
+      }
+      @page {
+        size: A4;
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════ PAGE 1 ═══════════════════ -->
+  <div class="page">
+
+    <!-- WATERMARK — belongs to THIS page only -->
+    <div class="watermark" aria-hidden="true">
+      <span class="watermark-logo">HC</span>
+      <span class="watermark-sub">Hidrocar</span>
+    </div>
+
+    <!-- HEADER -->
+    <div class="page-header">
+      <div class="header-left">
+        <!-- LOGO: SVG inline, 30% larger than baseline -->
+        <div class="logo-box">
+          <img src="logo_hidrocar.png" alt="Hidrocar Veículos" />
+        </div>
+        <!-- Company name GLUED to logo -->
+        <div class="company-info">
+          <div class="company-name">Hidrocar<br>Veículos</div>
+          <div class="company-address">Pedro Calazans, 994 – Cirurgia<br>Aracaju / SE – 49055520</div>
+          <div class="company-cnpj">CNPJ: 32.878.654/0001-09</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="report-title">Relatório de Estoque<br>com Sócios</div>
+        <div class="report-subtitle">Posição Analítica de Ativos e Participações</div>
+        <div class="report-date">Emissão: 09/03/2026 às 10:22</div>
+      </div>
+    </div>
+
+    <!-- BODY -->
+    <div class="page-body">
+
+      <!-- Summary cards -->
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="card-label">Valor Total do Estoque</div>
+          <div class="card-value">R$ 1.278.760,00</div>
+          <div class="card-sub">Capital consolidado entre empresa e parceiros</div>
+        </div>
+        <div class="summary-card" style="text-align:center;">
+          <div class="card-label">Volume de Veículos</div>
+          <div class="card-value" style="font-size:32px;">15</div>
+          <div class="unit-label">Unidades</div>
+        </div>
+      </div>
+
+      <!-- Partners -->
+      <div class="section-title">Participação Global por Investidor</div>
+      <div class="section-desc">Visão consolidada do capital distribuído</div>
+      <div class="partner-grid">
+        <div class="partner-card">
+          <span class="partner-pct">33,3%</span>
+          <div class="partner-name">Yuri Porto</div>
+          <div class="partner-value">R$ 426.269,55</div>
+          <div class="partner-units">15 veículos</div>
+        </div>
+        <div class="partner-card">
+          <span class="partner-pct">33,3%</span>
+          <div class="partner-name">Klecio Guimarães</div>
+          <div class="partner-value">R$ 426.249,53</div>
+          <div class="partner-units">15 veículos</div>
+        </div>
+        <div class="partner-card">
+          <span class="partner-pct">33,3%</span>
+          <div class="partner-name">Newton Porto Neto</div>
+          <div class="partner-value">R$ 426.240,91</div>
+          <div class="partner-units">15 veículos</div>
+        </div>
+      </div>
+
+      <!-- Vehicle inventory table -->
+      <div class="section-title">Inventário Analítico de Veículos</div>
+      <div class="section-desc" style="margin-bottom:8px;">Detalhamento por ativo e participações individuais</div>
+
+      <table class="vehicle-table">
+        <thead>
+          <tr>
+            <th>Veículo / Marca</th>
+            <th>Versão</th>
+            <th>Sócios</th>
+            <th>Participações Individuais</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- FIAT PULSE -->
+          <tbody class="vehicle-group">
+            <tr class="vehicle-main">
+              <td><div class="brand-label">Fiat</div><div class="model-label">Pulse</div></td>
+              <td class="version-label">P</td>
+              <td><span class="badge">3</span></td>
+              <td></td>
+            </tr>
+            <tr class="partner-row"><td></td><td></td><td></td>
+              <td><span class="partner-name-cell">Yuri Porto</span><span class="partner-value-cell" style="float:right;">R$ 28.763,79</span></td></tr>
+            <tr class="partner-row"><td></td><td></td><td></td>
+              <td><span class="partner-name-cell">Newton Porto Neto</span><span class="partner-value-cell" style="float:right;">R$ 28.763,79</span></td></tr>
+            <tr class="partner-row"><td></td><td></td><td></td>
+              <td><span class="partner-name-cell">Klecio Guimarães</span><span class="partner-value-cell" style="float:right;">R$ 28.772,42</span></td></tr>
+          </tbody>
+
+          <!-- NISSAN KICKS -->
+          <tbody class="vehicle-group">
+            <tr class="vehicle-main">
+              <td><div class="brand-label">Nissan</div><div class="model-label">Kicks</div></td>
+              <td class="version-label">Flexstart Active Xtronic</td>
+              <td><span class="badge">3</span></td>
+              <td></td>
+            </tr>
+            <tr class="partner-row"><td></td><td></td><td></td>
+              <td><span class="partner-name-cell">Klecio Guimarães</span><span class="partner-value-cell" style="float:right;">R$ 30.980,23</span></td></tr>
+            <tr class="partner-row"><td></td><td></td><td></td>
+              <td><span class="partner-name-cell">Newton Porto Neto</span><span class="partner-value-cell" style="float:right;">R$ 30.980,23</span></td></tr>
+            <tr class="partner-row"><td></td><td></td><td></td>
+              <td><span class="partner-name-cell">Yuri Porto</span><span class="partner-value-cell" style="float:right;">R$ 30.989,53</span></td></tr>
+          </tbody>
+
+          <!-- VW TCROSS -->
+          <tbody class="vehicle-group">
+            <tr class="vehicle-main">
+              <td><div class="brand-label">Volkswagen</div><div class="model-label">TCross</div></td>
+              <td class="version-label">—</td>
+              <td><span class="badge">3</span></td>
+              <td></td>
+            </tr>
+            <tr class="partner-row"><td></td><td></td><td></td>
+              <td><span class="partner-name-cell">Klecio Guimarães</span><span class="partner-value-cell" style="float:right;">R$ 34.763,19</span></td></tr>
+            <tr class="partner-row"><td></td><td></td><td></td>
+              <td><span class="partner-name-cell">Newton Porto Neto</span><span class="partner-value-cell" style="float:right;">R$ 34.763,19</span></td></tr>
+            <tr class="partner-row"><td></td><td></td><td></td>
+              <td><span class="partner-name-cell">Yuri Porto</span><span class="partner-value-cell" style="float:right;">R$ 34.773,62</span></td></tr>
+          </tbody>
+
+          <!-- JEEP COMPASS -->
+          <tbody class="vehicle-group">
+            <tr class="vehicle-main">
+              <td><div class="brand-label">Jeep</div><div class="model-label">Compass</div></td>
+              <td class="version-label">Limited 4x4</td>
+              <td><span class="badge">3</span></td>
+              <td></td>
+            </tr>
+            <tr class="partner-row"><td></td><td></td><td></td>
+              <td><span class="partner-name-cell">Klecio Guimarães</span><span class="partner-value-cell" style="float:right;">R$ 29.483,72</span></td></tr>
+            <tr class="partner-row"><td></td><td></td><td></td>
+              <td><span class="partner-name-cell">Newton Porto Neto</span><span class="partner-value-cell" style="float:right;">R$ 29.483,72</span></td></tr>
+            <tr class="partner-row"><td></td><td></td><td></td>
+              <td><span class="partner-name-cell">Yuri Porto</span><span class="partner-value-cell" style="float:right;">R$ 29.492,56</span></td></tr>
+          </tbody>
+
+          <!-- HYUNDAI HB20 TGDI -->
+          <tbody class="vehicle-group">
+            <tr class="vehicle-main">
+              <td><div class="brand-label">Hyundai</div><div class="model-label">HB20</div></td>
+              <td class="version-label">TGDI Comfort Plus</td>
+              <td><span class="badge">3</span></td>
+              <td></td>
+            </tr>
+            <tr class="partner-row"><td></td><td></td><td></td>
+              <td><span class="partner-name-cell">Klecio Guimarães</span><span class="partner-value-cell" style="float:right;">R$ 20.753,33</span></td></tr>
+            <tr class="partner-row"><td></td><td></td><td></td>
+              <td><span class="partner-name-cell">Yuri Porto</span><span class="partner-value-cell" style="float:right;">R$ 20.753,33</span></td></tr>
+            <tr class="partner-row"><td></td><td></td><td></td>
+              <td><span class="partner-name-cell">Newton Porto Neto</span><span class="partner-value-cell" style="float:right;">R$ 20.753,34</span></td></tr>
+          </tbody>
+
+        </tbody>
+      </table>
+    </div><!-- /page-body -->
+
+    <!-- FOOTER -->
+    <div class="page-footer">
+      <div class="footer-left">Nexus Operating Core · Protocolo Digital Auditável</div>
+      <div class="footer-center">HCV Operating System — Report Generator V4.0</div>
+      <div class="footer-right">Página 1 &nbsp;·&nbsp; Sistema de Gestão Integrada</div>
+    </div>
+  </div>
+  <!-- ═══════════════════ END PAGE 1 ═══════════════════ -->
+
+
+  <!-- ═══════════════════ PAGE 2 ═══════════════════ -->
+  <div class="page">
+
+    <!-- WATERMARK — belongs to THIS page only -->
+    <div class="watermark" aria-hidden="true">
+      <span class="watermark-logo">HC</span>
+      <span class="watermark-sub">Hidrocar</span>
+    </div>
+
+    <!-- HEADER (repeated) -->
+    <div class="page-header">
+      <div class="header-left">
+        <div class="logo-box">
+          <img src="logo_hidrocar.png" alt="Hidrocar Veículos" />
+        </div>
+        <div class="company-info">
+          <div class="company-name">Hidrocar<br>Veículos</div>
+          <div class="company-address">Pedro Calazans, 994 – Cirurgia<br>Aracaju / SE – 49055520</div>
+          <div class="company-cnpj">CNPJ: 32.878.654/0001-09</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="report-title">Relatório de Estoque<br>com Sócios</div>
+        <div class="report-subtitle">Posição Analítica de Ativos e Participações</div>
+        <div class="report-date">Emissão: 09/03/2026 às 10:22</div>
+      </div>
+    </div>
+
+    <!-- BODY -->
+    <div class="page-body">
+      <table class="vehicle-table">
+        <thead>
+          <tr>
+            <th>Veículo / Marca</th>
+            <th>Versão</th>
+            <th>Sócios</th>
+            <th>Participações Individuais</th>
+          </tr>
+        </thead>
+
+        <!-- CHEVROLET ONIX LT -->
+        <tbody class="vehicle-group">
+          <tr class="vehicle-main">
+            <td><div class="brand-label">Chevrolet</div><div class="model-label">Onix</div></td>
+            <td class="version-label">LT</td>
+            <td><span class="badge">3</span></td>
+            <td></td>
+          </tr>
+          <tr class="partner-row"><td></td><td></td><td></td>
+            <td><span class="partner-name-cell">Klecio Guimarães</span><span class="partner-value-cell" style="float:right;">R$ 20.166,66</span></td></tr>
+          <tr class="partner-row"><td></td><td></td><td></td>
+            <td><span class="partner-name-cell">Yuri Porto</span><span class="partner-value-cell" style="float:right;">R$ 20.166,66</span></td></tr>
+          <tr class="partner-row"><td></td><td></td><td></td>
+            <td><span class="partner-name-cell">Newton Porto Neto</span><span class="partner-value-cell" style="float:right;">R$ 20.166,68</span></td></tr>
+        </tbody>
+
+        <!-- VW NIVUS -->
+        <tbody class="vehicle-group">
+          <tr class="vehicle-main">
+            <td><div class="brand-label">Volkswagen</div><div class="model-label">Nivus</div></td>
+            <td class="version-label">Confortiline</td>
+            <td><span class="badge">3</span></td>
+            <td></td>
+          </tr>
+          <tr class="partner-row"><td></td><td></td><td></td>
+            <td><span class="partner-name-cell">Klecio Guimarães</span><span class="partner-value-cell" style="float:right;">R$ 32.666,66</span></td></tr>
+          <tr class="partner-row"><td></td><td></td><td></td>
+            <td><span class="partner-name-cell">Newton Porto Neto</span><span class="partner-value-cell" style="float:right;">R$ 32.666,66</span></td></tr>
+          <tr class="partner-row"><td></td><td></td><td></td>
+            <td><span class="partner-name-cell">Yuri Porto</span><span class="partner-value-cell" style="float:right;">R$ 32.666,68</span></td></tr>
+        </tbody>
+
+        <!-- JEEP RENEGADE -->
+        <tbody class="vehicle-group">
+          <tr class="vehicle-main">
+            <td><div class="brand-label">Jeep</div><div class="model-label">Renegade</div></td>
+            <td class="version-label">Longitude</td>
+            <td><span class="badge">3</span></td>
+            <td></td>
+          </tr>
+          <tr class="partner-row"><td></td><td></td><td></td>
+            <td><span class="partner-name-cell">Yuri Porto</span><span class="partner-value-cell" style="float:right;">R$ 34.366,66</span></td></tr>
+          <tr class="partner-row"><td></td><td></td><td></td>
+            <td><span class="partner-name-cell">Newton Porto Neto</span><span class="partner-value-cell" style="float:right;">R$ 34.366,66</span></td></tr>
+          <tr class="partner-row"><td></td><td></td><td></td>
+            <td><span class="partner-name-cell">Klecio Guimarães</span><span class="partner-value-cell" style="float:right;">R$ 34.366,68</span></td></tr>
+        </tbody>
+
+        <!-- CHEVROLET ONIX LTZ -->
+        <tbody class="vehicle-group">
+          <tr class="vehicle-main">
+            <td><div class="brand-label">Chevrolet</div><div class="model-label">Onix</div></td>
+            <td class="version-label">LTZ</td>
+            <td><span class="badge">3</span></td>
+            <td></td>
+          </tr>
+          <tr class="partner-row"><td></td><td></td><td></td>
+            <td><span class="partner-name-cell">Klecio Guimarães</span><span class="partner-value-cell" style="float:right;">R$ 19.330,00</span></td></tr>
+          <tr class="partner-row"><td></td><td></td><td></td>
+            <td><span class="partner-name-cell">Newton Porto Neto</span><span class="partner-value-cell" style="float:right;">R$ 19.330,00</span></td></tr>
+          <tr class="partner-row"><td></td><td></td><td></td>
+            <td><span class="partner-name-cell">Yuri Porto</span><span class="partner-value-cell" style="float:right;">R$ 19.330,00</span></td></tr>
+        </tbody>
+
+        <!-- HYUNDAI HB20 CONFORT PLUS -->
+        <tbody class="vehicle-group">
+          <tr class="vehicle-main">
+            <td><div class="brand-label">Hyundai</div><div class="model-label">HB20</div></td>
+            <td class="version-label">Confort Plus</td>
+            <td><span class="badge">3</span></td>
+            <td></td>
+          </tr>
+          <tr class="partner-row"><td></td><td></td><td></td>
+            <td><span class="partner-name-cell">Klecio Guimarães</span><span class="partner-value-cell" style="float:right;">R$ 22.633,33</span></td></tr>
+          <tr class="partner-row"><td></td><td></td><td></td>
+            <td><span class="partner-name-cell">Newton Porto Neto</span><span class="partner-value-cell" style="float:right;">R$ 22.633,33</span></td></tr>
+          <tr class="partner-row"><td></td><td></td><td></td>
+            <td><span class="partner-name-cell">Yuri Porto</span><span class="partner-value-cell" style="float:right;">R$ 22.633,34</span></td></tr>
+        </tbody>
+
+        <!-- VW VIRTUS -->
+        <tbody class="vehicle-group">
+          <tr class="vehicle-main">
+            <td><div class="brand-label">Volkswagen</div><div class="model-label">Virtus</div></td>
+            <td class="version-label">Highline</td>
+            <td><span class="badge">3</span></td>
+            <td></td>
+          </tr>
+          <tr class="partner-row"><td></td><td></td><td></td>
+            <td><span class="partner-name-cell">Klecio Guimarães</span><span class="partner-value-cell" style="float:right;">R$ 33.866,66</span></td></tr>
+          <tr class="partner-row"><td></td><td></td><td></td>
+            <td><span class="partner-name-cell">Newton Porto Neto</span><span class="partner-value-cell" style="float:right;">R$ 33.866,66</span></td></tr>
+          <tr class="partner-row"><td></td><td></td><td></td>
+            <td><span class="partner-name-cell">Yuri Porto</span><span class="partner-value-cell" style="float:right;">R$ 33.866,68</span></td></tr>
+        </tbody>
+
+        <!-- FIAT TORO -->
+        <tbody class="vehicle-group">
+          <tr class="vehicle-main">
+            <td><div class="brand-label">Fiat</div><div class="model-label">Toro</div></td>
+            <td class="version-label">Freedom</td>
+            <td><span class="badge">3</span></td>
+            <td></td>
+          </tr>
+          <tr class="partner-row"><td></td><td></td><td></td>
+            <td><span class="partner-name-cell">Klecio Guimarães</span><span class="partner-value-cell" style="float:right;">R$ 37.166,66</span></td></tr>
+          <tr class="partner-row"><td></td><td></td><td></td>
+            <td><span class="partner-name-cell">Newton Porto Neto</span><span class="partner-value-cell" style="float:right;">R$ 37.166,66</span></td></tr>
+          <tr class="partner-row"><td></td><td></td><td></td>
+            <td><span class="partner-name-cell">Yuri Porto</span><span class="partner-value-cell" style="float:right;">R$ 37.166,68</span></td></tr>
+        </tbody>
+
+        <!-- HYUNDAI CRETA -->
+        <tbody class="vehicle-group">
+          <tr class="vehicle-main">
+            <td><div class="brand-label">Hyundai</div><div class="model-label">Creta</div></td>
+            <td class="version-label">Limited</td>
+            <td><span class="badge">3</span></td>
+            <td></td>
+          </tr>
+          <tr class="partner-row"><td></td><td></td><td></td>
+            <td><span class="partner-name-cell">Klecio Guimarães</span><span class="partner-value-cell" style="float:right;">R$ 31.333,33</span></td></tr>
+          <tr class="partner-row"><td></td><td></td><td></td>
+            <td><span class="partner-name-cell">Newton Porto Neto</span><span class="partner-value-cell" style="float:right;">R$ 31.333,33</span></td></tr>
+          <tr class="partner-row"><td></td><td></td><td></td>
+            <td><span class="partner-name-cell">Yuri Porto</span><span class="partner-value-cell" style="float:right;">R$ 31.333,34</span></td></tr>
+        </tbody>
+
+        <!-- RENAULT CAPTUR -->
+        <tbody class="vehicle-group">
+          <tr class="vehicle-main">
+            <td><div class="brand-label">Renault</div><div class="model-label">Captur</div></td>
+            <td class="version-label">THJ</td>
+            <td><span class="badge">3</span></td>
+            <td></td>
+          </tr>
+          <tr class="partner-row"><td></td><td></td><td></td>
+            <td><span class="partner-name-cell">Klecio Guimarães</span><span class="partner-value-cell" style="float:right;">R$ 26.666,66</span></td></tr>
+          <tr class="partner-row"><td></td><td></td><td></td>
+            <td><span class="partner-name-cell">Newton Porto Neto</span><span class="partner-value-cell" style="float:right;">R$ 26.666,66</span></td></tr>
+          <tr class="partner-row"><td></td><td></td><td></td>
+            <td><span class="partner-name-cell">Yuri Porto</span><span class="partner-value-cell" style="float:right;">R$ 26.666,68</span></td></tr>
+        </tbody>
+
+      </table>
+    </div><!-- /page-body -->
+
+    <!-- FOOTER -->
+    <div class="page-footer">
+      <div class="footer-left">Nexus Operating Core · Protocolo Digital Auditável</div>
+      <div class="footer-center">HCV Operating System — Report Generator V4.0</div>
+      <div class="footer-right">Página 2 &nbsp;·&nbsp; Sistema de Gestão Integrada</div>
+    </div>
+  </div>
+  <!-- ═══════════════════ END PAGE 2 ═══════════════════ -->
+
+</body>
+</html>

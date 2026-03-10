@@ -16,21 +16,34 @@ export interface ISocioStockStats {
   valor_patrimonio_pessoal: number; // Outros bens cadastrados
   porcentagem_estoque: number;
   quantidade_carros: number;
-  lucro_periodo: number; // Lucro nas vendas do mês
+  lucro_periodo: number; // Lucro nas vendas do mês (Competência)
+  lucro_caixa: number; // Lucro que efetivamente entrou (Caixa)
+  lucro_pendente: number; // Lucro a receber (Futuro)
   porcentagem_participacao?: number;
   total_investido_todos_socios?: number;
   total_patrimonio_liquido_todos?: number;
   veiculos: {
     id: string;
     montadora: string;
+    montadora_logo?: string;
     modelo: string;
-    versao: string;
+    versao?: string;
     placa: string;
-    valor: number;
+    valor: number; // Investimento do sócio neste veículo
+    valor_total_custo?: number; // Custo total do veículo
+    motorizacao?: string;
+    cambio?: string;
+    combustivel?: string;
+    ano_modelo?: number;
+    ano_fabricacao?: number;
     imagem?: string;
     descricao?: string;
   }[];
   patrimonio_pessoal: IPatrimonioItem[];
+  investimento_por_modelo: {
+    modelo: string;
+    valor: number;
+  }[];
 }
 
 export interface ICaixaDashboardData {
@@ -54,6 +67,7 @@ export interface ICaixaDashboardData {
   // Resultados do Período
   total_compras: number;
   total_vendas_recebido: number;
+  total_custo_vendas: number; // CMV
   lucro_mensal: number;
   margem_lucro: number;
 }
@@ -71,9 +85,20 @@ export const CaixaDashboardSchema = z.object({
   total_saidas: z.number().nullish().transform(v => v ?? 0),
   total_compras: z.number().nullish().transform(v => v ?? 0),
   total_vendas_recebido: z.number().nullish().transform(v => v ?? 0),
+  total_custo_vendas: z.number().nullish().transform(v => v ?? 0),
   lucro_mensal: z.number().nullish().transform(v => v ?? 0),
   margem_lucro: z.number().nullish().transform(v => v ?? 0),
 });
+
+export interface IPerformanceMonth {
+  label: string;
+  faturado: number;
+  custo: number;
+  despesas_fixas: number;
+  despesas_variaveis: number;
+  despesas: number;
+  lucro: number;
+}
 
 export interface IComparativoMesData {
   vendas: number;

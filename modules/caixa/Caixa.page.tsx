@@ -6,13 +6,15 @@ import { MarcaDaguaService } from '../ajustes/marca-dagua/marca-dagua.service';
 
 // Componentes
 import CaixaKpis from './components/CaixaKpis';
-import AccountsOverview from './components/AccountsOverview';
-import SocioStockOverview from './components/SocioStockOverview';
-import SocioPatrimonioCards from './components/SocioPatrimonioCards';
-import MonthlyPerformance from './components/MonthlyPerformance';
-import ComparativoMensalChart from './components/ComparativoMensalChart';
-import QuickPreviewModal from './components/QuickPreviewModal';
-import CaixaPrint from './components/CaixaPrint';
+// PDF Components
+import RelatoriosQuickPreview from '../relatorios/components/RelatoriosQuickPreview';
+import CaixaTemplate from '../relatorios/templates/caixa/CaixaTemplate';
+
+// Dashboard Components
+import PerformanceChart from './components/PerformanceChart';
+import AccountBalances from './components/AccountBalances';
+import SocioSummary from './components/SocioSummary';
+import SocioStockTable from './components/SocioStockTable';
 
 const CaixaPage: React.FC = () => {
   const queryClient = useQueryClient();
@@ -71,23 +73,11 @@ const CaixaPage: React.FC = () => {
     placeholderData: keepPreviousData,
   });
 
-  const { data: comparativo } = useQuery({
-    queryKey: ['caixa_comparativo', startDate, endDate],
-    queryFn: () => CaixaService.getComparativoMensal(startDate, endDate),
-    enabled: !!startDate && !!endDate,
+  const { data: performanceHistory, isLoading: isLoadingHistory } = useQuery({
+    queryKey: ['caixa_performance_history', selectedMonth],
+    queryFn: () => CaixaService.getPerformanceHistory(selectedMonth),
+    placeholderData: keepPreviousData,
   });
-
-  // Compute month labels for the comparativo chart
-  const { mesAtualLabel, mesAnteriorLabel } = useMemo(() => {
-    const [year, month] = selectedMonth.split('-').map(Number);
-    const atual = new Date(year, month - 1, 1);
-    const anterior = new Date(year, month - 2, 1);
-    const fmtMonth = (d: Date) => {
-      const name = d.toLocaleString('pt-BR', { month: 'short' }).replace('.', '');
-      return `${name.charAt(0).toUpperCase() + name.slice(1)}/${d.getFullYear()}`;
-    };
-    return { mesAtualLabel: fmtMonth(atual), mesAnteriorLabel: fmtMonth(anterior) };
-  }, [selectedMonth]);
 
   const { data: empresa } = useQuery({
     queryKey: ['empresa'],
@@ -104,7 +94,7 @@ const CaixaPage: React.FC = () => {
     const sub = CaixaService.subscribe(() => {
       queryClient.invalidateQueries({ queryKey: ['caixa_dashboard'] });
       queryClient.invalidateQueries({ queryKey: ['caixa_available_months'] });
-      queryClient.invalidateQueries({ queryKey: ['caixa_comparativo'] });
+      queryClient.invalidateQueries({ queryKey: ['caixa_performance_history'] });
     });
     return () => {
       CaixaService.unsubscribe(sub);
@@ -115,15 +105,6 @@ const CaixaPage: React.FC = () => {
     window.print();
   };
 
-  const { transacoesEntrada, transacoesSaida } = useMemo(() => {
-    if (!data?.transacoes) return { transacoesEntrada: [], transacoesSaida: [] };
-
-    return {
-      transacoesEntrada: data.transacoes.filter(t => t.tipo === 'ENTRADA'),
-      transacoesSaida: data.transacoes.filter(t => t.tipo === 'SAIDA')
-    };
-  }, [data?.transacoes]);
-
   // Format ISO month string to "Mês/Ano" readable labels
   const formatMonthOption = (isoStr: string) => {
     const [y, m] = isoStr.split('-');
@@ -132,7 +113,7 @@ const CaixaPage: React.FC = () => {
     return `${monthName.charAt(0).toUpperCase() + monthName.slice(1)} / ${y}`;
   };
 
-  if (isLoadingData) return <div className="flex justify-center items-center h-full py-20"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div></div>;
+  if (isLoadingData || isLoadingHistory) return <div className="flex justify-center items-center h-full py-20"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div></div>;
 
   if (error) {
     return (
@@ -152,7 +133,7 @@ const CaixaPage: React.FC = () => {
   }
 
   return (
-    <div className={`space-y-6 animate-in fade-in duration-700 pb-20 ${isFetching && !isLoadingData ? 'opacity-50 pointer-events-none transition-opacity' : ''}`}>
+    <div className={`space-y-8 animate-in fade-in duration-700 pb-20 ${isFetching && !isLoadingData ? 'opacity-50 pointer-events-none transition-opacity' : ''}`}>
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex items-center gap-4">
           <div>
@@ -174,7 +155,6 @@ const CaixaPage: React.FC = () => {
           </button>
 
           <div className="flex items-center bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm w-fit gap-3">
-            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-2">Mês de Referência:</span>
             <select
               value={selectedMonth}
               onChange={(e) => setSelectedMonth(e.target.value)}
@@ -194,155 +174,50 @@ const CaixaPage: React.FC = () => {
         </div>
       </div>
 
-      {data && (
-        <>
+      {data && performanceHistory && (
+        <div className="space-y-8">
           <CaixaKpis data={data} />
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 space-y-6">
-              <SocioStockOverview socios={data.investimento_socios} />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <PerformanceChart history={performanceHistory} />
             </div>
-            <div className="space-y-6">
-              <AccountsOverview contas={data.contas} />
-            </div>
-          </div>
-
-          <SocioPatrimonioCards socios={data.investimento_socios} />
-
-          <MonthlyPerformance
-            vendas={data.total_vendas_recebido}
-            compras={data.total_compras}
-            lucro={data.lucro_mensal}
-            margem={data.margem_lucro}
-          />
-
-          {comparativo && (
-            <ComparativoMensalChart
-              comparativo={comparativo}
-              mesAtualLabel={mesAtualLabel}
-              mesAnteriorLabel={mesAnteriorLabel}
-            />
-          )}
-
-          {/* MOVIMENTAÇÕES SEPARADAS POR TIPO */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* ENTRADAS */}
-            <div className="bg-white rounded-xl border border-emerald-100 shadow-sm overflow-hidden h-fit">
-              <div className="px-5 py-3 border-b border-emerald-100 bg-emerald-50/50 flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>
-                  <h3 className="font-bold text-emerald-900 text-sm">Entradas (Crédito)</h3>
-                </div>
-                <span className="text-[10px] font-black text-emerald-600/50 uppercase tracking-widest">
-                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(data.total_entradas)}
-                </span>
-              </div>
-              <div className="overflow-x-auto max-h-[400px]">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-50/50 sticky top-0 z-10">
-                    <tr>
-                      <th className="px-4 py-2 font-semibold text-slate-500">Data/Desc</th>
-                      <th className="px-4 py-2 font-semibold text-slate-500 text-right">Valor</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-emerald-50">
-                    {transacoesEntrada.map((t) => (
-                      <tr key={t.id} className="hover:bg-emerald-50/30">
-                        <td className="px-4 py-2 text-slate-600">
-                          <div className="flex flex-col">
-                            <span className="font-bold text-slate-800">{t.descricao || 'Sem descrição'}</span>
-                            <span className="text-[10px] text-slate-400">{new Date(t.data_pagamento).toLocaleDateString('pt-BR')}</span>
-                          </div>
-                        </td>
-                        <td className="px-4 py-2 font-bold text-right text-emerald-600">
-                          {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(t.valor)}
-                        </td>
-                      </tr>
-                    ))}
-                    {transacoesEntrada.length === 0 && (
-                      <tr>
-                        <td colSpan={2} className="px-4 py-6 text-center text-slate-400 italic text-xs">
-                          Nenhuma entrada registrada.
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* SAÍDAS */}
-            <div className="bg-white rounded-xl border border-rose-100 shadow-sm overflow-hidden h-fit">
-              <div className="px-5 py-3 border-b border-rose-100 bg-rose-50/50 flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 bg-rose-500 rounded-full"></div>
-                  <h3 className="font-bold text-rose-900 text-sm">Saídas (Débito)</h3>
-                </div>
-                <span className="text-[10px] font-black text-rose-600/50 uppercase tracking-widest">
-                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(data.total_saidas)}
-                </span>
-              </div>
-              <div className="overflow-x-auto max-h-[400px]">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-50/50 sticky top-0 z-10">
-                    <tr>
-                      <th className="px-4 py-2 font-semibold text-slate-500">Data/Desc</th>
-                      <th className="px-4 py-2 font-semibold text-slate-500 text-right">Valor</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-rose-50">
-                    {transacoesSaida.map((t) => (
-                      <tr key={t.id} className="hover:bg-rose-50/30">
-                        <td className="px-4 py-2 text-slate-600">
-                          <div className="flex flex-col">
-                            <span className="font-bold text-slate-800">{t.descricao || 'Sem descrição'}</span>
-                            <span className="text-[10px] text-slate-400">{new Date(t.data_pagamento).toLocaleDateString('pt-BR')}</span>
-                          </div>
-                        </td>
-                        <td className="px-4 py-2 font-bold text-right text-rose-600">
-                          -{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(t.valor)}
-                        </td>
-                      </tr>
-                    ))}
-                    {transacoesSaida.length === 0 && (
-                      <tr>
-                        <td colSpan={2} className="px-4 py-6 text-center text-slate-400 italic text-xs">
-                          Nenhuma saída registrada.
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
+            <div>
+              <AccountBalances contas={data.contas || []} />
             </div>
           </div>
 
+          <div className="pt-4">
+            <div className="mb-6">
+              <h2 className="text-lg font-black text-slate-900 uppercase tracking-tighter">Resumo de Sócios</h2>
+              <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-0.5">Visão consolidada de exposição e lucro por investidor</p>
+            </div>
+            <SocioSummary socios={data.investimento_socios || []} />
+          </div>
 
-          <QuickPreviewModal
+          <div className="pt-4">
+            <div className="mb-6">
+              <h2 className="text-lg font-black text-slate-900 uppercase tracking-tighter">Detalhamento do Estoque</h2>
+              <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-0.5">Participação individual e exposição de capital por veículo</p>
+            </div>
+            <SocioStockTable socios={data.investimento_socios || []} />
+          </div>
+
+
+          {/* Standardized PDF Preview */}
+          <RelatoriosQuickPreview
             isOpen={showPreview}
             onClose={() => setShowPreview(false)}
-            onDownload={handlePrint}
-            title="Relatório Financeiro"
+            title="Relatório Financeiro & Patrimônio"
           >
-            <CaixaPrint
-              data={data}
+            <CaixaTemplate
+              data={{ ...data, history: performanceHistory, socios: data.investimento_socios }}
               empresa={empresa}
               watermark={watermark}
               periodo={formattedPeriod}
-              forecast={[]}
             />
-          </QuickPreviewModal>
-
-          <div className="hidden print:block">
-            <CaixaPrint
-              data={data}
-              empresa={empresa}
-              watermark={watermark}
-              periodo={formattedPeriod}
-              forecast={[]}
-            />
-          </div>
-        </>
+          </RelatoriosQuickPreview>
+        </div>
       )}
     </div>
   );

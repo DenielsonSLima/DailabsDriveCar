@@ -1,4 +1,5 @@
 import React from 'react';
+import { maskCNPJ } from '../../../utils/formatters';
 
 interface Props {
   empresa: any;
@@ -6,70 +7,196 @@ interface Props {
   title: string;
   subtitle?: string;
   children: React.ReactNode;
+  isManualPagination?: boolean;
+  pageNumber?: number;
+  totalPages?: number;
 }
 
-const BaseReportLayout: React.FC<Props> = ({ empresa, watermark, title, subtitle, children }) => {
-  return (
-    <div className="relative p-12 bg-white text-slate-900 min-h-[297mm] flex flex-col font-sans border-[12px] border-slate-50">
+const BaseReportLayout: React.FC<Props> = ({
+  empresa,
+  watermark,
+  title,
+  subtitle,
+  children,
+  isManualPagination = false,
+  pageNumber,
+  totalPages
+}) => {
+  // Criamos um SVG virtual que tem exatamente o tamanho de uma folha A4 (210x297mm)
+  const svgWatermark = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="210mm" height="297mm" viewBox="0 0 210 297">
+      <g opacity="0.08">
+        <image 
+          href="${watermark?.logo_url}" 
+          x="${105 - ((watermark?.tamanho || 60) * 0.75)}" 
+          y="${148.5 - ((watermark?.tamanho || 60) * 0.75)}" 
+          width="${(watermark?.tamanho || 60) * 1.5}" 
+          height="${(watermark?.tamanho || 60) * 1.5}" 
+          preserveAspectRatio="xMidYMid meet" 
+        />
+      </g>
+    </svg>
+  `.trim();
 
-      {/* Selo de Certificação flutuante no topo */}
-      <div className="absolute top-10 right-10 z-20">
-        <div className="w-24 h-24 border-2 border-slate-100 rounded-full flex flex-col items-center justify-center text-center p-2 opacity-30 grayscale">
-          <svg className="w-8 h-8 text-slate-300 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
-          <span className="text-[6px] font-black uppercase tracking-widest leading-none">Dados Auditados</span>
+  const watermarkDataUrl = `data:image/svg+xml;utf8,${encodeURIComponent(svgWatermark)}`;
+
+  const renderHeader = () => (
+    <header className="p-10 flex items-stretch border-b-2 border-slate-900 bg-white">
+      <div className="flex-[1.4] flex gap-12 items-center">
+        {empresa?.logo_url && (
+          <div className="shrink-0 w-32 h-32 flex items-center justify-center bg-slate-50/50 rounded-2xl p-4 border border-slate-100">
+            <img src={empresa.logo_url} className="max-h-full max-w-full object-contain" alt="Logo" />
+          </div>
+        )}
+        <div className="flex-1 min-w-0">
+          <h1 className="text-2xl font-black uppercase tracking-tight text-slate-900 leading-none">
+            {empresa?.nome_fantasia || 'NEXUS ERP'}
+          </h1>
+          <p className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-2 leading-relaxed">
+            {empresa?.logradouro}, {empresa?.numero} - {empresa?.bairro}
+            <br />
+            {empresa?.cidade} / {empresa?.uf} - {empresa?.cep}
+          </p>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[9px] text-slate-400 font-bold mt-2">
+            <span className="whitespace-nowrap bg-slate-50 px-2 py-0.5 rounded border border-slate-100 italic">CNPJ: {maskCNPJ(empresa?.cnpj)}</span>
+          </div>
         </div>
       </div>
 
-      {/* Marca d'água Profissional */}
+      <div className="w-[1.5px] bg-slate-900 mx-6 self-stretch shrink-0 opacity-80" />
+
+      <div className="flex-1 text-right flex flex-col justify-center">
+        <h2 className="text-xl font-black uppercase tracking-tighter text-slate-900 leading-tight mb-1">
+          {title}
+        </h2>
+        {subtitle && (
+          <p className="text-[9px] font-black text-slate-600 uppercase bg-slate-100 px-2 py-0.5 rounded inline-block mb-1 self-end">
+            {subtitle}
+          </p>
+        )}
+        <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">
+          Emissão: {new Date().toLocaleDateString('pt-BR')} às {new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+        </p>
+      </div>
+    </header>
+  );
+
+  const renderFooter = () => (
+    <footer className="px-10 py-6 border-t border-slate-100 flex justify-between items-center bg-white relative z-20">
+      <div className="text-[8px] text-slate-400 font-bold uppercase tracking-[0.3em]">
+        Nexus Operating Core • Protocolo Digital Auditável
+      </div>
+      <div className="text-right flex flex-col items-end gap-1">
+        <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest">SISTEMA DE GESTÃO INTEGRADA</p>
+        {pageNumber && totalPages && (
+          <span className="text-[9px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded border border-slate-100">
+            PÁGINA {pageNumber} DE {totalPages}
+          </span>
+        )}
+      </div>
+    </footer>
+  );
+
+  return (
+    <div className={`report-container relative bg-white text-slate-900 flex flex-col font-sans print:p-0 print:border-0 ${isManualPagination ? 'w-[210mm] min-h-[297mm] h-[297mm] break-after-page' : 'min-h-[297mm]'}`}>
+
+      {/* Cabeçalho de Estilo - Capturado pelo PDF */}
+      <style>{`
+        @media print, all {
+          .report-container {
+            border: none !important;
+            box-shadow: none !important;
+            margin: 0 !important;
+            padding: 0 !important;
+          }
+
+          .report-table {
+            width: 100%;
+            border-collapse: collapse;
+          }
+          
+          thead { display: table-header-group !important; }
+          tfoot { display: table-footer-group !important; }
+          
+          .print-row {
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
+          }
+
+          table {
+            page-break-inside: auto;
+          }
+
+          .break-after-page {
+            break-after: page;
+            page-break-after: always;
+          }
+
+          /* MARCA D'ÁGUA: Única e Sincronizada */
+          .watermark-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 0;
+            pointer-events: none;
+            background-image: url("${watermarkDataUrl}");
+            background-size: 100% 297mm;
+            background-repeat: repeat-y;
+            background-position: top center;
+          }
+        }
+      `}</style>
+
+      {/* Marca d'água Injetada (Sem duplicação no container) */}
       {watermark?.logo_url && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 overflow-hidden">
-          <img
-            src={watermark.logo_url}
-            style={{
-              opacity: watermark.opacidade / 200,
-              transform: `scale(${watermark.tamanho / 100})`,
-              maxWidth: '60%',
-              maxHeight: '60%'
-            }}
-            alt=""
-          />
-        </div>
+        <div className="watermark-overlay absolute inset-0 pointer-events-none" />
       )}
 
-      {/* Cabeçalho Premium */}
-      <header className="relative z-10 border-b-4 border-slate-900 pb-10 mb-12 flex justify-between items-end">
-        <div className="flex items-center gap-8">
-          {empresa?.logo_url && <img src={empresa.logo_url} className="h-20 w-auto object-contain" alt="Logo" />}
-          <div className="space-y-1">
-            <h1 className="text-2xl font-black uppercase tracking-tighter text-slate-900 leading-none">{empresa?.nome_fantasia || 'NEXUS ERP'}</h1>
-            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{empresa?.razao_social}</p>
-            <div className="flex items-center gap-4 text-[10px] text-slate-400 font-bold mt-2">
-              <span>CNPJ: {empresa?.cnpj}</span>
-              <span>{empresa?.cidade} / {empresa?.uf}</span>
-            </div>
-          </div>
-        </div>
-        <div className="text-right">
-          <h2 className="text-3xl font-black uppercase tracking-tighter text-slate-300 mb-2">{title}</h2>
-          {subtitle && <p className="text-sm font-black text-slate-900 uppercase">{subtitle}</p>}
-          <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Emissão: {new Date().toLocaleDateString('pt-BR')}</p>
-        </div>
-      </header>
+      {isManualPagination ? (
+        <>
+          {renderHeader()}
+          <div style={{ height: '40px' }} className="bg-white w-full" />
+          <main className="relative z-10 w-full flex-1 px-10 pt-0 pb-10 overflow-hidden">
+            {children}
+          </main>
+          <div style={{ height: '40px' }} className="bg-white w-full" />
+          {renderFooter()}
+        </>
+      ) : (
+        <table className="report-table relative z-10 w-full">
+          <thead>
+            <tr>
+              <td className="p-0 border-0">
+                {renderHeader()}
+                {/* Espaçador ampliado para evitar sobreposição no topo da página 2+ */}
+                <div style={{ height: '60px' }} className="bg-white w-full" />
+              </td>
+            </tr>
+          </thead>
 
-      {/* Conteúdo do Relatório */}
-      <main className="relative z-10 flex-1">
-        {children}
-      </main>
+          <tbody>
+            <tr>
+              <td className="p-10 pt-0 border-0">
+                <main className="relative z-10 w-full min-h-[100px]">
+                  {children}
+                </main>
+              </td>
+            </tr>
+          </tbody>
 
-      {/* Rodapé do Documento */}
-      <footer className="relative z-10 mt-10 pt-6 border-t border-slate-100 flex justify-between items-end">
-        <div className="text-[8px] text-slate-400 font-bold uppercase tracking-[0.3em]">
-          Nexus Operating Core • Protocolo Digital Auditável
-        </div>
-        <div className="text-right">
-          <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest">SISTEMA DE GESTÃO INTEGRADA</p>
-        </div>
-      </footer>
+          <tfoot>
+            <tr>
+              <td className="p-0 border-0">
+                {/* Espaçador de segurança para o rodapé não encostar no conteúdo */}
+                <div style={{ height: '60px' }} className="bg-white w-full" />
+                {renderFooter()}
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      )}
     </div>
   );
 };

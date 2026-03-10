@@ -7,6 +7,13 @@ import { MontadorasService } from '../cadastros/montadoras/montadoras.service';
 import { TiposVeiculosService } from '../cadastros/tipos-veiculos/tipos-veiculos.service';
 import { CoresService } from '../cadastros/cores/cores.service';
 import { SociosService } from '../ajustes/socios/socios.service';
+import { EmpresaService } from '../ajustes/empresa/empresa.service';
+import { MarcaDaguaService } from '../ajustes/marca-dagua/marca-dagua.service';
+import { RelatoriosService } from '../relatorios/relatorios.service';
+
+// PDF Components
+import RelatoriosQuickPreview from '../relatorios/components/RelatoriosQuickPreview';
+import EstoqueComSociosTemplate from '../relatorios/templates/estoque/EstoqueComSociosTemplate';
 
 // Componentes do Dashboard e Listagem
 import EstoqueDashboard from './components/EstoqueDashboard';
@@ -27,11 +34,25 @@ const EstoquePage: React.FC = () => {
   const [filterTipo, setFilterTipo] = useState('');
   const [groupBy, setGroupBy] = useState<GroupByOption>('none');
 
+  // Relatório PDF
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [reportData, setReportData] = useState<any>(null);
+  const [empresa, setEmpresa] = useState<any>(null);
+  const [watermark, setWatermark] = useState<any>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+
   // Queries de Catálogos (Dependencies)
   const { data: montadoras = [] } = useQuery({ queryKey: ['montadoras'], queryFn: () => MontadorasService.getAll() });
   const { data: tipos = [] } = useQuery({ queryKey: ['tipos_veiculos'], queryFn: () => TiposVeiculosService.getAll() });
   const { data: cores = [] } = useQuery({ queryKey: ['cores'], queryFn: () => CoresService.getAll() });
   const { data: socios = [] } = useQuery({ queryKey: ['socios'], queryFn: () => SociosService.getAll() });
+
+  // Carregar dados da empresa e marca d'água para o PDF
+  useEffect(() => {
+    EmpresaService.getDadosEmpresa().then(setEmpresa);
+    MarcaDaguaService.getConfig().then(setWatermark);
+  }, []);
+
 
   // Query Principal (Lista)
   const filters = useMemo(() => ({
@@ -101,6 +122,73 @@ const EstoquePage: React.FC = () => {
         <div>
           <h1 className="text-3xl font-bold text-slate-900 tracking-tighter">Estoque de Veículos</h1>
           <p className="text-slate-500 text-sm mt-1">Gerencie seu inventário e analise a participação societária.</p>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <button
+            onClick={async () => {
+              setIsGenerating(true);
+              try {
+                const veiculosRaw = await RelatoriosService.getEstoqueParaRelatorio(activeTab === 'TODOS' ? 'TODOS' : 'DISPONIVEL');
+
+                const veiculos = veiculosRaw.map((v: any) => ({
+                  id: v.id,
+                  placa: v.placa || '—',
+                  montadora: v.montadora?.nome || 'N/I',
+                  modelo: v.modelo?.nome || '—',
+                  versao: v.versao?.nome || '—',
+                  socios: (v.socios || []).map((s: any) => ({
+                    nome: s.nome,
+                    valor: Number(s.valor || 0)
+                  }))
+                }));
+
+                const totalEstoque = veiculosRaw.reduce((acc: number, v: any) => acc + Number(v.valor_custo || 0) + Number(v.valor_custo_servicos || 0), 0);
+                const volumeVeiculos = veiculosRaw.length;
+
+                const partnerMap = new Map();
+                veiculosRaw.forEach((v: any) => {
+                  (v.socios || []).forEach((s: any) => {
+                    const val = Number(s.valor || 0);
+                    if (!partnerMap.has(s.nome)) {
+                      partnerMap.set(s.nome, { nome: s.nome, valor: 0, veiculosCount: 0 });
+                    }
+                    const p = partnerMap.get(s.nome);
+                    p.valor += val;
+                    p.veiculosCount += 1;
+                  });
+                });
+
+                const partnerGlobalStats = Array.from(partnerMap.values()).map(p => ({
+                  ...p,
+                  porcentagem: totalEstoque > 0 ? (p.valor / totalEstoque) * 100 : 0
+                })).sort((a: any, b: any) => b.valor - a.valor);
+
+                setReportData({
+                  totalEstoque,
+                  volumeVeiculos,
+                  partnerGlobalStats,
+                  veiculos
+                });
+                setIsPreviewOpen(true);
+              } catch (err) {
+                console.error('Erro ao gerar relatório:', err);
+              } finally {
+                setIsGenerating(false);
+              }
+            }}
+            disabled={isGenerating}
+            className="flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-indigo-100 hover:bg-indigo-700 transition-all disabled:opacity-50"
+          >
+            {isGenerating ? (
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            ) : (
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+              </svg>
+            )}
+            <span>Emitir PDF Estoque</span>
+          </button>
         </div>
       </div>
 
@@ -179,6 +267,21 @@ const EstoquePage: React.FC = () => {
             </div>
           )}
         </>
+      )}
+
+      {/* QUICK PREVIEW MODAL */}
+      {reportData && (
+        <RelatoriosQuickPreview
+          isOpen={isPreviewOpen}
+          onClose={() => setIsPreviewOpen(false)}
+          title="Relatório de Estoque com Sócios"
+        >
+          <EstoqueComSociosTemplate
+            empresa={empresa}
+            watermark={watermark}
+            data={reportData}
+          />
+        </RelatoriosQuickPreview>
       )}
     </div>
   );
