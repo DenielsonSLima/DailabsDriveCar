@@ -79,6 +79,7 @@ import BackupPage from './modules/ajustes/backup/Backup.page.tsx';
 import ApiResetPage from './modules/ajustes/api-reset/ApiReset.page.tsx';
 import ContasBancariasPage from './modules/ajustes/contas-bancarias/ContasBancarias.page.tsx';
 import SaldoInicialPage from './modules/ajustes/saldo-inicial/SaldoInicial.page.tsx';
+import ConsultaPlacaPage from './modules/ajustes/consulta-placa/ConsultaPlaca.page.tsx';
 
 import { useAuthStore } from './store/auth.store.ts';
 
@@ -342,6 +343,8 @@ const App: React.FC = () => {
                   <Route path="/ajustes/api-reset" element={<ApiResetPage />} />
                   <Route path="/ajustes/contas-bancarias" element={<ContasBancariasPage />} />
                   <Route path="/ajustes/saldo-inicial" element={<SaldoInicialPage />} />
+                  <Route path="/ajustes/consulta-placa" element={<ConsultaPlacaPage />} />
+
                   <Route path="/marketing/stories" element={<StoryGeneratorPage />} />
                   <Route path="/marketing/feed" element={<FeedGeneratorPage />} />
 

@@ -1,0 +1,254 @@
+/**
+ * Auto-preenchimento de veículo via consulta de placa (API Brasil).
+ * Faz parsing inteligente do retorno da API e busca/sugere cadastros existentes.
+ */
+
+import { consultaPlacaService, VeiculoConsultaReponse } from '../../ajustes/consulta-placa/consulta-placa.service';
+import { MontadorasService } from '../../cadastros/montadoras/montadoras.service';
+import { TiposVeiculosService } from '../../cadastros/tipos-veiculos/tipos-veiculos.service';
+import { ModelosService } from '../../cadastros/modelos/modelos.service';
+import { VersoesService } from '../../cadastros/versoes/versoes.service';
+import { CoresService } from '../../cadastros/cores/cores.service';
+import { IMontadora } from '../../cadastros/montadoras/montadoras.types';
+import { ITipoVeiculo } from '../../cadastros/tipos-veiculos/tipos-veiculos.types';
+import { IModelo } from '../../cadastros/modelos/modelos.types';
+
+// ============================================================
+// TIPOS
+// ============================================================
+
+export interface DadosParsedAPI {
+  // Dados brutos da API
+  raw: VeiculoConsultaReponse;
+
+  // Dados parseados
+  marcaNome: string;
+  modeloNome: string;
+  versaoNome: string;
+  motorizacaoSugerida: string; // ex: "1.4"
+  combustivel: string;         // ex: "FLEX"
+  anoFabricacao: number;
+  anoModelo: number;
+  cor: string;
+  chassi: string;
+  placa: string;
+  valorFipe: number;
+
+  // IDs encontrados (null se não existir no banco)
+  montadora: IMontadora | null;
+  tipoVeiculo: ITipoVeiculo | null;
+  modelo: IModelo | null;
+  corId: string | null;
+
+  // Informações de Custo
+  consultasRestantes: number;
+
+  // Flags para o wizard
+  precisaCriarMontadora: boolean;
+  precisaConfirmarTipo: boolean; // sempre true (API não diferencia SEDAN/HATCH/PICKUP)
+  precisaCriarModelo: boolean;
+}
+
+// ============================================================
+// MAPEAMENTOS
+// ============================================================
+
+const COMBUSTIVEL_MAP: Record<string, string> = {
+  'flex': 'FLEX',
+  'gasolina': 'GASOLINA',
+  'etanol': 'ETANOL',
+  'diesel': 'DIESEL',
+  'eletrico': 'ELÉTRICO',
+  'hibrido': 'HÍBRIDO',
+  'gnv': 'GNV',
+  'alcool': 'ETANOL',
+};
+
+/**
+ * Normaliza combustível da API para o padrão do ERP.
+ */
+function mapCombustivel(apiCombustivel: string): string {
+  const lower = apiCombustivel?.toLowerCase().trim() || '';
+  return COMBUSTIVEL_MAP[lower] || apiCombustivel?.toUpperCase() || 'FLEX';
+}
+
+// ============================================================
+// PARSING INTELIGENTE DE MODELO / VERSÃO / MOTORIZAÇÃO
+// ============================================================
+
+interface ParsedModelo {
+  modelo: string;
+  versao: string;
+  motorizacao: string;
+}
+
+/**
+ * Separa o string bruto da API em modelo, versão e motorização.
+ * Ex: "Strada Endurance 1.4 Flex 8V CS Plus"
+ *   → modelo: "STRADA", versão: "ENDURANCE CS PLUS", motor: "1.4"
+ * 
+ * Estratégia:
+ * 1. Tenta match com modelos existentes da montadora
+ * 2. Se não achar, usa a 1ª palavra como modelo
+ * 3. Extrai motorização via regex (X.X)
+ * 4. Remove combustível e motorização do restante = versão
+ */
+function parseModeloVersao(
+  rawModelo: string,
+  modelosExistentes: IModelo[],
+  combustivelAPI: string
+): ParsedModelo {
+  const upper = rawModelo.toUpperCase().trim();
+  const palavras = upper.split(/\s+/);
+
+  let modeloNome = '';
+  let restante = '';
+
+  // 1. Tentar match com modelos existentes (prioridade)
+  const modeloEncontrado = modelosExistentes.find(m => {
+    const nomeUpper = m.nome.toUpperCase();
+    return upper.startsWith(nomeUpper + ' ') || upper === nomeUpper;
+  });
+
+  if (modeloEncontrado) {
+    modeloNome = modeloEncontrado.nome.toUpperCase();
+    restante = upper.slice(modeloNome.length).trim();
+  } else {
+    // 2. Usa a 1ª palavra como modelo
+    modeloNome = palavras[0];
+    restante = palavras.slice(1).join(' ');
+  }
+
+  // 3. Extrair motorização (padrão X.X, ex: 1.4, 2.0, 1.3)
+  const motorRegex = /\b(\d+\.\d+)\b/;
+  const motorMatch = restante.match(motorRegex);
+  const motorizacao = motorMatch ? motorMatch[1] : '';
+
+  // 4. Limpar a versão: remover motorização, combustível e palavras técnicas
+  const combustivelUpper = combustivelAPI.toUpperCase();
+  const palavrasRemover = [
+    motorizacao,
+    combustivelUpper,
+    'FLEX',
+    'GASOLINA',
+    'DIESEL',
+    'ETANOL',
+    'ELÉTRICO',
+    'HÍBRIDO',
+    'GNV',
+    '8V',
+    '16V',
+    '4X2',
+    '4X4',
+    'TURBO',
+  ];
+
+  let versaoPalavras = restante.split(/\s+/).filter(p => {
+    return p && !palavrasRemover.includes(p);
+  });
+
+  const versaoNome = versaoPalavras.join(' ').trim() || modeloNome;
+
+  return {
+    modelo: modeloNome,
+    versao: versaoNome,
+    motorizacao: motorizacao,
+  };
+}
+
+// ============================================================
+// FUNÇÃO PRINCIPAL
+// ============================================================
+
+/**
+ * Consulta a placa na API Brasil e faz o parsing dos dados
+ * retornando tudo preparado para o fluxo wizard.
+ */
+export async function consultarEParsear(placa: string): Promise<DadosParsedAPI> {
+  // 1. Consultar API
+  const apiResponse = await consultaPlacaService.consultar(placa);
+
+  // Pegar o resultado principal
+  const resultados = apiResponse.data?.resultados || [];
+  const principal = resultados.find(r => r.principal) || resultados[0];
+
+  if (!principal) {
+    throw new Error('Nenhum resultado encontrado para esta placa.');
+  }
+
+  let marcaNome = principal.marca.toUpperCase().trim();
+  // Normalizar marcas conhecidas que vêm com prefixo na API Brasil
+  // Exemplo: "GM - CHEVROLET" -> "CHEVROLET"
+  if (marcaNome.includes(' - ')) {
+    marcaNome = marcaNome.split(' - ')[1].trim();
+  }
+  
+  const combustivel = mapCombustivel(principal.combustivel);
+
+  // 2. Buscar montadora existente
+  const todasMontadoras = await MontadorasService.getAll();
+  const montadora = todasMontadoras.find(
+    m => m.nome.toUpperCase().trim() === marcaNome
+  ) || null;
+
+  // 3. Buscar tipos existentes (sempre precisa confirmar — API não diferencia)
+  const todosTipos = await TiposVeiculosService.getAll();
+
+  // 4. Buscar modelos existentes da montadora (se houver)
+  let modelosExistentes: IModelo[] = [];
+  if (montadora) {
+    // Busca todos os modelos dessa montadora (sem filtro de tipo por enquanto)
+    const { data } = await (await import('../../../lib/supabase')).supabase
+      .from('cad_modelos')
+      .select('id, nome')
+      .eq('montadora_id', montadora.id)
+      .order('nome');
+    modelosExistentes = (data || []) as IModelo[];
+  }
+
+  // 5. Parsing inteligente
+  const parsed = parseModeloVersao(principal.modelo, modelosExistentes, principal.combustivel);
+
+  // 6. Verificar se o modelo existe no banco
+  const modeloEncontrado = modelosExistentes.find(
+    m => m.nome.toUpperCase() === parsed.modelo
+  ) || null;
+
+  // 7. Buscar cor no banco
+  let corId: string | null = null;
+  if (principal.cor) {
+    const cores = await CoresService.getAll();
+    const corEncontrada = cores.find(
+      c => c.nome.toUpperCase().trim() === principal.cor.toUpperCase().trim()
+    );
+    if (corEncontrada) {
+      corId = corEncontrada.id;
+    }
+  }
+
+  const valorSaldo = parseFloat(apiResponse.balance || '0');
+  const consultasRestantes = Math.floor(valorSaldo / 0.06);
+
+  return {
+    raw: apiResponse,
+    marcaNome,
+    modeloNome: parsed.modelo,
+    versaoNome: parsed.versao,
+    motorizacaoSugerida: parsed.motorizacao,
+    combustivel,
+    anoFabricacao: principal.anoFabricacao,
+    anoModelo: parseInt(principal.anoModelo) || principal.anoFabricacao,
+    cor: principal.cor?.toUpperCase() || '',
+    chassi: principal.chassi || '',
+    placa: placa.toUpperCase().replace(/[^A-Z0-9]/g, ''),
+    valorFipe: principal.valor || 0,
+    montadora,
+    tipoVeiculo: null, // Sempre pede confirmação
+    modelo: modeloEncontrado,
+    corId,
+    consultasRestantes,
+    precisaCriarMontadora: !montadora,
+    precisaConfirmarTipo: true, // API não diferencia SEDAN/HATCH/PICKUP
+    precisaCriarModelo: !modeloEncontrado,
+  };
+}

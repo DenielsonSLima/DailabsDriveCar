@@ -8,15 +8,17 @@ export const CaixaService = {
     const firstDay = p_data_inicio;
     const lastDay = p_data_fim;
 
-    // 1. Parallelize data fetching: Metrics, Banking accounts, and Partner Patrimony (SQL)
+    // 1. Parallelize data fetching: Metrics, Banking accounts, Partner Patrimony, and Historical Balances
     const [
       { data: metrics, error: metricsError },
       { data: contas },
       { data: investimentoSocios, error: sociosError },
+      { data: saldoHistorico },
     ] = await Promise.all([
       supabase.rpc('get_caixa_metrics', { p_data_inicio: firstDay, p_data_fim: lastDay }),
       supabase.from('fin_contas_bancarias').select('*').order('banco_nome'),
-      supabase.rpc('get_caixa_patrimonio_socios', { p_data_inicio: firstDay, p_data_fim: lastDay })
+      supabase.rpc('get_caixa_patrimonio_socios', { p_data_inicio: firstDay, p_data_fim: lastDay }),
+      supabase.rpc('get_caixa_saldo_contas_historico', { p_data_fim: lastDay }),
     ]);
 
     if (metricsError) {
@@ -171,9 +173,19 @@ export const CaixaService = {
       }
     }
 
+    // Enriquecer contas com saldo histórico para o período selecionado
+    const saldoMap = new Map<string, number>();
+    if (Array.isArray(saldoHistorico)) {
+      saldoHistorico.forEach((s: any) => { if (s.conta_id) saldoMap.set(s.conta_id, s.saldo_historico ?? 0); });
+    }
+    const contasComSaldoHistorico = (contas || []).map((c: any) => ({
+      ...c,
+      saldo_atual: saldoMap.has(c.id) ? saldoMap.get(c.id) : c.saldo_atual,
+    }));
+
     return {
       ...(validatedMetrics as any),
-      contas: (contas || []) as any,
+      contas: contasComSaldoHistorico as any,
       investimento_socios: processedSocios,
       transacoes: (await FinanceiroService.getExtrato({ dataInicio: firstDay, dataFim: lastDay })).data
     } as ICaixaDashboardData;
@@ -382,6 +394,7 @@ export const CaixaService = {
         veiculo:est_veiculos(placa, modelo:cad_modelos(nome))
       `)
       .in('status', ['PENDENTE', 'PARCIAL', 'ATRASADO'])
+      .lte('created_at', p_data_fim)
       .order('data_vencimento', { ascending: true });
 
     if (error) {

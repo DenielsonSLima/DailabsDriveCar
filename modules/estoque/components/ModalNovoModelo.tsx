@@ -11,11 +11,13 @@ interface Props {
     /** Pré-seleciona montadora e tipo conforme o veículo em edição */
     preselectedMontadoraId?: string;
     preselectedTipoId?: string;
+    preselectedNome?: string;
     onClose: () => void;
     onSuccess: (modelo: IModelo) => void;
 }
 
 const ModalNovoModelo: React.FC<Props> = ({
+    preselectedNome,
     preselectedMontadoraId,
     preselectedTipoId,
     onClose,
@@ -27,7 +29,7 @@ const ModalNovoModelo: React.FC<Props> = ({
     const [tipos, setTipos] = useState<ITipoVeiculo[]>([]);
     const [loading, setLoading] = useState(true);
 
-    const [nome, setNome] = useState('');
+    const [nome, setNome] = useState(preselectedNome?.toUpperCase() || '');
     const [montadoraId, setMontadoraId] = useState(preselectedMontadoraId || '');
     const [tipoId, setTipoId] = useState(preselectedTipoId || '');
 

@@ -22,7 +22,13 @@ const PedidoCompraFormPage: React.FC = () => {
 
   // Queries de Catálogos
   const { data: corretores = [] } = useQuery({ queryKey: ['corretores'], queryFn: () => CorretoresService.getAll() });
-  const { data: formas = [] } = useQuery({ queryKey: ['formas_pagamento'], queryFn: () => FormasPagamentoService.getAll() });
+  const { data: formas = [] } = useQuery({
+    queryKey: ['formas_pagamento_compra'],
+    queryFn: async () => {
+      const all = await FormasPagamentoService.getAll();
+      return all.filter((item: any) => item.tipo_movimentacao !== 'RECEBIMENTO');
+    }
+  });
   const { data: parceiros = [] } = useQuery({ queryKey: ['parceiros_select'], queryFn: () => ParceirosService.getAllForSelect() });
 
   // Query do Pedido (se houver ID)
