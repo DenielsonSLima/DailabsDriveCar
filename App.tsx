@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState, Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import Layout from './components/Layout.tsx';
 import { AuthService } from './modules/auth/auth.service.ts';
 import { supabase } from './lib/supabase.ts';
@@ -84,6 +85,7 @@ import ConsultaPlacaPage from './modules/ajustes/consulta-placa/ConsultaPlaca.pa
 import { useAuthStore } from './store/auth.store.ts';
 
 const App: React.FC = () => {
+  const queryClient = useQueryClient();
   const { session, profile, loading, setSession, setProfile, setLoading } = useAuthStore();
   const [showTimeoutModal, setShowTimeoutModal] = useState(false);
   const [countdown, setCountdown] = useState(120);
@@ -126,9 +128,13 @@ const App: React.FC = () => {
       if (event === 'SIGNED_OUT') {
         setSession(null);
         setProfile(null);
+        // Limpa todo o cache React Query para evitar dados stale na próxima sessão
+        queryClient.clear();
       } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
         setSession(currentSession);
         if (currentSession?.user) loadProfile(currentSession.user.id);
+        // Invalida todas as queries para forçar refetch com a nova sessão autenticada
+        queryClient.invalidateQueries();
       }
       setLoading(false);
     });
