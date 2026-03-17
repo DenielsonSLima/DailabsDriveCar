@@ -20,7 +20,7 @@ export const EstoqueService = {
         *,
         montadora:cad_montadoras(nome, logo_url),
         modelo:cad_modelos(nome),
-        versao:cad_versoes(nome),
+        versao:cad_versoes(nome, motorizacao, combustivel, transmissao, ano_fabricacao, ano_modelo),
         tipo_veiculo:cad_tipos_veiculos(nome),
         pedido_compra:cmp_pedidos!est_veiculos_pedido_id_fkey(forma_pagamento:cad_formas_pagamento(nome))
       `, { count: 'exact' });

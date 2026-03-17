@@ -3,8 +3,8 @@ import { ITituloCredito } from '../outros-creditos.types';
 
 interface Props {
   kpis?: {
-    total_liquidar: number;
-    vencendo_hoje: number;
+    total_creditado: number;
+    total_pendente: number;
     total_atrasado: number;
   };
 }
@@ -12,8 +12,8 @@ interface Props {
 const CreditosKpis: React.FC<Props> = ({ kpis }) => {
   const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
-  const totalRecebido = 0; // Backend standard only returns pending/overdue for now
-  const totalPendente = kpis?.total_liquidar || 0;
+  const totalRecebido = kpis?.total_creditado || 0;
+  const totalPendente = kpis?.total_pendente || 0;
   const totalAtrasado = kpis?.total_atrasado || 0;
 
   return (

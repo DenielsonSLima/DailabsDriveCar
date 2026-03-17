@@ -97,9 +97,7 @@ export const ContasPagarService = {
   },
 
   async getKpis() {
-    const { data, error } = await supabase.rpc('get_submodule_kpis', {
-      p_tipo: 'PAGAR'
-    });
+    const { data, error } = await supabase.rpc('rpc_kpi_contas_pagar');
 
     if (error) {
       console.error('Erro ao buscar KPIs de contas a pagar:', error);

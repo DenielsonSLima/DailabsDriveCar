@@ -9,6 +9,7 @@ interface SpecsCardProps {
 }
 
 const SpecsCard: React.FC<SpecsCardProps> = ({ veiculo, cores }) => {
+  const v = veiculo as any;
   const corVeiculo = cores.find(c => c.id === veiculo.cor_id);
 
   return (
@@ -21,19 +22,19 @@ const SpecsCard: React.FC<SpecsCardProps> = ({ veiculo, cores }) => {
        <div className="grid grid-cols-2 gap-4">
           <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 hover:border-slate-200 transition-colors">
              <p className="text-[9px] font-bold text-slate-400 uppercase mb-1">Motorização</p>
-             <p className="text-sm font-black text-slate-800 truncate" title={veiculo.motorizacao}>{veiculo.motorizacao || '-'}</p>
+             <p className="text-sm font-black text-slate-800 truncate" title={veiculo.motorizacao || v.versao?.motorizacao}>{veiculo.motorizacao || v.versao?.motorizacao || '-'}</p>
           </div>
           <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 hover:border-slate-200 transition-colors">
              <p className="text-[9px] font-bold text-slate-400 uppercase mb-1">Câmbio</p>
-             <p className="text-sm font-black text-slate-800 truncate" title={veiculo.transmissao}>{veiculo.transmissao || '-'}</p>
+             <p className="text-sm font-black text-slate-800 truncate" title={veiculo.transmissao || v.versao?.transmissao}>{veiculo.transmissao || v.versao?.transmissao || '-'}</p>
           </div>
           <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 hover:border-slate-200 transition-colors">
              <p className="text-[9px] font-bold text-slate-400 uppercase mb-1">Combustível</p>
-             <p className="text-sm font-black text-slate-800 truncate">{veiculo.combustivel || '-'}</p>
+             <p className="text-sm font-black text-slate-800 truncate">{veiculo.combustivel || v.versao?.combustivel || '-'}</p>
           </div>
           <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 hover:border-slate-200 transition-colors">
              <p className="text-[9px] font-bold text-slate-400 uppercase mb-1">Ano Fab/Mod</p>
-             <p className="text-sm font-black text-slate-800">{veiculo.ano_fabricacao}/{veiculo.ano_modelo}</p>
+             <p className="text-sm font-black text-slate-800">{veiculo.ano_fabricacao || v.versao?.ano_fabricacao || '?'}/{veiculo.ano_modelo || v.versao?.ano_modelo || '?'}</p>
           </div>
           <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 hover:border-slate-200 transition-colors col-span-2">
              <p className="text-[9px] font-bold text-slate-400 uppercase mb-1">Cor Predominante</p>

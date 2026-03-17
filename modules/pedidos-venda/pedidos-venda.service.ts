@@ -34,9 +34,17 @@ export const PedidosVendaService = {
           placa,
           fotos,
           socios,
+          motorizacao,
+          combustivel,
+          transmissao,
+          ano_fabricacao,
+          ano_modelo,
+          chassi,
+          km,
           montadora:cad_montadoras(nome, logo_url),
           modelo:cad_modelos(nome),
-          versao:cad_versoes(nome)
+          versao:cad_versoes(nome, motorizacao, combustivel, transmissao, ano_fabricacao, ano_modelo),
+          tipo_veiculo:cad_tipos_veiculos(nome)
         )
       `, { count: 'exact' });
 
@@ -110,7 +118,8 @@ export const PedidosVendaService = {
           *,
           montadora:cad_montadoras(*),
           modelo:cad_modelos(*),
-          versao:cad_versoes(*)
+          versao:cad_versoes(*),
+          tipo_veiculo:cad_tipos_veiculos(*)
         ),
         pagamentos:venda_pedidos_pagamentos(
           *,

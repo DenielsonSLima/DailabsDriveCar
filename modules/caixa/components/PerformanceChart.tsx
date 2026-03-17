@@ -16,7 +16,7 @@ interface Props {
 }
 
 const PerformanceChart: React.FC<Props> = ({ history }) => {
-    const fmt = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(v);
+    const fmt = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v);
     const fmtK = (v: number) => {
         if (Math.abs(v) >= 1000000) return `${(v / 1000000).toFixed(1)}M`;
         if (Math.abs(v) >= 1000) return `${(v / 1000).toFixed(0)}k`;

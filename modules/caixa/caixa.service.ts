@@ -41,21 +41,19 @@ export const CaixaService = {
     const validatedMetrics = CaixaDashboardSchema.parse(metricsPayload || {});
 
     // --- LÓGICA DE LUCRO REAL (SÓCIO) ---
-    // 1. Dinheiro em Caixa (Realizado): O que já sobrou após cobrir o custo dos veículos que saíram.
-    // (Total Entradas - Custo dos Veículos Vendidos)
-    const totalEntradas = validatedMetrics.total_entradas || 0; // Keep this line
-    const totalVendasRecebido = validatedMetrics.total_vendas_recebido || 0; // Keep this line
+    // 1. Dinheiro em Caixa (Realizado): Lucro bruto das vendas efetivadas no período.
+    // (Receita de Vendas - Custo dos Veículos Vendidos)
+    const totalEntradas = validatedMetrics.total_entradas || 0;
+    const totalVendasRecebido = validatedMetrics.total_vendas_recebido || 0;
     const custoVendas = validatedMetrics.total_custo_vendas || 0;
-    const lucroRealizadoTotal = Math.max(0, totalEntradas - custoVendas);
+    const lucroRealizadoTotal = Math.max(0, totalVendasRecebido - custoVendas);
 
-    // 2. Lucro a Receber (Futuro): Todo o Contas a Receber, removendo a parte que é apenas retorno de custo.
-    // Se o custo ainda não foi totalmente pago pelo que recebemos de vendas, subtraímos do que temos a receber.
+    // 2. Lucro a Receber (Futuro): Parte do Contas a Receber que é lucro real (não retorno de custo).
     const totalRecebiveis = validatedMetrics.total_recebiveis || 0;
     const custoPendenteDeRecuperar = Math.max(0, custoVendas - totalVendasRecebido);
     const lucroPendenteTotal = Math.max(0, totalRecebiveis - custoPendenteDeRecuperar);
 
-    // 3. Lucro Gerado (Competência): Soma do Lucro no Bolso + Lucro Garantido para o futuro.
-    // Isso inclui automaticamente Lucro de Vendas + Outros Créditos (Recebidos e a Receber).
+    // 3. Lucro Gerado (Competência): Lucro no Bolso + Lucro Pendente.
     const totalLucroGerado = lucroRealizadoTotal + lucroPendenteTotal;
 
     const processedSocios = (investimentoSocios as any[] || []).map(s => ({
@@ -183,8 +181,16 @@ export const CaixaService = {
       saldo_atual: saldoMap.has(c.id) ? saldoMap.get(c.id) : c.saldo_atual,
     }));
 
+    const totalDespesas = (validatedMetrics.total_despesas_fixas || 0) + (validatedMetrics.total_despesas_variaveis || 0);
+    const lucroMensalLiquido = (validatedMetrics.lucro_mensal || 0) - totalDespesas;
+    const margemLiquida = (validatedMetrics.total_vendas_recebido || 0) > 0 
+      ? (lucroMensalLiquido / validatedMetrics.total_vendas_recebido) * 100 
+      : 0;
+
     return {
       ...(validatedMetrics as any),
+      lucro_mensal: lucroMensalLiquido,
+      margem_lucro: margemLiquida,
       contas: contasComSaldoHistorico as any,
       investimento_socios: processedSocios,
       transacoes: (await FinanceiroService.getExtrato({ dataInicio: firstDay, dataFim: lastDay })).data
@@ -325,13 +331,15 @@ export const CaixaService = {
 
           // Faturado e Lucro Bruto vêm da Performance (melhor para VGV)
           const faturado = perfValid.total_vendas_valor;
-          const lucro = perfValid.lucro_bruto;
 
           const fixas = (caixaValid.total_despesas_fixas || 0);
           const variaveis = (caixaValid.total_despesas_variaveis || 0) + (perfValid.despesas_veiculos || 0);
 
+          // Lucro Líquido: Lucro Bruto - (Despesas Fixas + Variáveis)
+          const lucro = perfValid.lucro_bruto - (fixas + variaveis);
+
           // Custo calculado para fechar com o lucro bruto mostrado no sistema
-          const custo = faturado > 0 ? (faturado - lucro) : 0;
+          const custo = faturado > 0 ? (faturado - perfValid.lucro_bruto) : 0;
 
           return {
             label,

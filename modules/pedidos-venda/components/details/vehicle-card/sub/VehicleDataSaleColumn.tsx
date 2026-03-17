@@ -67,10 +67,10 @@ const VehicleDataSaleColumn: React.FC<Props> = ({
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-8">
         {[
           { label: 'Categoria', value: v.tipo_veiculo?.nome || 'N/D' },
-          { label: 'Motorização', value: veiculo.motorizacao || 'N/D' },
-          { label: 'Combustível', value: veiculo.combustivel || 'N/D' },
-          { label: 'Câmbio', value: veiculo.transmissao || 'N/D' },
-          { label: 'Fab / Modelo', value: `${veiculo.ano_fabricacao} / ${veiculo.ano_modelo}` },
+          { label: 'Motorização', value: veiculo.motorizacao || v.versao?.motorizacao || 'N/D' },
+          { label: 'Combustível', value: veiculo.combustivel || v.versao?.combustivel || 'N/D' },
+          { label: 'Câmbio', value: veiculo.transmissao || v.versao?.transmissao || 'N/D' },
+          { label: 'Fab / Modelo', value: `${veiculo.ano_fabricacao || v.versao?.ano_fabricacao || '?'} / ${veiculo.ano_modelo || v.versao?.ano_modelo || '?'}` },
         ].map((item, idx) => (
           <div key={idx} className="bg-slate-50/80 px-3 py-2 rounded-xl border border-slate-100 min-w-0">
             <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1 truncate">{item.label}</p>

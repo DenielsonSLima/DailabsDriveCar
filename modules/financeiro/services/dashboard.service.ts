@@ -2,8 +2,8 @@ import { supabase } from '../../../lib/supabase';
 import { IFinanceiroKpis, IPendencias } from '../financeiro.types';
 
 export const DashboardService = {
-    async getKpis(): Promise<IFinanceiroKpis> {
-        const { data, error } = await supabase.rpc('get_financeiro_kpis');
+    async getKpis(): Promise<any> {
+        const { data, error } = await supabase.rpc('rpc_kpi_dashboard_financeiro');
         if (error) {
             console.error('Erro ao buscar KPIs via RPC:', error);
             throw error;

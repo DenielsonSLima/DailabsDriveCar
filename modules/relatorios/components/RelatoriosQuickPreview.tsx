@@ -64,7 +64,9 @@ const RelatoriosQuickPreview: React.FC<Props> = ({ isOpen, onClose, title, child
             allSvgs.forEach((svg) => {
               const hasPaths = svg.querySelectorAll('path, circle, line, polyline, polygon, rect').length > 0;
               const isWatermark = svg.getAttribute('width')?.includes('mm');
-              if (hasPaths && !isWatermark) {
+              const isSafe = svg.getAttribute('data-pdf-safe') === 'true';
+              
+              if (hasPaths && !isWatermark && !isSafe) {
                 (svg as unknown as HTMLElement).remove();
               }
             });

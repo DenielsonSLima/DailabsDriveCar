@@ -77,10 +77,7 @@ export const ContasReceberService = {
   },
 
   async getKpis() {
-    const { data, error } = await supabase.rpc('get_submodule_kpis', {
-      p_tipo: 'RECEBER',
-      p_exclude_origem_tipo: 'OUTRO_CREDITO'
-    });
+    const { data, error } = await supabase.rpc('rpc_kpi_contas_receber');
 
     if (error) {
       console.error('Erro ao buscar KPIs de contas a receber:', error);

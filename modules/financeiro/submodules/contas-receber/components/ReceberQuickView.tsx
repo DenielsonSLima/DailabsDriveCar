@@ -26,9 +26,12 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
     const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
     const formatDate = (date: string) => new Date(date).toLocaleDateString('pt-BR');
 
-    // Mapeia todas as transações para visualização em lista
+    // Mapeia apenas pagamentos reais (ignora descontos e acréscimos informativos na soma do recebido)
     const transacoes = titulo.transacoes || [];
-    const valorPagoTotal = transacoes.reduce((acc, t) => acc + Number(t.valor), 0);
+    const valorPagoTotal = transacoes.reduce((acc, t) => {
+        if (t.tipo_transacao === 'DESCONTO_TITULO' || t.tipo_transacao === 'ACRESCIMO_TITULO') return acc;
+        return acc + Number(t.valor);
+    }, 0);
 
     const handleDeletePayment = (id: string) => {
         setConfirmDeleteId(id);

@@ -98,7 +98,7 @@ const FinanceiroPage: React.FC = () => {
             {loading ? (
               <div className="h-7 bg-slate-800 rounded animate-pulse w-32 relative z-10"></div>
             ) : (
-              <h3 className="text-xl font-black tracking-tight relative z-10">{formatCurrency(kpis?.saldo_total || 0)}</h3>
+              <h3 className="text-xl font-black tracking-tight relative z-10">{formatCurrency(kpis?.saldo_disponivel || 0)}</h3>
             )}
           </div>
           {/* Compra de Veículos */}
@@ -107,7 +107,7 @@ const FinanceiroPage: React.FC = () => {
             {loading ? (
               <div className="h-7 bg-slate-200 rounded animate-pulse w-32"></div>
             ) : (
-              <h3 className="text-xl font-black text-slate-900 tracking-tight">{formatCurrency(kpis?.compra_veiculos_mes || 0)}</h3>
+              <h3 className="text-xl font-black text-slate-900 tracking-tight">{formatCurrency(kpis?.compra_veiculos || 0)}</h3>
             )}
           </div>
           {/* Despesas Fixas do Mês */}
@@ -116,7 +116,7 @@ const FinanceiroPage: React.FC = () => {
             {loading ? (
               <div className="h-7 bg-slate-200 rounded animate-pulse w-32"></div>
             ) : (
-              <h3 className="text-xl font-black text-slate-900 tracking-tight">{formatCurrency(kpis?.despesas_fixas_mes || 0)}</h3>
+              <h3 className="text-xl font-black text-slate-900 tracking-tight">{formatCurrency(kpis?.despesas_fixas || 0)}</h3>
             )}
           </div>
         </div>
@@ -128,7 +128,7 @@ const FinanceiroPage: React.FC = () => {
             {loading ? (
               <div className="h-7 bg-slate-200 rounded animate-pulse w-32"></div>
             ) : (
-              <h3 className="text-xl font-black text-slate-900 tracking-tight">{formatCurrency(kpis?.despesas_variaveis_mes || 0)}</h3>
+              <h3 className="text-xl font-black text-slate-900 tracking-tight">{formatCurrency(kpis?.despesas_variaveis || 0)}</h3>
             )}
           </div>
           {/* Outras Receitas */}
@@ -137,7 +137,7 @@ const FinanceiroPage: React.FC = () => {
             {loading ? (
               <div className="h-7 bg-slate-200 rounded animate-pulse w-32"></div>
             ) : (
-              <h3 className="text-xl font-black text-slate-900 tracking-tight">{formatCurrency(kpis?.outras_receitas_mes || 0)}</h3>
+              <h3 className="text-xl font-black text-slate-900 tracking-tight">{formatCurrency(kpis?.outras_receitas || 0)}</h3>
             )}
           </div>
           {/* Retiradas */}
@@ -146,7 +146,7 @@ const FinanceiroPage: React.FC = () => {
             {loading ? (
               <div className="h-7 bg-slate-200 rounded animate-pulse w-32"></div>
             ) : (
-              <h3 className="text-xl font-black text-slate-900 tracking-tight">{formatCurrency(kpis?.retiradas_mes || 0)}</h3>
+              <h3 className="text-xl font-black text-slate-900 tracking-tight">{formatCurrency(kpis?.retiradas || 0)}</h3>
             )}
           </div>
         </div>

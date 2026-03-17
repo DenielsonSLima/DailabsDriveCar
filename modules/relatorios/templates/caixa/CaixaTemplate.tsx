@@ -106,7 +106,7 @@ const CaixaTemplate: React.FC<Props> = ({ data, empresa, watermark, periodo }) =
                         {kpis.map((k, i) => (
                             <div key={i} className={`kpi-card ${i < 2 ? 'kpi-card-main' : ''}`} style={{ marginBottom: 0, minWidth: 0 }}>
                                 <div className="kpi-icon" style={{ backgroundColor: i < 2 ? 'rgba(255,255,255,0.2)' : `${k.color}15`, color: i < 2 ? 'white' : k.color }}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke={i < 2 ? '#FFFFFF' : k.color} strokeWidth={3}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke={i < 2 ? '#FFFFFF' : k.color} strokeWidth={3} data-pdf-safe="true">
                                         <path strokeLinecap="round" strokeLinejoin="round" d={k.icon} />
                                     </svg>
                                 </div>

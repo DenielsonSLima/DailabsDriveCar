@@ -117,10 +117,7 @@ export const OutrosCreditosService = {
   },
 
   async getKpis() {
-    const { data, error } = await supabase.rpc('get_submodule_kpis', {
-      p_tipo: 'RECEBER',
-      p_origem_tipo: 'OUTRO_CREDITO'
-    });
+    const { data, error } = await supabase.rpc('rpc_kpi_outros_creditos');
 
     if (error) {
       console.error('Erro ao buscar KPIs de outros créditos:', error);

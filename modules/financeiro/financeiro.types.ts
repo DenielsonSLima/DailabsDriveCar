@@ -63,12 +63,12 @@ export const CategoriaFinanceiraSchema = z.object({
 
 // Fix: Adding IFinanceiroKpis interface to satisfy imports in Financeiro.page.tsx
 export interface IFinanceiroKpis {
-  saldo_total: number;
-  compra_veiculos_mes: number;
-  despesas_fixas_mes: number;
-  despesas_variaveis_mes: number;
-  outras_receitas_mes: number;
-  retiradas_mes: number;
+  saldo_disponivel: number;
+  compra_veiculos: number;
+  despesas_fixas: number;
+  despesas_variaveis: number;
+  outras_receitas: number;
+  retiradas: number;
 }
 
 export interface IPendencias {
