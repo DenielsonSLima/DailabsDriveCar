@@ -72,9 +72,9 @@ export const PerformanceService = {
     const { data } = await supabase
       .from('venda_pedidos')
       .select(`
-        id, numero_venda, data_venda, valor_venda, status,
+        id, numero_venda, data_venda, valor_venda, valor_lucro, valor_custo_veiculo, status,
         cliente:parceiros(nome),
-        veiculo:est_veiculos(placa, valor_custo, valor_custo_servicos, modelo:cad_modelos(nome))
+        veiculo:est_veiculos(placa, modelo:cad_modelos(nome))
       `)
       .eq('status', 'CONCLUIDO')
       .gte('data_venda', startDate)
@@ -82,10 +82,8 @@ export const PerformanceService = {
       .order('data_venda', { ascending: false });
 
     return (data || []).map((s: any) => {
-      const custoVeiculo = Number(s.veiculo?.valor_custo) || 0;
-      const custoServicos = Number(s.veiculo?.valor_custo_servicos) || 0;
-      const custoTotal = custoVeiculo + custoServicos;
-      const lucro = (Number(s.valor_venda) || 0) - custoTotal;
+      const custoTotal = Number(s.valor_custo_veiculo) || 0;
+      const lucro = Number(s.valor_lucro) || 0;
       const margem = custoTotal > 0 ? (lucro / custoTotal) * 100 : 0;
 
       return {
@@ -96,8 +94,8 @@ export const PerformanceService = {
         veiculo_modelo: s.veiculo?.modelo?.nome || 'N/A',
         veiculo_placa: s.veiculo?.placa || 'N/A',
         valor_venda: Number(s.valor_venda) || 0,
-        custo_veiculo: custoVeiculo,
-        custo_servicos: custoServicos,
+        custo_veiculo: custoTotal,
+        custo_servicos: 0,
         lucro_bruto: lucro,
         margem_percent: margem
       };
@@ -209,26 +207,23 @@ export const PerformanceService = {
     const { data } = await supabase
       .from('est_veiculos')
       .select(`
-        id, valor_custo, valor_custo_servicos, valor_venda, status, created_at, placa,
+        id, valor_total_investido, valor_venda, valor_margem_estimada, status, created_at, placa,
         modelo:cad_modelos(nome)
       `)
       .in('status', ['DISPONIVEL', 'PREPARACAO', 'RESERVADO'])
       .order('created_at', { ascending: true });
 
     return (data || []).map((v: any) => {
-      const custo = (Number(v.valor_custo) || 0) + (Number(v.valor_custo_servicos) || 0);
-      const venda = Number(v.valor_venda) || 0;
-      const margem = custo > 0 ? ((venda - custo) / custo) * 100 : 0;
       const dias = Math.floor((new Date().getTime() - new Date(v.created_at).getTime()) / (1000 * 60 * 60 * 24));
 
       return {
         id: v.id,
         modelo: v.modelo?.nome || 'N/A',
         placa: v.placa || 'N/A',
-        valor_custo: Number(v.valor_custo) || 0,
-        valor_custo_servicos: Number(v.valor_custo_servicos) || 0,
-        valor_venda: venda,
-        margem_percent: margem,
+        valor_custo: Number(v.valor_total_investido) || 0,
+        valor_custo_servicos: 0,
+        valor_venda: Number(v.valor_venda) || 0,
+        margem_percent: Number(v.valor_margem_estimada) || 0,
         dias_estoque: dias,
         status: v.status
       };

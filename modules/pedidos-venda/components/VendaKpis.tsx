@@ -10,10 +10,7 @@ const VendaKpis: React.FC<Props> = ({ pedidos }) => {
   const stats = useMemo(() => {
     const concluídos = pedidos.filter(p => p.status === 'CONCLUIDO');
     const vgvTotal = concluídos.reduce((acc, p) => acc + (p.valor_venda || 0), 0);
-    const lucroRealizado = concluídos.reduce((acc, p) => {
-      const custo = (p.veiculo?.valor_custo || 0) + (p.veiculo?.valor_custo_servicos || 0);
-      return acc + (p.valor_venda - custo);
-    }, 0);
+    const lucroRealizado = concluídos.reduce((acc, p) => acc + (p.valor_lucro || 0), 0);
 
     return {
       vgv: vgvTotal,

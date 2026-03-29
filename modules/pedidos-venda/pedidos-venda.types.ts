@@ -51,6 +51,9 @@ export interface IPedidoVenda {
   complemento?: string;
 
   observacoes?: string;
+  total_pagamentos: number;
+  valor_custo_veiculo: number;
+  valor_lucro: number;
   created_at: string;
   updated_at?: string;
 

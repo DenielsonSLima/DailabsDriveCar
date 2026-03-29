@@ -40,28 +40,7 @@ export const CaixaService = {
     // Validate metrics with Zod
     const validatedMetrics = CaixaDashboardSchema.parse(metricsPayload || {});
 
-    // --- LÓGICA DE LUCRO REAL (SÓCIO) ---
-    // 1. Dinheiro em Caixa (Realizado): Lucro bruto das vendas efetivadas no período.
-    // (Receita de Vendas - Custo dos Veículos Vendidos)
-    const totalEntradas = validatedMetrics.total_entradas || 0;
-    const totalVendasRecebido = validatedMetrics.total_vendas_recebido || 0;
-    const custoVendas = validatedMetrics.total_custo_vendas || 0;
-    const lucroRealizadoTotal = Math.max(0, totalVendasRecebido - custoVendas);
-
-    // 2. Lucro a Receber (Futuro): Parte do Contas a Receber que é lucro real (não retorno de custo).
-    const totalRecebiveis = validatedMetrics.total_recebiveis || 0;
-    const custoPendenteDeRecuperar = Math.max(0, custoVendas - totalVendasRecebido);
-    const lucroPendenteTotal = Math.max(0, totalRecebiveis - custoPendenteDeRecuperar);
-
-    // 3. Lucro Gerado (Competência): Lucro no Bolso + Lucro Pendente.
-    const totalLucroGerado = lucroRealizadoTotal + lucroPendenteTotal;
-
-    const processedSocios = (investimentoSocios as any[] || []).map(s => ({
-      ...s,
-      lucro_periodo: totalLucroGerado / 3,
-      lucro_caixa: lucroRealizadoTotal / 3,
-      lucro_pendente: lucroPendenteTotal / 3,
-    })).sort((a, b) => b.valor_investido - a.valor_investido);
+    const processedSocios = (investimentoSocios as any[] || []).sort((a, b) => b.valor_investido - a.valor_investido);
 
     // Enriquecer veículos com detalhes técnicos (Imersivo)
     const allVehicleIds = Array.from(new Set(
@@ -181,16 +160,8 @@ export const CaixaService = {
       saldo_atual: saldoMap.has(c.id) ? saldoMap.get(c.id) : c.saldo_atual,
     }));
 
-    const totalDespesas = (validatedMetrics.total_despesas_fixas || 0) + (validatedMetrics.total_despesas_variaveis || 0);
-    const lucroMensalLiquido = (validatedMetrics.lucro_mensal || 0) - totalDespesas;
-    const margemLiquida = (validatedMetrics.total_vendas_recebido || 0) > 0 
-      ? (lucroMensalLiquido / validatedMetrics.total_vendas_recebido) * 100 
-      : 0;
-
     return {
       ...(validatedMetrics as any),
-      lucro_mensal: lucroMensalLiquido,
-      margem_lucro: margemLiquida,
       contas: contasComSaldoHistorico as any,
       investimento_socios: processedSocios,
       transacoes: (await FinanceiroService.getExtrato({ dataInicio: firstDay, dataFim: lastDay })).data

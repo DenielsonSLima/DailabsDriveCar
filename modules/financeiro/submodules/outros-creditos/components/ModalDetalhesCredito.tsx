@@ -97,8 +97,8 @@ const ModalDetalhesCredito: React.FC<Props> = ({ titulo, onClose, onSuccess }) =
         }
     };
 
-    const valorRecebidoTotal = recebimentos.reduce((acc, r) => acc + Number(r.valor), 0);
-    const valorPendente = Math.max(0, titulo.valor_total - valorRecebidoTotal);
+    const valorRecebidoTotal = titulo.valor_liquidado || 0;
+    const valorPendente = titulo.valor_pendente || 0;
 
     return (
         <div className="fixed inset-0 z-[160] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">

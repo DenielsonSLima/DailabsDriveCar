@@ -20,7 +20,8 @@ const ReceberCard: React.FC<ReceberCardProps> = ({ titulo, onBaixa, onDelete, on
         return 'bg-slate-100 text-slate-600 border-slate-200';
     };
 
-    const valorPendente = titulo.valor_total + (titulo.valor_acrescimo || 0) - titulo.valor_pago - (titulo.valor_desconto || 0);
+    const valorLiquidado = titulo.valor_liquidado || 0;
+    const valorPendente = titulo.valor_pendente || 0;
     const isVencido = titulo.data_vencimento < new Date().toISOString().split('T')[0] && titulo.status !== 'PAGO';
 
     return (
@@ -89,14 +90,18 @@ const ReceberCard: React.FC<ReceberCardProps> = ({ titulo, onBaixa, onDelete, on
             </div>
 
             {/* Values */}
-            <div className="mt-6 pt-6 border-t border-slate-100 grid grid-cols-2 gap-4">
+            <div className="mt-6 pt-6 border-t border-slate-100 grid grid-cols-3 gap-2">
                 <div>
-                    <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-1">Valor Total</p>
-                    <p className="text-lg font-black text-slate-900 tracking-tighter">{formatCurrency(titulo.valor_total)}</p>
+                    <p className="text-[8px] text-slate-400 font-black uppercase tracking-widest mb-1">Total</p>
+                    <p className="text-sm font-black text-slate-900 tracking-tighter">{formatCurrency(titulo.valor_total)}</p>
+                </div>
+                <div className="text-center">
+                    <p className="text-[8px] text-emerald-600 font-black uppercase tracking-widest mb-1">Recebido</p>
+                    <p className="text-sm font-black text-emerald-600 tracking-tighter">{formatCurrency(valorLiquidado)}</p>
                 </div>
                 <div className="text-right">
-                    <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-1">Pendente</p>
-                    <p className={`text-lg font-black tracking-tighter ${valorPendente > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>
+                    <p className="text-[8px] text-rose-600 font-black uppercase tracking-widest mb-1">Pendente</p>
+                    <p className={`text-sm font-black tracking-tighter ${valorPendente > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>
                         {formatCurrency(valorPendente)}
                     </p>
                 </div>

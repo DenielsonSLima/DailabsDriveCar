@@ -85,6 +85,9 @@ export interface ICaixaDashboardData {
   total_compras: number;
   total_vendas_recebido: number;
   total_custo_vendas: number; // CMV
+  lucro_gerado: number;
+  lucro_realizado: number;
+  lucro_pendente: number;
   lucro_mensal: number;
   margem_lucro: number;
 }
@@ -103,6 +106,9 @@ export const CaixaDashboardSchema = z.object({
   total_compras: z.number().nullish().transform(v => v ?? 0),
   total_vendas_recebido: z.number().nullish().transform(v => v ?? 0),
   total_custo_vendas: z.number().nullish().transform(v => v ?? 0),
+  lucro_gerado: z.number().nullish().transform(v => v ?? 0),
+  lucro_realizado: z.number().nullish().transform(v => v ?? 0),
+  lucro_pendente: z.number().nullish().transform(v => v ?? 0),
   lucro_mensal: z.number().nullish().transform(v => v ?? 0),
   margem_lucro: z.number().nullish().transform(v => v ?? 0),
 });

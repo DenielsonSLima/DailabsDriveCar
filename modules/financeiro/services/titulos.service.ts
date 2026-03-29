@@ -89,21 +89,17 @@ export const TitulosService = {
   },
 
   async excluirPagamento(transacaoId: string, tituloId: string): Promise<void> {
-    // 1. Deleta a transação
-    const { error: deleteError } = await supabase
+    const { error } = await supabase
       .from('fin_transacoes')
       .delete()
       .eq('id', transacaoId);
 
-    if (deleteError) throw deleteError;
-
-    // 2. Recalcula o título
-    await this.recalcularTitulo(tituloId);
+    if (error) throw error;
+    // O recalculo agora é automático via TRIGGER no banco! 🏛️🛡️
   },
 
   async editarPagamento(transacaoId: string, tituloId: string, dados: { valor: number, data_pagamento: string }): Promise<void> {
-    // 1. Atualiza a transação
-    const { error: updateTransError } = await supabase
+    const { error } = await supabase
       .from('fin_transacoes')
       .update({
         valor: dados.valor,
@@ -111,66 +107,14 @@ export const TitulosService = {
       })
       .eq('id', transacaoId);
 
-    if (updateTransError) throw updateTransError;
-
-    // 2. Recalcula o título
-    await this.recalcularTitulo(tituloId);
+    if (error) throw error;
+    // O recalculo agora é automático via TRIGGER no banco! 🏛️🛡️
   },
 
   async recalcularTitulo(titulo_id: string): Promise<void> {
-    // 1. Busca todas as transações do título para reconstruir os totais
-    const { data: transacoes, error: transError } = await supabase
-      .from('fin_transacoes')
-      .select('valor, tipo_transacao')
-      .eq('titulo_id', titulo_id);
-
-    if (transError) throw transError;
-
-    const totais = (transacoes || []).reduce((acc, t) => {
-      const valor = Number(t.valor);
-      if (t.tipo_transacao === 'PAGAMENTO_TITULO' || t.tipo_transacao === 'RECEBIMENTO_TITULO') {
-        acc.pago += valor;
-      } else if (t.tipo_transacao === 'DESCONTO_TITULO') {
-        acc.desconto += valor;
-      } else if (t.tipo_transacao === 'ACRESCIMO_TITULO') {
-        acc.acrescimo += valor;
-      }
-      return acc;
-    }, { pago: 0, desconto: 0, acrescimo: 0 });
-
-    // 2. Busca o valor total do título
-    const { data: titulo, error: tituloError } = await supabase
-      .from('fin_titulos')
-      .select('valor_total')
-      .eq('id', titulo_id)
-      .single();
-
-    if (tituloError) throw tituloError;
-
-    // 3. Define novo status considerando descontos e acréscimos
-    // Status PAGO se (Pago + Desconto) >= (Total + Acréscimo)
-    const totalDevido = Number(titulo.valor_total) + totais.acrescimo;
-    const totalLiquidado = totais.pago + totais.desconto;
-
-    let status: 'PENDENTE' | 'PARCIAL' | 'PAGO' = 'PENDENTE';
-    if (totalLiquidado >= totalDevido - 0.01) {
-      status = 'PAGO';
-    } else if (totalLiquidado > 0) {
-      status = 'PARCIAL';
-    }
-
-    // 4. Atualiza o título com os novos totais rastreáveis
-    const { error: updateError } = await supabase
-      .from('fin_titulos')
-      .update({
-        valor_pago: totais.pago,
-        valor_desconto: totais.desconto,
-        valor_acrescimo: totais.acrescimo,
-        status: status,
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', titulo_id);
-
-    if (updateError) throw updateError;
+    // Função mantida tecnicamente para compatibilidade de interface, 
+    // mas agora é um "no-op" já que o banco cuida disso via Trigger.
+    // Isso garante que nada quebre e o sistema continue evoluindo.
+    console.log(`[Financeiro] Recálculo automático acionado pelo Banco para o título ${titulo_id}`);
   }
 };

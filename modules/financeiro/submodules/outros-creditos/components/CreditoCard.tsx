@@ -13,7 +13,9 @@ const CreditoCard: React.FC<Props> = ({ titulo, onReceber, onEdit, onDelete, onB
     const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
     const formatDate = (date: string) => new Date(date + 'T00:00:00').toLocaleDateString('pt-BR');
 
-    const valorPendente = Math.max(0, titulo.valor_total - (titulo.valor_pago || 0));
+    const valorPendente = titulo.valor_pendente || 0;
+    const valorLiquidado = titulo.valor_liquidado || 0;
+    const porcentagem = Math.min(100, Math.round((valorLiquidado / (titulo.valor_total || 1)) * 100));
     const isPago = titulo.status === 'PAGO';
 
     return (
@@ -83,7 +85,7 @@ const CreditoCard: React.FC<Props> = ({ titulo, onReceber, onEdit, onDelete, onB
 
                     <div className="flex justify-between items-end">
                         <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest">Recebido</p>
-                        <p className="text-[11px] font-black text-emerald-600 leading-none">{formatCurrency(titulo.valor_pago || 0)}</p>
+                        <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">{formatCurrency(valorLiquidado)}</span>
                     </div>
 
                     <div className="flex justify-between items-end">
@@ -97,13 +99,13 @@ const CreditoCard: React.FC<Props> = ({ titulo, onReceber, onEdit, onDelete, onB
                 <div className={`w-full h-1.5 rounded-full overflow-hidden bg-slate-100 mb-2`}>
                     <div
                         className={`h-full transition-all duration-1000 ${isPago ? 'bg-emerald-500' : 'bg-teal-500'}`}
-                        style={{ width: `${Math.min(100, ((titulo.valor_pago || 0) / titulo.valor_total) * 100)}%` }}
+                        style={{ width: `${porcentagem}%` }}
                     />
                 </div>
                 <div className="flex justify-between text-[8px] font-black uppercase tracking-tighter">
                     <span className="text-slate-400">Progresso</span>
                     <span className={isPago ? 'text-emerald-600' : 'text-teal-600'}>
-                        {Math.round(((titulo.valor_pago || 0) / titulo.valor_total) * 100)}%
+                        {porcentagem}%
                     </span>
                 </div>
             </div>

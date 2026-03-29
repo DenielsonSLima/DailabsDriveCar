@@ -7,7 +7,7 @@ export const RelatoriosService = {
       id, numero_venda, data_venda, valor_venda,
       cliente:parceiros(nome),
       veiculo:est_veiculos(
-        valor_custo, valor_custo_servicos, placa,
+        valor_custo, valor_custo_servicos, valor_total_investido, placa,
         montadora:cad_montadoras(nome),
         modelo:cad_modelos(nome),
         versao:cad_versoes(nome)
@@ -25,7 +25,9 @@ export const RelatoriosService = {
 
     async getEstoqueParaRelatorio(statusFiltro: string) {
         let query = supabase.from('est_veiculos').select(`
-      id, placa, ano_fabricacao, ano_modelo, valor_custo, valor_custo_servicos, valor_venda, status, socios,
+      id, placa, ano_fabricacao, ano_modelo, valor_custo, valor_custo_servicos, 
+      valor_total_investido, valor_lucro_estimado, valor_margem_estimada,
+      valor_venda, status, socios,
       montadora:cad_montadoras(nome, logo_url),
       modelo:cad_modelos(nome),
       versao:cad_versoes(nome)
@@ -44,7 +46,7 @@ export const RelatoriosService = {
         const { data, error } = await supabase
             .from('est_veiculos')
             .select(`
-        id, placa, valor_custo, valor_custo_servicos, status,
+        id, placa, valor_custo, valor_custo_servicos, valor_total_investido, status,
         montadora:cad_montadoras(nome),
         modelo:cad_modelos(nome),
         versao:cad_versoes(nome),

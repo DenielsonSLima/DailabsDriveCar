@@ -17,7 +17,7 @@ const ModalBaixa: React.FC<Props> = ({ titulo, onClose, onSuccess }) => {
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
-  const saldoDevedorOriginal = titulo.valor_total + (titulo.valor_acrescimo || 0) - titulo.valor_pago - (titulo.valor_desconto || 0);
+  const saldoDevedorOriginal = (titulo as any).valor_pendente ?? (titulo.valor_total + (titulo.valor_acrescimo || 0) - titulo.valor_pago - (titulo.valor_desconto || 0));
 
   // Form State
   const [valorDesconto, setValorDesconto] = useState(0);
@@ -88,8 +88,8 @@ const ModalBaixa: React.FC<Props> = ({ titulo, onClose, onSuccess }) => {
         valorAcrescimo,
         dataPagamento
       );
-      // Sincroniza valor_desconto e valor_acrescimo em fin_titulos após a baixa
-      await FinanceiroService.recalcularTitulo(titulo.id);
+      // O recálculo agora é 100% automático via TRIGGER no Postgres (fn_sync_titulo_totals)
+      // Não é mais necessário chamar recalcularTitulo no Frontend. 🏛️🛡️
       onSuccess();
     } catch (e: any) {
       alert("Erro ao processar baixa: " + e.message);

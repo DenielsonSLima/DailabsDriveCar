@@ -114,17 +114,6 @@ export const EstoqueService = {
     const veiculo = data as any;
     if (!veiculo) return null;
 
-    // Cálculos financeiros (Movidos de SQL para JS devido limitações do PostgREST)
-    const custo = Number(veiculo.valor_custo || 0);
-    const servicos = Number(veiculo.valor_custo_servicos || 0);
-    const venda = Number(veiculo.valor_venda || 0);
-
-    veiculo.valor_total_investido = veiculo.is_consignado ? servicos : (custo + servicos);
-    veiculo.lucro_projetado = venda - veiculo.valor_total_investido;
-    veiculo.margem_projetada = veiculo.valor_total_investido > 0
-      ? (veiculo.lucro_projetado / veiculo.valor_total_investido) * 100
-      : 0;
-
     if (veiculo.despesas) {
       veiculo.despesas = veiculo.despesas.map((d: any) => ({
         ...d,

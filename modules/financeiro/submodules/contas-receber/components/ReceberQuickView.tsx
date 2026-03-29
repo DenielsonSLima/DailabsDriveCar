@@ -28,10 +28,10 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
 
     // Mapeia apenas pagamentos reais (ignora descontos e acréscimos informativos na soma do recebido)
     const transacoes = titulo.transacoes || [];
-    const valorPagoTotal = transacoes.reduce((acc, t) => {
-        if (t.tipo_transacao === 'DESCONTO_TITULO' || t.tipo_transacao === 'ACRESCIMO_TITULO') return acc;
-        return acc + Number(t.valor);
-    }, 0);
+    
+    const valorPagoTotal = titulo.valor_pago || 0;
+    const valorLiquidadoTotal = (titulo as any).valor_liquidado || 0;
+    const valorSaldoAberto = (titulo as any).valor_pendente || 0;
 
     const handleDeletePayment = (id: string) => {
         setConfirmDeleteId(id);
@@ -130,7 +130,7 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                             </div>
                             <div className="bg-rose-50 p-4 rounded-2xl border border-rose-100">
                                 <p className="text-[9px] font-black text-rose-600 uppercase tracking-widest mb-1">Saldo em Aberto</p>
-                                <p className="text-lg font-black text-rose-700">{formatCurrency(Math.max(0, titulo.valor_total + (titulo.valor_acrescimo || 0) - valorPagoTotal - (titulo.valor_desconto || 0)))}</p>
+                                <p className="text-lg font-black text-rose-700">{formatCurrency(valorSaldoAberto)}</p>
                             </div>
                         </div>
 

@@ -144,7 +144,7 @@ const EstoquePage: React.FC = () => {
                   }))
                 }));
 
-                const totalEstoque = veiculosRaw.reduce((acc: number, v: any) => acc + Number(v.valor_custo || 0) + Number(v.valor_custo_servicos || 0), 0);
+                const totalEstoque = veiculosRaw.reduce((acc: number, v: any) => acc + Number(v.valor_total_investido || 0), 0);
                 const volumeVeiculos = veiculosRaw.length;
 
                 const partnerMap = new Map();

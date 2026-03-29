@@ -9,11 +9,11 @@ interface Props {
 const EstoqueKpis: React.FC<Props> = ({ veiculos }) => {
   const stats = useMemo(() => {
     const ativos = veiculos;
-    const totalInvestido = ativos.reduce((acc, v) => acc + (v.valor_custo || 0), 0);
+    const totalInvestido = ativos.reduce((acc, v) => acc + (v.valor_total_investido || 0), 0);
     const totalVenda = ativos.reduce((acc, v) => acc + (v.valor_venda || 0), 0);
     const qtd = ativos.length;
     const ticketMedio = qtd > 0 ? totalVenda / qtd : 0;
-    const lucroProjetado = totalVenda - totalInvestido;
+    const lucroProjetado = ativos.reduce((acc, v) => acc + (v.valor_lucro_estimado || 0), 0);
 
     return { totalInvestido, totalVenda, qtd, ticketMedio, lucroProjetado };
   }, [veiculos]);

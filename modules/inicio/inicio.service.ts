@@ -18,15 +18,10 @@ export const InicioService = {
       };
     }
 
-    // Busca total de parceiros (mantendo a funcionalidade original que não estava no RPC ainda)
-    const { count: parceirosCount } = await supabase
-      .from('parceiros')
-      .select('*', { count: 'exact', head: true });
-
     return {
       totalEstoque: data.totalEstoque || 0,
       valorGlobalEstoque: data.valorGlobalEstoque || 0,
-      totalParceiros: parceirosCount || 0,
+      totalParceiros: data.totalParceiros || 0,
       vendasMesAtual: data.vendasMesAtual || 0,
       lucroProjetado: data.lucroProjetado || 0
     };

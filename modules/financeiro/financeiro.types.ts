@@ -19,6 +19,8 @@ export const TituloSchema = z.object({
   valor_pago: z.number().default(0),
   valor_desconto: z.number().optional().nullable().default(0),
   valor_acrescimo: z.number().optional().nullable().default(0),
+  valor_liquidado: z.number().optional().nullable(),
+  valor_pendente: z.number().optional().nullable(),
   data_emissao: z.string(),
   data_vencimento: z.string(),
   parcela_numero: z.number().default(1),
@@ -88,6 +90,8 @@ export interface ITitulo {
   valor_pago: number;
   valor_desconto?: number;
   valor_acrescimo?: number;
+  valor_liquidado?: number;
+  valor_pendente?: number;
   data_emissao: string;
   data_vencimento: string;
   parcela_numero: number;

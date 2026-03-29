@@ -1,5 +1,56 @@
 # Histórico de Alterações do Projeto
 
+## [2026-03-29—Tarde] - Migração Global: Arquitetura 'Frontend Burro'
+**O que foi feito:**
+- [X] Correção do KPI "Compra (Vendidos)" no Módulo Caixa (Campo missing na RPC `get_caixa_metrics`).
+- [X] Centralização total da lógica de lucro no banco de dados (Arquitetura Frontend Burro).
+- [X] Auditoria de segurança e isolamento multi-tenant em todas as RPCs de Dashboard.
+- [x] Corrigir bug de R$ 0,00 no KPI "Compra (Vendidos)" do Módulo Caixa.
+- [x] Auditar `get_caixa_metrics` para garantir precisão absoluta.
+- [x] Sincronizar lucro entre Caixa e Início.
+- **Centralização de Cálculos**: Toda a aritmética financeira foi movida do React/TypeScript para o Supabase (SQL/Triggers/RPCs).
+- **Módulo Estoque**: Adicionadas colunas geradas (`valor_total_investido`, `valor_lucro_estimado`, `valor_margem_estimada`) em `est_veiculos`.
+- **Módulo Vendas**: Criada trigger `trg_sync_venda_pedidos_finance` para calcular lucro e custo real no momento do pedido.
+- **Módulo Caixa**: Refatoradas RPCs `get_caixa_metrics` e `get_caixa_patrimonio_socios` para realizar rateio de lucros no banco.
+- **Correção Crítica**: Corrigido bug de 'Lucro do Mês' que exibia 0 ou valores inconsistentes devido a mismatch de campos entre RPC e Frontend. Padronizado Lucro Líquido = (Grosso - Operacional).
+- **Módulo Performance**: Refatorado `PerformanceService` para usar dados pré-calculados, eliminando `.reduce()` e lógica complexa de listas.
+- **Relatórios**: Atualizado `RelatoriosService` para que os PDFs consumam colunas financeiras consolidadas.
+
+**Por quê:**
+Para eliminar inconsistências de arredondamento, acabar com o "flickering" visual durante o carregamento e garantir que o banco de dados seja a Única Fonte da Verdade (SSOT). O frontend agora apenas exibe o que o servidor processou.
+
+**Arquivos afetados:**
+- Banco de Dados (Novas colunas, triggers e RPCs atualizadas)
+- `modules/estoque/estoque.service.ts` / `estoque.types.ts`
+- `modules/caixa/caixa.service.ts` / `caixa.types.ts`
+- `modules/pedidos-venda/pedidos-venda.service.ts` / `VendaKpis.tsx`
+- `modules/performance/performance.service.ts` / `PerformanceContent.tsx`
+- `modules/relatorios/relatorios.service.ts`
+- `modules/inicio/inicio.service.ts`
+
+
+## [2026-03-29] - Implementação de Memória RAG e Assistente Nexus AI
+**O que foi feito:**
+- **Infraestrutura Vetorial**: Habilitação do `pgvector` no Supabase e criação da tabela `rag_memory` com suporte a multitenancy via `organization_id`.
+- **Motor de Busca**: Criada a função RPC `match_rag_memory` no Postgres para busca por similaridade de cosseno.
+- **Serviços de IA**: Implementado `RagService` integrado ao Google Gemini (Embeddings para indexação e IA Generativa para respostas).
+- **Indexação de Dados**: Criado script `index-data.ts` para converter registros de Veículos, Parceiros e Financeiro em memórias vetoriais.
+- **Interface do Assistente**: Desenvolvido o componente `AIAssistant.tsx` (Floating Glassmorphism UI) injetado globalmente no layout.
+- **Dependências**: Adicionados `lucide-react` e `react-markdown`.
+
+**Por quê:**
+Para permitir que o usuário consulte o ERP usando linguagem natural e obtenha respostas inteligentes baseadas nos dados reais do sistema, reduzindo a necessidade de navegação manual em múltiplos relatórios.
+
+**Arquivos afetados:**
+- `supabase/migrations/enable_rag_memory.sql` (Criação da estrutura)
+- `services/rag.service.ts` (Core da inteligência)
+- `scripts/index-data.ts` (Popular as memórias)
+- `components/AIAssistant.tsx` (UI do chat)
+- `components/Layout.tsx` (Injeção global)
+- `.agent/skills/rag-agent/SKILL.md` (Protocolo do agente)
+- `PROJETO_CONTEXTO.md` (Atualização de arquitetura)
+
+
 ## [2026-03-17] - Refatoração e Modularização de KPIs Financeiros
 - **Modularização de RPCs**: Criadas funções `rpc_kpi_outros_creditos`, `rpc_kpi_contas_receber`, `rpc_kpi_contas_pagar` e `rpc_kpi_dashboard_financeiro` para isolar lógicas de negócio.
 - **Correção de Lógica de Desconto**: Ajustado o cálculo de saldo em aberto para considerar subtrações de `valor_desconto`.
