@@ -128,3 +128,7 @@ dist-ssr
 # NEXUS ERP specific
 debug_query_venda.cjs
 debug_schema.cjs
+
+# Cache and local agent state
+.npm-cache/
+.claude/
