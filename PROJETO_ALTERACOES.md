@@ -1,5 +1,20 @@
 # Histórico de Alterações do Projeto
 
+## [2026-04-01] - Correção: Detalhamento do Estoque e Histórico Patrimonial (Módulo Caixa)
+**O que foi feito:**
+- **Correção de Chaves JSONB e Dados Técnicos**: Corrigido o RPC `get_caixa_patrimonio_socios` que utilizava chaves incorretas (`id` e `percentual`) e não retornava os detalhes técnicos do veículo. Agora os campos Marca, Modelo, Versão e especificações (Câmbio, Motor, Combustível, Anos) são retornados corretamente, eliminando o erro "N/A" no card de estoque.
+- **Implementação de Estoque Histórico**: Refatoradas as RPCs `get_caixa_metrics` e `get_caixa_patrimonio_socios` para suportar visualização retroativa do estoque.
+    - Se a data final do filtro for anterior à data atual, o sistema agora reconstrói o estado do estoque naquele dia (considerando veículos comprados até a data e não vendidos até a mesma).
+    - Garante que ao mudar de mês (ex: de Abril para Março), o patrimônio em estoque exibido seja o real do fechamento do mês selecionado.
+- **Isolamento de Tenant**: Reforçado o uso de `v_org_id` em todas as subqueries de estoque histórico para garantir segurança multitenancy.
+
+**Por quê:**
+Ao mudar de mês, o card de detalhamento do estoque mostrava 0 veículos ou apenas o estoque atual, impedindo a conferência financeira de meses passados. A inconsistência nas chaves do JSONB também impedia que os veículos aparecessem mesmo no mês atual.
+
+**Arquivos afetados:**
+- Banco de Dados: RPCs `get_caixa_metrics` e `get_caixa_patrimonio_socios`.
+
+
 ## [2026-03-29—Tarde] - Migração Global: Arquitetura 'Frontend Burro'
 **O que foi feito:**
 - [X] Correção do KPI "Compra (Vendidos)" no Módulo Caixa (Campo missing na RPC `get_caixa_metrics`).

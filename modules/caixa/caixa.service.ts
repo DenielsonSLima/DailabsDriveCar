@@ -40,7 +40,13 @@ export const CaixaService = {
     // Validate metrics with Zod
     const validatedMetrics = CaixaDashboardSchema.parse(metricsPayload || {});
 
-    const processedSocios = (investimentoSocios as any[] || []).sort((a, b) => b.valor_investido - a.valor_investido);
+    const processedSocios = (investimentoSocios as any[] || []).map(s => ({
+      ...s,
+      lucro_periodo: Number(s.lucro_mensal) || 0,
+      lucro_pendente: Number(s.lucro_pendente) || 0,
+      lucro_caixa: Number(s.lucro_caixa) || 0,
+      valor_investido: Number(s.valor_investido) || 0
+    })).sort((a, b) => b.valor_investido - a.valor_investido);
 
     // Enriquecer veículos com detalhes técnicos (Imersivo)
     const allVehicleIds = Array.from(new Set(
@@ -78,7 +84,8 @@ export const CaixaService = {
           valor_custo,
           valor_custo_servicos,
           versao:cad_versoes(nome),
-          montadora:cad_montadoras(logo_url)
+          modelo:cad_modelos(nome),
+          montadora:cad_montadoras(nome, logo_url)
         `)
         .in('id', allVehicleIds);
 
@@ -104,6 +111,8 @@ export const CaixaService = {
                   ano_fabricacao: detail.ano_fabricacao,
                   valor_total_custo: (Number(detail.valor_custo) || 0) + (Number(detail.valor_custo_servicos) || 0),
                   versao: Array.isArray(detail.versao) ? detail.versao[0]?.nome : (detail.versao as any)?.nome || v.versao,
+                  modelo: Array.isArray(detail.modelo) ? detail.modelo[0]?.nome : (detail.modelo as any)?.nome || v.modelo,
+                  montadora: Array.isArray(detail.montadora) ? detail.montadora[0]?.nome : (detail.montadora as any)?.nome || v.montadora,
                   montadora_logo: logo
                 };
               }
