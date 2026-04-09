@@ -14,7 +14,7 @@ const AjustesPage: React.FC = () => {
         { label: 'Marca D\'água', path: '/ajustes/marca-dagua', status: 'pronto' },
         { label: 'Quadro de Sócios', path: '/ajustes/socios', status: 'pronto' },
         { label: 'Consulta Placa (Teste)', path: '/ajustes/consulta-placa', status: 'pronto' },
-        { label: 'Logs de Sistema', status: 'desenvolvimento' },
+        { label: 'Logs de Sistema', path: '/ajustes/logs', status: 'pronto' },
         { label: 'Backup e API', status: 'desenvolvimento' }
       ]}
     />
