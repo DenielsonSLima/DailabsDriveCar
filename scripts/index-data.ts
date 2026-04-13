@@ -14,7 +14,7 @@ if (!supabaseKey) {
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const GEMINI_API_KEY = process.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY || '');
 const embeddingModel = genAI.getGenerativeModel({ model: "text-embedding-004" });
 
@@ -52,27 +52,73 @@ async function indexTable(tableName: string, formatFn: (item: any) => string, ty
     }, { onConflict: 'metadata->>source_id' });
 
     if (upsertError) {
-      console.error(`Erro ao inserir memória para ${item.id}:`, upsertError);
+      console.error(`Erro ao inserir memória para ${item.id || 'doc'}:`, upsertError);
     } else {
-      console.log(`✓ Indexado: ${type} - ${item.id}`);
+      console.log(`✓ Indexado: ${type} - ${item.id || 'doc'}`);
+    }
+  }
+}
+
+async function indexFile(filePath: string, type: string) {
+  const fs = require('fs');
+  const path = require('path');
+  
+  const absolutePath = path.resolve(filePath);
+  if (!fs.existsSync(absolutePath)) {
+    console.error(`Arquivo não encontrado para indexação: ${filePath}`);
+    return;
+  }
+
+  const content = fs.readFileSync(absolutePath, 'utf-8');
+  // Dividir por seções (Markdown headers) ou por parágrafos grandes
+  const sections = content.split(/\n(?=## )/);
+
+  console.log(`Indexando arquivo: ${filePath} (${sections.length} seções)...`);
+
+  for (let i = 0; i < sections.length; i++) {
+    const sectionContent = sections[i].trim();
+    if (!sectionContent) continue;
+
+    const embedding = await generateEmbedding(sectionContent);
+    
+    // Como doc não tem org_id fixo, usamos null ou um ID padrão se necessário.
+    // Para simplificar, indexamos sem org_id restrito (pode ser visto por todos)
+    const { error: upsertError } = await supabase.from('rag_memory').upsert({
+      content: sectionContent,
+      embedding,
+      metadata: {
+        source_file: filePath,
+        section_index: i,
+        type: type,
+        updated_at: new Date().toISOString()
+      }
+    }, { onConflict: 'content' }); // Conflict on content for simplicity if no ID
+
+    if (upsertError) {
+      console.error(`Erro ao inserir memória para seção ${i}:`, upsertError);
+    } else {
+      console.log(`✓ Indexado: ${type} - Seção ${i}`);
     }
   }
 }
 
 async function main() {
-  // Indexar Veículos
+  // 1. Indexar Guia de Sistema (TUTOR)
+  await indexFile('SYSTEM_GUIDE.md', 'system_doc');
+
+  // 2. Indexar Veículos
   await indexTable('est_veiculos', (v) => 
     `Veículo: ${v.placa ? 'Placa ' + v.placa : 'Sem placa'}. KM: ${v.km}. Ano: ${v.ano_fabricacao}/${v.ano_modelo}. Combustível: ${v.combustivel}. Status: ${v.status}. Valor Venda: R$ ${v.valor_venda}.`,
     'vehicle'
   );
 
-  // Indexar Parceiros
+  // 3. Indexar Parceiros
   await indexTable('parceiros', (p) => 
     `Parceiro: ${p.nome}. Documento: ${p.documento}. Tipo: ${p.tipo}. Email: ${p.email || 'N/A'}. Telefone: ${p.telefone || 'N/A'}. Localização: ${p.cidade}/${p.uf}.`,
     'partner'
   );
 
-  // Indexar Títulos Financeiros
+  // 4. Indexar Títulos Financeiros
   await indexTable('fin_titulos', (t) => 
     `Título Financeiro: ${t.descricao}. Tipo: ${t.tipo}. Status: ${t.status}. Valor Total: R$ ${t.valor_total}. Vencimento: ${t.data_vencimento}.`,
     'transaction'

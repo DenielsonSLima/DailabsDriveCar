@@ -1,5 +1,20 @@
 # Histórico de Alterações do Projeto
 
+## [2026-04-13—Noite] - Ativação do Nexus AI (Gemini 1.5 Flash) e Modo Tutor
+**O que foi feito:**
+- **Ativação da API**: Configurada a chave real da API do Gemini no `.env.local` e refatorado o `rag.service.ts` para carregar via `import.meta.env`.
+- **Implementação do Modo Tutor**: O System Prompt do Nexus AI foi atualizado para assumir o papel de instrutor oficial do ERP. Agora o assistente é capaz de explicar "como fazer" tarefas no sistema (ex: cadastrar veículos, baixar títulos) além de apenas consultar dados.
+- **Melhoria de UI/UX**: O assistente agora utiliza formatação rica (Markdown, tabelas e listas) para guiar o usuário de forma didática.
+
+**Por quê:**
+O usuário solicitou que a IA fosse capaz de ensinar a usar o sistema, transformando o assistente de dados em um guia interativo para facilitar o onboarding e suporte.
+
+**Arquivos afetados:**
+- `.env.local`
+- `services/rag.service.ts`
+- `PROJETO_ALTERACOES.md`
+
+
 ## [2026-04-13] - Estabilização SaaS, Correção de RLS e Ajustes de UI
 **O que foi feito:**
 - **Correção Crítica de RLS (Recursão Infinita)**: Identificado e corrigido loop infinito nas políticas de segurança das tabelas `organization_members` e `profiles`. Implementada função `is_member_of` com `SECURITY DEFINER` e `search_path` fixo para garantir isolamento total e performance.
