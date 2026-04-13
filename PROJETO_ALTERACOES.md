@@ -1,5 +1,23 @@
 # Histórico de Alterações do Projeto
 
+## [2026-04-13] - Estabilização SaaS, Correção de RLS e Ajustes de UI
+**O que foi feito:**
+- **Correção Crítica de RLS (Recursão Infinita)**: Identificado e corrigido loop infinito nas políticas de segurança das tabelas `organization_members` e `profiles`. Implementada função `is_member_of` com `SECURITY DEFINER` e `search_path` fixo para garantir isolamento total e performance.
+- **Modo Stealth (Privacidade)**: Implementada regra de invisibilidade para o perfil da Bruna (`18aa5764...`). O perfil permanece ativo e funcional para ela, mas não aparece em listagens para nenhum outro usuário, garantindo sigilo de acesso.
+- **Correção de Layout (React Portals)**: Resolvido o erro de "buraco no topo" em modais e sidebars. Os componentes `ContaForm` e `ReceberQuickView` agora utilizam `ReactDOM.createPortal`, garantindo que cubram 100% do viewport e sobreponham corretamente o Header fixo.
+- **Hardening de RPCs**: Atualizadas as funções `get_inicio_dashboard_stats`, `get_kpi_saldo_bancario` e `rpc_kpi_dashboard_financeiro` com práticas de segurança recomendadas pelo Supabase (set search_path).
+- **Triggers de Autenticação**: Ajustada a função `handle_new_user` para operar com `SECURITY DEFINER`, permitindo a criação de perfis sem conflitos de RLS.
+
+**Por quê:**
+O sistema apresentava erros de recursão que impediam o carregamento do módulo de usuários e tinha falhas visuais onde os modais ficavam "presos" sob o cabeçalho. Além disso, foi solicitada a ocultação estratégica de um usuário administrativo.
+
+**Arquivos afetados:**
+- Banco de Dados (SQL: RLS, Functions e Triggers)
+- `modules/ajustes/contas-bancarias/components/ContaForm.tsx`
+- `modules/financeiro/submodules/contas-receber/components/ReceberQuickView.tsx`
+- `PROJETO_ALTERACOES.md`
+
+
 ## [2026-04-01] - Correção: Detalhamento do Estoque e Histórico Patrimonial (Módulo Caixa)
 **O que foi feito:**
 - **Correção de Chaves JSONB e Dados Técnicos**: Corrigido o RPC `get_caixa_patrimonio_socios` que utilizava chaves incorretas (`id` e `percentual`) e não retornava os detalhes técnicos do veículo. Agora os campos Marca, Modelo, Versão e especificações (Câmbio, Motor, Combustível, Anos) são retornados corretamente, eliminando o erro "N/A" no card de estoque.

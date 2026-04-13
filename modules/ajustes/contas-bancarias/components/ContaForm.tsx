@@ -1,5 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { IContaBancaria, TipoConta } from '../contas.types';
 
 interface Props {
@@ -68,7 +68,15 @@ const ContaForm: React.FC<Props> = ({ initialData, onClose, onSubmit }) => {
     });
   };
 
-  return (
+  // Travar o scroll do corpo quando o modal estiver aberto
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
+
+  const content = (
     <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
       <div className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col max-h-[90vh]">
 
@@ -227,6 +235,8 @@ const ContaForm: React.FC<Props> = ({ initialData, onClose, onSubmit }) => {
       </div>
     </div>
   );
+
+  return ReactDOM.createPortal(content, document.body);
 };
 
 export default ContaForm;
