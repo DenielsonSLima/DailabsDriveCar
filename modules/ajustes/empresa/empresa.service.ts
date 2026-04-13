@@ -14,7 +14,8 @@ export const EmpresaService = {
       .from(TABLE)
       .select('*')
       .limit(1)
-      .single();
+      .maybeSingle();
+
 
     if (error) {
       // Código PGRST116 significa que não encontrou linhas (normal para primeiro acesso)

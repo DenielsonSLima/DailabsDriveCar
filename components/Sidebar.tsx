@@ -260,7 +260,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
         onClose={() => setShowLogoutConfirm(false)}
         onConfirm={handleLogout}
         title="Encerrar Sessão?"
-        message="Deseja realmente sair do sistema e voltar para a página inicial pública?"
+        message="Deseja realmente sair do sistema?"
         confirmText="Sim, Sair agora"
         cancelText="Continuar logado"
         variant="danger"

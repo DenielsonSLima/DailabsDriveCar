@@ -32,8 +32,9 @@ const WelcomeHeader: React.FC = () => {
             {greeting}, <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-white/40">{userNome.split(' ')[0]}</span>
           </h1>
           <p className="mt-4 text-slate-400 text-sm md:text-base font-medium max-w-xl leading-relaxed">
-            Seja bem-vindo ao coração operacional da Hidrocar. Aqui você visualiza a performance em tempo real e toma decisões baseadas em dados.
+            Seja bem-vindo ao coração operacional do seu negócio. Aqui você visualiza a performance em tempo real e toma decisões baseadas em dados.
           </p>
+
         </div>
 
         <div className="bg-white/5 backdrop-blur-md border border-white/10 p-6 rounded-3xl self-start md:self-center">

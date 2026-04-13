@@ -80,7 +80,6 @@ import BackupPage from './modules/ajustes/backup/Backup.page.tsx';
 import ApiResetPage from './modules/ajustes/api-reset/ApiReset.page.tsx';
 import ContasBancariasPage from './modules/ajustes/contas-bancarias/ContasBancarias.page.tsx';
 import SaldoInicialPage from './modules/ajustes/saldo-inicial/SaldoInicial.page.tsx';
-import ConsultaPlacaPage from './modules/ajustes/consulta-placa/ConsultaPlaca.page.tsx';
 
 import { useAuthStore } from './store/auth.store.ts';
 
@@ -271,10 +270,10 @@ const App: React.FC = () => {
     <BrowserRouter>
       <ScrollToTop />
       <Routes>
-        {/* Rota Raiz: Site Público */}
-        <Route path="/" element={<SitePublicoPage />} />
-        <Route path="/estoque-publico" element={<EstoquePublicoPage />} />
-        <Route path="/veiculo/:id" element={<PublicVehicleDetailsPage />} />
+        {/* Rota Raiz: Redirecionada para Login (Site Público Oculto) */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/estoque-publico" element={<Navigate to="/login" replace />} />
+        <Route path="/veiculo/:id" element={<Navigate to="/login" replace />} />
 
         {/* Auth */}
         <Route path="/login" element={session ? <Navigate to={window.innerWidth < 768 ? '/caixa' : '/inicio'} /> : <AuthPage />} />
@@ -349,7 +348,6 @@ const App: React.FC = () => {
                   <Route path="/ajustes/api-reset" element={<ApiResetPage />} />
                   <Route path="/ajustes/contas-bancarias" element={<ContasBancariasPage />} />
                   <Route path="/ajustes/saldo-inicial" element={<SaldoInicialPage />} />
-                  <Route path="/ajustes/consulta-placa" element={<ConsultaPlacaPage />} />
 
                   <Route path="/marketing/stories" element={<StoryGeneratorPage />} />
                   <Route path="/marketing/feed" element={<FeedGeneratorPage />} />

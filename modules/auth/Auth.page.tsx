@@ -83,10 +83,11 @@ const AuthPage: React.FC = () => {
 
         {/* Brand Header */}
         <div className="flex flex-col items-center mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-          <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center p-6 shadow-2xl border border-white/20 mb-6 group hover:scale-105 transition-transform duration-500">
+          <div className="w-32 h-32 bg-slate-950 rounded-full flex items-center justify-center p-6 shadow-2xl border border-white/10 mb-6 group hover:scale-105 transition-transform duration-500 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-800/20 to-transparent"></div>
             <img
-              src="/logos/logohidrocarsimbolo.png"
-              alt="Hidrocar Veículos"
+              src="/logos/dailabs_logo.png"
+              alt="Dailabs DriveCar"
               className="w-full h-full object-contain drop-shadow-md"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
@@ -99,7 +100,7 @@ const AuthPage: React.FC = () => {
             />
           </div>
           <h1 className="text-3xl font-black text-white tracking-tighter uppercase mb-1 drop-shadow-lg text-center">
-            Hidrocar <span className="bg-gradient-to-r from-red-600 to-red-900 bg-clip-text text-transparent">Veículos</span>
+            Dailabs <span className="bg-gradient-to-r from-red-600 to-red-900 bg-clip-text text-transparent">DriveCar</span>
           </h1>
           <p className="text-white/60 text-xs font-medium tracking-widest uppercase mb-4">Sistema de Gestão Integrado</p>
           <div className="inline-flex items-center space-x-2 bg-rose-500/10 border border-rose-500/20 rounded-full px-3 py-1">
@@ -128,14 +129,7 @@ const AuthPage: React.FC = () => {
 
           <LoginForm onSubmit={handleLogin} isLoading={loading} />
 
-          <div className="mt-8 pt-6 border-t border-white/10 text-center">
-            <button
-              onClick={() => navigate('/')}
-              className="text-[10px] font-black text-white/40 hover:text-white uppercase tracking-[0.2em] transition-colors"
-            >
-              Voltar ao Site Público
-            </button>
-          </div>
+          {/* Link para site público removido pois o sistema é restrito */}
         </div>
 
         {/* Developer Footer */}
