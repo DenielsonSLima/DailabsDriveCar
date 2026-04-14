@@ -103,8 +103,9 @@ async function indexFile(filePath: string, type: string) {
 }
 
 async function main() {
-  // 1. Indexar Guia de Sistema (TUTOR)
+  // 1. Indexar Guia de Sistema (TUTOR) e Instruções Técnicas
   await indexFile('SYSTEM_GUIDE.md', 'system_doc');
+  await indexFile('instrucoes/UI_MODAL_PORTALS.md', 'dev_doc');
 
   // 2. Indexar Veículos
   await indexTable('est_veiculos', (v) => 
