@@ -1,5 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { IParceiro, TipoParceiro, PessoaTipo, ParceiroSchema } from '../parceiros.types';
 import { ParceirosService } from '../parceiros.service';
 import toast from 'react-hot-toast';
@@ -33,6 +33,16 @@ const ParceiroForm: React.FC<FormProps> = ({ initialData, onClose, onSubmit }) =
   });
 
   const [isConsulting, setIsConsulting] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+    // Lock body scroll when modal is open
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
 
   // Formata o documento ao carregar dados iniciais
   useEffect(() => {
@@ -158,9 +168,14 @@ const ParceiroForm: React.FC<FormProps> = ({ initialData, onClose, onSubmit }) =
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-[100] bg-white flex flex-col animate-in slide-in-from-bottom duration-300">
-      <div className="flex-1 flex flex-col h-screen overflow-hidden">
+  if (!isMounted) return null;
+
+  return ReactDOM.createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
+      <div 
+        className="bg-white w-full h-full md:h-[90vh] md:max-w-5xl md:rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50">
           <div className="flex items-center space-x-4">
@@ -221,7 +236,8 @@ const ParceiroForm: React.FC<FormProps> = ({ initialData, onClose, onSubmit }) =
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
