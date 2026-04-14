@@ -43,10 +43,6 @@ const AIAssistant: React.FC = () => {
 
     try {
       const organizationId = profile?.organization_id;
-      if (!organizationId) {
-        throw new Error('Organização não identificada.');
-      }
-
       const response = await ragService.chatResponse(userQuery, organizationId);
       
       const assistantMsg: Message = {
@@ -75,12 +71,19 @@ const AIAssistant: React.FC = () => {
         onClick={() => setIsOpen(!isOpen)}
         className={`w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 transform hover:scale-110 active:scale-95
           ${isOpen 
-            ? 'bg-slate-800 text-white rotate-90' 
-            : 'bg-gradient-to-br from-[#004691] to-blue-600 text-white animate-pulse'
+            ? 'bg-slate-800 text-white' 
+            : 'bg-[#004691] text-white'
           }
         `}
       >
-        {isOpen ? <X size={28} /> : <div className="relative"><Bot size={32} /><div className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white"></div></div>}
+        {isOpen ? (
+          <X size={24} key="close-icon" />
+        ) : (
+          <div className="relative" key="bot-icon">
+            <Bot size={28} />
+            <span className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-[#004691]"></span>
+          </div>
+        )}
       </button>
 
       {/* Chat Window */}

@@ -71,19 +71,41 @@ export const UsuariosService = {
 
     } else {
       // Atualização de usuário existente
-      const { error } = await supabase
-        .from('profiles')
-        .update({
-          nome: usuario.nome,
-          sobrenome: usuario.sobrenome,
-          cpf: usuario.cpf,
-          telefone: usuario.telefone,
-          role: usuario.role,
-          ativo: usuario.ativo !== undefined ? usuario.ativo : true
-        })
-        .eq('id', usuario.id);
+      // Se houver senha, usamos a Edge Function admin-update-user
+      if (usuario.senha) {
+        const { error: authError } = await supabase.functions.invoke('admin-update-user', {
+          body: {
+            id: usuario.id,
+            password: usuario.senha,
+            nome: usuario.nome,
+            sobrenome: usuario.sobrenome,
+            cpf: usuario.cpf,
+            telefone: usuario.telefone,
+            role: usuario.role,
+            ativo: usuario.ativo !== undefined ? usuario.ativo : true
+          }
+        });
 
-      if (error) throw error;
+        if (authError) {
+          console.error("Edge Function Update Error:", authError);
+          throw new Error(`Erro ao atualizar senha/dados do usuário: ${authError.message}`);
+        }
+      } else {
+        // Se NÃO houver senha, atualizamos apenas o profile (comportamento original mantido para performance)
+        const { error } = await supabase
+          .from('profiles')
+          .update({
+            nome: usuario.nome,
+            sobrenome: usuario.sobrenome,
+            cpf: usuario.cpf,
+            telefone: usuario.telefone,
+            role: usuario.role,
+            ativo: usuario.ativo !== undefined ? usuario.ativo : true
+          })
+          .eq('id', usuario.id);
+
+        if (error) throw error;
+      }
     }
   },
 
