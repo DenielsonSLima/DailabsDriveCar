@@ -52,6 +52,13 @@ const ParceiroIdentificationForm: React.FC<Props> = ({
                 <div className="md:col-span-4">
                     <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">
                         {formData.pessoa_tipo === PessoaTipo.FISICA ? 'CPF' : 'CNPJ'}
+                        <button 
+                            type="button" 
+                            onClick={() => onChange({ target: { name: 'documento', value: '' } } as any)}
+                            className="ml-2 text-[9px] text-indigo-400 hover:text-indigo-600 underline lowercase"
+                        >
+                            (Não informado)
+                        </button>
                     </label>
                     <div className="flex gap-2">
                         <input
@@ -86,7 +93,7 @@ const ParceiroIdentificationForm: React.FC<Props> = ({
 
                 <div className="md:col-span-8">
                     <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">
-                        {formData.pessoa_tipo === PessoaTipo.FISICA ? 'Nome Completo' : 'Nome Fantasia'}
+                        {formData.pessoa_tipo === PessoaTipo.FISICA ? 'Nome Completo' : 'Nome Fantasia'} <span className="text-rose-500">*</span>
                     </label>
                     <input
                         type="text"

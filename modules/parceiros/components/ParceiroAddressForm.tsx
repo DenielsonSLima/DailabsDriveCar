@@ -9,10 +9,26 @@ interface Props {
 const ParceiroAddressForm: React.FC<Props> = ({ formData, onChange }) => {
     return (
         <section className="space-y-6">
-            <h3 className="text-xs font-black text-indigo-500 uppercase tracking-[0.2em] flex items-center">
-                <span className="w-6 h-6 bg-indigo-50 rounded-lg flex items-center justify-center mr-2 text-indigo-400">03</span>
-                Localização
-            </h3>
+            <div className="flex items-center justify-between">
+                <h3 className="text-xs font-black text-indigo-500 uppercase tracking-[0.2em] flex items-center">
+                    <span className="w-6 h-6 bg-indigo-50 rounded-lg flex items-center justify-center mr-2 text-indigo-400">03</span>
+                    Localização
+                </h3>
+                <button
+                    type="button"
+                    onClick={() => {
+                        onChange({ target: { name: 'cep', value: '00000-000' } } as any);
+                        onChange({ target: { name: 'logradouro', value: 'NÃO INFORMADO' } } as any);
+                        onChange({ target: { name: 'numero', value: 'S/N' } } as any);
+                        onChange({ target: { name: 'bairro', value: 'NÃO INFORMADO' } } as any);
+                        onChange({ target: { name: 'cidade', value: 'NÃO INFORMADO' } } as any);
+                        onChange({ target: { name: 'uf', value: 'SE' } } as any);
+                    }}
+                    className="text-[9px] font-black text-indigo-400 hover:text-indigo-600 uppercase tracking-widest bg-indigo-50 px-3 py-1.5 rounded-lg transition-all"
+                >
+                    Endereço não informado
+                </button>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
                 <div className="md:col-span-1">
                     <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">CEP</label>

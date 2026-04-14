@@ -90,6 +90,7 @@ export const ParceirosService = {
 
     const dataToSave: any = {
       ...rest,
+      documento: rest.documento?.replace(/\D/g, '') || null,
       updated_at: new Date().toISOString()
     };
 
@@ -138,6 +139,10 @@ export const ParceirosService = {
 
   async checkDocumentExists(documento: string, excludeId?: string): Promise<boolean> {
     const cleanDoc = documento.replace(/\D/g, '');
+    if (!cleanDoc) return false;
+
+    // Nota: O RLS já filtra por organization_id, então esta consulta 
+    // retornará apenas duplicatas dentro da mesma organização.
     let query = supabase
       .from(TABLE)
       .select('id')
