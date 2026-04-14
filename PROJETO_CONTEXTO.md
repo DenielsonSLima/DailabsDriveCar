@@ -35,9 +35,12 @@ Cada agente possui um arquivo `MEMORY.md` onde registra aprendizados e evita a r
 ## Padrões e convenções adotadas
 - **Nomenclatura**: PascalCase para componentes, camelCase para funções/variáveis, snake_case para campos do banco.
 - **Financeiro**: Lógica crítica sendo movida para o banco via RPCs e Triggers para garantir atomicidade.
+- **Isolamento de Documento Único (Parceiros)**: A unicidade de CPF/CNPJ na tabela `parceiros` é válida apenas dentro de uma mesma organização (`documento, organization_id`). Isso permite o compartilhamento de parceiros entre diferentes tenants sem conflitos.
+- **Padrão QuickView (Side Drawer)**: Formulários de criação e edição complexos (ex: ParceiroForm) utilizam o padrão de gaveta lateral (`fixed right-0 h-screen`) para otimizar espaço e garantir que o formulário ocupe toda a altura da tela, eliminando cliques acidentais no fundo.
 
 ## Decisões técnicas importantes
 - **Sincronização Versão -> Veículo**: Implementada trigger `trg_auto_populate_vehicle_version_data` para garantir que o veículo sempre tenha os dados técnicos da sua versão.
 
 ## Erros comuns — não repita
+- **Constraints Globais**: Evite criar chaves UNIQUE globais em tabelas que possuem `organization_id`. Sempre inclua a organização na restrição.
 - **Dados Técnicos Vazios**: Nunca assumir que os campos `motorizacao`, `combustivel`, etc. no veículo estão preenchidos; sempre usar o fallback da `versao` se necessário.
