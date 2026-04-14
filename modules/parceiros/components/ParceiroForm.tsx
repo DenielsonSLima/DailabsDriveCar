@@ -159,8 +159,8 @@ const ParceiroForm: React.FC<FormProps> = ({ initialData, onClose, onSubmit }) =
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="bg-white w-full max-w-5xl rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
+      <div className="bg-white w-full h-full md:h-[90vh] md:max-w-5xl md:rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col">
         {/* Header */}
         <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50">
           <div className="flex items-center space-x-4">
