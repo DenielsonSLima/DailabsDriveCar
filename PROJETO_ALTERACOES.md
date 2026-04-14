@@ -1,25 +1,5 @@
 # Histórico de Alterações do Projeto
 
-## [2026-04-14] - Simplificação do Cadastro de Parceiros e Fix Multi-tenant (Documento)
-**O que foi feito:**
-- **Isolamento de Tenant (Unicidade)**: Removida a restrição UNIQUE global da coluna `documento` na tabela `parceiros`. Implementada nova constraint composta `(documento, organization_id)`, permitindo que empresas diferentes cadastrem o mesmo CNPJ/CPF (comum em fornecedores compartilhados) sem erros de duplicidade.
-- **Cadastro Flexível**: Reformulada a validação do `ParceiroSchema` (Zod) para que apenas o **Nome** seja obrigatório. Campos de endereço e contato agora aceitam valores nulos ou vazios.
-- **Botões de Atalho (Não Informado)**: Implementados botões rápidos nas seções de ID, Contatos e Localização que limpam ou preenchem campos padrão (ex: "NÃO INFORMADO"), agilizando o fluxo de cadastro rápido.
-- **Refatoração de UI (Side Drawer)**: O formulário de parceiros foi convertido de um modal centralizado para um **Side Drawer (QuickView)** de altura total. Isso resolve o problema de lacunas no topo e otimiza o uso de espaço para formulários longos.
-
-**Por quê:**
-O usuário precisava de agilidade no cadastro (apenas nome) e reportou que não conseguia cadastrar parceiros que já existiam em outras empresas do ecossistema.
-
-**Arquivos afetados:**
-- `modules/parceiros/parceiros.types.ts`
-- `modules/parceiros/parceiros.service.ts`
-- `modules/parceiros/components/ParceiroForm.tsx`
-- `modules/parceiros/components/ParceiroIdentificationForm.tsx`
-- `modules/parceiros/components/ParceiroContactForm.tsx`
-- `modules/parceiros/components/ParceiroAddressForm.tsx`
-- Banco de Dados (Alteração de Constraints)
-
-
 ## [2026-04-13—Noite] - Ativação do Nexus AI (Gemini 1.5 Flash) e Modo Tutor
 **O que foi feito:**
 - **Ativação da API**: Configurada a chave real da API do Gemini no `.env.local` e refatorado o `rag.service.ts` para carregar via `import.meta.env`.
