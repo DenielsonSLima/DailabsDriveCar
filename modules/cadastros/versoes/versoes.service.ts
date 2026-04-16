@@ -4,11 +4,17 @@ import { IVersao } from './versoes.types';
 const TABLE = 'cad_versoes';
 
 export const VersoesService = {
-  async getByModelo(modeloId: string): Promise<IVersao[]> {
-    const { data, error } = await supabase
+  async getByModelo(modeloId: string, onlyActive = true): Promise<IVersao[]> {
+    let query = supabase
       .from(TABLE)
       .select('*')
-      .eq('modelo_id', modeloId)
+      .eq('modelo_id', modeloId);
+    
+    if (onlyActive) {
+      query = query.eq('ativo', true);
+    }
+    
+    const { data, error } = await query
       .order('ano_modelo', { ascending: false })
       .order('nome', { ascending: true });
 
@@ -38,7 +44,8 @@ export const VersoesService = {
       .eq('combustivel', combustivel)
       .eq('transmissao', transmissao)
       .eq('ano_modelo', anoModelo)
-      .eq('ano_fabricacao', anoFabricacao);
+      .eq('ano_fabricacao', anoFabricacao)
+      .eq('ativo', true); // Só checa duplicidade contra registros ativos
 
     if (excludeId) {
       query = query.neq('id', excludeId);
@@ -76,7 +83,11 @@ export const VersoesService = {
       updated_at: new Date().toISOString()
     };
 
-    if (payload.id) cleanData.id = payload.id;
+    if (payload.id) {
+      cleanData.id = payload.id;
+    } else {
+      cleanData.ativo = true;
+    }
 
     const { data, error } = await supabase
       .from(TABLE)
@@ -91,7 +102,17 @@ export const VersoesService = {
   async remove(id: string): Promise<boolean> {
     const { error } = await supabase
       .from(TABLE)
-      .delete()
+      .update({ ativo: false })
+      .eq('id', id);
+
+    if (error) throw error;
+    return true;
+  },
+
+  async reactivate(id: string): Promise<boolean> {
+    const { error } = await supabase
+      .from(TABLE)
+      .update({ ativo: true })
       .eq('id', id);
 
     if (error) throw error;

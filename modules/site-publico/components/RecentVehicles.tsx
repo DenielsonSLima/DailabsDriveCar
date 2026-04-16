@@ -17,10 +17,10 @@ const RecentVehicles: React.FC<Props> = React.memo(({ veiculos }) => {
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div>
-            <p className="text-[#004691] text-[10px] font-black uppercase tracking-[0.5em] mb-2">Disponibilidade Imediata</p>
+            <p className="text-orange-600 text-[10px] font-black uppercase tracking-[0.6em] mb-2">Disponibilidade Imediata</p>
             <h2 className="text-5xl font-[900] text-slate-900 uppercase tracking-tighter leading-none">Recém Chegados</h2>
           </div>
-          <Link to="/estoque-publico" className="px-8 py-4 bg-white border border-slate-200 text-slate-900 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:border-[#004691] hover:text-[#004691] transition-all shadow-sm active:scale-95">
+          <Link to="/estoque-publico" className="px-8 py-4 bg-white border border-slate-200 text-slate-900 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:border-orange-500 hover:text-orange-600 transition-all shadow-sm active:scale-95">
             Ver Pátio Completo
           </Link>
         </div>

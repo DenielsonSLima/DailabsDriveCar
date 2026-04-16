@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { IGrupoDespesa, TipoMacroDespesa } from '../tipos-despesas.types';
 
 interface Props {
@@ -26,8 +27,13 @@ const GroupForm: React.FC<Props> = ({ tipoAtual, initialData, onClose, onSubmit,
       tipo: tipoAtual
     });
   };
+  // Travar scroll do body
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = 'unset'; };
+  }, []);
 
-  return (
+  const content = (
     <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
       <div className="bg-white w-full max-w-sm rounded-[2rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
         <div className="p-6 border-b border-slate-100 bg-slate-50">
@@ -59,6 +65,8 @@ const GroupForm: React.FC<Props> = ({ tipoAtual, initialData, onClose, onSubmit,
       </div>
     </div>
   );
+
+  return ReactDOM.createPortal(content, document.body);
 };
 
 export default GroupForm;

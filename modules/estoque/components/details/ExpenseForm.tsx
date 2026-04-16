@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import ReactDOM from 'react-dom';
 import { FinanceiroService } from '../../../financeiro/financeiro.service';
 import { TiposDespesasService } from '../../../cadastros/tipos-despesas/tipos-despesas.service';
 import { FormasPagamentoService } from '../../../cadastros/formas-pagamento/formas-pagamento.service';
@@ -126,8 +127,13 @@ const ExpenseForm: React.FC<Props> = ({ onClose, onSubmit }) => {
   };
 
   const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
+  // Travar scroll do body
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = 'unset'; };
+  }, []);
 
-  return (
+  const content = (
     <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
       <div className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 border border-slate-100 flex flex-col max-h-[95vh]">
 
@@ -303,6 +309,8 @@ const ExpenseForm: React.FC<Props> = ({ onClose, onSubmit }) => {
       </div>
     </div>
   );
+
+  return ReactDOM.createPortal(content, document.body);
 };
 
 export default ExpenseForm;

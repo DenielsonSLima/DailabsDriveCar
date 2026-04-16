@@ -13,7 +13,7 @@ export interface IVersao {
   ano_fabricacao: number;
   created_at: string;
   updated_at?: string;
-  
+  ativo?: boolean;
   // Join
   modelo?: IModelo;
 }

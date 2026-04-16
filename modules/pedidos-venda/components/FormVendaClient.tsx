@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { IPedidoVenda } from '../pedidos-venda.types';
-import { IParceiro } from '../../parceiros/parceiros.types';
+import { IParceiro, TipoParceiro } from '../../parceiros/parceiros.types';
 import PartnerSelect from '../../pedidos-compra/components/PartnerSelect';
 
 interface Props {
@@ -21,6 +21,7 @@ const FormVendaClient: React.FC<Props> = ({ formData, parceiros, onChange, disab
         onChange={(p) => onChange(p.id)}
         disabled={disabled}
         label="Comprador *"
+        defaultType={TipoParceiro.CLIENTE}
       />
     </div>
   );

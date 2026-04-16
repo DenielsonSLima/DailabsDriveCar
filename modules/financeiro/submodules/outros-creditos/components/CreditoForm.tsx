@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import ReactDOM from 'react-dom';
 import { ContasBancariasService } from '../../../../ajustes/contas-bancarias/contas.service';
 import { SociosService } from '../../../../ajustes/socios/socios.service';
 import { CondicoesRecebimentoService } from '../../../../cadastros/condicoes-recebimento/condicoes-recebimento.service';
@@ -332,8 +333,13 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
     'from-rose-500 to-pink-500',
     'from-purple-500 to-violet-500',
   ];
+  // Travar scroll do body
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = 'unset'; };
+  }, []);
 
-  return (
+  const content = (
     <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
       <div className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 border border-slate-100 max-h-[90vh] flex flex-col">
         {/* Header */}
@@ -645,6 +651,8 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
       </div>
     </div>
   );
+
+  return ReactDOM.createPortal(content, document.body);
 };
 
 export default CreditoForm;

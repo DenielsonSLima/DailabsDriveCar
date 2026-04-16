@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PedidosCompraService } from './pedidos-compra.service';
 import { IPedidoCompra } from './pedidos-compra.types';
@@ -17,6 +17,7 @@ import FormCardNotes from './components/FormCardNotes';
 
 const PedidoCompraFormPage: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { id } = useParams();
   const queryClient = useQueryClient();
 
@@ -46,12 +47,21 @@ const PedidoCompraFormPage: React.FC = () => {
     valor_negociado: 0
   });
 
-  // Sincronizar dados do pedido quando carregado
+  // Sincronizar dados do pedido quando carregado ou por navegação externa (Fipe)
   useEffect(() => {
     if (pedidoOriginal) {
       setFormData(pedidoOriginal);
+    } else if (!id && location.state?.vehicleData) {
+      // Pré-preenchimento via Consulta Fipe do Dashboard
+      const vd = location.state.vehicleData;
+      setFormData(prev => ({
+        ...prev,
+        descricao_veiculo: `${vd.marca} ${vd.modelo} ${vd.anoModelo} (${vd.combustivel})`.toUpperCase(),
+        valor_negociado: vd.valorFipe,
+        observacoes: `CONSULTA FIPE REALIZADA EM: ${new Date().toLocaleDateString('pt-BR')}\nPlaca: ${vd.placa}\nChassi: ${vd.chassi}\nCódigo Fipe: ${vd.codigoFipe}\nValor Fipe: ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(vd.valorFipe)}`
+      }));
     }
-  }, [pedidoOriginal]);
+  }, [pedidoOriginal, id, location.state]);
 
   const isConcluido = !!id && formData.status !== 'RASCUNHO';
 

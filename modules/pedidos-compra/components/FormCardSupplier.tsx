@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { IPedidoCompra } from '../pedidos-compra.types';
-import { IParceiro } from '../../parceiros/parceiros.types';
+import { IParceiro, TipoParceiro } from '../../parceiros/parceiros.types';
 import PartnerSelect from './PartnerSelect';
 
 interface Props {
@@ -21,6 +21,7 @@ const FormCardSupplier: React.FC<Props> = ({ formData, parceiros, onChange, disa
         onChange={onChange}
         disabled={disabled}
         label="Fornecedor *"
+        defaultType={TipoParceiro.FORNECEDOR}
       />
     </div>
   );

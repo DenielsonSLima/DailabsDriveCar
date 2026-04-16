@@ -56,8 +56,8 @@ const PublicVehicleDetailsPage: React.FC = () => {
     const veiculoUrl = `${window.location.origin}/veiculo/${id}`;
 
     setSEO({
-      title: `${veiculoTitle} | Hidrocar Veículos`,
-      description: `${veiculoTitle} - ${veiculo.km?.toLocaleString('pt-BR')} KM, ${veiculo.combustivel}, ${veiculo.transmissao}. Confira na Hidrocar Veículos em Aracaju/SE.`,
+      title: `${veiculoTitle} | Souza Veículos`,
+      description: `${veiculoTitle} - ${veiculo.km?.toLocaleString('pt-BR')} KM, ${veiculo.combustivel}, ${veiculo.transmissao}. Confira na Souza Veículos em Aracaju/SE.`,
       image: coverPhoto,
       url: veiculoUrl
     });
@@ -74,7 +74,7 @@ const PublicVehicleDetailsPage: React.FC = () => {
       image: coverPhoto,
       url: veiculoUrl,
       description: `${veiculoTitle} - ${veiculo.km?.toLocaleString('pt-BR')} KM, ${veiculo.combustivel}, ${veiculo.transmissao}.`,
-      sellerName: 'Hidrocar Veículos',
+      sellerName: 'Souza Veículos',
       sellerPhone: empresa?.telefone,
     });
 
@@ -178,7 +178,7 @@ const PublicVehicleDetailsPage: React.FC = () => {
       try {
         await navigator.share({
           title: title,
-          text: `Confira este ${title} na Hidrocar Veículos!`,
+          text: `Confira este ${title} na Souza Veículos!`,
           url: url,
         });
       } catch (err) {
@@ -224,14 +224,14 @@ const PublicVehicleDetailsPage: React.FC = () => {
           <div className="mb-10 animate-in fade-in slide-in-from-left-4 duration-500">
             <button
               onClick={() => navigate('/')}
-              className="flex items-center space-x-3 group px-6 py-3 bg-white border border-slate-200 rounded-2xl shadow-sm hover:border-[#004691] transition-all active:scale-95"
+              className="flex items-center space-x-3 group px-6 py-3 bg-white border border-slate-200 rounded-2xl shadow-sm hover:border-orange-500 transition-all active:scale-95"
             >
-              <div className="w-8 h-8 rounded-xl bg-slate-50 flex items-center justify-center text-[#004691] group-hover:bg-[#004691] group-hover:text-white transition-all">
+              <div className="w-8 h-8 rounded-xl bg-slate-50 flex items-center justify-center text-orange-600 group-hover:bg-orange-600 group-hover:text-white transition-all">
                 <svg className="w-5 h-5 transform group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
               </div>
-              <span className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 group-hover:text-[#004691] transition-colors">Voltar ao Catálogo</span>
+              <span className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 group-hover:text-orange-600 transition-colors">Voltar ao Catálogo</span>
             </button>
           </div>
 
@@ -268,22 +268,22 @@ const PublicVehicleDetailsPage: React.FC = () => {
                       <button
                         onClick={handlePrevPhoto}
                         aria-label="Foto anterior"
-                        className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/20 backdrop-blur-md text-white rounded-full flex items-center justify-center hover:bg-white hover:text-[#004691] transition-all opacity-0 group-hover:opacity-100 z-20"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/20 backdrop-blur-md text-white rounded-full flex items-center justify-center hover:bg-orange-600 transition-all opacity-0 group-hover:opacity-100 z-20"
                       >
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M15 19l-7-7 7-7" /></svg>
                       </button>
                       <button
                         onClick={handleNextPhoto}
                         aria-label="Próxima foto"
-                        className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/20 backdrop-blur-md text-white rounded-full flex items-center justify-center hover:bg-white hover:text-[#004691] transition-all opacity-0 group-hover:opacity-100 z-20"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/20 backdrop-blur-md text-white rounded-full flex items-center justify-center hover:bg-orange-600 transition-all opacity-0 group-hover:opacity-100 z-20"
                       >
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M9 5l7 7-7 7" /></svg>
                       </button>
                     </>
                   )}
 
-                  <div className="absolute top-6 left-6 bg-[#004691] text-white px-4 py-1.5 rounded-full text-[8px] font-black uppercase tracking-widest shadow-xl z-10">
-                    HCV SELEÇÃO
+                  <div className="absolute top-6 left-6 bg-orange-600 text-white px-4 py-1.5 rounded-full text-[8px] font-black uppercase tracking-widest shadow-xl z-10">
+                    SOUZA SELEÇÃO
                   </div>
                 </div>
               </div>
@@ -295,7 +295,7 @@ const PublicVehicleDetailsPage: React.FC = () => {
                     <button
                       key={foto.id}
                       onClick={() => { setActivePhoto(foto.url); setActivePhotoIndex(index); }}
-                      className={`relative w-24 h-[60px] rounded-xl overflow-hidden border-2 transition-all snap-start shrink-0 ${activePhoto === foto.url ? 'border-[#004691] shadow-lg scale-105 z-10' : 'border-white opacity-40 hover:opacity-100'
+                      className={`relative w-24 h-[60px] rounded-xl overflow-hidden border-2 transition-all snap-start shrink-0 ${activePhoto === foto.url ? 'border-orange-600 shadow-lg scale-105 z-10' : 'border-white opacity-40 hover:opacity-100'
                         }`}
                     >
                       <img src={foto.url} className="w-full h-full object-cover" alt={`${veiculo?.montadora?.nome || ''} ${veiculo?.modelo?.nome || ''} - Foto ${index + 1}`} loading="lazy" decoding="async" />
@@ -311,21 +311,21 @@ const PublicVehicleDetailsPage: React.FC = () => {
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     {v.montadora?.logo_url && <img src={v.montadora.logo_url} className="h-8 w-auto object-contain" alt="" />}
-                    <span className="text-[11px] font-black text-[#004691] uppercase tracking-[0.4em]">{v.montadora?.nome}</span>
+                    <span className="text-[11px] font-black text-orange-600 uppercase tracking-[0.4em]">{v.montadora?.nome}</span>
                   </div>
                   <h1 className="text-5xl font-[900] text-slate-900 uppercase tracking-tighter leading-none">{v.modelo?.nome}</h1>
-                  <p className="text-lg font-medium text-slate-400 uppercase tracking-tight leading-none border-l-4 border-[#004691] pl-4">{v.versao?.nome}</p>
+                  <p className="text-lg font-medium text-slate-400 uppercase tracking-tight leading-none border-l-4 border-orange-600 pl-4">{v.versao?.nome}</p>
                 </div>
 
                 <div className="space-y-1">
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Valor do Ativo</p>
-                  <p className="text-5xl font-[900] text-[#004691] tracking-tighter">{veiculo ? formatCurrency(veiculo.valor_venda) : 'R$ --'}</p>
+                  <p className="text-5xl font-[900] text-orange-600 tracking-tighter">{veiculo ? formatCurrency(veiculo.valor_venda) : 'R$ --'}</p>
                 </div>
 
                 <div className="pt-4 space-y-3">
                   <button
                     onClick={handleWhatsApp}
-                    className="w-full py-6 bg-[#004691] text-white rounded-[2rem] font-black uppercase tracking-[0.2em] text-[11px] shadow-2xl hover:bg-[#00356d] transition-all active:scale-95 flex items-center justify-center group"
+                    className="w-full py-6 bg-orange-600 text-white rounded-[2rem] font-black uppercase tracking-[0.2em] text-[11px] shadow-2xl hover:bg-orange-700 transition-all active:scale-95 flex items-center justify-center group"
                   >
                     <svg className="w-5 h-5 mr-3 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.463 1.065 2.875 1.213 3.074.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" /></svg>
                     Falar com Especialista
@@ -333,7 +333,7 @@ const PublicVehicleDetailsPage: React.FC = () => {
 
                   <button
                     onClick={handleShare}
-                    className="w-full py-4 bg-white border-2 border-slate-100 text-slate-900 rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] hover:border-[#004691] hover:text-[#004691] transition-all active:scale-95 flex items-center justify-center group"
+                    className="w-full py-4 bg-white border-2 border-slate-100 text-slate-900 rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] hover:border-orange-500 hover:text-orange-600 transition-all active:scale-95 flex items-center justify-center group"
                   >
                     <svg className="w-4 h-4 mr-3 group-hover:rotate-12 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 10.342l7.132-3.566m-7.132 5.066l7.132 3.566M16 5a3 3 0 11-6 0 3 3 0 016 0zm-8 7a3 3 0 11-6 0 3 3 0 016 0zm8 7a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -426,13 +426,13 @@ const PublicVehicleDetailsPage: React.FC = () => {
               {tagsCar.length > 0 && (
                 <div>
                   <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.5em] mb-10 flex items-center">
-                    <span className="w-2 h-8 bg-[#004691] rounded-full mr-5"></span>
+                    <span className="w-2 h-8 bg-orange-600 rounded-full mr-5"></span>
                     Destaques de Seleção
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                     {tagsCar.map(c => (
-                      <div key={c.id} className="bg-slate-50 p-6 rounded-[2rem] flex flex-col gap-4 border border-slate-100 hover:border-[#004691] transition-all">
-                        <div className="w-10 h-10 bg-[#004691] text-white rounded-xl flex items-center justify-center shadow-lg">
+                      <div key={c.id} className="bg-slate-50 p-6 rounded-[2rem] flex flex-col gap-4 border border-slate-100 hover:border-orange-500 transition-all">
+                        <div className="w-10 h-10 bg-orange-600 text-white rounded-xl flex items-center justify-center shadow-lg">
                           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M5 13l4 4L19 7" /></svg>
                         </div>
                         <span className="text-[10px] font-black uppercase text-slate-800 tracking-widest leading-tight">{c.nome}</span>
@@ -451,7 +451,7 @@ const PublicVehicleDetailsPage: React.FC = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-y-4 gap-x-12">
                     {tagsOp.map(o => (
                       <div key={o.id} className="flex items-center gap-4 py-3 border-b border-slate-50 group">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#004691]/20 group-hover:bg-[#004691] transition-all"></div>
+                        <div className="w-1.5 h-1.5 rounded-full bg-orange-600/20 group-hover:bg-orange-600 transition-all"></div>
                         <span className="text-xs font-bold text-slate-700 uppercase tracking-tight group-hover:translate-x-1 transition-transform">{o.nome}</span>
                       </div>
                     ))}
@@ -460,9 +460,9 @@ const PublicVehicleDetailsPage: React.FC = () => {
               )}
 
               {veiculo?.observacoes && (
-                <div className="bg-slate-900 rounded-[4rem] p-16 text-white relative overflow-hidden shadow-2xl">
-                  <div className="absolute top-0 right-0 w-80 h-80 bg-blue-600 rounded-full blur-[100px] opacity-10 -mr-40 -mt-40"></div>
-                  <h3 className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.6em] mb-12">Dossiê de Procedência</h3>
+                <div className="bg-[#050a14] rounded-[4rem] p-16 text-white relative overflow-hidden shadow-2xl">
+                  <div className="absolute top-0 right-0 w-80 h-80 bg-orange-600 rounded-full blur-[100px] opacity-10 -mr-40 -mt-40"></div>
+                  <h3 className="text-[10px] font-black text-orange-400 uppercase tracking-[0.6em] mb-12">Dossiê de Procedência</h3>
                   <p className="text-2xl md:text-3xl text-slate-200 font-medium leading-relaxed italic relative z-10 whitespace-pre-wrap">
                     "{veiculo.observacoes}"
                   </p>
@@ -472,21 +472,22 @@ const PublicVehicleDetailsPage: React.FC = () => {
 
             {/* SELOS HCV */}
             <div className="lg:col-span-4 space-y-10">
-              <div className="bg-[#004691] rounded-[3rem] p-12 text-white shadow-2xl relative overflow-hidden">
-                <h4 className="text-2xl font-black uppercase tracking-tighter mb-10">Compromisso HCV</h4>
+              <div className="bg-orange-600 rounded-[3rem] p-12 text-white shadow-2xl relative overflow-hidden">
+                <h4 className="text-2xl font-black uppercase tracking-tighter mb-10">Compromisso Souza</h4>
                 <div className="space-y-12">
+                  {/* Selos Souza */}
                   {[
                     { title: 'Certificação Cautelar', desc: 'Estrutura e documentação 100% aprovada.' },
                     { title: 'Revisão Especializada', desc: 'Inspeção rigorosa em mais de 150 itens.' },
-                    { title: 'Higienização Premium', desc: 'Estética completa e assepsia hospitalar.' }
+                    { title: 'Higienização Premium', desc: 'Estética completa e detalhamento premium.' }
                   ].map((selo, i) => (
                     <div key={i} className="flex items-start gap-6">
                       <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center shrink-0 border border-white/20">
-                        <svg className="w-6 h-6 text-blue-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M9 12l2 2 4-4" /></svg>
+                        <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M9 12l2 2 4-4" /></svg>
                       </div>
                       <div>
                         <p className="text-sm font-black uppercase tracking-wide mb-2">{selo.title}</p>
-                        <p className="text-xs text-blue-100/60 leading-relaxed font-medium">{selo.desc}</p>
+                        <p className="text-xs text-orange-100/70 leading-relaxed font-medium">{selo.desc}</p>
                       </div>
                     </div>
                   ))}

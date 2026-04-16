@@ -17,14 +17,16 @@ const MotorizacaoPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [toast, setToast] = useState<{ type: 'success' | 'error', message: string } | null>(null);
 
-  // Estados para modal de exclusão
-  const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [displayStatus, setDisplayStatus] = useState<'active' | 'inactive'>('active');
+
+  // Inativação
+  const [inactivateId, setInactivateId] = useState<string | null>(null);
+  const [isInactivating, setIsInactivating] = useState(false);
 
   const loadData = async (silent = false) => {
     if (!silent) setLoading(true);
     try {
-      const data = await MotorizacaoService.getAll();
+      const data = await MotorizacaoService.getAll(displayStatus === 'active');
       setItems(data);
     } finally {
       setLoading(false);
@@ -35,7 +37,7 @@ const MotorizacaoPage: React.FC = () => {
     loadData();
     const sub = MotorizacaoService.subscribe(() => loadData(true));
     return () => { sub.unsubscribe(); };
-  }, []);
+  }, [displayStatus]);
 
   const showToast = (type: 'success' | 'error', message: string) => {
     setToast({ type, message });
@@ -56,22 +58,32 @@ const MotorizacaoPage: React.FC = () => {
     setIsFormOpen(true);
   };
 
-  const handleClickDelete = (id: string) => {
-    setDeleteId(id);
+  const handleClickInactivate = (id: string) => {
+    setInactivateId(id);
   };
 
-  const handleConfirmDelete = async () => {
-    if (!deleteId) return;
-    setIsDeleting(true);
+  const handleConfirmInactivate = async () => {
+    if (!inactivateId) return;
+    setIsInactivating(true);
     try {
-      await MotorizacaoService.remove(deleteId);
-      showToast('success', 'Motorização excluída com sucesso.');
+      await MotorizacaoService.remove(inactivateId);
+      showToast('success', 'Motorização inativada com sucesso.');
       loadData(true);
-      setDeleteId(null);
+      setInactivateId(null);
     } catch (err: any) {
-      showToast('error', 'Erro ao excluir.');
+      showToast('error', 'Erro ao inativar.');
     } finally {
-      setIsDeleting(false);
+      setIsInactivating(false);
+    }
+  };
+
+  const handleReactivate = async (id: string) => {
+    try {
+      await MotorizacaoService.reactivate(id);
+      showToast('success', 'Motorização reativada com sucesso!');
+      loadData(true);
+    } catch (err: any) {
+      showToast('error', 'Erro ao reativar.');
     }
   };
 
@@ -118,17 +130,40 @@ const MotorizacaoPage: React.FC = () => {
       </div>
 
       <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm p-8 min-h-[500px]">
-        <div className="mb-8 relative max-w-md">
-           <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-          </span>
-          <input 
-            type="text" 
-            placeholder="Pesquisar motor (ex: 1.0, 2.0 Turbo)..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3 pl-10 pr-4 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
-          />
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-12">
+          <div className="relative flex-1 max-w-md">
+            <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+            </span>
+            <input 
+              type="text" 
+              placeholder="Pesquisar motor (ex: 1.0, 2.0 Turbo)..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3 pl-10 pr-4 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all font-bold"
+            />
+          </div>
+
+          <div className="flex p-1 bg-slate-100 rounded-2xl w-fit">
+            <button
+              onClick={() => setDisplayStatus('active')}
+              className={`px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${displayStatus === 'active'
+                ? 'bg-white text-indigo-600 shadow-sm'
+                : 'text-slate-500 hover:text-slate-700'
+                }`}
+            >
+              Ativos
+            </button>
+            <button
+              onClick={() => setDisplayStatus('inactive')}
+              className={`px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${displayStatus === 'inactive'
+                ? 'bg-white text-rose-600 shadow-sm'
+                : 'text-slate-500 hover:text-slate-700'
+                }`}
+            >
+              Inativos
+            </button>
+          </div>
         </div>
 
         {loading ? (
@@ -142,7 +177,8 @@ const MotorizacaoPage: React.FC = () => {
           <MotorizacaoList 
             items={filteredItems} 
             onEdit={handleEdit} 
-            onDelete={handleClickDelete} 
+            onDelete={handleClickInactivate} 
+            onReactivate={handleReactivate}
           />
         )}
       </div>
@@ -157,14 +193,14 @@ const MotorizacaoPage: React.FC = () => {
       )}
 
       <ConfirmModal 
-        isOpen={!!deleteId}
-        onClose={() => setDeleteId(null)}
-        onConfirm={handleConfirmDelete}
-        title="Excluir Motor?"
-        message={`Deseja excluir "${items.find(i => i.id === deleteId)?.nome}"? Esta ação é definitiva.`}
-        confirmText="Sim, Remover"
-        variant="danger"
-        isLoading={isDeleting}
+        isOpen={!!inactivateId}
+        onClose={() => setInactivateId(null)}
+        onConfirm={handleConfirmInactivate}
+        title="Inativar Motorização?"
+        message={`Deseja inativar a motorização "${items.find(i => i.id === inactivateId)?.nome}"? Ela não aparecerá mais para novos cadastros de estoque.`}
+        confirmText="Sim, Inativar"
+        variant="warning"
+        isLoading={isInactivating}
       />
     </div>
   );

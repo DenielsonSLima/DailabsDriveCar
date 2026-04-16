@@ -5,4 +5,5 @@ export interface ITransmissao {
   nome: string; // Ex: Manual 5 Marchas, Automática 6 Marchas, CVT, Automatizada
   created_at: string;
   updated_at?: string;
+  ativo?: boolean;
 }

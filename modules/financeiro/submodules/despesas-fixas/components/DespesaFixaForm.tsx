@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { DespesasFixasService } from '../despesas-fixas.service';
 import { ContasBancariasService } from '../../../../ajustes/contas-bancarias/contas.service';
 import { FormasPagamentoService } from '../../../../cadastros/formas-pagamento/formas-pagamento.service';
@@ -195,10 +196,15 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
       setIsSaving(false);
     }
   };
-
   const categoriasDoGrupo = grupos.find(g => g.id === formData.grupo_id)?.categorias || [];
 
-  return (
+  // Travar scroll do body
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = 'unset'; };
+  }, []);
+
+  const content = (
     <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
       <div className="bg-white w-full max-w-xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 border border-slate-100 flex flex-col max-h-[90vh]">
         {/* Header */}
@@ -479,6 +485,8 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
       )}
     </div>
   );
+
+  return ReactDOM.createPortal(content, document.body);
 };
 
 export default DespesaFixaForm;

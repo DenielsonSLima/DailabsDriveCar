@@ -1,5 +1,6 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { ICidade } from '../cidades.types';
 
 interface FormProps {
@@ -49,8 +50,13 @@ const CidadeForm: React.FC<FormProps> = ({ initialData, onClose, onSubmit }) => 
     { sigla: 'SE', nome: 'Sergipe' },
     { sigla: 'TO', nome: 'Tocantins' }
   ];
+  // Travar scroll do body
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = 'unset'; };
+  }, []);
 
-  return (
+  const content = (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
       <div className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col border border-slate-200 animate-in zoom-in-95 duration-300">
         <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50">
@@ -124,6 +130,8 @@ const CidadeForm: React.FC<FormProps> = ({ initialData, onClose, onSubmit }) => 
       </div>
     </div>
   );
+
+  return ReactDOM.createPortal(content, document.body);
 };
 
 export default CidadeForm;

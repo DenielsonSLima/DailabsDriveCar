@@ -6,6 +6,7 @@ export interface IMontadora {
   logo_url: string;
   created_at: string;
   updated_at?: string;
+  ativo?: boolean;
 }
 
 export interface IMontadoraResponse {
@@ -16,9 +17,8 @@ export interface IMontadoraResponse {
 }
 
 export interface IMontadoraFiltros {
-  search?: string;
-  page?: number;
   limit?: number;
+  ativo?: boolean;
 }
 
 export interface IMontadorasKpis {

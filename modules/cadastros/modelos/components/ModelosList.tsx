@@ -7,9 +7,10 @@ interface ListProps {
   loading: boolean;
   onEdit: (m: IModelo) => void;
   onDelete: (id: string) => void;
+  onReactivate?: (id: string) => void;
 }
 
-const ModelosList: React.FC<ListProps> = ({ agrupados, loading, onEdit, onDelete }) => {
+const ModelosList: React.FC<ListProps> = ({ agrupados, loading, onEdit, onDelete, onReactivate }) => {
   const montadoras = Object.keys(agrupados).sort();
 
   if (loading) {
@@ -60,40 +61,58 @@ const ModelosList: React.FC<ListProps> = ({ agrupados, loading, onEdit, onDelete
 
             {/* Grid de Modelos - Ajustado para cards mais largos (3-4 colunas) */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-              {modelos.map(modelo => (
-                <div 
-                  key={modelo.id}
-                  className="group bg-white border border-slate-100 rounded-[2.5rem] overflow-hidden hover:shadow-2xl hover:border-indigo-200 transition-all duration-500 flex flex-col"
-                >
-                  {/* Foto do Modelo */}
-                  <div className="h-48 bg-slate-50 flex items-center justify-center relative overflow-hidden group-hover:bg-white transition-colors">
-                    {modelo.foto_url ? (
-                      <img src={modelo.foto_url} alt={modelo.nome} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                    ) : (
-                      <svg className="w-16 h-16 text-slate-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                    )}
-                    
-                    {/* Ações Hover */}
-                    <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center space-x-3">
-                      <button 
-                        onClick={() => onEdit(modelo)}
-                        className="p-4 bg-white text-slate-900 rounded-2xl hover:bg-indigo-600 hover:text-white transition-all transform hover:scale-110 shadow-lg"
-                      >
-                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+              {modelos.map(modelo => {
+                const isInactive = modelo.ativo === false;
+                return (
+                  <div 
+                    key={modelo.id}
+                    className={`group bg-white border border-slate-100 rounded-[2.5rem] overflow-hidden hover:shadow-2xl hover:border-indigo-200 transition-all duration-500 flex flex-col ${isInactive ? 'opacity-75 grayscale-[0.3]' : ''}`}
+                  >
+                    {/* Foto do Modelo */}
+                    <div className="h-48 bg-slate-50 flex items-center justify-center relative overflow-hidden group-hover:bg-white transition-colors">
+                      {modelo.foto_url ? (
+                        <img src={modelo.foto_url} alt={modelo.nome} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                      ) : (
+                        <svg className="w-16 h-16 text-slate-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
-                      </button>
-                      <button 
-                        onClick={() => onDelete(modelo.id)}
-                        className="p-4 bg-white text-rose-600 rounded-2xl hover:bg-rose-600 hover:text-white transition-all transform hover:scale-110 shadow-lg"
-                      >
-                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                      </button>
-                    </div>
+                      )}
+                      
+                      {/* Ações Hover */}
+                      <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center space-x-3">
+                        {!isInactive ? (
+                          <>
+                            <button 
+                              onClick={() => onEdit(modelo)}
+                              className="p-4 bg-white text-slate-900 rounded-2xl hover:bg-indigo-600 hover:text-white transition-all transform hover:scale-110 shadow-lg"
+                              title="Editar"
+                            >
+                              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                              </svg>
+                            </button>
+                            <button 
+                              onClick={() => onDelete(modelo.id)}
+                              className="p-4 bg-white text-amber-600 rounded-2xl hover:bg-amber-600 hover:text-white transition-all transform hover:scale-110 shadow-lg"
+                              title="Inativar"
+                            >
+                              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                              </svg>
+                            </button>
+                          </>
+                        ) : (
+                          <button 
+                            onClick={() => onReactivate?.(modelo.id)}
+                            className="p-4 bg-white text-emerald-600 rounded-2xl hover:bg-emerald-600 hover:text-white transition-all transform hover:scale-110 shadow-lg"
+                            title="Reativar"
+                          >
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                          </button>
+                        )}
+                      </div>
 
                     {/* Badge de Tipo no Topo do Card */}
                     {modelo.tipo_veiculo && (

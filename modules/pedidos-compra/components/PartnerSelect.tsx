@@ -1,6 +1,8 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { IParceiro } from '../../parceiros/parceiros.types';
+import { useQueryClient } from '@tanstack/react-query';
+import { IParceiro, TipoParceiro } from '../../parceiros/parceiros.types';
+import ModalQuickPartner from '../../parceiros/components/ModalQuickPartner';
 
 interface Props {
   parceiros: IParceiro[];
@@ -8,10 +10,13 @@ interface Props {
   onChange: (parceiro: IParceiro) => void;
   disabled?: boolean;
   label?: string;
+  defaultType?: TipoParceiro;
 }
 
-const PartnerSelect: React.FC<Props> = ({ parceiros, selectedId, onChange, disabled, label = "Parceiro" }) => {
+const PartnerSelect: React.FC<Props> = ({ parceiros, selectedId, onChange, disabled, label = "Parceiro", defaultType }) => {
+  const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [search, setSearch] = useState('');
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -33,7 +38,21 @@ const PartnerSelect: React.FC<Props> = ({ parceiros, selectedId, onChange, disab
 
   return (
     <div className="relative" ref={wrapperRef}>
-      <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1 tracking-widest">{label}</label>
+      <div className="flex items-center justify-between mb-2 ml-1">
+        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">{label}</label>
+        
+        {!disabled && (
+          <button
+            type="button"
+            onClick={() => setIsModalOpen(true)}
+            className="text-[9px] font-black text-indigo-600 uppercase tracking-widest hover:text-indigo-800 transition-all flex items-center bg-indigo-50 px-2 py-1 rounded-md"
+          >
+            <svg className="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M12 4v16m8-8H4" /></svg>
+            + Novo
+          </button>
+        )}
+      </div>
+
       <div
         onClick={() => !disabled && setIsOpen(!isOpen)}
         className={`w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 flex items-center justify-between transition-all shadow-sm ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:border-emerald-300 hover:shadow-md'}`}
@@ -54,7 +73,7 @@ const PartnerSelect: React.FC<Props> = ({ parceiros, selectedId, onChange, disab
             <input
               autoFocus
               type="text"
-              placeholder="Pesquisar fornecedor..."
+              placeholder={`Pesquisar ${label.toLowerCase()}...`}
               value={search}
               onChange={e => setSearch(e.target.value)}
               className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-xs font-bold text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500"
@@ -73,6 +92,18 @@ const PartnerSelect: React.FC<Props> = ({ parceiros, selectedId, onChange, disab
             ))}
           </div>
         </div>
+      )}
+
+      {isModalOpen && (
+        <ModalQuickPartner
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          defaultType={defaultType}
+          onSuccess={(p) => {
+            queryClient.invalidateQueries({ queryKey: ['parceiros_select'] });
+            onChange(p);
+          }}
+        />
       )}
     </div>
   );

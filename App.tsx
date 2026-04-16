@@ -256,10 +256,10 @@ const App: React.FC = () => {
 
   if (loading && !isPublicRoute) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
+      <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="flex flex-col items-center space-y-4">
-          <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-slate-500 font-black text-[10px] uppercase tracking-[0.3em]">Nexus Core Booting...</p>
+          <div className="w-12 h-12 border-4 border-orange-600 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-slate-600 font-black text-[10px] uppercase tracking-[0.4em]">SOUZA VEÍCULOS</p>
         </div>
       </div>
     );
@@ -270,10 +270,10 @@ const App: React.FC = () => {
     <BrowserRouter>
       <ScrollToTop />
       <Routes>
-        {/* Rota Raiz: Redirecionada para Login (Site Público Oculto) */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="/estoque-publico" element={<Navigate to="/login" replace />} />
-        <Route path="/veiculo/:id" element={<Navigate to="/login" replace />} />
+        {/* Rotas Públicas (Souza Veículos) */}
+        <Route path="/" element={<SitePublicoPage />} />
+        <Route path="/estoque-publico" element={<EstoquePublicoPage />} />
+        <Route path="/veiculo/:id" element={<PublicVehicleDetailsPage />} />
 
         {/* Auth */}
         <Route path="/login" element={session ? <Navigate to={window.innerWidth < 768 ? '/caixa' : '/inicio'} /> : <AuthPage />} />
@@ -282,7 +282,7 @@ const App: React.FC = () => {
         <Route path="/*" element={
           session ? (
             <Layout>
-              <Suspense fallback={<div className="flex h-[80vh] w-full items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div></div>}>
+              <Suspense fallback={<div className="flex h-[80vh] w-full items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600"></div></div>}>
                 <Routes>
                   <Route path="/inicio" element={<InicioPage />} />
                   <Route path="/parceiros" element={<ParceirosPage />} />

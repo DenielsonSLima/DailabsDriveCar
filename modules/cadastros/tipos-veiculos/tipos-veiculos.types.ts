@@ -5,4 +5,5 @@ export interface ITipoVeiculo {
   nome: string;
   created_at: string;
   updated_at?: string;
+  ativo?: boolean;
 }

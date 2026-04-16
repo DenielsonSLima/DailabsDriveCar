@@ -5,4 +5,5 @@ export interface ICombustivel {
   nome: string; // Ex: Gasolina, Etanol, Diesel, Flex, Elétrico
   created_at: string;
   updated_at?: string;
+  ativo?: boolean;
 }

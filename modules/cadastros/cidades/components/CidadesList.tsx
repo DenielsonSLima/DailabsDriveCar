@@ -7,6 +7,7 @@ interface ListProps {
   loading: boolean;
   onEdit: (c: ICidade) => void;
   onDelete: (id: string) => void;
+  onReactivate: (id: string) => void;
 }
 
 // Mapa auxiliar para nomes completos (Opcional, mas melhora a UI)
@@ -18,7 +19,7 @@ const UFNames: Record<string, string> = {
   SC: 'Santa Catarina', SP: 'São Paulo', SE: 'Sergipe', TO: 'Tocantins'
 };
 
-const CidadesList: React.FC<ListProps> = ({ agrupadas, loading, onEdit, onDelete }) => {
+const CidadesList: React.FC<ListProps> = ({ agrupadas, loading, onEdit, onDelete, onReactivate }) => {
   // Garante a ordenação alfabética dos estados
   const ufs = Object.keys(agrupadas).sort();
 
@@ -69,13 +70,21 @@ const CidadesList: React.FC<ListProps> = ({ agrupadas, loading, onEdit, onDelete
             {agrupadas[uf].map(cidade => (
               <div 
                 key={cidade.id} 
-                className="group bg-slate-50 border border-slate-100 rounded-[1.5rem] p-5 flex items-center justify-between hover:bg-white hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-50/50 transition-all duration-300 relative overflow-hidden"
+                className={`group border rounded-[1.5rem] p-5 flex items-center justify-between transition-all duration-300 relative overflow-hidden ${
+                  cidade.ativo !== false 
+                    ? 'bg-slate-50 border-slate-100 hover:bg-white hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-50/50' 
+                    : 'bg-slate-100/50 border-slate-200 opacity-60 grayscale-[0.5]'
+                }`}
               >
                 {/* Visual Accent */}
-                <div className="absolute left-0 top-0 bottom-0 w-1 bg-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div className={`absolute left-0 top-0 bottom-0 w-1 transition-opacity ${
+                  cidade.ativo !== false ? 'bg-indigo-500 opacity-0 group-hover:opacity-100' : 'bg-slate-300'
+                }`}></div>
 
                 <div className="min-w-0 pr-2">
-                  <p className="text-sm font-bold text-slate-800 truncate group-hover:text-indigo-700 transition-colors" title={cidade.nome}>
+                  <p className={`text-sm font-bold truncate transition-colors ${
+                    cidade.ativo !== false ? 'text-slate-800 group-hover:text-indigo-700' : 'text-slate-500'
+                  }`} title={cidade.nome}>
                     {cidade.nome}
                   </p>
                   <div className="flex items-center space-x-2 mt-1">
@@ -86,24 +95,38 @@ const CidadesList: React.FC<ListProps> = ({ agrupadas, loading, onEdit, onDelete
                 </div>
 
                 <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity space-x-1 shrink-0 bg-white/80 backdrop-blur-sm rounded-lg p-1">
-                  <button 
-                    onClick={() => onEdit(cidade)}
-                    className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
-                    title="Editar"
-                  >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                    </svg>
-                  </button>
-                  <button 
-                    onClick={() => onDelete(cidade.id)}
-                    className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
-                    title="Excluir"
-                  >
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
+                  {cidade.ativo !== false ? (
+                    <>
+                      <button 
+                        onClick={() => onEdit(cidade)}
+                        className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+                        title="Editar"
+                      >
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
+                      </button>
+                      <button 
+                        onClick={() => onDelete(cidade.id)}
+                        className="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-all"
+                        title="Inativar"
+                      >
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                        </svg>
+                      </button>
+                    </>
+                  ) : (
+                    <button 
+                      onClick={() => onReactivate(cidade.id)}
+                      className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all"
+                      title="Reativar"
+                    >
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                    </button>
+                  )}
                 </div>
               </div>
             ))}

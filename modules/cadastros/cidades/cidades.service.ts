@@ -5,18 +5,26 @@ import { ICidade } from './cidades.types';
 const TABLE = 'cad_cidades';
 
 export const CidadesService = {
-  async getAll(): Promise<ICidade[]> {
-    const data = await CadastrosMasterService.getFromDB(TABLE);
+  async getAll(onlyActive = true): Promise<ICidade[]> {
+    const data = await CadastrosMasterService.getFromDB(TABLE, onlyActive);
     return (data || []) as ICidade[];
   },
 
   async save(payload: Partial<ICidade>): Promise<ICidade> {
-    const data = await CadastrosMasterService.saveToDB(TABLE, payload);
+    const dataToSave = { ...payload };
+    if (!payload.id) {
+      (dataToSave as any).ativo = true;
+    }
+    const data = await CadastrosMasterService.saveToDB(TABLE, dataToSave);
     return data as ICidade;
   },
 
   async remove(id: string): Promise<boolean> {
     return await CadastrosMasterService.deleteFromDB(TABLE, id);
+  },
+
+  async reactivate(id: string): Promise<boolean> {
+    return await CadastrosMasterService.reactivateInDB(TABLE, id);
   },
 
   // Consulta opcional de CEP para auxiliar o preenchimento

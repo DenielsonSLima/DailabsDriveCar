@@ -226,8 +226,9 @@ export async function consultarEParsear(placa: string): Promise<DadosParsedAPI> 
     }
   }
 
-  const valorSaldo = parseFloat(apiResponse.balance || '0');
-  const consultasRestantes = Math.floor(valorSaldo / 0.06);
+  // 7. Buscar estatísticas de uso oficiais do banco (via RPC)
+  const usageStats = await consultaPlacaService.fetchUsageStats();
+  const consultasRestantes = usageStats.remaining;
 
   return {
     raw: apiResponse,

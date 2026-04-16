@@ -64,13 +64,12 @@ const FormCardTechnical: React.FC<Props> = ({ formData, cores, onChange, onConsu
 
       onChange(updates);
 
-      // Notificações de saldo (R$ 0,06 por consulta)
+      // Notificações de saldo (Limite de 100 por Loja)
       if (onNotification) {
-        if (dados.consultasRestantes <= 33) { // 33 * 0.06 = ~R$ 1.98
-          onNotification('warning', `⚠️ Atenção: Suas consultas estão acabando! Restam apenas ${dados.consultasRestantes} consultas no plano.`);
+        if (dados.consultasRestantes <= 10) { 
+          onNotification('warning', `⚠️ Atenção: Limite mensal chegando ao fim! Restam apenas ${dados.consultasRestantes} de 100 consultas.`);
         } else {
-          // Mostrar sempre quantas restam em um toast de sucesso 'silencioso'
-          onNotification('success', `Placa consultada! Restam ${dados.consultasRestantes} consultas.`);
+          onNotification('success', `Placa consultada! Você ainda tem ${dados.consultasRestantes} consultas disponíveis este mês.`);
         }
       }
 
@@ -81,11 +80,14 @@ const FormCardTechnical: React.FC<Props> = ({ formData, cores, onChange, onConsu
     } catch (error: any) {
       console.error('Erro na consulta de placa:', error);
       
-      if (error.message === 'SALDO_INSUFICIENTE') {
+      const isLimitError = error.message?.includes('limite') || error.message?.includes('LIMITE');
+
+      if (isLimitError) {
+        const errorMsg = '⚠️ Limite de 100 consultas mensais atingido para sua loja. Entre em contato para contratar mais.';
         if (onNotification) {
-          onNotification('warning', '⚠️ API Brasil: Saldo insuficiente. Por favor, renove seu plano.');
+          onNotification('error', errorMsg);
         } else {
-          setConsultaErro('Saldo insuficiente na API Brasil. Renove seu plano.');
+          setConsultaErro(errorMsg);
         }
       } else {
         setConsultaErro(error.message || 'Erro ao consultar placa');

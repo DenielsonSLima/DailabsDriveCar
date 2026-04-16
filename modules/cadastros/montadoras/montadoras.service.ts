@@ -4,15 +4,23 @@ import { IMontadora, IMontadoraFiltros, IMontadoraResponse, IMontadorasKpis } fr
 
 const TABLE = 'cad_montadoras';
 
+
 export const MontadorasService = {
   /**
    * Busca todas as montadoras ordenadas alfabeticamente.
+   * Por padrão busca apenas as ativas.
    */
-  async getAll(): Promise<IMontadora[]> {
-    const { data, error } = await supabase
+  async getAll(onlyActive = true): Promise<IMontadora[]> {
+    let query = supabase
       .from(TABLE)
       .select('*')
       .order('nome', { ascending: true });
+
+    if (onlyActive) {
+      query = query.eq('ativo', true);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       console.error(`Erro ao buscar dados de ${TABLE}:`, error);
@@ -23,7 +31,7 @@ export const MontadorasService = {
 
   async getPaginated(filters: IMontadoraFiltros): Promise<IMontadoraResponse> {
     const page = filters.page || 1;
-    const limit = filters.limit || 9;
+    const limit = filters.limit || 12;
     const from = (page - 1) * limit;
     const to = from + limit - 1;
 
@@ -34,6 +42,10 @@ export const MontadorasService = {
     if (filters.search) {
       query = query.ilike('nome', `%${filters.search}%`);
     }
+
+    // Filtro de status (se não passar nada, assume ativos)
+    const statusFilter = filters.ativo !== undefined ? filters.ativo : true;
+    query = query.eq('ativo', statusFilter);
 
     const { data, error, count } = await query
       .order('nome', { ascending: true })
@@ -50,7 +62,10 @@ export const MontadorasService = {
   },
 
   async getKpis(): Promise<IMontadorasKpis> {
-    const { count: total } = await supabase.from(TABLE).select('*', { count: 'exact', head: true });
+    const { count: total } = await supabase
+      .from(TABLE)
+      .select('*', { count: 'exact', head: true })
+      .eq('ativo', true);
 
     // Recentes (últimos 30 dias)
     const thirtyDaysAgo = new Date();
@@ -59,6 +74,7 @@ export const MontadorasService = {
     const { count: recent } = await supabase
       .from(TABLE)
       .select('*', { count: 'exact', head: true })
+      .eq('ativo', true)
       .gte('created_at', thirtyDaysAgo.toISOString());
 
     return {
@@ -88,16 +104,32 @@ export const MontadorasService = {
   },
 
   /**
-   * Remove uma montadora pelo ID.
+   * Inativa uma montadora pelo ID (Soft Delete).
    */
   async remove(id: string): Promise<boolean> {
     const { error } = await supabase
       .from(TABLE)
-      .delete()
+      .update({ ativo: false })
       .eq('id', id);
 
     if (error) {
-      console.error(`Erro ao deletar de ${TABLE}:`, error);
+      console.error(`Erro ao inativar de ${TABLE}:`, error);
+      throw error;
+    }
+    return true;
+  },
+
+  /**
+   * Reativa uma montadora pelo ID.
+   */
+  async reactivate(id: string): Promise<boolean> {
+    const { error } = await supabase
+      .from(TABLE)
+      .update({ ativo: true })
+      .eq('id', id);
+
+    if (error) {
+      console.error(`Erro ao reativar em ${TABLE}:`, error);
       throw error;
     }
     return true;

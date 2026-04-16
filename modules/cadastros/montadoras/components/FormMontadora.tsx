@@ -1,5 +1,6 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { IMontadora } from '../montadoras.types';
 import { StorageService } from '../../../../lib/storage.service';
 
@@ -55,8 +56,13 @@ const FormMontadora: React.FC<FormProps> = ({ initialData, isSaving, onClose, on
       setIsUploading(false);
     }
   };
+  // Travar scroll do body
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = 'unset'; };
+  }, []);
 
-  return (
+  const content = (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
       <div className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden">
         <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50">
@@ -141,8 +147,10 @@ const FormMontadora: React.FC<FormProps> = ({ initialData, isSaving, onClose, on
           </div>
         </form>
       </div >
-    </div >
+    </div>
   );
+
+  return ReactDOM.createPortal(content, document.body);
 };
 
 export default FormMontadora;

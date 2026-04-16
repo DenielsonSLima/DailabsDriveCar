@@ -10,8 +10,8 @@ interface Props {
 }
 
 const DEFAULT_TITULO = 'Tradição e Segurança em Cada Negociação';
-const DEFAULT_SUBTITULO = 'Experiência Hidrocar';
-const DEFAULT_DESCRICAO = 'Oferecemos oportunidades exclusivas para quem deseja adquirir um veículo de qualidade, além da compra do seu automóvel com avaliação justa, ágil e segura. Nossa equipe atua com profissionalismo, transparência e responsabilidade, garantindo uma negociação segura do início ao fim.';
+const DEFAULT_SUBTITULO = 'Qualidade Souza Veículos';
+const DEFAULT_DESCRICAO = 'Oferecemos oportunidades exclusivas para quem deseja adquirir um veículo de alta performance e procedência garantida. Nossa equipe atua com foco na satisfação total do cliente, garantindo uma negociação segura, ágil e totalmente transparente do início ao fim.';
 
 const PublicContact: React.FC<Props> = React.memo(({ telefone, contato_titulo, contato_subtitulo, contato_descricao, contato_horario_semana, contato_horario_sabado }) => {
     const phone = (telefone || '').replace(/\D/g, '');
@@ -29,18 +29,15 @@ const PublicContact: React.FC<Props> = React.memo(({ telefone, contato_titulo, c
     const tituloSegundo = tituloPartes.length > 1 ? tituloPartes.slice(1).join(' em ') : '';
 
     return (
-        <section id="contato" className="relative w-full min-h-[600px] bg-[#001d3d] overflow-hidden flex items-center">
-            {/* Elementos de Design de Fundo Imersivos */}
-            <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] pointer-events-none"></div>
-
-            {/* Gradients Ambientais */}
-            <div className="absolute top-[-100px] left-[-100px] w-[600px] h-[600px] bg-blue-600/20 rounded-full blur-[120px] pointer-events-none"></div>
-            <div className="absolute bottom-[-100px] right-[-100px] w-[600px] h-[600px] bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+        <section id="contato" className="relative w-full min-h-[600px] bg-[#050a14] overflow-hidden flex items-center">
+            {/* Gradients Ambientais - Mais Sutis e Elegantes (Branco/Prata) */}
+            <div className="absolute top-[-150px] left-[-150px] w-[600px] h-[600px] bg-white/5 rounded-full blur-[150px] pointer-events-none"></div>
+            <div className="absolute bottom-[-150px] right-[-150px] w-[600px] h-[600px] bg-white/5 rounded-full blur-[150px] pointer-events-none"></div>
 
             {/* Linhas de Design Sutis */}
             <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-500/20 to-transparent"></div>
-                <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-500/20 to-transparent"></div>
+                <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
+                <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
             </div>
 
             <div className="max-w-7xl mx-auto px-6 w-full py-20 relative z-10">
@@ -49,27 +46,26 @@ const PublicContact: React.FC<Props> = React.memo(({ telefone, contato_titulo, c
                     {/* Lado Esquerdo: Conteúdo Textual */}
                     <div className="space-y-8">
                         <div className="inline-flex items-center space-x-3 bg-white/5 border border-white/10 px-4 py-2 rounded-2xl backdrop-blur-md">
-                            <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></div>
-                            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-200">{subtitulo}</span>
+                            <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></div>
+                            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-orange-200">{subtitulo}</span>
                         </div>
 
                         <div className="space-y-6">
                             <h2 className="text-3xl md:text-4xl lg:text-5xl font-[900] text-white uppercase tracking-tighter leading-[0.95]">
                                 {tituloPrimeiro} <br />
-                                {tituloSegundo && <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300">{tituloSegundo}</span>}
+                                {tituloSegundo && <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">{tituloSegundo}</span>}
                             </h2>
                             <p className="text-lg text-blue-100/70 font-medium max-w-xl leading-relaxed">
                                 {descricao}
                             </p>
-                            <div className="flex items-center space-x-2 text-blue-300/80">
-                                <div className="h-px w-8 bg-blue-500/50"></div>
-                                <span className="text-xs font-bold uppercase tracking-widest">Compra, venda e intermediação de veículos.</span>
+                            <div className="flex items-center space-x-2 text-slate-300">
+                                <div className="h-px w-8 bg-orange-500/50"></div>
+                                <span className="text-xs font-bold uppercase tracking-widest">Excelência em Seminovos e Veículos Especiais.</span>
                             </div>
                         </div>
 
-                        {/* Linha Institucional */}
                         <p className="text-sm font-medium text-white/40 italic">
-                            Hidrocar Veículos — credibilidade consolidada no mercado sergipano.
+                            Souza Veículos — credibilidade e segurança no mercado automotivo.
                         </p>
                     </div>
 
@@ -78,7 +74,7 @@ const PublicContact: React.FC<Props> = React.memo(({ telefone, contato_titulo, c
 
                         {/* Bloco de Atendimento */}
                         <div className="bg-white/5 border border-white/10 p-8 rounded-[2rem] backdrop-blur-sm space-y-4 w-full max-w-sm">
-                            <div className="flex items-center space-x-3 text-blue-400">
+                            <div className="flex items-center space-x-3 text-orange-500">
                                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
@@ -100,8 +96,8 @@ const PublicContact: React.FC<Props> = React.memo(({ telefone, contato_titulo, c
                                 <h3 className="text-xs font-black uppercase tracking-widest text-white">Endereço</h3>
                             </div>
                             <p className="text-blue-100/60 text-sm leading-relaxed">
-                                Avenida Pedro Calazans, Nº 994 <br />
-                                Getúlio Vargas – Aracaju – SE
+                                Rua Lions Club, Nº 526 <br />
+                                Atalaia – Aracaju – SE
                             </p>
                         </div>
 

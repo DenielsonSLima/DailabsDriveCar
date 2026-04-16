@@ -25,17 +25,19 @@ const VersoesPage: React.FC = () => {
   const [filterTipo, setFilterTipo] = useState('');
   const [groupBy, setGroupBy] = useState<GroupBy>('montadora');
 
+  const [displayStatus, setDisplayStatus] = useState<'active' | 'inactive'>('active');
+
   useEffect(() => {
     loadInitialData();
-  }, []);
+  }, [displayStatus]);
 
   const loadInitialData = async () => {
     setLoading(true);
     try {
       const [mRes, mtRes, tRes] = await Promise.all([
-        ModelosService.getAll(),
-        MontadorasService.getAll(),
-        TiposVeiculosService.getAll()
+        ModelosService.getAll(displayStatus === 'active'),
+        MontadorasService.getAll(true),
+        TiposVeiculosService.getAll(true)
       ]);
       setModelos(mRes);
       setMontadoras(mtRes);
@@ -103,11 +105,36 @@ const VersoesPage: React.FC = () => {
             placeholder="Buscar modelo..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3 pl-10 pr-4 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
+            className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3 pl-10 pr-4 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all font-bold"
           />
         </div>
 
-        <div className="flex flex-wrap items-center gap-4">
+        <div className="flex flex-wrap items-center gap-6">
+          {/* Tab Selector */}
+          <div className="flex flex-col">
+            <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1">Status do Modelo</label>
+            <div className="flex bg-slate-100 p-1 rounded-xl">
+              <button
+                onClick={() => setDisplayStatus('active')}
+                className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${displayStatus === 'active'
+                  ? 'bg-white text-indigo-600 shadow-sm'
+                  : 'text-slate-400 hover:text-slate-600'
+                  }`}
+              >
+                Ativos
+              </button>
+              <button
+                onClick={() => setDisplayStatus('inactive')}
+                className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${displayStatus === 'inactive'
+                  ? 'bg-white text-rose-600 shadow-sm'
+                  : 'text-slate-400 hover:text-slate-600'
+                  }`}
+              >
+                Inativos
+              </button>
+            </div>
+          </div>
+
           <div className="flex flex-col">
             <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1">Montadora</label>
             <select 
@@ -117,18 +144,6 @@ const VersoesPage: React.FC = () => {
             >
               <option value="">Todas</option>
               {montadoras.map(m => <option key={m.id} value={m.id}>{m.nome}</option>)}
-            </select>
-          </div>
-
-          <div className="flex flex-col">
-            <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-1">Tipo</label>
-            <select 
-              value={filterTipo} 
-              onChange={(e) => setFilterTipo(e.target.value)}
-              className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-xs font-bold outline-none focus:ring-2 focus:ring-indigo-500/20"
-            >
-              <option value="">Todos</option>
-              {tipos.map(t => <option key={t.id} value={t.id}>{t.nome}</option>)}
             </select>
           </div>
 

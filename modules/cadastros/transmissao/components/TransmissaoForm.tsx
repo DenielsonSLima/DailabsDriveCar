@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { ITransmissao } from '../transmissao.types';
 
 interface Props {
@@ -21,8 +22,13 @@ const TransmissaoForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSu
     if (!nome.trim()) return;
     onSubmit({ id: initialData?.id, nome: nome.trim() });
   };
+  // Travar scroll do body
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = 'unset'; };
+  }, []);
 
-  return (
+  const content = (
     <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
       <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
         <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50">
@@ -72,6 +78,8 @@ const TransmissaoForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSu
       </div>
     </div>
   );
+
+  return ReactDOM.createPortal(content, document.body);
 };
 
 export default TransmissaoForm;

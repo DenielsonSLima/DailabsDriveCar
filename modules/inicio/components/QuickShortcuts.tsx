@@ -1,12 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { Search } from 'lucide-react';
+import FipeConsultModal from './FipeConsultModal';
 
-const ShortcutItem = ({ to, label, icon, color, description }: { to: string, label: string, icon: React.ReactNode, color: string, description: string }) => {
-  return (
-    <NavLink
-      to={to}
-      className="group flex items-center gap-5 p-5 bg-white rounded-3xl border border-slate-200/60 shadow-sm hover:shadow-xl hover:border-slate-300 transition-all duration-500"
-    >
+const ShortcutItem = ({ to, label, icon, color, description, onClick }: { to?: string, label: string, icon: React.ReactNode, color: string, description: string, onClick?: () => void }) => {
+  const content = (
+    <>
       <div className={`w-14 h-14 rounded-2xl bg-${color}-50 border border-${color}-100 flex items-center justify-center text-${color}-600 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500`}>
         {icon}
       </div>
@@ -19,17 +18,49 @@ const ShortcutItem = ({ to, label, icon, color, description }: { to: string, lab
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
         </svg>
       </div>
+    </>
+  );
+
+  if (onClick) {
+    return (
+      <button 
+        onClick={onClick}
+        className="group w-full flex items-center gap-5 p-5 bg-white rounded-3xl border border-slate-200/60 shadow-sm hover:shadow-xl hover:border-slate-300 transition-all duration-500 text-left"
+      >
+        {content}
+      </button>
+    );
+  }
+
+  return (
+    <NavLink
+      to={to || '#'}
+      className="group flex items-center gap-5 p-5 bg-white rounded-3xl border border-slate-200/60 shadow-sm hover:shadow-xl hover:border-slate-300 transition-all duration-500"
+    >
+      {content}
     </NavLink>
   );
 };
 
 const QuickShortcuts: React.FC = () => {
+  const [isFipeModalOpen, setIsFipeModalOpen] = useState(false);
+
   return (
     <div className="flex flex-col gap-6">
       <div className="px-1 border-l-4 border-amber-500 mb-2">
         <h3 className="text-lg font-black text-slate-900 tracking-tight uppercase">Fluxo Ágil</h3>
         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Atalhos para operações frequentes</p>
       </div>
+
+      <ShortcutItem
+        onClick={() => setIsFipeModalOpen(true)}
+        label="Consulta Fipe"
+        description="Avaliação rápida por Placa"
+        color="purple"
+        icon={
+          <Search className="w-7 h-7" />
+        }
+      />
 
       <ShortcutItem
         to="/parceiros?action=new"
@@ -65,6 +96,11 @@ const QuickShortcuts: React.FC = () => {
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         }
+      />
+
+      <FipeConsultModal 
+        isOpen={isFipeModalOpen} 
+        onClose={() => setIsFipeModalOpen(false)} 
       />
     </div>
   );

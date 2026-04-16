@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { ICorretor } from '../corretores.types';
 
 interface Props {
@@ -60,8 +61,13 @@ const CorretorForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSubmi
     if (!formData.nome || !formData.sobrenome) return;
     onSubmit(formData);
   };
+  // Travar scroll do body
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = 'unset'; };
+  }, []);
 
-  return (
+  const content = (
     <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
       <div className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 border border-slate-200">
 
@@ -174,6 +180,8 @@ const CorretorForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSubmi
       </div>
     </div>
   );
+
+  return ReactDOM.createPortal(content, document.body);
 };
 
 export default CorretorForm;

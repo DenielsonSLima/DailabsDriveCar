@@ -20,7 +20,7 @@ const PublicBrands: React.FC<Props> = React.memo(({ montadoras }) => {
       <div className="max-w-7xl mx-auto px-6">
         <div className="mb-12 flex items-baseline justify-between">
           <div>
-            <p className="text-[#004691] text-[9px] font-black uppercase tracking-[0.6em] mb-2">Linha de Frente</p>
+            <p className="text-orange-600 text-[9px] font-black uppercase tracking-[0.6em] mb-2">Linha de Frente</p>
             <h2 className="text-4xl font-[900] text-slate-900 uppercase tracking-tighter leading-none">Marcas em Destaque</h2>
           </div>
           <div className="h-px flex-1 bg-slate-100 mx-8 hidden md:block"></div>
@@ -32,7 +32,7 @@ const PublicBrands: React.FC<Props> = React.memo(({ montadoras }) => {
             <button
               key={m.id}
               onClick={() => handleBrandClick(m.id)}
-              className="group bg-white border border-slate-100 rounded-[2.5rem] p-8 flex flex-col items-center justify-center text-center hover:border-indigo-200 hover:shadow-[0_20px_50px_-20px_rgba(0,70,145,0.15)] transition-all duration-500 cursor-pointer relative overflow-hidden active:scale-95 focus:outline-none focus:ring-4 focus:ring-[#004691]/20"
+              className="group bg-white border border-slate-100 rounded-[2.5rem] p-8 flex flex-col items-center justify-center text-center hover:border-orange-200 hover:shadow-[0_20px_50px_-20px_rgba(249,115,22,0.15)] transition-all duration-500 cursor-pointer relative overflow-hidden active:scale-95 focus:outline-none focus:ring-4 focus:ring-orange-500/20"
             >
               {/* Logo sem grayscale e com scale no hover */}
               <div className="h-16 w-full flex items-center justify-center mb-4 transition-transform duration-500 transform group-hover:scale-125">
@@ -44,12 +44,12 @@ const PublicBrands: React.FC<Props> = React.memo(({ montadoras }) => {
               </div>
 
               <div className="flex items-center gap-2">
-                <h4 className="text-[11px] font-black text-slate-900 uppercase tracking-widest group-hover:text-[#004691] transition-colors">{m.nome}</h4>
-                <span className="text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-full group-hover:bg-[#004691] group-hover:text-white transition-colors">{m.total_veiculos}</span>
+                <h4 className="text-[11px] font-black text-slate-900 uppercase tracking-widest group-hover:text-orange-600 transition-colors">{m.nome}</h4>
+                <span className="text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-full group-hover:bg-orange-600 group-hover:text-white transition-colors">{m.total_veiculos}</span>
               </div>
 
               {/* Glow Effect on Hover */}
-              <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/0 via-indigo-500/0 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/0 via-orange-500/0 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </button>
           ))}
         </div>

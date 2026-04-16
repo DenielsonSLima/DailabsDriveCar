@@ -5,6 +5,8 @@ export interface ICidade {
   nome: string;
   uf: string;
   created_at: string;
+  updated_at?: string;
+  ativo?: boolean;
 }
 
 export interface ICidadesAgrupadas {

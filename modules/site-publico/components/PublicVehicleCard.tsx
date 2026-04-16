@@ -40,7 +40,7 @@ const PublicVehicleCard: React.FC<Props> = React.memo(({ veiculo, cores = [] }) 
       role="article"
       tabIndex={0}
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleClick(); } }}
-      className="group bg-white border border-slate-200 rounded-[2.5rem] overflow-hidden hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] hover:border-[#004691] transition-all duration-500 cursor-pointer flex flex-col h-full animate-in fade-in focus:outline-none focus:ring-4 focus:ring-[#004691]/20"
+      className="group bg-white border border-slate-200 rounded-[2.5rem] overflow-hidden hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] hover:border-orange-500 transition-all duration-500 cursor-pointer flex flex-col h-full animate-in fade-in focus:outline-none focus:ring-4 focus:ring-orange-500/20"
     >
       {/* 1. Mídia / Carrossel */}
       <div className="aspect-[16/10] bg-slate-900 relative overflow-hidden shrink-0">
@@ -49,10 +49,10 @@ const PublicVehicleCard: React.FC<Props> = React.memo(({ veiculo, cores = [] }) 
             <img src={currentPhoto?.url} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt={`${v.montadora?.nome || ''} ${v.modelo?.nome || ''} ${v.ano_modelo || ''} - ${v.versao?.nome || ''}`.trim()} loading="lazy" decoding="async" />
             {fotos.length > 1 && (
               <div className="absolute inset-0 flex items-center justify-between px-4 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                <button onClick={handlePrev} aria-label="Foto anterior" className="p-2 rounded-full bg-black/40 backdrop-blur-md text-white hover:bg-[#004691] transition-all">
+                <button onClick={handlePrev} aria-label="Foto anterior" className="p-2 rounded-full bg-black/40 backdrop-blur-md text-white hover:bg-orange-600 transition-all">
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M15 19l-7-7 7-7" /></svg>
                 </button>
-                <button onClick={handleNext} aria-label="Próxima foto" className="p-2 rounded-full bg-black/40 backdrop-blur-md text-white hover:bg-[#004691] transition-all">
+                <button onClick={handleNext} aria-label="Próxima foto" className="p-2 rounded-full bg-black/40 backdrop-blur-md text-white hover:bg-orange-600 transition-all">
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M9 5l7 7-7 7" /></svg>
                 </button>
               </div>
@@ -65,13 +65,13 @@ const PublicVehicleCard: React.FC<Props> = React.memo(({ veiculo, cores = [] }) 
         )}
 
         <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
-          <div className="bg-[#004691] text-white px-4 py-1.5 rounded-full text-[8px] font-black shadow-xl border border-white/20 uppercase tracking-[0.2em]">
-            Seleção HCV
+          <div className="bg-orange-600 text-white px-4 py-1.5 rounded-full text-[8px] font-black shadow-xl border border-white/20 uppercase tracking-[0.2em]">
+            Destaque Souza
           </div>
           {veiculo.status !== 'DISPONIVEL' && (
             <div className={`text-white px-3 py-1 rounded-full text-[8px] font-black shadow-xl uppercase tracking-widest w-fit ${veiculo.status === 'VENDIDO' ? 'bg-rose-500' :
                 veiculo.status === 'RESERVADO' ? 'bg-amber-500' :
-                  'bg-indigo-500'
+                  'bg-slate-700'
               }`}>
               {veiculo.status === 'PREPARACAO' ? 'EM PREPARAÇÃO' : veiculo.status}
             </div>
@@ -91,28 +91,28 @@ const PublicVehicleCard: React.FC<Props> = React.memo(({ veiculo, cores = [] }) 
             {v.montadora?.logo_url ? (
               <img src={v.montadora.logo_url} className="h-6 w-auto object-contain opacity-80" alt="" />
             ) : (
-              <p className="text-[10px] font-black text-[#004691] uppercase tracking-[0.3em] truncate">{v.montadora?.nome}</p>
+              <p className="text-[10px] font-black text-orange-600 uppercase tracking-[0.3em] truncate">{v.montadora?.nome}</p>
             )}
           </div>
-          <h3 className="text-xl font-[900] text-slate-900 uppercase tracking-tighter truncate leading-tight mb-2 group-hover:text-[#004691] transition-colors">
+          <h3 className="text-xl font-[900] text-slate-900 uppercase tracking-tighter truncate leading-tight mb-2 group-hover:text-orange-600 transition-colors">
             {v.modelo?.nome} <span className="font-medium text-slate-400 ml-1">{v.versao?.nome}</span>
           </h3>
 
           <div className="grid grid-cols-2 gap-y-1 gap-x-4 text-[10px] font-semibold text-slate-500 uppercase tracking-wide border-t border-slate-100 pt-3 mt-1">
             <div className="flex items-center gap-1.5 overflow-hidden">
-              <svg className="w-3 h-3 text-[#004691] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+              <svg className="w-3 h-3 text-orange-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
               <span className="truncate">{v.motorizacao}</span>
             </div>
             <div className="flex items-center gap-1.5 overflow-hidden">
-              <svg className="w-3 h-3 text-[#004691] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
+              <svg className="w-3 h-3 text-orange-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
               <span className="truncate">{v.combustivel}</span>
             </div>
             <div className="flex items-center gap-1.5 overflow-hidden">
-              <svg className="w-3 h-3 text-[#004691] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
+              <svg className="w-3 h-3 text-orange-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
               <span className="truncate">{v.transmissao}</span>
             </div>
             <div className="flex items-center gap-1.5 overflow-hidden">
-              <svg className="w-3 h-3 text-[#004691] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+              <svg className="w-3 h-3 text-orange-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
               <span>{v.ano_fabricacao}/{v.ano_modelo}</span>
             </div>
           </div>
@@ -127,10 +127,10 @@ const PublicVehicleCard: React.FC<Props> = React.memo(({ veiculo, cores = [] }) 
         <div className="mt-auto pt-6 border-t border-slate-100 flex items-end justify-between">
           <div>
             <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-0.5">Valor</p>
-            <p className="text-3xl font-[900] text-[#004691] tracking-tighter leading-none">{formatCurrency(veiculo.valor_venda)}</p>
+            <p className="text-3xl font-[900] text-orange-600 tracking-tighter leading-none">{formatCurrency(veiculo.valor_venda)}</p>
           </div>
 
-          <div className="w-14 h-14 bg-slate-900 text-white rounded-[1.5rem] flex items-center justify-center shadow-xl group-hover:bg-[#004691] group-hover:scale-110 transition-all active:scale-95">
+          <div className="w-14 h-14 bg-slate-900 text-white rounded-[1.5rem] flex items-center justify-center shadow-xl group-hover:bg-orange-600 group-hover:scale-110 transition-all active:scale-95">
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
           </div>
         </div>

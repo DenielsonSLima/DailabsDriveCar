@@ -11,7 +11,7 @@ export interface IModelo {
   foto_url?: string;
   created_at: string;
   updated_at?: string;
-  
+  ativo?: boolean;
   // Joins
   montadora?: IMontadora;
   tipo_veiculo?: ITipoVeiculo;

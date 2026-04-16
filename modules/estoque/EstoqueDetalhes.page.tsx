@@ -18,6 +18,7 @@ import SpecsCard from './components/details/SpecsCard';
 import VehicleExpensesCard from './components/details/VehicleExpensesCard';
 import VehicleQuickInfoCard from './components/details/VehicleQuickInfoCard';
 import ModalEditarDespesaVeiculo from './components/details/ModalEditarDespesaVeiculo';
+import ConfirmModal from '../../components/ConfirmModal';
 
 const EstoqueDetalhesPage: React.FC = () => {
   const navigate = useNavigate();
@@ -26,6 +27,8 @@ const EstoqueDetalhesPage: React.FC = () => {
   const [veiculo, setVeiculo] = useState<IVeiculo | null>(null);
   const [loading, setLoading] = useState(true);
   const [editingExpense, setEditingExpense] = useState<IVeiculoDespesa | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [expenseIdToDelete, setExpenseIdToDelete] = useState<string | null>(null);
 
   // Dados auxiliares
   const [allCaracteristicas, setAllCaracteristicas] = useState<ICaracteristica[]>([]);
@@ -80,14 +83,20 @@ const EstoqueDetalhesPage: React.FC = () => {
     }
   };
 
-  const handleDeleteExpense = async (expenseId: string) => {
-    if (confirm('Deseja remover este lançamento financeiro?')) {
-      try {
-        await EstoqueService.deleteExpense(expenseId);
-        loadData();
-      } catch (error) {
-        alert("Erro ao remover despesa.");
-      }
+  const handleDeleteExpense = (expenseId: string) => {
+    setExpenseIdToDelete(expenseId);
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDeleteExpense = async () => {
+    if (!expenseIdToDelete) return;
+    try {
+      await EstoqueService.deleteExpense(expenseIdToDelete);
+      loadData();
+      setShowDeleteConfirm(false);
+      setExpenseIdToDelete(null);
+    } catch (error) {
+      alert("Erro ao remover despesa.");
     }
   };
 
@@ -148,6 +157,19 @@ const EstoqueDetalhesPage: React.FC = () => {
           }}
         />
       )}
+
+      <ConfirmModal
+        isOpen={showDeleteConfirm}
+        onClose={() => {
+          setShowDeleteConfirm(false);
+          setExpenseIdToDelete(null);
+        }}
+        onConfirm={confirmDeleteExpense}
+        title="Excluir Lançamento Financeiro?"
+        message="Esta ação irá remover permanentemente a despesa e seu registro financeiro vinculado."
+        confirmText="Sim, Excluir"
+        cancelText="Voltar"
+      />
     </div>
   );
 };

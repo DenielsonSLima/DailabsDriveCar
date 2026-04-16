@@ -57,17 +57,17 @@ const EstoquePublicoPage: React.FC = () => {
 
     // SEO: Define título e meta tags da página
     setSEO({
-      title: 'Estoque | Hidrocar Veículos - Veículos em Aracaju/SE',
-      description: 'Confira nosso estoque de veículos selecionados. Filtre por marca, preço e encontre o veículo ideal na Hidrocar Veículos.',
+      title: 'Estoque | Souza Veículos - Seleção Premium em Aracaju/SE',
+      description: 'Confira nosso estoque de veículos selecionados. Encontre o veículo ideal com procedência garantida na Souza Veículos.',
       url: `${window.location.origin}/estoque-publico`
     });
 
     // JSON-LD: Dados estruturados da loja
     setDealerJsonLd({
-      name: 'Hidrocar Veículos - Estoque',
+      name: 'Souza Veículos - Estoque',
       description: 'Estoque de veículos selecionados com procedência comprovada.',
       url: `${window.location.origin}/estoque-publico`,
-      image: `${window.location.origin}/logos/logohidrocarsimbolo.png`,
+      image: `${window.location.origin}/logos/souza-veiculos-logo.png`,
     });
 
     const subscription = SitePublicoService.subscribe(() => {
@@ -183,7 +183,7 @@ const EstoquePublicoPage: React.FC = () => {
               {/* Barra de Busca Refinada */}
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm">
                 <div className="flex-1 relative min-w-0">
-                  <span className="absolute inset-y-0 left-0 flex items-center pl-6 text-[#004691]">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-6 text-orange-600">
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
@@ -193,13 +193,13 @@ const EstoquePublicoPage: React.FC = () => {
                     placeholder="Pesquisar por modelo ou placa..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full bg-slate-50 border-none rounded-2xl py-4 pl-14 pr-6 text-sm font-bold outline-none focus:ring-4 focus:ring-[#004691]/5 transition-all placeholder:text-slate-400"
+                    className="w-full bg-slate-50 border-none rounded-2xl py-4 pl-14 pr-6 text-sm font-bold outline-none focus:ring-4 focus:ring-orange-500/10 transition-all placeholder:text-slate-400"
                   />
                 </div>
 
                 <div className="shrink-0 flex flex-col items-end px-2">
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Encontrados</p>
-                  <p className="text-sm font-black text-[#004691] uppercase tracking-tighter">
+                  <p className="text-sm font-black text-orange-600 uppercase tracking-tighter">
                     {totalItems} Veículos
                   </p>
                 </div>
@@ -207,7 +207,7 @@ const EstoquePublicoPage: React.FC = () => {
 
               {loading ? (
                 <div className="py-40 flex flex-col items-center justify-center space-y-4">
-                  <div className="w-12 h-12 border-4 border-[#004691] border-t-transparent rounded-full animate-spin"></div>
+                  <div className="w-12 h-12 border-4 border-orange-600 border-t-transparent rounded-full animate-spin"></div>
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Carregando estoque...</p>
                 </div>
               ) : (
@@ -223,7 +223,7 @@ const EstoquePublicoPage: React.FC = () => {
                       <button
                         onClick={handlePrevPage}
                         disabled={page === 1}
-                        className="px-6 py-3 bg-white border border-slate-200 rounded-xl text-xs font-black uppercase disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 hover:border-[#004691] transition-all"
+                        className="px-6 py-3 bg-white border border-slate-200 rounded-xl text-xs font-black uppercase disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 hover:border-orange-500 transition-all"
                       >
                         Anterior
                       </button>
@@ -233,7 +233,7 @@ const EstoquePublicoPage: React.FC = () => {
                       <button
                         onClick={handleNextPage}
                         disabled={page === totalPages}
-                        className="px-6 py-3 bg-white border border-slate-200 rounded-xl text-xs font-black uppercase disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 hover:border-[#004691] transition-all"
+                        className="px-6 py-3 bg-white border border-slate-200 rounded-xl text-xs font-black uppercase disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 hover:border-orange-500 transition-all"
                       >
                         Próxima
                       </button>

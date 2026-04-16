@@ -25,9 +25,11 @@ const MontadorasPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [toast, setToast] = useState<{ type: 'success' | 'error', message: string } | null>(null);
 
-  // Estados para o Modal de Exclusão
-  const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [displayStatus, setDisplayStatus] = useState<'active' | 'inactive'>('active');
+
+  // Estados para o Modal de Inativação
+  const [inactivateId, setInactivateId] = useState<string | null>(null);
+  const [isInactivating, setIsInactivating] = useState(false);
 
   const loadData = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
@@ -35,7 +37,8 @@ const MontadorasPage: React.FC = () => {
       const response = await MontadorasService.getPaginated({
         page: currentPage,
         limit: ITEMS_PER_PAGE,
-        search: searchTerm
+        search: searchTerm,
+        ativo: displayStatus === 'active'
       });
       setMontadoras(response.data);
       setTotalPages(response.totalPages);
@@ -46,16 +49,16 @@ const MontadorasPage: React.FC = () => {
     } finally {
       if (!silent) setLoading(false);
     }
-  }, [currentPage, searchTerm]);
+  }, [currentPage, searchTerm, displayStatus]);
 
   useEffect(() => {
     loadData();
   }, [loadData]);
 
-  // Resetar página na busca
+  // Resetar página na busca ou troca de aba
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm]);
+  }, [searchTerm, displayStatus]);
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
@@ -79,22 +82,32 @@ const MontadorasPage: React.FC = () => {
     setIsFormOpen(true);
   };
 
-  const handleClickDelete = (id: string) => {
-    setDeleteId(id);
+  const handleClickInactivate = (id: string) => {
+    setInactivateId(id);
   };
 
-  const handleConfirmDelete = async () => {
-    if (!deleteId) return;
-    setIsDeleting(true);
+  const handleConfirmInactivate = async () => {
+    if (!inactivateId) return;
+    setIsInactivating(true);
     try {
-      await MontadorasService.remove(deleteId);
-      showToast('success', 'Montadora excluída com sucesso!');
+      await MontadorasService.remove(inactivateId);
+      showToast('success', 'Montadora inativada com sucesso!');
       loadData(true);
-      setDeleteId(null);
+      setInactivateId(null);
     } catch (err: any) {
-      showToast('error', 'Erro ao excluir: ' + err.message);
+      showToast('error', 'Erro ao inativar: ' + err.message);
     } finally {
-      setIsDeleting(false);
+      setIsInactivating(false);
+    }
+  };
+
+  const handleReactivate = async (id: string) => {
+    try {
+      await MontadorasService.reactivate(id);
+      showToast('success', 'Montadora reativada com sucesso!');
+      loadData(true);
+    } catch (err: any) {
+      showToast('error', 'Erro ao reativar: ' + err.message);
     }
   };
 
@@ -129,7 +142,7 @@ const MontadorasPage: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-slate-900">Montadoras</h1>
-          <p className="text-slate-500 mt-1">Gestão de fabricantes e marcas em tempo real.</p>
+          <p className="text-slate-500 mt-1">Gestão de fabricantes e marcas globais.</p>
         </div>
         <button
           onClick={handleOpenAdd}
@@ -145,19 +158,44 @@ const MontadorasPage: React.FC = () => {
       <MontadorasKpis total={totalCount} />
 
       <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden p-8 min-h-[500px]">
-        <div className="mb-10 relative max-w-md">
-          <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </span>
-          <input
-            type="text"
-            placeholder="Buscar montadora pelo nome..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-white border border-slate-200 rounded-2xl py-3 pl-10 pr-4 text-sm font-bold text-[#111827] focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
-          />
+        {/* Header da Listagem - Busca e Tabs */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-10">
+          <div className="relative flex-1 max-w-md">
+            <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </span>
+            <input
+              type="text"
+              placeholder="Buscar montadora pelo nome..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full bg-white border border-slate-200 rounded-2xl py-3 pl-11 pr-4 text-sm font-bold text-[#111827] focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
+            />
+          </div>
+
+          {/* Tab Selector */}
+          <div className="flex p-1 bg-slate-100 rounded-2xl w-fit">
+            <button
+              onClick={() => setDisplayStatus('active')}
+              className={`px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${displayStatus === 'active'
+                ? 'bg-white text-indigo-600 shadow-sm'
+                : 'text-slate-500 hover:text-slate-700'
+                }`}
+            >
+              Ativas
+            </button>
+            <button
+              onClick={() => setDisplayStatus('inactive')}
+              className={`px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${displayStatus === 'inactive'
+                ? 'bg-white text-rose-600 shadow-sm'
+                : 'text-slate-500 hover:text-slate-700'
+                }`}
+            >
+              Inativas
+            </button>
+          </div>
         </div>
 
         {loading ? (
@@ -172,7 +210,9 @@ const MontadorasPage: React.FC = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
               </svg>
             </div>
-            <p className="text-slate-400 text-sm font-medium">Nenhuma montadora encontrada.</p>
+            <p className="text-slate-400 text-sm font-medium">
+              {displayStatus === 'active' ? 'Nenhuma montadora ativa encontrada.' : 'Nenhuma montadora inativa.'}
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6">
@@ -181,7 +221,8 @@ const MontadorasPage: React.FC = () => {
                 key={m.id}
                 montadora={m}
                 onEdit={handleEdit}
-                onDelete={handleClickDelete}
+                onDelete={handleClickInactivate}
+                onReactivate={handleReactivate}
               />
             ))}
           </div>
@@ -233,14 +274,14 @@ const MontadorasPage: React.FC = () => {
       )}
 
       <ConfirmModal
-        isOpen={!!deleteId}
-        onClose={() => setDeleteId(null)}
-        onConfirm={handleConfirmDelete}
-        title="Excluir Montadora?"
-        message={`Deseja realmente remover a montadora "${montadoras.find(m => m.id === deleteId)?.nome}"? Modelos vinculados podem ser afetados.`}
-        confirmText="Sim, Excluir"
-        variant="danger"
-        isLoading={isDeleting}
+        isOpen={!!inactivateId}
+        onClose={() => setInactivateId(null)}
+        onConfirm={handleConfirmInactivate}
+        title="Inativar Montadora?"
+        message={`Deseja realmente inativar a montadora "${montadoras.find(m => m.id === inactivateId)?.nome}"? Ela não aparecerá mais em novos cadastros.`}
+        confirmText="Sim, Inativar"
+        variant="warning"
+        isLoading={isInactivating}
       />
     </div>
   );

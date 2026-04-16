@@ -26,13 +26,16 @@ const VersionManager: React.FC<Props> = ({ modelo, onBack }) => {
   const [filterYear, setFilterYear] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Exclusão
-  const [deleteId, setDeleteId] = useState<string | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [displayStatus, setDisplayStatus] = useState<'active' | 'inactive'>('active');
+
+  // Inativação
+  const [inactivateId, setInactivateId] = useState<string | null>(null);
+  const [isInactivating, setIsInactivating] = useState(false);
 
   const loadData = async (silent = false) => {
     if (!silent) setLoading(true);
-    const data = await VersoesService.getByModelo(modelo.id);
+    // Buscamos apenas ativos ou apenas inativos dependendo da aba
+    const data = await VersoesService.getByModelo(modelo.id, displayStatus === 'active');
     setVersoes(data);
     setLoading(false);
   };
@@ -41,7 +44,7 @@ const VersionManager: React.FC<Props> = ({ modelo, onBack }) => {
     loadData();
     const sub = VersoesService.subscribe(modelo.id, () => loadData(true));
     return () => { sub.unsubscribe(); };
-  }, [modelo.id]);
+  }, [modelo.id, displayStatus]);
 
   const showToast = (type: 'success' | 'error', message: string) => {
     setToast({ type, message });
@@ -84,22 +87,32 @@ const VersionManager: React.FC<Props> = ({ modelo, onBack }) => {
     }
   };
 
-  const handleClickDelete = (id: string) => {
-    setDeleteId(id);
+  const handleClickInactivate = (id: string) => {
+    setInactivateId(id);
   };
 
-  const handleConfirmDelete = async () => {
-    if (!deleteId) return;
-    setIsDeleting(true);
+  const handleConfirmInactivate = async () => {
+    if (!inactivateId) return;
+    setIsInactivating(true);
     try {
-      await VersoesService.remove(deleteId);
-      showToast('success', 'Variante removida com sucesso!');
+      await VersoesService.remove(inactivateId);
+      showToast('success', 'Variante inativada com sucesso!');
       loadData(true);
-      setDeleteId(null);
+      setInactivateId(null);
     } catch (err: any) {
-      showToast('error', 'Erro ao excluir variante.');
+      showToast('error', 'Erro ao inativar variante.');
     } finally {
-      setIsDeleting(false);
+      setIsInactivating(false);
+    }
+  };
+
+  const handleReactivate = async (id: string) => {
+    try {
+      await VersoesService.reactivate(id);
+      showToast('success', 'Variante reativada com sucesso!');
+      loadData(true);
+    } catch (err: any) {
+      showToast('error', 'Erro ao reativar variante.');
     }
   };
 
@@ -225,10 +238,34 @@ const VersionManager: React.FC<Props> = ({ modelo, onBack }) => {
         <div className="lg:col-span-8 xl:col-span-8 min-w-0">
           <div className="bg-white rounded-[2.5rem] border border-slate-200 p-6 sm:p-8 shadow-sm min-h-[600px] flex flex-col overflow-hidden">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8 gap-4 border-b border-slate-50 pb-6">
-              <h3 className="text-lg font-black text-slate-900 uppercase tracking-tighter flex items-center shrink-0">
-                <span className="w-2 h-7 bg-indigo-600 rounded-full mr-4"></span>
-                Variantes Ativas
-              </h3>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                <h3 className="text-lg font-black text-slate-900 uppercase tracking-tighter flex items-center shrink-0">
+                  <span className={`w-2 h-7 rounded-full mr-4 ${displayStatus === 'active' ? 'bg-indigo-600' : 'bg-rose-500'}`}></span>
+                  {displayStatus === 'active' ? 'Variantes Ativas' : 'Variantes Inativas'}
+                </h3>
+
+                {/* Tab Selector */}
+                <div className="flex p-1 bg-slate-100 rounded-2xl w-fit">
+                  <button
+                    onClick={() => setDisplayStatus('active')}
+                    className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${displayStatus === 'active'
+                      ? 'bg-white text-indigo-600 shadow-sm'
+                      : 'text-slate-500 hover:text-slate-700'
+                      }`}
+                  >
+                    Ativos
+                  </button>
+                  <button
+                    onClick={() => setDisplayStatus('inactive')}
+                    className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${displayStatus === 'inactive'
+                      ? 'bg-white text-rose-600 shadow-sm'
+                      : 'text-slate-500 hover:text-slate-700'
+                      }`}
+                  >
+                    Inativos
+                  </button>
+                </div>
+              </div>
               
               <div className="flex flex-col sm:flex-row items-center gap-3 flex-1 lg:max-w-xl">
                 {/* Filtro por Ano */}
@@ -295,15 +332,23 @@ const VersionManager: React.FC<Props> = ({ modelo, onBack }) => {
                     </div>
 
                     <div className="flex items-center justify-end space-x-2 shrink-0 md:opacity-0 group-hover:opacity-100 transition-all">
-                      <button onClick={() => handleDuplicate(v)} className="p-2.5 bg-emerald-50 text-emerald-600 rounded-xl hover:bg-emerald-600 hover:text-white transition-all shadow-sm" title="Duplicar">
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" /></svg>
-                      </button>
-                      <button onClick={() => { setEditingVersao(v); setIsFormOpen(true); }} className="p-2.5 bg-slate-50 text-slate-400 rounded-xl hover:bg-indigo-600 hover:text-white transition-all shadow-sm" title="Editar">
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                      </button>
-                      <button onClick={() => handleClickDelete(v.id)} className="p-2.5 bg-slate-50 text-slate-400 rounded-xl hover:bg-rose-600 hover:text-white transition-all shadow-sm" title="Excluir">
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                      </button>
+                      {displayStatus === 'active' ? (
+                        <>
+                          <button onClick={() => handleDuplicate(v)} className="p-2.5 bg-emerald-50 text-emerald-600 rounded-xl hover:bg-emerald-600 hover:text-white transition-all shadow-sm" title="Duplicar">
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" /></svg>
+                          </button>
+                          <button onClick={() => { setEditingVersao(v); setIsFormOpen(true); }} className="p-2.5 bg-slate-50 text-slate-400 rounded-xl hover:bg-indigo-600 hover:text-white transition-all shadow-sm" title="Editar">
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                          </button>
+                          <button onClick={() => handleClickInactivate(v.id)} className="p-2.5 bg-slate-50 text-slate-400 rounded-xl hover:bg-amber-600 hover:text-white transition-all shadow-sm" title="Inativar">
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" /></svg>
+                          </button>
+                        </>
+                      ) : (
+                        <button onClick={() => handleReactivate(v.id)} className="p-2.5 bg-white text-emerald-600 rounded-xl hover:bg-emerald-600 hover:text-white transition-all shadow-sm" title="Reativar">
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))
@@ -336,13 +381,14 @@ const VersionManager: React.FC<Props> = ({ modelo, onBack }) => {
       )}
 
       <ConfirmModal 
-        isOpen={!!deleteId}
-        onClose={() => setDeleteId(null)}
-        onConfirm={handleConfirmDelete}
-        title="Excluir Versão?"
-        message={`Deseja excluir a versão "${versoes.find(v => v.id === deleteId)?.nome}"? Essa ação é irreversível.`}
-        confirmText="Sim, Remover"
-        isLoading={isDeleting}
+        isOpen={!!inactivateId}
+        onClose={() => setInactivateId(null)}
+        onConfirm={handleConfirmInactivate}
+        title="Inativar Variante?"
+        message={`Deseja inativar a versão "${versoes.find(v => v.id === inactivateId)?.nome}"? Ela não aparecerá mais para inclusão em estoque.`}
+        confirmText="Sim, Inativar"
+        variant="warning"
+        isLoading={isInactivating}
       />
     </div>
   );

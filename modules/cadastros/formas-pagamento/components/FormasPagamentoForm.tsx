@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { IFormaPagamento, DestinoLancamento, TipoMovimentacao } from '../formas-pagamento.types';
 
 interface Props {
@@ -63,8 +64,13 @@ const FormasPagamentoForm: React.FC<Props> = ({ initialData, isSaving, onClose, 
   };
 
   const currentHint = getHint(formData.tipo_movimentacao as TipoMovimentacao, formData.destino_lancamento as DestinoLancamento);
+  // Travar scroll do body
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = 'unset'; };
+  }, []);
 
-  return (
+  const content = (
     <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
       <div className="bg-white w-full max-w-3xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 border border-slate-200 flex flex-col max-h-[90vh]">
 
@@ -230,6 +236,8 @@ const FormasPagamentoForm: React.FC<Props> = ({ initialData, isSaving, onClose, 
       </div>
     </div>
   );
+
+  return ReactDOM.createPortal(content, document.body);
 };
 
 export default FormasPagamentoForm;

@@ -40,7 +40,7 @@ const EstoquePublicoFilters: React.FC<Props> = ({
         <div className="flex items-center justify-between px-1">
            <h3 className="text-xs font-black text-slate-900 uppercase tracking-[0.2em]">Fabricantes</h3>
            {selectedBrand && (
-             <button onClick={() => setSelectedBrand(null)} className="text-[9px] font-black text-[#004691] uppercase hover:underline">Limpar</button>
+             <button onClick={() => setSelectedBrand(null)} className="text-[9px] font-black text-orange-600 uppercase hover:underline">Limpar</button>
            )}
         </div>
         
@@ -51,7 +51,7 @@ const EstoquePublicoFilters: React.FC<Props> = ({
               onClick={() => setSelectedBrand(selectedBrand === m.id ? null : m.id)}
               className={`w-full group flex items-center justify-between p-3.5 rounded-2xl border-2 transition-all duration-300 ${
                 selectedBrand === m.id 
-                  ? 'bg-white border-[#004691] shadow-md ring-4 ring-[#004691]/5 scale-[1.02]' 
+                  ? 'bg-white border-orange-500 shadow-md ring-4 ring-orange-500/5 scale-[1.02]' 
                   : 'bg-white border-transparent hover:border-slate-200'
               }`}
             >
@@ -59,9 +59,9 @@ const EstoquePublicoFilters: React.FC<Props> = ({
                 <div className="w-8 h-8 bg-slate-50 rounded-lg flex items-center justify-center p-1.5 shrink-0">
                   {m.logo_url ? <img src={m.logo_url} className="max-h-full max-w-full object-contain" alt="" /> : <span className="text-[10px] font-black">{m.nome.charAt(0)}</span>}
                 </div>
-                <span className={`text-[11px] font-black uppercase truncate ${selectedBrand === m.id ? 'text-[#004691]' : 'text-slate-600'}`}>{m.nome}</span>
+                <span className={`text-[11px] font-black uppercase truncate ${selectedBrand === m.id ? 'text-orange-600' : 'text-slate-600'}`}>{m.nome}</span>
               </div>
-              <span className={`text-[9px] font-black px-2 py-0.5 rounded-md ${selectedBrand === m.id ? 'bg-[#004691] text-white' : 'bg-slate-100 text-slate-400'}`}>{m.total_veiculos}</span>
+              <span className={`text-[9px] font-black px-2 py-0.5 rounded-md ${selectedBrand === m.id ? 'bg-orange-600 text-white' : 'bg-slate-100 text-slate-400'}`}>{m.total_veiculos}</span>
             </button>
           ))}
         </div>
@@ -97,7 +97,7 @@ const EstoquePublicoFilters: React.FC<Props> = ({
               <select 
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as SortOption)}
-                className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-xs font-bold outline-none focus:ring-2 focus:ring-[#004691] appearance-none cursor-pointer"
+                className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-xs font-bold outline-none focus:ring-2 focus:ring-orange-500 appearance-none cursor-pointer"
               >
                 <option value="created_desc">Mais Recentes</option>
                 <option value="preco_asc">Valor: Menor para Maior</option>
@@ -108,25 +108,25 @@ const EstoquePublicoFilters: React.FC<Props> = ({
             <div>
               <label className="block text-[9px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Agrupar visão</label>
               <div className="flex bg-slate-100 p-1 rounded-xl">
-                <button onClick={() => setGroupBy('none')} className={`flex-1 py-2 rounded-lg text-[9px] font-black uppercase transition-all ${groupBy === 'none' ? 'bg-white text-[#004691] shadow-sm' : 'text-slate-400 hover:text-slate-500'}`}>Lista</button>
-                <button onClick={() => setGroupBy('montadora')} className={`flex-1 py-2 rounded-lg text-[9px] font-black uppercase transition-all ${groupBy === 'montadora' ? 'bg-white text-[#004691] shadow-sm' : 'text-slate-400 hover:text-slate-500'}`}>Marca</button>
-                <button onClick={() => setGroupBy('tipo')} className={`flex-1 py-2 rounded-lg text-[9px] font-black uppercase transition-all ${groupBy === 'tipo' ? 'bg-white text-[#004691] shadow-sm' : 'text-slate-400 hover:text-slate-500'}`}>Módulo</button>
+                <button onClick={() => setGroupBy('none')} className={`flex-1 py-2 rounded-lg text-[9px] font-black uppercase transition-all ${groupBy === 'none' ? 'bg-white text-orange-600 shadow-sm' : 'text-slate-400 hover:text-slate-500'}`}>Lista</button>
+                <button onClick={() => setGroupBy('montadora')} className={`flex-1 py-2 rounded-lg text-[9px] font-black uppercase transition-all ${groupBy === 'montadora' ? 'bg-white text-orange-600 shadow-sm' : 'text-slate-400 hover:text-slate-500'}`}>Marca</button>
+                <button onClick={() => setGroupBy('tipo')} className={`flex-1 py-2 rounded-lg text-[9px] font-black uppercase transition-all ${groupBy === 'tipo' ? 'bg-white text-orange-600 shadow-sm' : 'text-slate-400 hover:text-slate-500'}`}>Módulo</button>
               </div>
             </div>
          </div>
       </div>
 
-      <div className="bg-[#004691] rounded-[2rem] p-8 text-white shadow-xl relative overflow-hidden group">
+      <div className="bg-[#050a14] rounded-[2rem] p-8 text-white shadow-xl relative overflow-hidden group">
          <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10 group-hover:scale-150 transition-transform duration-700"></div>
          <h4 className="text-sm font-black uppercase tracking-tighter relative z-10">Atendimento Premium</h4>
-         <p className="text-[10px] text-blue-200 mt-2 leading-relaxed relative z-10 opacity-70">Nossos consultores estão prontos para ajudar você com as melhores condições.</p>
+         <p className="text-[10px] text-slate-300 mt-2 leading-relaxed relative z-10 opacity-70">Nossos consultores estão prontos para ajudar você com as melhores condições.</p>
          <button
            onClick={() => {
              const phone = (whatsappPhone || '').replace(/\D/g, '');
              const message = encodeURIComponent('Olá! Gostaria de falar com um consultor sobre os veículos disponíveis.');
              window.open(`https://wa.me/55${phone}?text=${message}`, '_blank');
            }}
-           className="mt-6 w-full py-4 bg-white text-[#004691] rounded-2xl text-[9px] font-[900] uppercase tracking-widest shadow-lg hover:bg-blue-50 transition-all relative z-10 active:scale-95"
+           className="mt-6 w-full py-4 bg-white text-[#050a14] rounded-2xl text-[9px] font-[900] uppercase tracking-widest shadow-lg hover:bg-slate-50 transition-all relative z-10 active:scale-95"
          >
            Falar com Consultor
          </button>

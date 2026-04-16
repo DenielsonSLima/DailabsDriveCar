@@ -48,5 +48,38 @@ export const StorageService = {
             u8arr[n] = bstr.charCodeAt(n);
         }
         return new File([u8arr], filename, { type: mime });
+    },
+
+    /**
+     * Remove uma imagem do Supabase Storage dado sua URL pública.
+     * @param publicUrl URL pública da imagem (deve ser do domínio do seu projeto)
+     * @param bucket Nome do bucket (ex: 'veiculos')
+     */
+    async deleteImage(publicUrl: string, bucket: string): Promise<boolean> {
+        try {
+            // Extrai o caminho relativo do arquivo a partir da URL pública
+            // Exemplo: https://.../storage/v1/object/public/veiculos/pasta/arquivo.webp
+            // Queremos: 'pasta/arquivo.webp'
+            if (!publicUrl || !publicUrl.includes('/public/')) return false;
+
+            const urlParts = publicUrl.split(`/public/${bucket}/`);
+            if (urlParts.length < 2) return false;
+
+            const filePath = urlParts[1];
+
+            const { error } = await supabase.storage
+                .from(bucket)
+                .remove([filePath]);
+
+            if (error) {
+                console.error('Erro ao remover imagem do storage:', error);
+                return false;
+            }
+
+            return true;
+        } catch (err) {
+            console.error('Erro catastrófico ao excluir imagem:', err);
+            return false;
+        }
     }
 };

@@ -5,11 +5,17 @@ import { ICombustivel } from './combustivel.types';
 const TABLE = 'cad_combustivel';
 
 export const CombustivelService = {
-  async getAll(): Promise<ICombustivel[]> {
-    const { data, error } = await supabase
+  async getAll(onlyActive = true): Promise<ICombustivel[]> {
+    let query = supabase
       .from(TABLE)
       .select('*')
       .order('nome', { ascending: true });
+
+    if (onlyActive) {
+      query = query.eq('ativo', true);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       console.error('Erro ao buscar combustíveis:', error);
@@ -19,12 +25,18 @@ export const CombustivelService = {
   },
 
   async save(payload: Partial<ICombustivel>): Promise<ICombustivel> {
+    const dataToSave: any = {
+      ...payload,
+      updated_at: new Date().toISOString()
+    };
+
+    if (!payload.id) {
+      dataToSave.ativo = true;
+    }
+
     const { data, error } = await supabase
       .from(TABLE)
-      .upsert({ 
-        ...payload, 
-        updated_at: new Date().toISOString() 
-      })
+      .upsert(dataToSave)
       .select()
       .single();
 
@@ -35,7 +47,17 @@ export const CombustivelService = {
   async remove(id: string): Promise<boolean> {
     const { error } = await supabase
       .from(TABLE)
-      .delete()
+      .update({ ativo: false })
+      .eq('id', id);
+
+    if (error) throw error;
+    return true;
+  },
+
+  async reactivate(id: string): Promise<boolean> {
+    const { error } = await supabase
+      .from(TABLE)
+      .update({ ativo: true })
       .eq('id', id);
 
     if (error) throw error;

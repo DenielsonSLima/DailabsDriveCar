@@ -5,11 +5,17 @@ import { ICor } from './cores.types';
 const TABLE = 'cad_cores';
 
 export const CoresService = {
-  async getAll(): Promise<ICor[]> {
-    const { data, error } = await supabase
+  async getAll(onlyActive = true): Promise<ICor[]> {
+    let query = supabase
       .from(TABLE)
       .select('*')
       .order('nome', { ascending: true });
+
+    if (onlyActive) {
+      query = query.eq('ativo', true);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       console.error('Erro ao buscar cores:', error);
@@ -19,12 +25,18 @@ export const CoresService = {
   },
 
   async save(payload: Partial<ICor>): Promise<ICor> {
+    const dataToSave = {
+      ...payload,
+      updated_at: new Date().toISOString()
+    };
+
+    if (!payload.id) {
+      (dataToSave as any).ativo = true;
+    }
+
     const { data, error } = await supabase
       .from(TABLE)
-      .upsert({ 
-        ...payload, 
-        updated_at: new Date().toISOString() 
-      })
+      .upsert(dataToSave)
       .select()
       .single();
 
@@ -35,7 +47,17 @@ export const CoresService = {
   async remove(id: string): Promise<boolean> {
     const { error } = await supabase
       .from(TABLE)
-      .delete()
+      .update({ ativo: false })
+      .eq('id', id);
+
+    if (error) throw error;
+    return true;
+  },
+
+  async reactivate(id: string): Promise<boolean> {
+    const { error } = await supabase
+      .from(TABLE)
+      .update({ ativo: true })
       .eq('id', id);
 
     if (error) throw error;

@@ -9,6 +9,7 @@ import GeneralKpis from './components/GeneralKpis';
 import RecentStockMini from './components/RecentStockMini';
 import QuickShortcuts from './components/QuickShortcuts';
 import { HistoryChart } from './components/HistoryChart';
+import FipeUsageCard from './components/FipeUsageCard';
 
 const InicioPage: React.FC = () => {
   const navigate = useNavigate();
@@ -75,6 +76,9 @@ const InicioPage: React.FC = () => {
         </div>
         {/* Right: Operations & Activity */}
         <div className="xl:col-span-4 space-y-8">
+          {/* Fipe Usage Monitoring */}
+          <FipeUsageCard />
+
           <QuickShortcuts />
 
           {/* Marketing Shortcut Card */}

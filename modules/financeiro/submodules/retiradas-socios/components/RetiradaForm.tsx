@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { SociosService } from '../../../../ajustes/socios/socios.service';
 import { ContasBancariasService } from '../../../../ajustes/contas-bancarias/contas.service';
 import { RetiradasService } from '../retiradas.service';
@@ -63,8 +64,13 @@ const RetiradaForm: React.FC<Props> = ({ editItem, onClose, onSuccess }) => {
       setIsSaving(false);
     }
   };
+  // Travar scroll do body
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = 'unset'; };
+  }, []);
 
-  return (
+  const content = (
     <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
       <div className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 border border-slate-100">
         <div className="p-8 border-b border-slate-50 bg-amber-600 text-white">
@@ -123,6 +129,8 @@ const RetiradaForm: React.FC<Props> = ({ editItem, onClose, onSuccess }) => {
       </div>
     </div>
   );
+
+  return ReactDOM.createPortal(content, document.body);
 };
 
 export default RetiradaForm;

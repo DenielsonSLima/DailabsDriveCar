@@ -1,26 +1,26 @@
 import React from 'react';
-import fachadaImg from '../assets/fachada-hidrocar.webp';
+import fachadaImg from '../assets/quem-somos-souza.png';
 import { ISobreCard } from '../../editor-site/editor-site.types';
 
 // Defaults
-const DEFAULT_SUBTITULO = 'HCV Veículos';
+const DEFAULT_SUBTITULO = 'Souza Veículos';
 const DEFAULT_TITULO = 'Quem Somos.';
 const DEFAULT_PARAGRAFOS = [
-  'A Hidrocar Veículos é uma empresa sergipana especializada na compra e venda de veículos novos e usados. Atuamos com transparência, responsabilidade e compromisso, oferecendo aos nossos clientes segurança e tranquilidade em cada negociação.',
-  'Trabalhamos com veículos revisados e procedência garantida, sempre buscando as melhores oportunidades do mercado para atender às necessidades da nossa região.',
-  'Mais do que vender carros, construímos relacionamentos baseados em confiança, credibilidade e atendimento personalizado.'
+  'A Souza Veículos é uma empresa especializada na compra e venda de veículos novos e seminovos de alta qualidade. Atuamos com transparência, responsabilidade e compromisso, oferecendo aos nossos clientes segurança e tranquilidade em cada negociação.',
+  'Trabalhamos com veículos criteriosamente revisados e com procedência garantida, sempre buscando as melhores oportunidades do mercado para atender com excelência aos nossos clientes.',
+  'Mais do que comercializar automóveis, construímos relacionamentos sólidos baseados em confiança, credibilidade e um atendimento personalizado focado na sua satisfação.'
 ];
 const DEFAULT_CARDS: ISobreCard[] = [
-  { titulo: 'Veículos revisados', descricao: 'Garantia de qualidade e procedência comprovada para sua segurança.' },
-  { titulo: 'Atendimento personalizado', descricao: 'Negociação transparente e suporte completo do início ao fim.' },
-  { titulo: '+ de 20 anos de mercado', descricao: 'Tradição e credibilidade consolidada em todo o estado de Sergipe.' },
+  { titulo: 'Qualidade Rigorosa', descricao: 'Garantia de procedência e veículos selecionados com altíssimo padrão.' },
+  { titulo: 'Transparência Total', descricao: 'Negociação clara, segura e com suporte especializado.' },
+  { titulo: 'Experiência no Ramo', descricao: 'Credibilidade consolidada na comercialização de seminovos de excelência.' },
 ];
 
 // Ícones SVG inline para os cards
 const cardIcons = [
-  <svg key="1" className="w-7 h-7 text-blue-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
-  <svg key="2" className="w-7 h-7 text-blue-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
-  <svg key="3" className="w-7 h-7 text-blue-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>,
+  <svg key="1" className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
+  <svg key="2" className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
+  <svg key="3" className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>,
 ];
 const cardBgIcons = [
   <svg key="bg1" className="absolute -right-6 -bottom-6 w-40 h-40 text-white/[0.04] group-hover:text-white/[0.07] transition-colors duration-500 rotate-12 group-hover:rotate-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" /></svg>,
@@ -56,9 +56,9 @@ const AboutUs: React.FC<Props> = React.memo(({ subtitulo, titulo, paragrafos, im
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Cabeçalho da Seção */}
         <div className="mb-10 space-y-4">
-          <span className="inline-block text-[#004691] text-[10px] font-black uppercase tracking-[0.6em] border-b-2 border-indigo-600 pb-2">{sub}</span>
+          <span className="inline-block text-orange-500 text-[10px] font-black uppercase tracking-[0.6em] border-b-2 border-orange-600 pb-2">{sub}</span>
           <h2 className="text-5xl md:text-7xl font-black text-slate-900 uppercase tracking-tighter leading-[0.9]">
-            {firstWords} <span className="text-[#004691]">{lastWord}</span>
+            {firstWords} <span className="text-orange-500">{lastWord}</span>
           </h2>
         </div>
 
@@ -70,7 +70,7 @@ const AboutUs: React.FC<Props> = React.memo(({ subtitulo, titulo, paragrafos, im
             ))}
           </div>
 
-          <div className="relative w-full h-full min-h-[450px]">
+          <div className="relative w-full h-full min-h-[320px]">
             <div className="w-full h-full rounded-[2rem] overflow-hidden shadow-2xl ring-4 ring-slate-50">
               {/* Imagem Institucional (Fachada) */}
               <img src={imgSrc} className="w-full h-full object-cover" alt="Fachada" />
@@ -78,19 +78,25 @@ const AboutUs: React.FC<Props> = React.memo(({ subtitulo, titulo, paragrafos, im
           </div>
         </div>
 
-        {/* Cards de Destaque - Full Width */}
+        {/* Cards de Destaque - Design Dark Premium */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {crds.map((card, i) => (
-            <div key={i} className="relative bg-gradient-to-br from-[#004691] to-[#001d3d] p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-white/10 group overflow-hidden">
-              {/* Ícone decorativo de fundo */}
-              {cardBgIcons[i % cardBgIcons.length]}
-              <div className="absolute top-4 right-4 w-24 h-24 rounded-full bg-blue-400/[0.06] blur-xl group-hover:bg-blue-400/[0.12] transition-all duration-500"></div>
-              <div className="relative z-10">
-                <div className="bg-white/10 w-14 h-14 rounded-xl flex items-center justify-center mb-6 group-hover:bg-white/20 transition-colors backdrop-blur-sm">
+            <div
+              key={i}
+              className="bg-[#050a14] p-10 rounded-2xl border-l-[6px] border-orange-500 shadow-[0_20px_50px_rgba(0,0,0,0.3)] space-y-6 hover:shadow-[0_20px_50px_rgba(249,115,22,0.15)] transition-all duration-500 group flex flex-col justify-between"
+            >
+              <div className="space-y-6">
+                <div className="w-16 h-16 bg-white/10 text-white rounded-2xl flex items-center justify-center group-hover:bg-orange-600 group-hover:text-white transition-all duration-500 shadow-sm">
                   {cardIcons[i % cardIcons.length]}
                 </div>
-                <h4 className="text-2xl font-black text-white leading-tight mb-3">{card.titulo}</h4>
-                <p className="text-sm font-medium text-blue-100/80 leading-relaxed">{card.descricao}</p>
+                <div className="space-y-3">
+                  <h4 className="text-2xl font-black text-white leading-tight uppercase tracking-tighter group-hover:text-orange-500 transition-colors">
+                    {card.titulo}
+                  </h4>
+                  <p className="text-sm font-medium text-slate-400 leading-relaxed">
+                    {card.descricao}
+                  </p>
+                </div>
               </div>
             </div>
           ))}

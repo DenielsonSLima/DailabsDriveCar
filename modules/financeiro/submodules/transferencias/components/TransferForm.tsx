@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { ContasBancariasService } from '../../../../ajustes/contas-bancarias/contas.service';
 import { TransferenciasService } from '../transferencias.service';
 import { IContaBancaria } from '../../../../ajustes/contas-bancarias/contas.types';
@@ -70,8 +71,13 @@ const TransferForm: React.FC<Props> = ({ initialData, onClose, onSuccess }) => {
   };
 
   const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
+  // Travar scroll do body
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = 'unset'; };
+  }, []);
 
-  return (
+  const content = (
     <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
       <div className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 border border-slate-100 flex flex-col max-h-[90vh]">
         <div className="p-8 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
@@ -145,6 +151,8 @@ const TransferForm: React.FC<Props> = ({ initialData, onClose, onSuccess }) => {
       </div>
     </div>
   );
+
+  return ReactDOM.createPortal(content, document.body);
 };
 
 export default TransferForm;

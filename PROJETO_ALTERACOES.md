@@ -1,5 +1,41 @@
 # Histórico de Alterações do Projeto
 
+## [2026-04-15] - Correção Bug: Typo "valor_negociated" em confirmar_pedido_compra
+
+**O que foi feito:**
+- Corrigido typo crítico na função PostgreSQL `confirmar_pedido_compra`: campo `valor_negociated` (inexistente, inglês) → `valor_negociado` (correto, português).
+- O erro ocorria ao tentar confirmar um pedido de compra com qualquer forma de pagamento não-consignação (PIX, Dinheiro, Caixa, etc.), lançando: `record "v_pedido" has no field "valor_negociado"`.
+
+**Por quê:**
+O branch `ELSE` do cálculo de `v_custo_final` usava `v_pedido.valor_negociated` (typo com sufixo em inglês), campo que não existe na tabela `cmp_pedidos`. O branch `IF` (consignação) usava o nome correto `valor_negociado`, por isso consignação funcionava mas compras normais quebravam.
+
+**Arquivos afetados:**
+- Banco de Dados: Função `confirmar_pedido_compra` (migration `fix_confirmar_pedido_compra_typo_valor_negociated`)
+
+**Erros comuns — não repita:**
+- Nunca usar nomes de campos em inglês misturados com português em funções PL/pgSQL. Usar sempre o nome exato da coluna da tabela.
+
+## [2026-04-15] - Reestruturação de Catálogos: Global vs. Por Empresa + Cópia Souza Veículos
+
+**O que foi feito:**
+- **Catálogos Globais**: Migrados 8 catálogos de veículo para serem compartilhados entre todas as empresas (`organization_id = NULL`): `cad_montadoras` (13), `cad_modelos` (27), `cad_versoes` (29), `cad_tipos_veiculos` (5), `cad_combustivel` (6), `cad_transmissao` (3), `cad_motorizacao` (17), `cad_cores` (16).
+- **RLS Atualizada**: Policies das tabelas globais atualizadas para padrão híbrido — SELECT livre para registros globais (`organization_id IS NULL`) ou da própria empresa, INSERT/UPDATE/DELETE apenas para registros da empresa (`is_member_of`).
+- **Cópia Souza Veículos**: Copiados todos os catálogos por empresa da Hidrocar para a Souza Veículos com novos UUIDs e mapeamento correto de FKs:
+  - `cad_caracteristicas`: 7 registros
+  - `cad_opcionais`: 18 registros
+  - `cad_formas_pagamento`: 4 registros (FK origin para condições)
+  - `cad_condicoes_pagamento`: 6 registros (com mapeamento de forma_pagamento_id)
+  - `cad_condicoes_recebimento`: 6 registros (com mapeamento de forma_pagamento_id)
+  - `fin_despesas_grupos`: 6 registros
+  - `fin_despesas_categorias`: 14 registros (com mapeamento de grupo_id)
+- **Limpeza**: Removidos 2 registros órfãos (`condicoes_pagamento` e `condicoes_recebimento` com `organization_id = NULL`).
+
+**Por quê:**
+Montadoras, modelos, versões, combustível, transmissão, motorização, cores e tipos de veículo são dados universais do Brasil — não faz sentido cada empresa manter separado. Características, opcionais, formas de pagamento, condições financeiras e categorias de despesas têm lógica específica por empresa. A Souza Veículos foi iniciada sem catálogos; os dados da Hidrocar foram copiados como ponto de partida.
+
+**Arquivos afetados:**
+- Banco de Dados: Migrations `make_vehicle_catalogs_global`, `copy_hidrocar_to_souza_simple_tables`, `copy_hidrocar_to_souza_formas_pagamento`, `copy_hidrocar_to_souza_despesas_v2`, `cleanup_orphan_catalog_records`
+
 ## [2026-04-13—Noite] - Ativação do Nexus AI (Gemini 1.5 Flash) e Modo Tutor
 **O que foi feito:**
 - **Ativação da API**: Configurada a chave real da API do Gemini no `.env.local` e refatorado o `rag.service.ts` para carregar via `import.meta.env`.

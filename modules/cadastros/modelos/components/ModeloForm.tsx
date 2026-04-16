@@ -1,5 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { IModelo } from '../modelos.types';
 import { IMontadora } from '../../montadoras/montadoras.types';
 import { MontadorasService } from '../../montadoras/montadoras.service';
@@ -89,8 +90,13 @@ const ModeloForm: React.FC<FormProps> = ({ initialData, isSaving, onClose, onSub
       [name]: name.endsWith('_id') ? value : value.toUpperCase()
     }));
   };
+  // Travar scroll do body
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = 'unset'; };
+  }, []);
 
-  return (
+  const content = (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
       <div className="bg-white w-full max-w-xl rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
@@ -207,6 +213,8 @@ const ModeloForm: React.FC<FormProps> = ({ initialData, isSaving, onClose, onSub
       </div>
     </div>
   );
+
+  return ReactDOM.createPortal(content, document.body);
 };
 
 export default ModeloForm;

@@ -34,7 +34,7 @@ const PublicNavbar: React.FC<Props> = ({ empresa }) => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-[120] bg-[#001d3d] shadow-2xl transition-colors duration-500">
+    <nav className="fixed top-0 left-0 w-full z-[120] bg-[#050a14] shadow-2xl transition-colors duration-500">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-20 lg:h-24 flex items-center justify-between">
         {/* Logo à Esquerda */}
         <button
@@ -48,14 +48,14 @@ const PublicNavbar: React.FC<Props> = ({ empresa }) => {
           aria-label="Ir para página inicial"
           className="flex items-center space-x-3 sm:space-x-4 cursor-pointer group bg-transparent border-none focus:outline-none"
         >
-          <div className="bg-white p-1.5 sm:p-2 rounded-xl transform group-hover:rotate-6 transition-transform shadow-lg">
-            <img src="/logos/logohidrocarsimbolo.png" alt="Hidrocar" className="w-10 h-10 sm:w-14 sm:h-14 object-contain" />
+          <div className="bg-white rounded-xl transform group-hover:rotate-6 transition-transform shadow-lg overflow-hidden flex items-center justify-center w-[52px] h-[52px] sm:w-[72px] sm:h-[72px]">
+            <img src="/logos/souza-veiculos-logo.png" alt="Souza Veículos" className="w-full h-full object-contain scale-[1.25]" />
           </div>
           <div className="flex flex-col md:flex-row md:items-baseline md:gap-1">
             <span className="text-xl sm:text-2xl font-[900] tracking-tighter uppercase text-white leading-none">
-              Hidrocar
+              Souza
             </span>
-            <span className="text-xl sm:text-2xl font-[900] tracking-tighter uppercase bg-gradient-to-r from-red-600 to-red-900 bg-clip-text text-transparent leading-none">
+            <span className="text-xl sm:text-2xl font-[900] tracking-tighter uppercase bg-gradient-to-r from-orange-500 to-orange-700 bg-clip-text text-transparent leading-none">
               VEÍCULOS
             </span>
           </div>
@@ -103,12 +103,12 @@ const PublicNavbar: React.FC<Props> = ({ empresa }) => {
           {/* Botão Hamburger - Mobile */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="lg:hidden flex flex-col items-center justify-center w-10 h-10 rounded-lg border border-blue-400/30 hover:bg-blue-900/40 transition-colors"
+            className="lg:hidden flex flex-col items-center justify-center w-10 h-10 rounded-lg border border-slate-700 hover:bg-slate-800 transition-colors"
             aria-label="Abrir menu"
           >
-            <span className={`block w-5 h-0.5 bg-blue-100 rounded transition-all duration-300 ${mobileOpen ? 'rotate-45 translate-y-[3px]' : ''}`} />
-            <span className={`block w-5 h-0.5 bg-blue-100 rounded mt-1 transition-all duration-300 ${mobileOpen ? 'opacity-0' : ''}`} />
-            <span className={`block w-5 h-0.5 bg-blue-100 rounded mt-1 transition-all duration-300 ${mobileOpen ? '-rotate-45 -translate-y-[5px]' : ''}`} />
+            <span className={`block w-5 h-0.5 bg-slate-200 rounded transition-all duration-300 ${mobileOpen ? 'rotate-45 translate-y-[3px]' : ''}`} />
+            <span className={`block w-5 h-0.5 bg-slate-200 rounded mt-1 transition-all duration-300 ${mobileOpen ? 'opacity-0' : ''}`} />
+            <span className={`block w-5 h-0.5 bg-slate-200 rounded mt-1 transition-all duration-300 ${mobileOpen ? '-rotate-45 -translate-y-[5px]' : ''}`} />
           </button>
         </div>
       </div>
@@ -122,7 +122,7 @@ const PublicNavbar: React.FC<Props> = ({ empresa }) => {
 
       {/* Painel Mobile */}
       <div
-        className={`fixed top-20 left-0 right-0 z-[121] lg:hidden bg-[#001d3d]/95 backdrop-blur-xl border-t border-blue-400/20 shadow-2xl transition-all duration-300 ${mobileOpen ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-4 pointer-events-none'}`}
+        className={`fixed top-20 left-0 right-0 z-[121] lg:hidden bg-[#050a14]/98 backdrop-blur-2xl border-t border-slate-800 shadow-2xl transition-all duration-400 ${mobileOpen ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-4 pointer-events-none'}`}
       >
         <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col space-y-1">
           <button
@@ -134,10 +134,10 @@ const PublicNavbar: React.FC<Props> = ({ empresa }) => {
                 navigate('/estoque-publico');
               }
             }}
-            className="flex items-center space-x-3 px-4 py-3.5 rounded-xl hover:bg-blue-800/30 transition-colors cursor-pointer group w-full bg-transparent border-none text-left focus:outline-none"
+            className="flex items-center space-x-3 px-4 py-3.5 rounded-xl hover:bg-white/5 transition-colors cursor-pointer group w-full bg-transparent border-none text-left focus:outline-none"
           >
-            <svg className="w-5 h-5 text-blue-300 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
-            <span className="font-['Outfit'] text-sm font-bold uppercase tracking-widest text-blue-50 group-hover:text-white">Estoque</span>
+            <svg className="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+            <span className="font-['Outfit'] text-sm font-bold uppercase tracking-widest text-slate-300 group-hover:text-white">Estoque</span>
           </button>
 
           <a

@@ -4,12 +4,18 @@ import { IModelo, IModelosAgrupados } from './modelos.types';
 
 const TABLE = 'cad_modelos';
 
+
 export const ModelosService = {
-  async getAll(): Promise<(IModelo & { versoes_count: number })[]> {
-    const { data, error } = await supabase
+  async getAll(onlyActive = true): Promise<(IModelo & { versoes_count: number })[]> {
+    let query = supabase
       .from(TABLE)
-      .select('*, montadora:cad_montadoras(*), tipo_veiculo:cad_tipos_veiculos(*), versoes:cad_versoes(count)')
-      .order('nome', { ascending: true });
+      .select('*, montadora:cad_montadoras(*), tipo_veiculo:cad_tipos_veiculos(*), versoes:cad_versoes(count)');
+    
+    if (onlyActive) {
+      query = query.eq('ativo', true);
+    }
+    
+    const { data, error } = await query.order('nome', { ascending: true });
 
     if (error) {
       console.error('Erro ao buscar modelos:', error);
@@ -29,6 +35,7 @@ export const ModelosService = {
       .select('id, nome') // Traz apenas o necessário para o dropdown
       .eq('montadora_id', montadoraId)
       .eq('tipo_veiculo_id', tipoId)
+      .eq('ativo', true) // Sempre busca apenas ativos para o formulário
       .order('nome', { ascending: true });
 
     if (error) {
@@ -38,12 +45,17 @@ export const ModelosService = {
     return data as IModelo[];
   },
 
-  async getByMontadora(montadoraId: string): Promise<IModelo[]> {
-    const { data, error } = await supabase
+  async getByMontadora(montadoraId: string, onlyActive = true): Promise<IModelo[]> {
+    let query = supabase
       .from(TABLE)
       .select('*, montadora:cad_montadoras(*), tipo_veiculo:cad_tipos_veiculos(*), versoes:cad_versoes(count)')
-      .eq('montadora_id', montadoraId)
-      .order('nome', { ascending: true });
+      .eq('montadora_id', montadoraId);
+
+    if (onlyActive) {
+      query = query.eq('ativo', true);
+    }
+
+    const { data, error } = await query.order('nome', { ascending: true });
 
     if (error) {
       console.error('Erro ao buscar modelos da montadora:', error);
@@ -56,8 +68,8 @@ export const ModelosService = {
     })) as IModelo[];
   },
 
-  async getAgrupados(): Promise<IModelosAgrupados> {
-    const modelos = await this.getAll();
+  async getAgrupados(onlyActive = true): Promise<IModelosAgrupados> {
+    const modelos = await this.getAll(onlyActive);
 
     const agrupado = modelos.reduce((acc: IModelosAgrupados, modelo) => {
       const montadora = modelo.montadora;
@@ -86,7 +98,9 @@ export const ModelosService = {
     };
 
     if (payload.id) {
-      cleanData.id = payload.id;
+       cleanData.id = payload.id;
+    } else {
+       cleanData.ativo = true;
     }
 
     const { data, error } = await supabase
@@ -105,7 +119,17 @@ export const ModelosService = {
   async remove(id: string): Promise<boolean> {
     const { error } = await supabase
       .from(TABLE)
-      .delete()
+      .update({ ativo: false })
+      .eq('id', id);
+
+    if (error) throw error;
+    return true;
+  },
+
+  async reactivate(id: string): Promise<boolean> {
+    const { error } = await supabase
+      .from(TABLE)
+      .update({ ativo: true })
       .eq('id', id);
 
     if (error) throw error;

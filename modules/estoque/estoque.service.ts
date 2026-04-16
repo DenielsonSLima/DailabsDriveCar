@@ -164,34 +164,10 @@ export const EstoqueService = {
       updated_at: new Date().toISOString()
     };
 
-    // Processamento de Imagens (Base64 -> Storage) com Upload Paralelo Otimizado
+    // As fotos agora são pré-processadas no frontend (PhotoUpload) para evitar payloads pesados
+    // e garantir upload imediato para o Storage. O banco recebe apenas as URLs.
     if (dataToSave.fotos && Array.isArray(dataToSave.fotos)) {
-      const uploadPromises = dataToSave.fotos.map(async (photo: any) => {
-        if (photo.url && photo.url.startsWith('data:')) {
-          try {
-            const file = StorageService.base64ToFile(photo.url, `vehicle-photo-${Date.now()}-${Math.random().toString(36).substring(7)}.jpg`);
-            const publicUrl = await StorageService.uploadImage(file, 'veiculos');
-            return { ...photo, url: publicUrl };
-          } catch (err) {
-            console.error('Erro crítico ao fazer upload de foto de veículo para o Storage:', err);
-            // Retorna null para sinalizar falha no upload e não persistir Base64 no banco
-            return null;
-          }
-        }
-        return photo;
-      });
-
-      const processedPhotos = await Promise.all(uploadPromises);
-
-      // Filtra fotos que falharam no upload (null)
-      dataToSave.fotos = processedPhotos.filter(p => p !== null);
-
-      // Se o usuário enviou fotos novas (Base64) e todas falharam, talvez seja melhor interromper
-      // para evitar que ele ache que salvou as fotos quando na verdade não salvou nada.
-      const sentBase64 = payload.fotos?.some((p: any) => p.url?.startsWith('data:'));
-      if (sentBase64 && dataToSave.fotos.length === 0 && payload.fotos!.length > 0) {
-        throw new Error('Falha ao processar e fazer upload das imagens para o servidor de arquivos. O registro não foi salvo.');
-      }
+      dataToSave.fotos = dataToSave.fotos.filter(p => p.url && !p.url.startsWith('blob:'));
     }
 
     let query;

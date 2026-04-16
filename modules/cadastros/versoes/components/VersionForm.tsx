@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { IVersao } from '../versoes.types';
 
 // Services dos Submódulos
@@ -59,9 +60,14 @@ const VersionForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSubmit
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value.toUpperCase() }));
   };
+  // Travar scroll do body
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = 'unset'; };
+  }, []);
 
-  return (
-    <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-md animate-in fade-in duration-300">
+  const content = (
+    <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm animate-in fade-in duration-300">
       <div className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 border border-slate-200">
         <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
           <div className="flex items-center space-x-4">
@@ -204,6 +210,8 @@ const VersionForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSubmit
       </div>
     </div>
   );
+
+  return ReactDOM.createPortal(content, document.body);
 };
 
 export default VersionForm;
