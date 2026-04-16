@@ -1,5 +1,27 @@
 # Histórico de Alterações do Projeto
 
+## [2026-04-16] - Otimização Módulo Fipe e Refino de UX/UI do Dashboard
+
+**O que foi feito:**
+- **Redesign Premium do FIPE**: Reformulação completa do `FipeConsultModal` para layout de alta densidade. Substituição de gráfico confuso por tabela histórica cronológica reversa com paginação.
+- **Sistema de Cache FIPE**: Implementada tabela `fipe_api_cache` e lógica RPC para evitar cobranças duplicadas na API Brasil ao consultar a mesma placa repetidamente.
+- **Gestão de Consumo**: Ajuste nas RPCs `rpc_record_fipe_usage` e `rpc_get_fipe_usage_stats` para contabilizar apenas consultas "frescas". Implementado reset de contador para empresas específicas.
+- **Navegação de Marketing**: Adicionados botões de "Voltar" (Painel Início) nos geradores de Stories e Feed, melhorando o fluxo de retorno do usuário.
+- **Equilíbrio do Dashboard**: Implementado `sticky sidebar` no `Inicio.page.tsx`. A coluna lateral agora acompanha a rolagem, eliminando o "vazio" visual quando o estoque tem poucos veículos.
+- **Correções de Build**: Resolvidos erros de JSX de fechamento de tags em `FeedGenerator.page.tsx` e `ModelosList.tsx` que impediam o deploy no Vercel.
+
+**Por quê:**
+O módulo Fipe estava gerando custos desnecessários por falta de cache. O dashboard apresentava problemas estéticos de proporção e os módulos de marketing "prendiam" o usuário sem uma rota clara de saída.
+
+**Arquivos afetados:**
+- `modules/inicio/components/FipeConsultModal.tsx`
+- `modules/inicio/components/FipeUsageCard.tsx`
+- `modules/inicio/Inicio.page.tsx`
+- `modules/marketing/StoryGenerator.page.tsx`
+- `modules/marketing/FeedGenerator.page.tsx`
+- `modules/cadastros/modelos/components/ModelosList.tsx`
+- Banco de Dados (RPCs de Usage e Cache)
+
 ## [2026-04-15] - Correção Bug: Typo "valor_negociated" em confirmar_pedido_compra
 
 **O que foi feito:**
