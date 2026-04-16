@@ -122,7 +122,7 @@ const ModelosList: React.FC<ListProps> = ({ agrupados, loading, onEdit, onDelete
                           </span>
                         </div>
                       )}
-                    </div>{/* fecha: h-48 foto */}
+                    </div>
 
                     {/* Info */}
                     <div className="p-6 text-center">
@@ -132,7 +132,7 @@ const ModelosList: React.FC<ListProps> = ({ agrupados, loading, onEdit, onDelete
                         <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Especificação Técnica</span>
                       </div>
                     </div>
-                  </div>{/* fecha: card principal */}
+                  </div>
                 );
               })}
             </div>
