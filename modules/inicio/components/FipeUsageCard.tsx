@@ -36,7 +36,7 @@ const FipeUsageCard: React.FC = () => {
              </div>
              <div>
                <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight">Consumo Fipe</h4>
-               <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Limite Mensal por Loja</p>
+               <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Limite Mensal</p>
              </div>
           </div>
           <div className="text-right">

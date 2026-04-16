@@ -77,7 +77,7 @@ const FipeConsultModal: React.FC<FipeConsultModalProps> = ({ isOpen, onClose }) 
       const isLimitError = error.message?.includes('limite') || error.message?.includes('LIMITE');
       
       if (isLimitError) {
-        showToast('error', 'Você atingiu o limite de 100 consultas mensais da sua loja.');
+        showToast('error', 'Você atingiu o seu limite de 100 consultas mensais.');
       } else {
         showToast('error', error.message || 'Erro ao consultar placa');
       }

@@ -112,28 +112,29 @@ const ModelosList: React.FC<ListProps> = ({ agrupados, loading, onEdit, onDelete
                             </svg>
                           </button>
                         )}
-                      </div>
+                      </div>{/* fecha: overlay hover */}
 
-                    {/* Badge de Tipo no Topo do Card */}
-                    {modelo.tipo_veiculo && (
-                      <div className="absolute top-4 left-4">
-                        <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-indigo-600 text-[10px] font-black uppercase tracking-widest rounded-lg shadow-sm border border-indigo-50">
-                          {modelo.tipo_veiculo.nome}
-                        </span>
-                      </div>
-                    )}
-                  </div>
+                      {/* Badge de Tipo no Topo do Card */}
+                      {modelo.tipo_veiculo && (
+                        <div className="absolute top-4 left-4">
+                          <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-indigo-600 text-[10px] font-black uppercase tracking-widest rounded-lg shadow-sm border border-indigo-50">
+                            {modelo.tipo_veiculo.nome}
+                          </span>
+                        </div>
+                      )}
+                    </div>{/* fecha: h-48 foto */}
 
-                  {/* Info */}
-                  <div className="p-6 text-center">
-                    <h4 className="font-black text-slate-800 uppercase tracking-tighter text-xl">{modelo.nome}</h4>
-                    <div className="flex items-center justify-center space-x-2 mt-2">
-                       <span className="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
-                       <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Especificação Técnica</span>
+                    {/* Info */}
+                    <div className="p-6 text-center">
+                      <h4 className="font-black text-slate-800 uppercase tracking-tighter text-xl">{modelo.nome}</h4>
+                      <div className="flex items-center justify-center space-x-2 mt-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Especificação Técnica</span>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              ))}
+                  </div>{/* fecha: card principal */}
+                );
+              })}
             </div>
           </div>
         );

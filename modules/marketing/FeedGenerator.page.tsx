@@ -4,6 +4,8 @@ import { EstoqueService } from '../estoque/estoque.service';
 import { EmpresaService } from '../ajustes/empresa/empresa.service';
 import { StorageService } from '../../lib/storage.service';
 import MarketingVehicleSelection from './components/MarketingVehicleSelection';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -72,6 +74,7 @@ function drawCover(
 // ─── Componente Principal ───────────────────────────────────────────────────────
 
 const FeedGeneratorPage: React.FC = () => {
+    const navigate = useNavigate();
     // Seleção
     const [selectedVeiculoId, setSelectedVeiculoId] = useState<string>('');
     const [selectedPhotos, setSelectedPhotos] = useState<string[]>([]);
@@ -672,35 +675,45 @@ const FeedGeneratorPage: React.FC = () => {
 
                 {/* ── Lado Esquerdo: Controles ── */}
                 <div className="w-full md:w-1/2 space-y-8">
-                    <div className="flex justify-between items-center">
-                        <div>
-                            <h1 className="text-4xl font-black text-slate-900 tracking-tighter">Gerador de Feed para Instagram</h1>
-                            <p className="text-slate-500 mt-2 uppercase text-xs font-bold tracking-widest">Marketing e Social Media Automático</p>
-                        </div>
-                        <input
-                            type="file"
-                            ref={frameInputRef}
-                            onChange={handleFrameUpload}
-                            accept="image/png,image/jpeg,image/webp"
-                            className="hidden"
-                        />
-                        <button
-                            onClick={() => frameInputRef.current?.click()}
-                            disabled={isUploadingFrame}
-                            className="p-4 bg-indigo-600 border border-indigo-500 rounded-2xl text-white hover:bg-indigo-700 disabled:opacity-60 transition-all shadow-lg flex items-center gap-2 group"
-                            title="Trocar Moldura PNG"
+                    <div className="flex flex-col gap-6">
+                        <button 
+                            onClick={() => navigate(-1)}
+                            className="w-fit flex items-center gap-2 px-4 py-2 bg-white border border-slate-100 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-all shadow-sm group"
                         >
-                            {isUploadingFrame ? (
-                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                            ) : (
-                                <svg className="w-5 h-5 group-hover:rotate-12 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
-                            )}
-                            <span className="text-[10px] font-black uppercase tracking-widest">
-                                {isUploadingFrame ? 'Salvando...' : 'Trocar Moldura'}
-                            </span>
+                            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                            <span className="text-[10px] font-black uppercase tracking-widest">Painel Início</span>
                         </button>
+
+                        <div className="flex justify-between items-center">
+                            <div>
+                                <h1 className="text-4xl font-black text-slate-900 tracking-tighter">Gerador de Feed para Instagram</h1>
+                                <p className="text-slate-500 mt-2 uppercase text-xs font-bold tracking-widest">Marketing e Social Media Automático</p>
+                            </div>
+                            <input
+                                type="file"
+                                ref={frameInputRef}
+                                onChange={handleFrameUpload}
+                                accept="image/png,image/jpeg,image/webp"
+                                className="hidden"
+                            />
+                            <button
+                                onClick={() => frameInputRef.current?.click()}
+                                disabled={isUploadingFrame}
+                                className="p-4 bg-indigo-600 border border-indigo-500 rounded-2xl text-white hover:bg-indigo-700 disabled:opacity-60 transition-all shadow-lg flex items-center gap-2 group"
+                                title="Trocar Moldura PNG"
+                            >
+                                {isUploadingFrame ? (
+                                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                ) : (
+                                    <svg className="w-5 h-5 group-hover:rotate-12 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                )}
+                                <span className="text-[10px] font-black uppercase tracking-widest">
+                                    {isUploadingFrame ? 'Salvando...' : 'Trocar Moldura'}
+                                </span>
+                            </button>
+                        </div>
                     </div>
 
                     {/* Indicador de moldura salva */}

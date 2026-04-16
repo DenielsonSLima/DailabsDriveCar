@@ -75,7 +75,7 @@ const InicioPage: React.FC = () => {
           <RecentStockMini veiculos={recent} />
         </div>
         {/* Right: Operations & Activity */}
-        <div className="xl:col-span-4 space-y-8">
+        <div className="xl:col-span-4 space-y-8 sticky top-8 h-fit">
           {/* Fipe Usage Monitoring */}
           <FipeUsageCard />
 

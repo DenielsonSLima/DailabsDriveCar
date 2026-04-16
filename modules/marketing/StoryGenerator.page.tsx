@@ -4,6 +4,8 @@ import { EstoqueService } from '../estoque/estoque.service';
 import { EmpresaService } from '../ajustes/empresa/empresa.service';
 import { StorageService } from '../../lib/storage.service';
 import MarketingVehicleSelection from './components/MarketingVehicleSelection';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -72,6 +74,7 @@ function drawCover(
 // ─── Componente Principal ───────────────────────────────────────────────────────
 
 const StoryGeneratorPage: React.FC = () => {
+    const navigate = useNavigate();
     // Seleção
     const [selectedVeiculoId, setSelectedVeiculoId] = useState<string>('');
     const [selectedPhotos, setSelectedPhotos] = useState<string[]>([]);
@@ -668,11 +671,20 @@ const StoryGeneratorPage: React.FC = () => {
 
                 {/* ── Lado Esquerdo: Controles ── */}
                 <div className="w-full md:w-1/2 space-y-8">
-                    <div className="flex justify-between items-center">
-                        <div>
-                            <h1 className="text-4xl font-black text-slate-900 tracking-tighter">Gerador de Stories</h1>
-                            <p className="text-slate-500 mt-2 uppercase text-xs font-bold tracking-widest">Marketing e Social Media Automático</p>
-                        </div>
+                    <div className="flex flex-col gap-6">
+                        <button 
+                            onClick={() => navigate(-1)}
+                            className="w-fit flex items-center gap-2 px-4 py-2 bg-white border border-slate-100 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-all shadow-sm group"
+                        >
+                            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                            <span className="text-[10px] font-black uppercase tracking-widest">Painel Início</span>
+                        </button>
+
+                        <div className="flex justify-between items-center">
+                            <div>
+                                <h1 className="text-4xl font-black text-slate-900 tracking-tighter">Gerador de Stories</h1>
+                                <p className="text-slate-500 mt-2 uppercase text-xs font-bold tracking-widest">Marketing e Social Media Automático</p>
+                            </div>
                         <input
                             type="file"
                             ref={frameInputRef}
@@ -697,6 +709,7 @@ const StoryGeneratorPage: React.FC = () => {
                                 {isUploadingFrame ? 'Salvando...' : 'Trocar Moldura'}
                             </span>
                         </button>
+                    </div>
                     </div>
 
                     {/* Indicador de moldura salva */}
