@@ -1,5 +1,26 @@
 # Histórico de Alterações do Projeto
 
+## [2026-04-17] - Modernização de Relatórios e Correções de Layout
+**O que foi feito:**
+- **Visualização de Relatórios**: Implementada a visualização inline automática ao carregar as páginas de relatórios, eliminando a dependência de PDF para visualização inicial.
+- **Correção de PDFs**: Ajustes de padding e layout nos cabeçalhos e rodapés do PDF de Pedido de Compra para evitar sobreposição de texto.
+- **Quick Preview Modals**: Refatoração dos modais de pré-visualização rápida nos módulos de `caixa` e `pedidos-compra` usando React Portals para garantir cobertura total da tela e evitar conflitos de layout pai.
+- **Conciliação Patrimonial**: Implementação completa do relatório de Conciliação Patrimonial, incluindo serviços, tipos e template de impressão.
+- **KPIs do Dashboard**: Correção na lógica de cálculo de lucro nos KPIs do dashboard.
+- **Módulo de Estoque**: Correções pontuais no formulário de estoque e modais de cadastro de modelos/versões.
+
+**Por quê:**
+Melhorar a experiência do usuário ao visualizar dados financeiros e corrigir imperfeições visuais críticas em documentos gerados pelo sistema.
+
+**Arquivos afetados:**
+- `modules/caixa/components/QuickPreviewModal.tsx`
+- `modules/pedidos-compra/components/details/QuickPreviewModal.tsx`
+- `modules/pedidos-compra/components/details/PurchaseOrderPrint.tsx`
+- `modules/relatorios/...` (vários arquivos de páginas e serviços)
+- `modules/inicio/components/GeneralKpis.tsx`
+- `modules/estoque/EstoqueForm.page.tsx`
+
+
 ## [2026-04-17] - Refatoração Modular e Correção de Resiliência
 - **Modularização do Sistema**: Refatoração completa do `SitePublicoService` para separar o carregamento de dados. Agora, erros em um componente (ex: dados da empresa) não impedem a exibição de outros (ex: catálogo de veículos/motos).
 - **Correção de Detalhes do Veículo**: Aplicado `z.coerce.number()` em campos de KM e Anos no schema principal, resolvendo o crash ao abrir a página de detalhes do veículo no site público.
