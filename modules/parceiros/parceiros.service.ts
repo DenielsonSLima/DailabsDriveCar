@@ -86,7 +86,7 @@ export const ParceirosService = {
   async save(payload: Partial<IParceiro>): Promise<IParceiro> {
     // Validate with Zod
     const validatedData = ParceiroSchema.parse(payload);
-    const { id, created_at, updated_at, user_id, organization_id, ...rest } = validatedData;
+    const { id, created_at, updated_at, user_id, ...rest } = validatedData;
 
     const dataToSave: any = {
       ...rest,
@@ -106,7 +106,7 @@ export const ParceirosService = {
 
     if (error) {
       console.error('Erro ao salvar parceiro:', error);
-      throw new Error(error.message);
+      throw new Error(`Falha ao salvar parceiro: ${error.message} (Dica: verifique se você possui permissão e se o documento é único)`);
     }
 
     return data as IParceiro;

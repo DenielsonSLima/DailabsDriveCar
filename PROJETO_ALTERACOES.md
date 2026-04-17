@@ -1,5 +1,26 @@
 # Histórico de Alterações do Projeto
 
+## [2026-04-17] - Correção de Duplicidade, Estabilização de Parceiros e Alerta de Status de Pedido
+
+**O que foi feito:**
+- **Deduplicação de Catálogos**: Limpeza via SQL das tabelas `cad_caracteristicas` e `cad_opcionais`. Removidos registros duplicados com `organization_id IS NULL` e atualizadas as referências `jsonb` em `est_veiculos` para manter a integridade dos dados.
+- **Módulo Parceiros**: Atualizado o `ParceirosService.save` para incluir explicitamente o `organization_id` no payload. Isso resolve falhas de cadastro em contextos onde o trigger de banco possa perder o contexto do usuário (como em usuários de teste).
+- **Inteligência de Pedidos**: Implementada verificação de status (`RASCUNHO` vs `CONCLUIDO`) nas páginas de detalhes do veículo em Pedidos de Compra e Venda:
+    - Adicionado banner de aviso informando que o pedido precisa ser confirmado para liberar lançamentos financeiros.
+    - Implementada a funcionalidade real de lançar e excluir despesas do veículo (substituindo o alerta de "em desenvolvimento").
+    - Integração com `ConfirmModal` para deleção segura.
+
+**Por quê:**
+O usuário reportou duplicidade visual e falha ao cadastrar parceiros. Além disso, identificamos que tentar lançar despesas em veículos de pedidos não confirmados causava confusão, sendo necessário um aviso educativo de fluxo de negócio.
+
+**Arquivos afetados:**
+- Banco de Dados (SQL: Deduplicação e Atualização JSONB)
+- `modules/parceiros/parceiros.service.ts` [MODIFY]
+- `modules/pedidos-compra/PedidoCompraVeiculoDetalhes.page.tsx` [MODIFY]
+- `modules/pedidos-venda/VendaVeiculoDetalhes.page.tsx` [MODIFY]
+- `PROJETO_ALTERACOES.md` [MODIFY]
+
+
 ## [2026-04-16—Noite] - Hardening de Segurança: Migração API Brasil para Edge Functions
 
 **O que foi feito:**
