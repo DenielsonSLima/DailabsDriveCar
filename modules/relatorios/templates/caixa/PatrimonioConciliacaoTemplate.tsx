@@ -16,11 +16,12 @@ interface Props {
 const PatrimonioConciliacaoTemplate: React.FC<Props> = ({ data, empresa, watermark }) => {
     const fmt = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v || 0);
 
-    const { inicial, final, transacoes, periodo } = data;
+    const { inicial = {}, final = {}, transacoes = [], periodo } = data;
+    const transacoesList = Array.isArray(transacoes) ? transacoes : [];
 
     // Totais do Período
-    const totalEntradas = transacoes.filter(t => t.tipo === 'ENTRADA').reduce((acc, t) => acc + (t.valor || 0), 0);
-    const totalSaidas = transacoes.filter(t => t.tipo === 'SAIDA').reduce((acc, t) => acc + (t.valor || 0), 0);
+    const totalEntradas = transacoesList.filter(t => t.tipo === 'ENTRADA').reduce((acc, t) => acc + (t.valor || 0), 0);
+    const totalSaidas = transacoesList.filter(t => t.tipo === 'SAIDA').reduce((acc, t) => acc + (t.valor || 0), 0);
     const saldoMovimentacao = totalEntradas - totalSaidas;
 
     return (
@@ -129,7 +130,7 @@ const PatrimonioConciliacaoTemplate: React.FC<Props> = ({ data, empresa, waterma
                             </tr>
                         </thead>
                         <tbody>
-                            {transacoes.map((t, i) => (
+                                {transacoesList.map((t, i) => (
                                 <tr key={i}>
                                     <td style={{ fontWeight: 'bold' }}>{new Date(t.data_pagamento).toLocaleDateString('pt-BR')}</td>
                                     <td>

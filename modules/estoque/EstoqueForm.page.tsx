@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { IVeiculo } from './estoque.types';
@@ -64,7 +65,7 @@ const ModalConfirmMontadora: React.FC<ModalConfirmMontadoraProps> = ({ nome, mon
     }
   };
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[200] flex items-center justify-center bg-slate-900/70 backdrop-blur-md animate-in fade-in duration-200">
       <div className="bg-white w-full max-w-md rounded-[2rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
         <div className="px-8 pt-6 pb-4 border-b border-slate-100">
@@ -115,7 +116,8 @@ const ModalConfirmMontadora: React.FC<ModalConfirmMontadoraProps> = ({ nome, mon
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
@@ -126,7 +128,7 @@ interface ModalConfirmTipoProps {
 }
 
 const ModalConfirmTipo: React.FC<ModalConfirmTipoProps> = ({ tipos, onConfirm, onClose }) => {
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[200] flex items-center justify-center bg-slate-900/70 backdrop-blur-md animate-in fade-in duration-200">
       <div className="bg-white w-full max-w-md rounded-[2rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
         <div className="px-8 pt-6 pb-4 border-b border-slate-100">
@@ -155,7 +157,8 @@ const ModalConfirmTipo: React.FC<ModalConfirmTipoProps> = ({ tipos, onConfirm, o
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

@@ -30,7 +30,7 @@ const ModalNovaMotorizacao: React.FC<Props> = ({ onClose, onSuccess }) => {
         mutation.mutate();
     };
 
-    return (
+    return createPortal(
         <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
             <div className="bg-white w-full max-w-sm rounded-[2rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
                 <div className="px-6 pt-6 pb-4 flex items-center justify-between border-b border-slate-100">
@@ -76,7 +76,8 @@ const ModalNovaMotorizacao: React.FC<Props> = ({ onClose, onSuccess }) => {
                     </div>
                 </form>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 };
 

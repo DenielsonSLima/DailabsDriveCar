@@ -5,6 +5,7 @@ export interface IDashboardStats {
   totalParceiros: number;
   vendasMesAtual: number;
   lucroProjetado: number;
+  lucroRealizado: number;
 }
 
 export interface IRecentActivity {

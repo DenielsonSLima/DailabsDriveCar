@@ -87,9 +87,9 @@ const GeneralKpis: React.FC<{ stats: IDashboardStats }> = ({ stats }) => {
         }
       />
       <KpiCard
-        label="Lucro Bruto Projetado"
-        valor={formatCurrency(stats.lucroProjetado)}
-        sublabel="Margem Estimada"
+        label="Resultado Bruto"
+        valor={formatCurrency(stats.lucroRealizado + stats.lucroProjetado)}
+        sublabel={`${formatCurrency(stats.lucroRealizado)} Rec. / ${formatCurrency(stats.lucroProjetado)} Proj.`}
         color="amber"
         icon={
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>

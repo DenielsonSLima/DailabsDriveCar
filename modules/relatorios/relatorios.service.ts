@@ -119,9 +119,9 @@ export const RelatoriosService = {
         if (errorTrans) throw errorTrans;
 
         return {
-            inicial: metricsInicial,
-            final: metricsFinal,
-            transacoes
+            inicial: metricsInicial || {},
+            final: metricsFinal || {},
+            transacoes: transacoes || []
         };
     }
 };

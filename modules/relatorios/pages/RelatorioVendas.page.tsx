@@ -22,14 +22,19 @@ const RelatorioVendasPage: React.FC = () => {
   const [vendedores, setVendedores] = useState<any[]>([]);
 
   useEffect(() => {
-    EmpresaService.getDadosEmpresa().then(setEmpresa);
-    MarcaDaguaService.getConfig().then(setWatermark);
-    RelatoriosService.getVendedoresAtivos().then(data => {
-      setVendedores(data || []);
-    });
+    const init = async () => {
+      await Promise.all([
+        EmpresaService.getDadosEmpresa().then(setEmpresa),
+        MarcaDaguaService.getConfig().then(setWatermark),
+        RelatoriosService.getVendedoresAtivos().then(data => setVendedores(data || []))
+      ]);
+      // Auto-load once vendors/config are ready
+      fetchData();
+    };
+    init();
   }, []);
 
-  const handleGerar = async () => {
+  const fetchData = async () => {
     setLoading(true);
     try {
       const vendas = await RelatoriosService.getVendasParaRelatorio({
@@ -66,7 +71,6 @@ const RelatorioVendasPage: React.FC = () => {
         margemMedia: Number(margemMedia.toFixed(1)),
         items
       });
-      setIsPreviewOpen(true);
     } catch (err) {
       console.error('Erro ao gerar relatório de vendas:', err);
     } finally {
@@ -74,62 +78,125 @@ const RelatorioVendasPage: React.FC = () => {
     }
   };
 
+  const formatCur = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
+
   return (
     <div className="space-y-8 pb-20 animate-in fade-in duration-500">
-      <div className="flex items-center space-x-4">
-        <button
-          onClick={() => navigate('/relatorios')}
-          className="p-3 bg-white border border-slate-200 rounded-2xl text-slate-500 hover:text-indigo-600 hover:border-indigo-100 transition-all shadow-sm group"
-        >
-          <svg className="w-6 h-6 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-        </button>
-        <div>
-          <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest">Relatórios / Comercial</p>
-          <h1 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">Vendas Detalhadas</h1>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex items-center space-x-4">
+          <button
+            onClick={() => navigate('/relatorios')}
+            className="p-3 bg-white border border-slate-200 rounded-2xl text-slate-500 hover:text-indigo-600 hover:border-indigo-100 transition-all shadow-sm group"
+          >
+            <svg className="w-6 h-6 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+          </button>
+          <div>
+            <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest">Relatórios / Comercial</p>
+            <h1 className="text-3xl font-black text-slate-900 uppercase tracking-tighter leading-none">Vendas Detalhadas</h1>
+          </div>
         </div>
+
+        {reportData && (
+          <button
+            onClick={() => setIsPreviewOpen(true)}
+            className="flex items-center space-x-2 px-6 py-3 bg-slate-900 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-800 transition-all shadow-xl shadow-slate-200"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
+            <span>Imprimir PDF</span>
+          </button>
+        )}
       </div>
 
-      <div className="bg-white rounded-[2.5rem] border border-slate-200 p-10 shadow-sm min-h-[500px]">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12 items-end">
+      <div className="bg-white rounded-[2.5rem] border border-slate-200 p-8 shadow-sm">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10 items-end">
           <div className="md:col-span-2">
-            <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Período</label>
-            <div className="flex items-center space-x-2 bg-white p-1 rounded-2xl border border-slate-200">
-              <input type="date" value={dataInicio} onChange={e => setDataInicio(e.target.value)} className="flex-1 bg-white border-none px-4 py-2 text-sm font-bold text-[#111827] focus:ring-0 outline-none" />
-              <span className="text-slate-300 font-black text-[9px] uppercase">até</span>
-              <input type="date" value={dataFim} onChange={e => setDataFim(e.target.value)} className="flex-1 bg-white border-none px-4 py-2 text-sm font-bold text-[#111827] focus:ring-0 outline-none" />
+            <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Período de Análise</label>
+            <div className="flex items-center space-x-2 bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
+              <input type="date" value={dataInicio} onChange={e => setDataInicio(e.target.value)} className="flex-1 bg-transparent border-none px-4 py-2 text-sm font-bold text-slate-900 focus:ring-0 outline-none" />
+              <span className="text-slate-300 font-black text-[9px] uppercase px-2">até</span>
+              <input type="date" value={dataFim} onChange={e => setDataFim(e.target.value)} className="flex-1 bg-transparent border-none px-4 py-2 text-sm font-bold text-slate-900 focus:ring-0 outline-none" />
             </div>
           </div>
           <div>
             <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Vendedor</label>
-            <select value={vendedorId} onChange={e => setVendedorId(e.target.value)} className="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3 text-sm font-bold text-[#111827] focus:ring-2 focus:ring-indigo-500 outline-none appearance-none cursor-pointer">
-              <option value="">Todos</option>
+            <select value={vendedorId} onChange={e => setVendedorId(e.target.value)} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3.5 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none appearance-none cursor-pointer">
+              <option value="">Todos os Vendedores</option>
               {vendedores.map(v => <option key={v.id} value={v.id}>{v.nome}</option>)}
             </select>
           </div>
           <button
-            onClick={handleGerar}
+            onClick={fetchData}
             disabled={loading}
-            className="px-6 py-3.5 bg-indigo-600 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-indigo-100 hover:bg-indigo-700 transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
+            className="px-6 py-4 bg-indigo-600 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-indigo-100 hover:bg-indigo-700 transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
           >
-            {loading ? (
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-            ) : (
-              <>
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                <span>Gerar Relatório</span>
-              </>
-            )}
+            {loading ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : <span>Atualizar Dados</span>}
           </button>
         </div>
 
-        <div className="border-2 border-dashed border-slate-100 rounded-[2rem] py-20 text-center flex flex-col items-center">
-          <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 text-slate-200">
-            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+        {reportData ? (
+          <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            {/* KPI GRID */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-slate-50 p-6 rounded-[2rem] border border-slate-100 group hover:border-indigo-200 transition-all">
+                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Total Vendido</p>
+                <p className="text-2xl font-black text-slate-900">{formatCur(reportData.totalVendas)}</p>
+              </div>
+              <div className="bg-slate-50 p-6 rounded-[2rem] border border-slate-100 group hover:border-indigo-200 transition-all">
+                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Ticket Médio</p>
+                <p className="text-2xl font-black text-indigo-600">{formatCur(reportData.ticketMedio)}</p>
+              </div>
+              <div className="bg-emerald-50 p-6 rounded-[2rem] border border-emerald-100 group hover:border-emerald-200 transition-all">
+                <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-2">Lucro Bruto</p>
+                <p className="text-2xl font-black text-emerald-700">{formatCur(reportData.lucroBruto)}</p>
+              </div>
+              <div className="bg-slate-900 p-6 rounded-[2rem] border border-slate-800 shadow-xl group transition-all">
+                <p className="text-[9px] font-black text-indigo-300 uppercase tracking-widest mb-2 font-bold">Margem Real</p>
+                <p className="text-2xl font-black text-white">{reportData.margemMedia}%</p>
+              </div>
+            </div>
+
+            {/* TABLE VIEW */}
+            <div className="border border-slate-100 rounded-[2.5rem] overflow-hidden bg-white shadow-sm">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="bg-slate-50 border-b border-slate-100">
+                    <th className="px-6 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Data</th>
+                    <th className="px-6 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Veículo</th>
+                    <th className="px-6 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Cliente</th>
+                    <th className="px-6 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest text-right">Venda</th>
+                    <th className="px-6 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest text-right">Resultado</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-50">
+                  {reportData.items.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="px-6 py-20 text-center">
+                        <p className="text-slate-300 font-black uppercase text-xs tracking-widest">Nenhuma venda encontrada no período</p>
+                      </td>
+                    </tr>
+                  ) : (
+                    reportData.items.map((item: any, i: number) => (
+                      <tr key={i} className="hover:bg-slate-50/50 transition-colors group">
+                        <td className="px-6 py-4 text-xs font-bold text-slate-400">{item.data}</td>
+                        <td className="px-6 py-4 text-sm font-black text-slate-900 uppercase tracking-tight">{item.veiculo}</td>
+                        <td className="px-6 py-4 text-xs font-bold text-slate-500 uppercase">{item.cliente}</td>
+                        <td className="px-6 py-4 text-sm font-black text-right text-slate-900">{formatCur(item.venda)}</td>
+                        <td className="px-6 py-4 text-sm font-black text-right text-emerald-600">{formatCur(item.lucro)}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
-          <p className="text-slate-300 font-black uppercase text-xs tracking-[0.2em]">Aguardando seleção de filtros para processar dados</p>
-        </div>
+        ) : (
+          <div className="py-32 flex flex-col items-center justify-center space-y-4">
+            <div className="w-16 h-16 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
+            <p className="text-slate-400 font-black uppercase text-[10px] tracking-widest animate-pulse">Carregando indicadores...</p>
+          </div>
+        )}
       </div>
 
       {/* QUICK PREVIEW MODAL */}

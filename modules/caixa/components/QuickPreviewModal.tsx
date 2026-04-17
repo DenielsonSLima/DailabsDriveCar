@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 
 interface Props {
     isOpen: boolean;
@@ -11,8 +12,8 @@ interface Props {
 const QuickPreviewModal: React.FC<Props> = ({ isOpen, onClose, onDownload, title, children }) => {
     if (!isOpen) return null;
 
-    return (
-        <div className="fixed inset-0 z-[200] bg-slate-950/90 backdrop-blur-md flex flex-col no-print animate-in fade-in duration-300">
+    return createPortal(
+        <div className="fixed inset-0 top-0 left-0 w-full h-full z-[9999] bg-slate-950/90 backdrop-blur-md flex flex-col no-print animate-in fade-in duration-300">
 
             {/* Top Toolbar */}
             <div className="h-20 bg-slate-900 border-b border-white/10 flex items-center justify-between px-8 shrink-0">
@@ -57,7 +58,8 @@ const QuickPreviewModal: React.FC<Props> = ({ isOpen, onClose, onDownload, title
             <div className="h-10 bg-slate-900 border-t border-white/5 flex items-center justify-center">
                 <p className="text-[9px] font-bold text-slate-500 uppercase tracking-[0.3em]">HCV Operating System - Document Generator v4.0</p>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 };
 

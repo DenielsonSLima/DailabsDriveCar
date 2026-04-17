@@ -14,16 +14,18 @@ export const InicioService = {
         valorGlobalEstoque: 0,
         totalParceiros: 0,
         vendasMesAtual: 0,
-        lucroProjetado: 0
+        lucroProjetado: 0,
+        lucroRealizado: 0
       };
     }
-
+    
     return {
       totalEstoque: data.totalEstoque || 0,
       valorGlobalEstoque: data.valorGlobalEstoque || 0,
       totalParceiros: data.totalParceiros || 0,
       vendasMesAtual: data.vendasMesAtual || 0,
-      lucroProjetado: data.lucroProjetado || 0
+      lucroProjetado: data.lucroProjetado || 0,
+      lucroRealizado: data.lucroRealizado || 0
     };
   },
 

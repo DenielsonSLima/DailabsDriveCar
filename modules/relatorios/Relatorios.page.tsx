@@ -40,6 +40,15 @@ const RelatoriosPage: React.FC = () => {
     }
   ];
 
+  const colorMap: Record<string, { bg: string, text: string, accent: string }> = {
+    emerald: { bg: 'bg-emerald-50', text: 'text-emerald-600', accent: 'bg-emerald-500/5' },
+    indigo: { bg: 'bg-indigo-50', text: 'text-indigo-600', accent: 'bg-indigo-500/5' },
+    blue: { bg: 'bg-blue-50', text: 'text-blue-600', accent: 'bg-blue-500/5' },
+    amber: { bg: 'bg-amber-50', text: 'text-amber-600', accent: 'bg-amber-500/5' },
+    rose: { bg: 'bg-rose-50', text: 'text-rose-600', accent: 'bg-rose-500/5' },
+    slate: { bg: 'bg-slate-50', text: 'text-slate-600', accent: 'bg-slate-500/5' },
+  };
+
   return (
     <div className="space-y-10 pb-20 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -68,7 +77,7 @@ const RelatoriosPage: React.FC = () => {
                   onClick={() => navigate(item.path)}
                   className="group bg-white rounded-[2.5rem] border border-slate-200 p-8 shadow-sm hover:shadow-2xl hover:border-indigo-300 transition-all duration-300 cursor-pointer relative overflow-hidden"
                 >
-                  <div className={`w-14 h-14 rounded-2xl bg-${item.color}-50 text-${item.color}-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
+                  <div className={`w-14 h-14 rounded-2xl ${colorMap[item.color]?.bg || 'bg-slate-50'} ${colorMap[item.color]?.text || 'text-slate-600'} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
                     <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d={item.icon} />
                     </svg>
@@ -78,12 +87,12 @@ const RelatoriosPage: React.FC = () => {
                   <p className="text-xs text-slate-500 leading-relaxed font-medium">{item.descricao}</p>
 
                   <div className="mt-8 flex items-center text-indigo-600 text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
-                    Gerar Relatório
+                    Visualizar Relatório
                     <svg className="w-3.5 h-3.5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                   </div>
 
                   {/* Efeito Visual */}
-                  <div className={`absolute -bottom-12 -right-12 w-24 h-24 bg-${item.color}-500/5 rounded-full blur-3xl`}></div>
+                  <div className={`absolute -bottom-12 -right-12 w-24 h-24 ${colorMap[item.color]?.accent || 'bg-slate-500/5'} rounded-full blur-3xl`}></div>
                 </div>
               ))}
             </div>

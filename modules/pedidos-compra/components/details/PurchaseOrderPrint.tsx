@@ -59,9 +59,9 @@ const PurchaseOrderPrint: React.FC<Props> = ({ pedido, empresa, watermark, allCa
         </div>
       )}
 
-      <div className="relative z-10">
-        {/* Cabeçalho Premium */}
-        <div className="flex justify-between items-end border-b-4 border-slate-900 pb-10 mb-12">
+      <div className="relative z-10 pb-28">
+        {/* Cabeçalho Premium - pr-32 para evitar colisão com o selo absolute */}
+        <div className="flex justify-between items-end border-b-4 border-slate-900 pb-10 mb-12 pr-32">
           <div className="flex items-center gap-8">
             {empresa.logo_url && <img src={empresa.logo_url} className="h-20 w-auto object-contain" alt="Logo" />}
             <div className="space-y-1">
@@ -233,12 +233,12 @@ const PurchaseOrderPrint: React.FC<Props> = ({ pedido, empresa, watermark, allCa
         <div className="grid grid-cols-2 gap-32 px-10">
            <div className="text-center space-y-3">
               <div className="h-14 border-b border-slate-300"></div>
-              <p className="text-[10px] font-black uppercase text-slate-800">{empresa.nome_fantasia}</p>
+              <p className="text-[10px] font-black uppercase text-slate-800 max-w-[280px] mx-auto leading-tight">{empresa.nome_fantasia}</p>
               <p className="text-[8px] text-slate-400 font-bold uppercase tracking-widest">HCV - Departamento de Compras</p>
            </div>
            <div className="text-center space-y-3">
               <div className="h-14 border-b border-slate-300"></div>
-              <p className="text-[10px] font-black uppercase text-slate-800">{pedido.fornecedor?.nome}</p>
+              <p className="text-[10px] font-black uppercase text-slate-800 max-w-[280px] mx-auto leading-tight">{pedido.fornecedor?.nome}</p>
               <p className="text-[8px] text-slate-400 font-bold uppercase tracking-widest">Fornecedor / Proprietário</p>
            </div>
         </div>
