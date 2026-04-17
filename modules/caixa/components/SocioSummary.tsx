@@ -31,7 +31,7 @@ const SocioSummary: React.FC<Props> = ({ socios }) => {
                                 </div>
                                 <div>
                                     <h3 className="text-lg font-black text-slate-900 uppercase tracking-tighter leading-none">{socio.nome.split(' ')[0]}</h3>
-                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Sócio Hidrocar</p>
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Sócio</p>
                                 </div>
                             </div>
                             <div className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black uppercase tracking-widest border border-emerald-100 italic">

@@ -58,7 +58,7 @@ const BaseReportLayout: React.FC<Props> = ({
             {empresa?.cidade} / {empresa?.uf} - {empresa?.cep}
           </p>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[9px] text-slate-400 font-bold mt-2">
-            <span className="whitespace-nowrap bg-slate-50 px-2 py-0.5 rounded border border-slate-100 italic">CNPJ: {maskCNPJ(empresa?.cnpj)}</span>
+            <span className="whitespace-nowrap bg-slate-50 px-2 py-0.5 rounded border border-slate-100 italic">CNPJ: {maskCNPJ(empresa?.cnpj, 'N/A')}</span>
           </div>
         </div>
       </div>

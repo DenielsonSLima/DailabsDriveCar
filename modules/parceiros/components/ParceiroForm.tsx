@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { IParceiro, TipoParceiro, PessoaTipo, ParceiroSchema } from '../parceiros.types';
 import { ParceirosService } from '../parceiros.service';
+import { maskCNPJ, maskCPF, maskCEP, maskPhone } from '../../../utils/formatters';
 import ParceiroIdentificationForm from './ParceiroIdentificationForm';
 import ParceiroContactForm from './ParceiroContactForm';
 import ParceiroAddressForm from './ParceiroAddressForm';
@@ -48,32 +49,16 @@ const ParceiroForm: React.FC<FormProps> = ({ initialData, onClose, onSubmit }) =
     if (initialData?.documento) {
       setFormData(prev => ({
         ...prev,
-        documento: formatDocumento(initialData.documento!, initialData.pessoa_tipo)
+        documento: formatDocumento(initialData.documento!, initialData.pessoa_tipo),
+        cep: maskCEP(initialData.cep),
+        telefone: maskPhone(initialData.telefone),
+        whatsapp: maskPhone(initialData.whatsapp)
       }));
     }
   }, [initialData]);
 
   const formatDocumento = (value: string, tipo: PessoaTipo) => {
-    const v = value.replace(/\D/g, '');
-
-    if (tipo === PessoaTipo.FISICA) {
-      // CPF: 000.000.000-00
-      return v
-        .slice(0, 11)
-        .replace(/(\d{3})(\d)/, '$1.$2')
-        .replace(/(\d{3})(\d)/, '$1.$2')
-        .replace(/(\d{3})(\d{1,2})/, '$1-$2')
-        .replace(/(-\d{2})\d+?$/, '$1');
-    } else {
-      // CNPJ: 00.000.000/0000-00
-      return v
-        .slice(0, 14)
-        .replace(/^(\d{2})(\d)/, '$1.$2')
-        .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
-        .replace(/\.(\d{3})(\d)/, '.$1/$2')
-        .replace(/(\d{4})(\d)/, '$1-$2')
-        .replace(/(-\d{2})\d+?$/, '$1');
-    }
+    return tipo === PessoaTipo.FISICA ? maskCPF(value) : maskCNPJ(value);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -86,6 +71,14 @@ const ParceiroForm: React.FC<FormProps> = ({ initialData, onClose, onSubmit }) =
 
     if (name === 'documento') {
       val = formatDocumento(val as string, formData.pessoa_tipo || PessoaTipo.JURIDICA);
+    }
+
+    if (name === 'cep') {
+      val = maskCEP(val as string);
+    }
+
+    if (name === 'telefone' || name === 'whatsapp') {
+      val = maskPhone(val as string);
     }
 
     setFormData(prev => ({ ...prev, [name]: val }));

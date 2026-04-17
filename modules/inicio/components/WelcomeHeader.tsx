@@ -26,7 +26,7 @@ const WelcomeHeader: React.FC = () => {
         <div>
           <div className="flex items-center gap-3 mb-4">
             <div className="h-px w-8 bg-indigo-500/50" />
-            <span className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em]">Nexus Intelligence Dashboard</span>
+            <span className="text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em]">Dailabs DriveCar</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight leading-tight">
             {greeting}, <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-white/40">{userNome.split(' ')[0]}</span>

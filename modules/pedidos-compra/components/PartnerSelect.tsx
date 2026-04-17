@@ -1,7 +1,5 @@
-
-import React, { useState, useRef, useEffect } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
-import { IParceiro, TipoParceiro } from '../../parceiros/parceiros.types';
+import { IParceiro, TipoParceiro, PessoaTipo } from '../../parceiros/parceiros.types';
+import { maskCPF, maskCNPJ } from '../../../utils/formatters';
 import ModalQuickPartner from '../../parceiros/components/ModalQuickPartner';
 
 interface Props {
@@ -87,7 +85,9 @@ const PartnerSelect: React.FC<Props> = ({ parceiros, selectedId, onChange, disab
                 className="p-4 hover:bg-indigo-50 cursor-pointer flex flex-col transition-colors border-b border-slate-50 last:border-0"
               >
                 <span className="text-sm font-black text-slate-900 uppercase">{p.nome}</span>
-                <span className="text-[10px] text-slate-400 font-mono">{p.documento}</span>
+                <span className="text-[10px] text-slate-400 font-mono">
+                  {p.pessoa_tipo === PessoaTipo.FISICA ? maskCPF(p.documento) : maskCNPJ(p.documento)}
+                </span>
               </div>
             ))}
           </div>

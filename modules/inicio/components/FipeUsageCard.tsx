@@ -45,10 +45,16 @@ const FipeUsageCard: React.FC = () => {
           </div>
         </div>
 
-        {/* Barra de Progresso Degradê */}
+        {/* Barra de Progresso Dinâmica (Verde -> Amarelo -> Vermelho) */}
         <div className="h-4 w-full bg-slate-100 rounded-full border border-slate-200/50 p-0.5 mb-6">
           <div 
-            className="h-full rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shadow-[0_0_15px_rgba(99,102,241,0.4)] transition-all duration-1000 ease-out"
+            className={`h-full rounded-full transition-all duration-1000 ease-out shadow-lg ${
+              percentage < 60 
+                ? 'bg-gradient-to-r from-emerald-400 to-emerald-600 shadow-emerald-500/20' 
+                : percentage < 85 
+                ? 'bg-gradient-to-r from-amber-400 to-amber-600 shadow-amber-500/20' 
+                : 'bg-gradient-to-r from-rose-500 to-rose-700 shadow-rose-500/20'
+            }`}
             style={{ width: `${percentage}%` }}
           />
         </div>
