@@ -51,13 +51,16 @@ const PublicVehicleDetailsPage: React.FC = () => {
   useEffect(() => {
     if (!veiculo || !empresa) return;
 
+    const nome = empresa?.nome_fantasia || 'Souza Veículos';
+    const cidade = empresa?.cidade || 'Aracaju';
+    const uf = empresa?.uf || 'SE';
     const veiculoTitle = `${veiculo.montadora?.nome || ''} ${veiculo.modelo?.nome || ''} ${veiculo.ano_modelo}`;
     const coverPhoto = sortedPhotos.length > 0 ? sortedPhotos[0].url : undefined;
     const veiculoUrl = `${window.location.origin}/veiculo/${id}`;
 
     setSEO({
-      title: `${veiculoTitle} | Souza Veículos`,
-      description: `${veiculoTitle} - ${veiculo.km?.toLocaleString('pt-BR')} KM, ${veiculo.combustivel}, ${veiculo.transmissao}. Confira na Souza Veículos em Aracaju/SE.`,
+      title: `${veiculoTitle} | ${nome}`,
+      description: `${veiculoTitle} - ${veiculo.km?.toLocaleString('pt-BR')} KM, ${veiculo.combustivel}, ${veiculo.transmissao}. Confira na ${nome} em ${cidade}/${uf}.`,
       image: coverPhoto,
       url: veiculoUrl
     });
@@ -74,7 +77,7 @@ const PublicVehicleDetailsPage: React.FC = () => {
       image: coverPhoto,
       url: veiculoUrl,
       description: `${veiculoTitle} - ${veiculo.km?.toLocaleString('pt-BR')} KM, ${veiculo.combustivel}, ${veiculo.transmissao}.`,
-      sellerName: 'Souza Veículos',
+      sellerName: nome,
       sellerPhone: empresa?.telefone,
     });
 
@@ -239,7 +242,7 @@ const PublicVehicleDetailsPage: React.FC = () => {
 
             {/* GALERIA DE FOTOS (CENTRALIZADA E CONTROLADA) */}
             <div
-              className="lg:col-span-8 flex flex-col items-center space-y-6 overflow-hidden"
+              className="lg:col-span-8 flex flex-col items-center space-y-6"
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
             >
@@ -248,7 +251,7 @@ const PublicVehicleDetailsPage: React.FC = () => {
               <div className="relative group flex justify-center w-full">
                 <div
                   onClick={() => setIsFullscreen(true)}
-                  className="w-full max-w-4xl aspect-[4/3] bg-slate-900 rounded-[3rem] overflow-hidden relative border-4 border-white cursor-zoom-in shadow-2xl shrink-0"
+                  className="w-full max-w-4xl aspect-[3/2] bg-slate-900 rounded-[3rem] overflow-hidden relative border-4 border-white cursor-zoom-in shadow-2xl shrink-0"
                 >
                   {activePhoto ? (
                     <img
@@ -309,12 +312,21 @@ const PublicVehicleDetailsPage: React.FC = () => {
             <div className="lg:col-span-4">
               <div className="bg-white rounded-[3rem] border border-slate-200 p-8 shadow-2xl space-y-8 lg:sticky lg:top-28">
                 <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    {v.montadora?.logo_url && <img src={v.montadora.logo_url} className="h-8 w-auto object-contain" alt="" />}
-                    <span className="text-[11px] font-black text-orange-600 uppercase tracking-[0.4em]">{v.montadora?.nome}</span>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <div className="flex items-center gap-3">
+                      {v.montadora?.logo_url && <img src={v.montadora.logo_url} className="h-8 w-auto object-contain" alt="" />}
+                      <span className="text-[11px] font-black text-orange-600 uppercase tracking-[0.4em]">{v.montadora?.nome}</span>
+                    </div>
+                    {v.tipo_veiculo?.nome && (
+                      <span className="bg-slate-100 text-slate-500 px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest">
+                        {v.tipo_veiculo.nome}
+                      </span>
+                    )}
                   </div>
                   <h1 className="text-5xl font-[900] text-slate-900 uppercase tracking-tighter leading-none">{v.modelo?.nome}</h1>
-                  <p className="text-lg font-medium text-slate-400 uppercase tracking-tight leading-none border-l-4 border-orange-600 pl-4">{v.versao?.nome}</p>
+                  <p className="text-lg font-medium text-slate-400 uppercase tracking-tight leading-none border-l-4 border-orange-600 pl-4">
+                    {v.versao?.nome} {v.motorizacao} {v.combustivel}
+                  </p>
                 </div>
 
                 <div className="space-y-1">
@@ -443,16 +455,21 @@ const PublicVehicleDetailsPage: React.FC = () => {
               )}
 
               {tagsOp.length > 0 && (
-                <div>
-                  <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.5em] mb-10 flex items-center">
-                    <span className="w-2 h-8 bg-slate-300 rounded-full mr-5"></span>
-                    Configuração e Itens
-                  </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-y-4 gap-x-12">
+                <div className="space-y-8">
+                  <div className="flex flex-col">
+                    <span className="text-[9px] font-black text-orange-600 uppercase tracking-[0.5em] mb-3">Especificações e Conforto</span>
+                    <h3 className="text-3xl font-[900] text-slate-900 uppercase tracking-tighter leading-none">Configuração e Itens</h3>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     {tagsOp.map(o => (
-                      <div key={o.id} className="flex items-center gap-4 py-3 border-b border-slate-50 group">
-                        <div className="w-1.5 h-1.5 rounded-full bg-orange-600/20 group-hover:bg-orange-600 transition-all"></div>
-                        <span className="text-xs font-bold text-slate-700 uppercase tracking-tight group-hover:translate-x-1 transition-transform">{o.nome}</span>
+                      <div key={o.id} className="bg-white border border-slate-100 p-3 rounded-2xl group hover:border-orange-500 hover:shadow-xl hover:shadow-orange-900/5 transition-all duration-300 cursor-default">
+                         <div className="flex items-center gap-3">
+                            <div className="w-7 h-7 bg-slate-50 rounded-lg flex items-center justify-center text-slate-300 group-hover:bg-orange-600 group-hover:text-white transition-all duration-300">
+                              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M5 13l4 4L19 7" /></svg>
+                            </div>
+                            <span className="text-[10px] font-bold text-slate-800 uppercase tracking-tight leading-tight">{o.nome}</span>
+                         </div>
                       </div>
                     ))}
                   </div>
@@ -472,27 +489,54 @@ const PublicVehicleDetailsPage: React.FC = () => {
 
             {/* SELOS HCV */}
             <div className="lg:col-span-4 space-y-10">
-              <div className="bg-orange-600 rounded-[3rem] p-12 text-white shadow-2xl relative overflow-hidden">
-                <h4 className="text-2xl font-black uppercase tracking-tighter mb-10">Compromisso Souza</h4>
-                <div className="space-y-12">
-                  {/* Selos Souza */}
-                  {[
-                    { title: 'Certificação Cautelar', desc: 'Estrutura e documentação 100% aprovada.' },
-                    { title: 'Revisão Especializada', desc: 'Inspeção rigorosa em mais de 150 itens.' },
-                    { title: 'Higienização Premium', desc: 'Estética completa e detalhamento premium.' }
-                  ].map((selo, i) => (
-                    <div key={i} className="flex items-start gap-6">
-                      <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center shrink-0 border border-white/20">
-                        <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M9 12l2 2 4-4" /></svg>
-                      </div>
-                      <div>
-                        <p className="text-sm font-black uppercase tracking-wide mb-2">{selo.title}</p>
-                        <p className="text-xs text-orange-100/70 leading-relaxed font-medium">{selo.desc}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+             {/* COMPROMISSO SOUZA PREMIUM */}
+             <div className="lg:col-span-4 space-y-10">
+               <div className="bg-gradient-to-br from-slate-950 to-slate-900 rounded-[3rem] p-10 text-white shadow-2xl relative overflow-hidden border border-white/5">
+                 {/* Efeito de Brilho de Vidro */}
+                 <div className="absolute -top-24 -right-24 w-64 h-64 bg-orange-600/10 rounded-full blur-[80px]"></div>
+                 
+                 <div className="relative z-10">
+                   <div className="flex items-center gap-3 mb-10">
+                    <div className="w-1.5 h-6 bg-orange-600 rounded-full"></div>
+                    <h4 className="text-2xl font-black uppercase tracking-tighter">Compromisso Souza</h4>
+                   </div>
+
+                   <div className="space-y-10">
+                     {[
+                       { 
+                         title: 'Certificação Cautelar', 
+                         desc: 'Estrutura e documentação 100% aprovada.',
+                         icon: <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                       },
+                       { 
+                         title: 'Revisão Especializada', 
+                         desc: 'Inspeção rigorosa em mais de 150 itens.',
+                         icon: <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                       },
+                       { 
+                         title: 'Higienização Premium', 
+                         desc: 'Estética completa e detalhamento premium.',
+                         icon: <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-7.714 2.143L11 21l-2.286-6.857L1 12l7.714-2.143L11 3z" /></svg>
+                       }
+                     ].map((selo, i) => (
+                       <div key={i} className="flex items-start gap-6 group hover:translate-x-2 transition-transform duration-300">
+                         <div className="w-12 h-12 bg-orange-600/10 rounded-2xl flex items-center justify-center shrink-0 border border-orange-600/20 text-orange-500 group-hover:bg-orange-600 group-hover:text-white transition-all shadow-lg shadow-orange-900/10">
+                           {selo.icon}
+                         </div>
+                         <div>
+                           <p className="text-[13px] font-black uppercase tracking-widest text-white mb-1">{selo.title}</p>
+                           <p className="text-xs text-slate-400 leading-relaxed font-medium">{selo.desc}</p>
+                         </div>
+                       </div>
+                     ))}
+                   </div>
+
+                   <div className="mt-12 pt-10 border-t border-white/5">
+                      <p className="text-[9px] font-bold text-slate-500 uppercase tracking-[0.3em] text-center">Referência em Qualidade Souza Veículos</p>
+                   </div>
+                 </div>
+               </div>
+             </div>
             </div>
           </div>
         </div>

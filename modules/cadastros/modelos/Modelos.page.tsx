@@ -208,6 +208,15 @@ const ModelosPage: React.FC = () => {
     }
   };
 
+  const getModeloNameById = (id: string | null) => {
+    if (!id) return '';
+    for (const group of Object.values(agrupados)) {
+      const modelo = group.modelos.find(m => m.id === id);
+      if (modelo) return modelo.nome;
+    }
+    return '';
+  };
+
   return (
     <div className="space-y-6 animate-in fade-in duration-500 relative">
       {toast && (

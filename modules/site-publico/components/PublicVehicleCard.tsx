@@ -65,6 +65,11 @@ const PublicVehicleCard: React.FC<Props> = React.memo(({ veiculo, cores = [] }) 
         )}
 
         <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
+          {veiculo.tipo_veiculo?.nome && (
+            <div className="bg-slate-900/80 backdrop-blur-md text-white px-3 py-1 rounded-lg text-[7px] font-black shadow-xl border border-white/10 uppercase tracking-[0.3em] w-fit">
+              {veiculo.tipo_veiculo.nome}
+            </div>
+          )}
           <div className="bg-orange-600 text-white px-4 py-1.5 rounded-full text-[8px] font-black shadow-xl border border-white/20 uppercase tracking-[0.2em]">
             Destaque Souza
           </div>
@@ -94,9 +99,12 @@ const PublicVehicleCard: React.FC<Props> = React.memo(({ veiculo, cores = [] }) 
               <p className="text-[10px] font-black text-orange-600 uppercase tracking-[0.3em] truncate">{v.montadora?.nome}</p>
             )}
           </div>
-          <h3 className="text-xl font-[900] text-slate-900 uppercase tracking-tighter truncate leading-tight mb-2 group-hover:text-orange-600 transition-colors">
-            {v.modelo?.nome} <span className="font-medium text-slate-400 ml-1">{v.versao?.nome}</span>
+          <h3 className="text-xl font-[900] text-slate-900 uppercase tracking-tighter truncate leading-tight mb-1 group-hover:text-orange-600 transition-colors">
+            {v.modelo?.nome}
           </h3>
+          <p className="text-[11px] font-bold text-slate-400 uppercase tracking-tight truncate">
+            {v.versao?.nome} {v.motorizacao} {v.combustivel}
+          </p>
 
           <div className="grid grid-cols-2 gap-y-1 gap-x-4 text-[10px] font-semibold text-slate-500 uppercase tracking-wide border-t border-slate-100 pt-3 mt-1">
             <div className="flex items-center gap-1.5 overflow-hidden">

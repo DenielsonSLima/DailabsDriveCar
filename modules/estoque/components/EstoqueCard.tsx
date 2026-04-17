@@ -109,6 +109,12 @@ const EstoqueCard: React.FC<Props> = ({ veiculo, cores, onClick }) => {
             {veiculo.status}
           </div>
 
+          {v.tipo_veiculo?.nome && (
+            <div className="px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest text-white shadow-lg bg-slate-900 shadow-slate-200 ring-1 ring-white/20">
+              {v.tipo_veiculo.nome}
+            </div>
+          )}
+
           {veiculo.is_consignado && (
             <div className="px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest text-white shadow-lg bg-violet-600 shadow-violet-200 ring-2 ring-violet-400">
               CONSIGNADO
@@ -151,8 +157,8 @@ const EstoqueCard: React.FC<Props> = ({ veiculo, cores, onClick }) => {
           <h4 className="font-black text-slate-900 text-lg leading-tight line-clamp-2 uppercase tracking-tighter">
             {v.montadora?.nome} {v.modelo?.nome}
           </h4>
-          <p className="text-xs text-slate-500 font-medium truncate mt-0.5">
-            {v.versao?.nome || 'Versão Base'}
+          <p className="text-[11px] text-slate-500 font-bold truncate mt-0.5 uppercase tracking-tight">
+            {v.versao?.nome || 'Versão Base'} {v.motorizacao} {v.combustivel}
           </p>
         </div>
 

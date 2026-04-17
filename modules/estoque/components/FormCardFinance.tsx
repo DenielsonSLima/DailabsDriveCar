@@ -67,12 +67,12 @@ const FormCardFinance: React.FC<Props> = ({ formData, onChange, onNotification, 
           <div>
             <label className="block text-[10px] font-black text-emerald-600 uppercase mb-3 ml-1 tracking-widest">Preço de Venda (Anúncio)</label>
             <div className="relative">
-              <span className="absolute left-5 top-1/2 -translate-y-1/2 text-emerald-500 font-bold text-3xl">R$</span>
+              <span className="absolute left-5 top-1/2 -translate-y-1/2 text-emerald-500 font-bold text-xl">R$</span>
               <input
                 type="text"
                 value={vendaRaw}
                 onChange={e => handleCurrencyChange(e.target.value, 'valor_venda')}
-                className="w-full bg-white border-2 border-emerald-100 rounded-3xl px-6 py-6 pl-16 text-4xl font-black text-[#111827] outline-none focus:border-emerald-500 transition-all shadow-sm"
+                className="w-full bg-white border-2 border-emerald-100 rounded-3xl px-6 py-5 pl-14 text-2xl font-black text-[#111827] outline-none focus:border-emerald-500 transition-all shadow-sm"
               />
             </div>
           </div>

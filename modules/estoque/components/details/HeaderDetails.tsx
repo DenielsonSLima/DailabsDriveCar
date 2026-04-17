@@ -82,8 +82,8 @@ const HeaderDetails: React.FC<HeaderDetailsProps> = ({ veiculo, onBack, onEdit }
                 {v.modelo?.nome || 'MODELO'}
               </h1>
 
-              <h2 className="text-lg font-medium text-slate-500 mb-3 truncate max-w-2xl border-l-2 border-slate-200 pl-3">
-                {v.versao?.nome || 'Versão não informada'}
+              <h2 className="text-lg font-bold text-slate-500 mb-3 truncate max-w-2xl border-l-4 border-indigo-600 pl-4 uppercase tracking-tight">
+                {v.versao?.nome || 'Versão não informada'} {v.motorizacao} {v.combustivel}
               </h2>
 
               <div className="flex flex-wrap items-center gap-y-2 gap-x-2 text-[10px] font-bold text-slate-600 uppercase tracking-wide">

@@ -27,24 +27,53 @@ const VEICULO_SELECT = `
   tipo_veiculo:cad_tipos_veiculos(nome)
 `;
 
+const DEFAULT_EMPRESA: IEmpresa = {
+  cnpj: '00.000.000/0000-00',
+  razao_social: 'Empresa Não Configurada',
+  nome_fantasia: 'Souza Veículos',
+  cep: '49000-000',
+  logradouro: 'Rua Lions Club',
+  numero: '526',
+  bairro: 'Atalaia',
+  cidade: 'Aracaju',
+  uf: 'SE',
+  telefone: '(79) 99999-9999'
+};
+
 export const SitePublicoService = {
 
   /**
-   * Busca dados da empresa. Cache será gerenciado pelo TanStack Query.
+   * Busca dados da empresa com fallback para evitar crashes.
    */
   async getEmpresa(): Promise<IEmpresa> {
-    const { data: empresa, error } = await supabase
-      .from('config_empresa')
-      .select('*')
-      .limit(1)
-      .maybeSingle();
+    try {
+      const { data: empresa, error } = await supabase
+        .from('config_empresa')
+        .select('*')
+        .limit(1)
+        .maybeSingle();
 
-    if (error) {
-      console.error('Erro ao buscar dados da empresa:', error);
-      throw error;
+      if (error || !empresa) {
+        return DEFAULT_EMPRESA;
+      }
+
+      // Tenta validar; se falhar por campos faltantes, mescla com o padrão de forma segura para manter o site no ar
+      try {
+        return EmpresaSchema.parse(empresa);
+      } catch (zodErr) {
+        console.warn('Dados da empresa incompletos no banco. Usando mesclagem segura com valores padrão.');
+        const merged = { ...DEFAULT_EMPRESA };
+        Object.keys(empresa).forEach(key => {
+          const val = (empresa as any)[key];
+          if (val !== null && val !== undefined && val !== '') {
+            (merged as any)[key] = val;
+          }
+        });
+        return merged as IEmpresa;
+      }
+    } catch {
+      return DEFAULT_EMPRESA;
     }
-
-    return EmpresaSchema.parse(empresa || {});
   },
 
   /**
@@ -173,34 +202,41 @@ export const SitePublicoService = {
   },
 
   /**
-   * Dados da home page.
+   * Dados da home page modularizados.
+   * Cada parte é carregada e validada de forma independente para garantir resiliência.
    */
   async getHomePageData(): Promise<IPublicPageData> {
-    try {
-      const [empresa, veiculosResult, montadoras, conteudo] = await Promise.all([
-        this.getEmpresa().catch(() => ({} as IEmpresa)),
-        supabase
-          .from('est_veiculos')
-          .select(VEICULO_SELECT)
-          .eq('publicado_site', true)
-          .order('created_at', { ascending: false })
-          .limit(8),
-        this.getMontadorasComEstoque(),
-        this.getSiteConteudo()
-      ]);
+    const [empresaRaw, veiculosResult, montadoras, conteudo] = await Promise.all([
+      this.getEmpresa().catch((err) => {
+        console.error('Falha ao carregar empresa na home:', err);
+        return {} as IEmpresa;
+      }),
+      supabase
+        .from('est_veiculos')
+        .select(VEICULO_SELECT)
+        .eq('publicado_site', true)
+        .order('created_at', { ascending: false })
+        .limit(8),
+      this.getMontadorasComEstoque().catch(() => []),
+      this.getSiteConteudo().catch(() => null)
+    ]);
 
-      const rawResult = {
-        empresa,
-        veiculos: veiculosResult.data || [],
-        montadoras,
-        conteudo
-      };
+    // Validação individual de veículos para evitar crash total se um registro estiver corrompido
+    const veiculosValidados = (veiculosResult.data || []).map(v => {
+      try {
+        return VeiculoPublicSchema.parse(v);
+      } catch (err) {
+        console.error('Erro ao validar veículo individual na home:', v.id, err);
+        return null;
+      }
+    }).filter(Boolean) as IVeiculoPublic[];
 
-      return PublicPageDataSchema.parse(rawResult) as IPublicPageData;
-    } catch (error) {
-      console.error('Erro ao carregar dados da home:', error);
-      throw error;
-    }
+    return {
+      empresa: empresaRaw,
+      veiculos: veiculosValidados,
+      montadoras: montadoras || [],
+      conteudo: conteudo
+    };
   },
 
   /**
@@ -213,7 +249,7 @@ export const SitePublicoService = {
     cores: { id: string; nome: string; rgb_hex: string }[];
     empresa: IEmpresa;
   }> {
-    const [veiculoResult, caracResult, opResult, coresResult, empresa] = await Promise.all([
+    const [veiculoResult, caracResult, opResult, coresResult, empresaRaw] = await Promise.all([
       supabase
         .from('est_veiculos')
         .select(VEICULO_SELECT)
@@ -222,7 +258,7 @@ export const SitePublicoService = {
       supabase.from('cad_caracteristicas').select('id, nome'),
       supabase.from('cad_opcionais').select('id, nome'),
       supabase.from('cad_cores').select('id, nome, rgb_hex'),
-      this.getEmpresa()
+      this.getEmpresa().catch(() => ({} as IEmpresa))
     ]);
 
     if (veiculoResult.error) {
@@ -230,12 +266,24 @@ export const SitePublicoService = {
       throw veiculoResult.error;
     }
 
+    let veiculoValidado: IVeiculoPublic | null = null;
+    if (veiculoResult.data) {
+      try {
+        veiculoValidado = VeiculoPublicSchema.parse(veiculoResult.data) as IVeiculoPublic;
+      } catch (err) {
+        if (err instanceof z.ZodError) {
+          console.error('Erro de validação no detalhe do veículo:', err.errors);
+        }
+        throw err;
+      }
+    }
+
     return {
-      veiculo: veiculoResult.data ? (VeiculoPublicSchema.parse(veiculoResult.data) as IVeiculoPublic) : null,
+      veiculo: veiculoValidado,
       caracteristicas: caracResult.data || [],
       opcionais: opResult.data || [],
       cores: coresResult.data || [],
-      empresa
+      empresa: empresaRaw
     };
   },
 
