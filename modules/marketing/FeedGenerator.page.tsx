@@ -26,10 +26,21 @@ function loadImage(src: string): Promise<HTMLImageElement> {
     });
 }
 
-/** Converte uma URL em base64 via fetch (garante CORS bypass no preview) */
+/** Converte uma URL em base64 via fetch (garante CORS bypass no preview e export) */
 async function urlToBase64(url: string): Promise<string> {
+    if (!url) return '';
+    if (url.startsWith('data:')) return url;
+
+    // Se a URL for externa (não for do Supabase Storage local), usamos o proxy para evitar CORS no canvas
+    const isExternal = !url.includes('supabase.co/storage/v1/object/public');
+    const finalUrl = isExternal 
+        ? `https://hlmhlltmgwxlibklyrzc.supabase.co/functions/v1/proxy-image?url=${encodeURIComponent(url)}`
+        : url;
+
     try {
-        const response = await fetch(url, { cache: 'force-cache' });
+        const response = await fetch(finalUrl, { cache: 'force-cache' });
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        
         const blob = await response.blob();
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -38,8 +49,9 @@ async function urlToBase64(url: string): Promise<string> {
             reader.readAsDataURL(blob);
         });
     } catch (e) {
-        console.warn('Falha ao converter URL para base64, usando URL original:', e);
-        return url;
+        console.warn('Falha ao converter URL para base64:', e);
+        // Retorna string vazia para links externos que falharam, evitando "tainted canvas"
+        return isExternal ? '' : url;
     }
 }
 
