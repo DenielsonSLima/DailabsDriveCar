@@ -230,6 +230,7 @@ const FipeConsultModal: React.FC<FipeConsultModalProps> = ({ isOpen, onClose }) 
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                 <FipeResultDetails 
                   vehicle={vehicle} 
+                  placa={placa}
                   formatCurrency={formatCurrency} 
                 />
                 <FipeHistoryTable 

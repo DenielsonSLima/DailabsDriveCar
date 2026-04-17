@@ -3,6 +3,7 @@ import { History, TrendingUp } from 'lucide-react';
 
 interface FipeResultDetailsProps {
   vehicle: any;
+  placa?: string;
   formatCurrency: (val: number) => string;
 }
 
@@ -101,14 +102,19 @@ const FipeResultDetails: React.FC<FipeResultDetailsProps> = ({ vehicle, formatCu
         </div>
       </div>
 
-      <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 flex items-center justify-between">
+      <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 grid grid-cols-2 gap-4">
+        <div>
+          <label className="text-[7px] font-black text-slate-400 uppercase tracking-widest mb-0.5 block">Placa</label>
+          <div className="font-mono text-xs font-black text-indigo-600 tracking-wider">
+            {placa || '—'}
+          </div>
+        </div>
         <div>
           <label className="text-[7px] font-black text-slate-400 uppercase tracking-widest mb-0.5 block">Chassi</label>
-          <div className="font-mono text-xs font-black text-slate-900 tracking-wider">
+          <div className="font-mono text-[10px] sm:text-[9px] font-black text-slate-900 tracking-wider truncate" title={vehicle?.chassi}>
             {vehicle?.chassi || 'NÃO INFORMADO'}
           </div>
         </div>
-        <span className="text-[7px] bg-slate-200 px-1.5 py-0.5 rounded font-black uppercase">{vehicle?.categoria || 'VEÍCULO'}</span>
       </div>
     </div>
   );
