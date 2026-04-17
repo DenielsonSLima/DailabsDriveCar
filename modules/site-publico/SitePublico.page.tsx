@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { SitePublicoService } from './site-publico.service';
+import { AnalyticsService } from './analytics.service';
 import { IEmpresa } from '../ajustes/empresa/empresa.types';
 
 // Componentes corrigidos conforme nomes reais dos arquivos
@@ -69,6 +70,16 @@ const SitePublicoPage: React.FC = () => {
       removeJsonLd();
     };
   }, [data?.empresa]);
+
+  // Rastreamento de Acesso
+  useEffect(() => {
+    if (data?.empresa?.organization_id) {
+      AnalyticsService.trackVisit({
+        organization_id: data.empresa.organization_id,
+        page_path: window.location.pathname
+      });
+    }
+  }, [data?.empresa?.organization_id]);
 
   return (
     <div className="min-h-screen bg-white font-['Inter'] scroll-smooth antialiased">

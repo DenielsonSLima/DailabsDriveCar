@@ -24,8 +24,27 @@ interface Props {
   slides?: IHeroSlide[];
 }
 
+/**
+ * Função de limpeza reforçada para garantir que nenhum vestígio da marca antiga apareça.
+ * Converte "Hidrocar" ou "HCV" para "Souza Veículos" ou "Souza".
+ */
+const cleanBranding = (text: string) => {
+  if (!text) return text;
+  return text
+    .replace(/Hidrocar Veículos/gi, 'Souza Veículos')
+    .replace(/Hidrocar/gi, 'Souza')
+    .replace(/HCV/gi, 'Souza');
+};
+
 const PublicHero: React.FC<Props> = ({ slides: propSlides }) => {
-  const slides = propSlides && propSlides.length > 0 ? propSlides : DEFAULT_SLIDES;
+  // Aplicando sanitização nos slides que vêm do banco de dados
+  const rawSlides = propSlides && propSlides.length > 0 ? propSlides : DEFAULT_SLIDES;
+  const slides = rawSlides.map(s => ({
+    ...s,
+    title: cleanBranding(s.title),
+    subtitle: cleanBranding(s.subtitle)
+  }));
+
   const [current, setCurrent] = useState(0);
   const [loadedSlides, setLoadedSlides] = useState<Set<number>>(new Set([0]));
 
@@ -72,7 +91,7 @@ const PublicHero: React.FC<Props> = ({ slides: propSlides }) => {
                   decoding={index === 0 ? 'sync' : 'async'}
                   fetchPriority={index === 0 ? 'high' : 'low'}
                 />
-                {/* Névoa Marinho Black (Substituído azul Hidrocar) */}
+                {/* Névoa Marinho Black */}
                 <div className="absolute inset-0 bg-slate-950/40"></div>
                 <div className="absolute inset-0 bg-gradient-to-r from-[#050a14]/80 via-transparent to-transparent"></div>
 

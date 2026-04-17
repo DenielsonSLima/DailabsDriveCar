@@ -1,31 +1,27 @@
 import React from 'react';
-import fachadaImg from '../assets/quem-somos-souza.png';
+import fachadaImg from '../assets/quem-somos-souza.jpg';
 import { ISobreCard } from '../../editor-site/editor-site.types';
 
-// Defaults
+// Defaults otimizados para Souza Veículos
 const DEFAULT_SUBTITULO = 'Souza Veículos';
 const DEFAULT_TITULO = 'Quem Somos.';
 const DEFAULT_PARAGRAFOS = [
-  'A Souza Veículos é uma empresa especializada na compra e venda de veículos novos e seminovos de alta qualidade. Atuamos com transparência, responsabilidade e compromisso, oferecendo aos nossos clientes segurança e tranquilidade em cada negociação.',
-  'Trabalhamos com veículos criteriosamente revisados e com procedência garantida, sempre buscando as melhores oportunidades do mercado para atender com excelência aos nossos clientes.',
-  'Mais do que comercializar automóveis, construímos relacionamentos sólidos baseados em confiança, credibilidade e um atendimento personalizado focado na sua satisfação.'
+  'A Souza Veículos é referência no mercado automotivo, oferecendo uma seleção exclusiva de veículos novos e seminovos que unem qualidade, procedência e o melhor custo-benefício.',
+  'Nossa missão é transformar o sonho do carro novo em uma experiêcia segura e prazerosa. Atuamos com transparência total em cada negociação, garantindo que você faça o melhor negócio com total tranquilidade.',
+  'Com um atendimento personalizado e foco na satisfação do cliente, a Souza Veículos consolidou sua marca baseada na confiança e na excelência de seus serviços em toda a região.'
 ];
+
 const DEFAULT_CARDS: ISobreCard[] = [
-  { titulo: 'Qualidade Rigorosa', descricao: 'Garantia de procedência e veículos selecionados com altíssimo padrão.' },
-  { titulo: 'Transparência Total', descricao: 'Negociação clara, segura e com suporte especializado.' },
-  { titulo: 'Experiência no Ramo', descricao: 'Credibilidade consolidada na comercialização de seminovos de excelência.' },
+  { titulo: 'Tradição e Segurança', descricao: 'Garantia de procedência e veículos selecionados com altíssimo padrão.' },
+  { titulo: 'Cada Negociação', descricao: 'Atendimento único e focado na melhor oportunidade para você.' },
+  { titulo: 'Experiência Souza', descricao: 'Qualidade e transparência em cada detalhe da sua compra.' },
 ];
 
 // Ícones SVG inline para os cards
 const cardIcons = [
   <svg key="1" className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
   <svg key="2" className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
-  <svg key="3" className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>,
-];
-const cardBgIcons = [
-  <svg key="bg1" className="absolute -right-6 -bottom-6 w-40 h-40 text-white/[0.04] group-hover:text-white/[0.07] transition-colors duration-500 rotate-12 group-hover:rotate-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" /></svg>,
-  <svg key="bg2" className="absolute -right-6 -bottom-6 w-40 h-40 text-white/[0.04] group-hover:text-white/[0.07] transition-colors duration-500 -rotate-12 group-hover:-rotate-6" fill="currentColor" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 9h-2V5h2v6zm0 4h-2v-2h2v2z" /></svg>,
-  <svg key="bg3" className="absolute -right-6 -bottom-6 w-40 h-40 text-white/[0.04] group-hover:text-white/[0.07] transition-colors duration-500 rotate-12 group-hover:rotate-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z" /></svg>,
+  <svg key="3" className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>,
 ];
 
 interface Props {
@@ -36,11 +32,32 @@ interface Props {
   cards?: ISobreCard[];
 }
 
+/**
+ * Função de limpeza reforçada para garantir que nenhum vestígio da marca antiga apareça.
+ * Converte "Hidrocar" ou "HCV" para "Souza Veículos" ou "Souza".
+ */
+const cleanBranding = (text: string) => {
+  if (!text) return text;
+  return text
+    .replace(/Hidrocar Veículos/gi, 'Souza Veículos')
+    .replace(/Hidrocar/gi, 'Souza')
+    .replace(/HCV/gi, 'Souza');
+};
+
 const AboutUs: React.FC<Props> = React.memo(({ subtitulo, titulo, paragrafos, imagemUrl, cards }) => {
-  const sub = subtitulo || DEFAULT_SUBTITULO;
-  const tit = titulo || DEFAULT_TITULO;
-  const pars = paragrafos && paragrafos.length > 0 ? paragrafos : DEFAULT_PARAGRAFOS;
-  const crds = cards && cards.length > 0 ? cards : DEFAULT_CARDS;
+  // Aplicando limpeza profunda
+  const sub = cleanBranding(subtitulo || DEFAULT_SUBTITULO);
+  const tit = cleanBranding(titulo || DEFAULT_TITULO);
+  
+  const rawPars = paragrafos && paragrafos.length > 0 ? paragrafos : DEFAULT_PARAGRAFOS;
+  const pars = rawPars.map(p => cleanBranding(p));
+
+  const rawCrds = cards && cards.length > 0 ? cards : DEFAULT_CARDS;
+  const crds = rawCrds.map(c => ({
+    titulo: cleanBranding(c.titulo),
+    descricao: cleanBranding(c.descricao)
+  }));
+
   // Usa a imagem do banco se existir, senão usa a fachada local
   const imgSrc = imagemUrl || fachadaImg;
 

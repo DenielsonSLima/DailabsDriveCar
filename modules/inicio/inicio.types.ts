@@ -25,3 +25,24 @@ export interface IHistoryData {
   lucro_valor: number;
   estoque_valor: number;
 }
+
+export interface ISiteAnalyticsSummary {
+  total_views: number;
+  unique_visitors: number;
+  views_today: number;
+}
+
+export interface ITopViewedVehicle {
+  vehicle_id: string;
+  view_count: number;
+  placa: string;
+  modelo_nome: string;
+  montadora_nome: string;
+  foto_url: string;
+}
+
+export interface IVisitorLocation {
+  city: string;
+  region: string;
+  view_count: number;
+}

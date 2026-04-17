@@ -1,6 +1,12 @@
 
 import { supabase } from '../../lib/supabase';
-import { IDashboardStats, IHistoryData } from './inicio.types';
+import { 
+  IDashboardStats, 
+  IHistoryData, 
+  ISiteAnalyticsSummary, 
+  ITopViewedVehicle, 
+  IVisitorLocation 
+} from './inicio.types';
 
 export const InicioService = {
   async getDashboardStats(): Promise<IDashboardStats> {
@@ -65,11 +71,59 @@ export const InicioService = {
     return data || [];
   },
 
+  /**
+   * Métodos de Analytics do Site Público
+   */
+
+  async getSiteAnalyticsSummary(orgId: string): Promise<ISiteAnalyticsSummary> {
+    const { data, error } = await supabase
+      .from('view_site_analytics_summary')
+      .select('*')
+      .eq('organization_id', orgId)
+      .maybeSingle();
+
+    if (error) {
+      console.error('Erro ao buscar resumo de analytics:', error);
+      return { total_views: 0, unique_visitors: 0, views_today: 0 };
+    }
+
+    return data || { total_views: 0, unique_visitors: 0, views_today: 0 };
+  },
+
+  async getTopViewedVehicles(orgId: string, limit: number = 5): Promise<ITopViewedVehicle[]> {
+    const { data, error } = await supabase.rpc('get_top_viewed_vehicles', {
+      p_org_id: orgId,
+      p_limit: limit
+    });
+
+    if (error) {
+      console.error('Erro ao buscar veículos mais vistos:', error);
+      return [];
+    }
+
+    return data || [];
+  },
+
+  async getVisitorLocations(orgId: string, limit: number = 10): Promise<IVisitorLocation[]> {
+    const { data, error } = await supabase.rpc('get_visitor_locations', {
+      p_org_id: orgId,
+      p_limit: limit
+    });
+
+    if (error) {
+      console.error('Erro ao buscar localizações dos visitantes:', error);
+      return [];
+    }
+
+    return data || [];
+  },
+
   subscribe(callback: () => void) {
     return supabase
       .channel('inicio_changes')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'est_veiculos' }, callback)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'venda_pedidos' }, callback)
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'site_analytics' }, callback)
       .subscribe();
   }
 };

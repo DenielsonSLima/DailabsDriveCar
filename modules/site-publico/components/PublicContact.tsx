@@ -13,32 +13,38 @@ const DEFAULT_TITULO = 'Tradição e Segurança em Cada Negociação';
 const DEFAULT_SUBTITULO = 'Qualidade Souza Veículos';
 const DEFAULT_DESCRICAO = 'Oferecemos oportunidades exclusivas para quem deseja adquirir um veículo de alta performance e procedência garantida. Nossa equipe atua com foco na satisfação total do cliente, garantindo uma negociação segura, ágil e totalmente transparente do início ao fim.';
 
+/**
+ * Função de limpeza reforçada para garantir que nenhum vestígio da marca antiga apareça.
+ * Converte "Hidrocar" ou "HCV" para "Souza Veículos" ou "Souza".
+ */
+const cleanBranding = (text: string) => {
+    if (!text) return text;
+    return text
+        .replace(/Hidrocar Veículos/gi, 'Souza Veículos')
+        .replace(/Hidrocar/gi, 'Souza')
+        .replace(/HCV/gi, 'Souza');
+};
+
 const PublicContact: React.FC<Props> = React.memo(({ telefone, contato_titulo, contato_subtitulo, contato_descricao, contato_horario_semana, contato_horario_sabado }) => {
     const phone = (telefone || '').replace(/\D/g, '');
     const whatsappUrl = `https://api.whatsapp.com/send?phone=55${phone}&text=Seu%20seminovo%20está%20aqui,%20fale%20conosco!`;
 
-    const titulo = contato_titulo || DEFAULT_TITULO;
-    const subtitulo = contato_subtitulo || DEFAULT_SUBTITULO;
-    const descricao = contato_descricao || DEFAULT_DESCRICAO;
+    const titulo = cleanBranding(contato_titulo || DEFAULT_TITULO);
+    const subtitulo = cleanBranding(contato_subtitulo || DEFAULT_SUBTITULO);
+    const descricao = cleanBranding(contato_descricao || DEFAULT_DESCRICAO);
     const horarioSemana = contato_horario_semana || '08h às 17h';
     const horarioSabado = contato_horario_sabado || '08h às 12h';
 
-    // Separar título para a parte gradiente (após o primeiro \n ou quebra natural)
+    // Separar título para a parte gradiente
     const tituloPartes = titulo.split('\n').length > 1 ? titulo.split('\n') : titulo.split(' em ');
     const tituloPrimeiro = tituloPartes.length > 1 ? tituloPartes[0] : titulo;
     const tituloSegundo = tituloPartes.length > 1 ? tituloPartes.slice(1).join(' em ') : '';
 
     return (
         <section id="contato" className="relative w-full min-h-[600px] bg-[#050a14] overflow-hidden flex items-center">
-            {/* Gradients Ambientais - Mais Sutis e Elegantes (Branco/Prata) */}
+            {/* Gradients Ambientais */}
             <div className="absolute top-[-150px] left-[-150px] w-[600px] h-[600px] bg-white/5 rounded-full blur-[150px] pointer-events-none"></div>
             <div className="absolute bottom-[-150px] right-[-150px] w-[600px] h-[600px] bg-white/5 rounded-full blur-[150px] pointer-events-none"></div>
-
-            {/* Linhas de Design Sutis */}
-            <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
-                <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
-            </div>
 
             <div className="max-w-7xl mx-auto px-6 w-full py-20 relative z-10">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -101,7 +107,7 @@ const PublicContact: React.FC<Props> = React.memo(({ telefone, contato_titulo, c
                             </p>
                         </div>
 
-                        {/* Link de WhatsApp - Ocupa as duas colunas no md se necessário, ou fica alinhado */}
+                        {/* Link de WhatsApp */}
                         <div className="md:col-span-2 w-full max-w-sm lg:max-w-none">
                             <a
                                 href={whatsappUrl}

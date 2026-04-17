@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { InicioService } from './inicio.service';
+import { EmpresaService } from '../ajustes/empresa/empresa.service';
+import { useAuthStore } from '../../store/auth.store';
 
 // Components
 import WelcomeHeader from './components/WelcomeHeader';
@@ -10,12 +12,22 @@ import RecentStockMini from './components/RecentStockMini';
 import QuickShortcuts from './components/QuickShortcuts';
 import { HistoryChart } from './components/HistoryChart';
 import FipeUsageCard from './components/FipeUsageCard';
+import SiteAnalyticsSection from './components/SiteAnalyticsSection';
 
 const InicioPage: React.FC = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { profile } = useAuthStore();
 
-  // Queries
+  // 0. Query para dados da Empresa (para obter organization_id correto do tenant)
+  const { data: empresa } = useQuery({
+    queryKey: ['empresa_config'],
+    queryFn: () => EmpresaService.getDadosEmpresa(),
+  });
+
+  const orgId = empresa?.organization_id;
+
+  // 1. Queries de Negócio (Estoque, Vendas, Histórico)
   const { data: stats, isLoading: isLoadingStats } = useQuery({
     queryKey: ['inicio_stats'],
     queryFn: () => InicioService.getDashboardStats(),
@@ -31,18 +43,42 @@ const InicioPage: React.FC = () => {
     queryFn: () => InicioService.getHistoryData(3),
   });
 
+  // 2. Queries de Analytics (Tracking do Site Público) - Habilitado quando temos o orgId
+  const { data: analyticsSummary } = useQuery({
+    queryKey: ['site_analytics_summary', orgId],
+    queryFn: () => InicioService.getSiteAnalyticsSummary(orgId!),
+    enabled: !!orgId,
+  });
+
+  const { data: topVehicles = [] } = useQuery({
+    queryKey: ['site_top_vehicles', orgId],
+    queryFn: () => InicioService.getTopViewedVehicles(orgId!),
+    enabled: !!orgId,
+  });
+
+  const { data: visitorLocations = [] } = useQuery({
+    queryKey: ['site_visitor_locations', orgId],
+    queryFn: () => InicioService.getVisitorLocations(orgId!),
+    enabled: !!orgId,
+  });
+
   // Real-time Subscriptions
   useEffect(() => {
     const channel = InicioService.subscribe(() => {
       queryClient.invalidateQueries({ queryKey: ['inicio_stats'] });
       queryClient.invalidateQueries({ queryKey: ['inicio_recent_arrivals'] });
       queryClient.invalidateQueries({ queryKey: ['inicio_history_3'] });
+      if (orgId) {
+        queryClient.invalidateQueries({ queryKey: ['site_analytics_summary', orgId] });
+        queryClient.invalidateQueries({ queryKey: ['site_top_vehicles', orgId] });
+        queryClient.invalidateQueries({ queryKey: ['site_visitor_locations', orgId] });
+      }
     });
 
     return () => {
       channel.unsubscribe();
     };
-  }, [queryClient]);
+  }, [queryClient, orgId]);
 
   const loading = isLoadingStats || isLoadingRecent || isLoadingHistory;
 
@@ -57,31 +93,27 @@ const InicioPage: React.FC = () => {
   );
 
   return (
-    <div className="space-y-8 pb-20 max-w-[1600px] mx-auto animate-in fade-in slide-in-from-bottom-8 duration-1000">
+    <div className="space-y-12 pb-20 max-w-[1600px] mx-auto animate-in fade-in slide-in-from-bottom-8 duration-1000">
       {/* 1. Welcome Header (Premium) */}
       <WelcomeHeader />
 
       {/* 2. General KPIs (Full Width) */}
       {stats && <GeneralKpis stats={stats} />}
 
-      {/* 3. Main Analytics Section */}
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
-        {/* Left: Chart & Stock */}
+      {/* 3. Main Dashboard Grid */}
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 pt-4">
+        {/* Left Column: Chart & Recent Arrivals */}
         <div className="xl:col-span-8 space-y-8">
-          {/* Historical Data visualization */}
           <HistoryChart data={history} />
-
-          {/* Recent Vehicles */}
           <RecentStockMini veiculos={recent} />
         </div>
-        {/* Right: Operations & Activity */}
-        <div className="xl:col-span-4 space-y-8 sticky top-8 h-fit">
-          {/* Fipe Usage Monitoring */}
-          <FipeUsageCard />
 
+        {/* Right Column: Tools & Shortcuts */}
+        <div className="xl:col-span-4 space-y-8 h-fit">
+          <FipeUsageCard />
           <QuickShortcuts />
 
-          {/* Marketing Shortcut Card */}
+          {/* Marketing Story Generator */}
           <div
             onClick={() => navigate('/marketing/stories')}
             className="bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-[2.5rem] p-9 text-white shadow-2xl relative overflow-hidden group hover:shadow-indigo-500/20 transition-all duration-500 cursor-pointer border border-white/10"
@@ -98,17 +130,12 @@ const InicioPage: React.FC = () => {
               </div>
               <h4 className="text-2xl font-black tracking-tight leading-tight">Gerador de Stories</h4>
               <p className="mt-4 text-white/70 text-sm font-medium leading-relaxed">
-                Transforme as fotos do seu estoque em posts profissionais para o Instagram em segundos.
+                Posts automáticos para Instagram com as fotos do seu estoque.
               </p>
-              <div className="mt-8 flex items-center gap-3">
-                <div className="bg-white text-indigo-600 px-6 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] flex-1 text-center shadow-lg shadow-indigo-900/20 group-hover:bg-indigo-50 transition-colors">
-                  Criar Story 9:16
-                </div>
-              </div>
             </div>
           </div>
 
-          {/* Marketing Feed Card */}
+          {/* Marketing Feed Generator */}
           <div
             onClick={() => navigate('/marketing/feed')}
             className="bg-gradient-to-br from-fuchsia-600 to-fuchsia-800 rounded-[2.5rem] p-9 text-white shadow-2xl relative overflow-hidden group hover:shadow-fuchsia-500/20 transition-all duration-500 cursor-pointer border border-white/10"
@@ -125,17 +152,21 @@ const InicioPage: React.FC = () => {
               </div>
               <h4 className="text-2xl font-black tracking-tight leading-tight">Gerador de Feed</h4>
               <p className="mt-4 text-white/70 text-sm font-medium leading-relaxed">
-                Gere posts quadrados ou verticais (4:5) automáticos com o logo da loja e dados do veículo.
+                Gere posts quadrados (1:1) ou verticais (4:5) personalizados.
               </p>
-              <div className="mt-8 flex items-center gap-3">
-                <div className="bg-white text-fuchsia-600 px-6 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] flex-1 text-center shadow-lg shadow-fuchsia-900/20 group-hover:bg-fuchsia-50 transition-colors">
-                  Criar Post 4:5
-                </div>
-              </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* 4. Analytics Section (Novidade: Rastreamento do Site Público) - Agora no FINAL da página */}
+      {analyticsSummary && (
+        <SiteAnalyticsSection 
+          summary={analyticsSummary}
+          topVehicles={topVehicles}
+          locations={visitorLocations}
+        />
+      )}
     </div>
   );
 };

@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SitePublicoService } from './site-publico.service';
 import { IVeiculoPublic } from './site-publico.types';
+import { AnalyticsService } from './analytics.service';
 import { IEmpresa } from '../ajustes/empresa/empresa.types';
 import { formatCurrency } from './utils/currency';
 
@@ -90,6 +91,17 @@ const PublicVehicleDetailsPage: React.FC = () => {
       navigate('/');
     }
   }, [isLoading, veiculo, id, navigate]);
+
+  // Rastreamento de Acesso ao Veículo
+  useEffect(() => {
+    if (empresa?.organization_id && id) {
+      AnalyticsService.trackVisit({
+        organization_id: empresa.organization_id,
+        page_path: window.location.pathname,
+        vehicle_id: id
+      });
+    }
+  }, [empresa?.organization_id, id]);
 
   const handleNextPhoto = useCallback((e?: React.MouseEvent) => {
     e?.stopPropagation();

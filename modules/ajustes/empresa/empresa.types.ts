@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 export interface IEmpresa {
   id?: string;
+  organization_id?: string;
   user_id?: string;
   cnpj: string;
   razao_social: string;
@@ -29,6 +30,7 @@ export interface IEmpresa {
 
 export const EmpresaSchema = z.object({
   id: z.string().optional(),
+  organization_id: z.string().optional(),
   user_id: z.string().optional(),
   cnpj: z.string(),
   razao_social: z.string(),
