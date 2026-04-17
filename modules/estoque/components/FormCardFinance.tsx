@@ -28,8 +28,24 @@ const FormCardFinance: React.FC<Props> = ({ formData, onChange, onNotification, 
   }, [formData.valor_custo, formData.valor_venda]);
 
   useEffect(() => {
-    SociosService.getAll().then(data => setSociosDisponiveis(data.filter(s => s.ativo)));
-  }, []);
+    SociosService.getAll().then(data => {
+      const ativos = data.filter(s => s.ativo);
+      setSociosDisponiveis(ativos);
+
+      // Auto-preenchimento: Se houver apenas 1 sócio ativo e for um cadastro novo sem sócios vinculados
+      if (ativos.length === 1 && !formData.id && (!formData.socios || formData.socios.length === 0)) {
+        const socio = ativos[0];
+        onChange({
+          socios: [{
+            socio_id: socio.id!,
+            nome: socio.nome,
+            porcentagem: 100,
+            valor: formData.valor_custo || 0
+          }]
+        });
+      }
+    });
+  }, [formData.id]); // Adicionado formData.id para garantir o contexto correto
 
   const handleCurrencyChange = (val: string, field: 'valor_custo' | 'valor_venda') => {
     const masked = maskCurrency(val);

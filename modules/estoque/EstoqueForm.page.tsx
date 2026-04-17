@@ -348,6 +348,13 @@ const EstoqueFormPage: React.FC = () => {
       return;
     }
 
+    const totalSocios = (formData.socios || []).reduce((acc, s) => acc + (s.porcentagem || 0), 0);
+    const totalArredondado = parseFloat(totalSocios.toFixed(2));
+    if (totalArredondado !== 100) {
+      showToast('error', `A soma da participação dos sócios deve ser exatamente 100% (Atual: ${totalArredondado}%).`);
+      return;
+    }
+
     setIsSaving(true);
     try {
       const saved = await EstoqueService.save(formData);
