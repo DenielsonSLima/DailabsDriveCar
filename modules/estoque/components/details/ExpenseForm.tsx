@@ -46,7 +46,7 @@ const ExpenseForm: React.FC<Props> = ({ onClose, onSubmit }) => {
         FormasPagamentoService.getAll(),
         ContasBancariasService.getAll()
       ]);
-      setCategorias(catData.filter(c => c.natureza === 'SAIDA' || c.tipo === 'VARIAVEL'));
+      setCategorias(catData.filter(c => c.natureza === 'SAIDA' && c.tipo === 'VARIAVEL'));
       setFormas(fData.filter(f => f.ativo && f.tipo_movimentacao !== 'RECEBIMENTO'));
       setContas(cData.filter(c => c.ativo));
       setLoading(false);

@@ -101,61 +101,62 @@ function parseModeloVersao(
   modelosExistentes: IModelo[],
   combustivelAPI: string
 ): ParsedModelo {
-  const upper = rawModelo.toUpperCase().trim();
-  const palavras = upper.split(/\s+/);
+  // 0. Normalização inicial: Adiciona espaço entre letras e números (ex: RENEGADE1.8 -> RENEGADE 1.8)
+  const normalized = rawModelo.toUpperCase().trim()
+    .replace(/([A-Z])(\d+\.\d+)/g, '$1 $2') // Letra seguida de decimal
+    .replace(/(\d+\.\d+)([A-Z])/g, '$1 $2'); // Decimal seguido de letra
+
+  const words = normalized.split(/\s+/);
+
+  // 1. Extrair motorização (padrão X.X)
+  const motorRegex = /(\d+\.\d+)/;
+  const motorMatch = normalized.match(motorRegex);
+  const motorizacaoValue = motorMatch ? motorMatch[1] : '';
 
   let modeloNome = '';
   let restante = '';
 
-  // 1. Tentar match com modelos existentes (prioridade)
+  // 2. Tentar match com modelos existentes (prioridade)
   const modeloEncontrado = modelosExistentes.find(m => {
-    const nomeUpper = m.nome.toUpperCase();
-    return upper.startsWith(nomeUpper + ' ') || upper === nomeUpper;
+    const nomeUpper = m.nome.toUpperCase().trim();
+    return normalized.startsWith(nomeUpper + ' ') || normalized === nomeUpper;
   });
 
   if (modeloEncontrado) {
     modeloNome = modeloEncontrado.nome.toUpperCase();
-    restante = upper.slice(modeloNome.length).trim();
+    restante = normalized.slice(modeloNome.length).trim();
   } else {
-    // 2. Usa a 1ª palavra como modelo
-    modeloNome = palavras[0];
-    restante = palavras.slice(1).join(' ');
+    // Se não achar no banco, a primeira palavra é o modelo (ajustado para não pegar a motorização)
+    modeloNome = words[0];
+    restante = words.slice(1).join(' ');
   }
 
-  // 3. Extrair motorização (padrão X.X, ex: 1.4, 2.0, 1.3)
-  const motorRegex = /\b(\d+\.\d+)\b/;
-  const motorMatch = restante.match(motorRegex);
-  const motorizacao = motorMatch ? motorMatch[1] : '';
-
-  // 4. Limpar a versão: remover motorização, combustível e palavras técnicas
+  // 3. Limpar a versão: remover motorização, combustível e termos técnicos
   const combustivelUpper = combustivelAPI.toUpperCase();
   const palavrasRemover = [
-    motorizacao,
+    motorizacaoValue,
     combustivelUpper,
-    'FLEX',
-    'GASOLINA',
-    'DIESEL',
-    'ETANOL',
-    'ELÉTRICO',
-    'HÍBRIDO',
-    'GNV',
-    '8V',
-    '16V',
-    '4X2',
-    '4X4',
-    'TURBO',
+    'FLEX', 'GASOLINA', 'DIESEL', 'ETANOL', 'ELÉTRICO', 'HÍBRIDO', 'GNV',
+    '8V', '16V', '24V', '4X2', '4X4', 'TURBO', 'BITURBO', 'AUT', 'AUTOMÁTICO', 'AUTOMATICO', 'MANUAL', 'TSI', 'MPI', 'MSI', 'V6', 'V8'
   ];
 
-  let versaoPalavras = restante.split(/\s+/).filter(p => {
-    return p && !palavrasRemover.includes(p);
+  let versionWords = restante.split(/\s+/).filter(p => {
+    return p && !palavrasRemover.includes(p) && p !== modeloNome;
   });
 
-  const versaoNome = versaoPalavras.join(' ').trim() || modeloNome;
+  // Se a versão ficou vazia mas temos o "restante", tentamos usá-lo se não for apenas lixo
+  let versaoNome = versionWords.join(' ').trim();
+  if (!versaoNome && restante) {
+     const candidate = restante.replace(motorizacaoValue, '').trim();
+     if (candidate && !palavrasRemover.includes(candidate)) {
+       versaoNome = candidate;
+     }
+  }
 
   return {
     modelo: modeloNome,
-    versao: versaoNome,
-    motorizacao: motorizacao,
+    versao: versaoNome || 'BÁSICA',
+    motorizacao: motorizacaoValue,
   };
 }
 
@@ -235,6 +236,10 @@ export async function consultarEParsear(placa: string): Promise<DadosParsedAPI> 
     catRes.toLowerCase().includes('moto') ? 'moto' : 
     (catRes.toLowerCase().includes('carro') || catRes.toLowerCase().includes('utilitario') || catRes.toLowerCase().includes('passeio')) ? 'carro' : 
     'outros';
+
+  // 9. Buscar estatísticas de uso oficiais do banco (via RPC)
+  const usageStats = await consultaPlacaService.fetchUsageStats();
+  const consultasRestantes = usageStats.remaining;
 
   return {
     raw: apiResponse,

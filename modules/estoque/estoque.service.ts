@@ -117,7 +117,9 @@ export const EstoqueService = {
     if (veiculo.despesas) {
       veiculo.despesas = veiculo.despesas.map((d: any) => ({
         ...d,
-        categoria_nome: d.categoria?.nome
+        categoria_nome: d.categoria?.nome,
+        data: d.data ? d.data.split('T')[0] : d.data,
+        data_vencimento: d.data_vencimento ? d.data_vencimento.split('T')[0] : d.data_vencimento
       }));
     }
 
@@ -156,6 +158,9 @@ export const EstoqueService = {
       despesas,
       user_id,
       organization_id,
+      valor_total_investido,
+      valor_lucro_estimado,
+      valor_margem_estimada,
       ...rest
     } = validatedVeiculo as any;
 

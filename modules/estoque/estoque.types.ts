@@ -21,8 +21,8 @@ export interface IVeiculoSocio extends z.infer<typeof VeiculoSocioSchema> { }
 export const VeiculoDespesaSchema = z.object({
   id: z.string().uuid().optional(),
   veiculo_id: z.string().uuid(),
-  data: z.string().date(),
-  data_vencimento: z.string().date().optional(),
+  data: z.preprocess((val) => typeof val === 'string' ? val.split('T')[0] : val, z.string().date()),
+  data_vencimento: z.preprocess((val) => typeof val === 'string' ? val.split('T')[0] : val, z.string().date().optional()),
   status_pagamento: z.enum(['PAGO', 'PENDENTE']).default('PENDENTE'),
   tipo: z.literal('VARIAVEL').default('VARIAVEL'),
   categoria_id: z.string().uuid(),

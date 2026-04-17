@@ -38,7 +38,7 @@ import FinanceiroPage from './modules/financeiro/Financeiro.page.tsx';
 // Corrected import casing to match 'Performance.page.tsx' and resolve casing mismatch error.
 import PerformancePage from './modules/performance/Performance.page.tsx';
 import RelatoriosPage from './modules/relatorios/Relatorios.page.tsx';
-import EditorSitePage from './modules/editor-site/EditorSite.page.tsx';
+
 import AjustesPage from './modules/ajustes/Ajustes.page.tsx';
 import StoryGeneratorPage from './modules/marketing/StoryGenerator.page.tsx';
 import FeedGeneratorPage from './modules/marketing/FeedGenerator.page.tsx';
@@ -340,7 +340,7 @@ const App: React.FC = () => {
                   <Route path="/relatorios/conciliacao-patrimonial" element={<RelatorioPatrimonioConciliacaoPage />} />
 
 
-                  <Route path="/editor-site" element={<EditorSitePage />} />
+
 
                   <Route path="/ajustes" element={<AjustesPage />} />
                   <Route path="/ajustes/empresa" element={<EmpresaPage />} />

@@ -34,6 +34,12 @@ const ParceiroForm: React.FC<FormProps> = ({ initialData, onClose, onSubmit }) =
 
   const [isConsulting, setIsConsulting] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [notification, setNotification] = useState<{ type: 'success' | 'error' | 'warning', message: string } | null>(null);
+
+  const showNotification = (type: 'success' | 'error' | 'warning', message: string) => {
+    setNotification({ type, message });
+    setTimeout(() => setNotification(null), 5000);
+  };
 
   useEffect(() => {
     setIsMounted(true);
@@ -95,7 +101,7 @@ const ParceiroForm: React.FC<FormProps> = ({ initialData, onClose, onSubmit }) =
   const handleCnpjLookup = async () => {
     const cleanCnpj = formData.documento?.replace(/\D/g, '');
     if (cleanCnpj?.length !== 14) {
-      alert('Por favor, insira um CNPJ válido com 14 dígitos.');
+      showNotification('warning', 'Por favor, insira um CNPJ válido com 14 dígitos.');
       return;
     }
 
@@ -117,11 +123,11 @@ const ParceiroForm: React.FC<FormProps> = ({ initialData, onClose, onSubmit }) =
           uf: data.uf || ''
         }));
       } else {
-        alert('Não foi possível encontrar dados para este CNPJ.');
+        showNotification('error', 'Não foi possível encontrar dados para este CNPJ.');
       }
     } catch (error) {
       console.error("Erro na consulta de CNPJ:", error);
-      alert('Erro ao consultar CNPJ. Tente novamente mais tarde.');
+      showNotification('error', 'Erro ao consultar CNPJ. Tente novamente mais tarde.');
     } finally {
       setIsConsulting(false);
     }
@@ -138,7 +144,7 @@ const ParceiroForm: React.FC<FormProps> = ({ initialData, onClose, onSubmit }) =
         return `${msgs?.[0]}`;
       });
 
-      alert(errorMessages.join('\n'));
+      showNotification('error', errorMessages.join(' | '));
       return;
     }
 
@@ -147,7 +153,7 @@ const ParceiroForm: React.FC<FormProps> = ({ initialData, onClose, onSubmit }) =
     if (cleanDoc) {
       const exists = await ParceirosService.checkDocumentExists(cleanDoc, initialData?.id);
       if (exists) {
-        alert('Já existe um parceiro cadastrado com este documento (CPF/CNPJ).');
+        showNotification('error', 'Já existe um parceiro cadastrado com este documento (CPF/CNPJ).');
         return;
       }
     }
@@ -155,7 +161,7 @@ const ParceiroForm: React.FC<FormProps> = ({ initialData, onClose, onSubmit }) =
     try {
       onSubmit(formData);
     } catch (error) {
-      alert('Erro ao salvar parceiro. Verifique os dados.');
+      showNotification('error', 'Erro ao salvar parceiro. Verifique os dados.');
     }
   };
 
@@ -188,6 +194,28 @@ const ParceiroForm: React.FC<FormProps> = ({ initialData, onClose, onSubmit }) =
             </svg>
           </button>
         </div>
+
+        {/* Notificação Interna */}
+        {notification && (
+          <div className="absolute top-24 left-1/2 -translate-x-1/2 z-[10000] w-[90%] max-w-lg">
+            <div className={`px-6 py-4 rounded-2xl shadow-2xl flex items-center justify-between animate-in slide-in-from-top duration-300 border backdrop-blur-md ${notification.type === 'success' ? 'bg-emerald-600 text-white border-emerald-400' :
+                notification.type === 'warning' ? 'bg-amber-500 text-white border-amber-400' :
+                  'bg-rose-600 text-white border-rose-400'
+              }`}>
+              <div className="flex items-center gap-3">
+                <span className="text-xl">
+                  {notification.type === 'success' ? '✅' : notification.type === 'warning' ? '⚠️' : '❌'}
+                </span>
+                <span className="font-bold text-xs uppercase tracking-widest">{notification.message}</span>
+              </div>
+              <button onClick={() => setNotification(null)} className="p-1 hover:bg-white/20 rounded-lg transition-all">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-10 space-y-10">
           <ParceiroIdentificationForm
