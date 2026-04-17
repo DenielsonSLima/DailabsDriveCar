@@ -6,6 +6,7 @@ import { ICidade, ICidadesAgrupadas } from './cidades.types';
 import CidadesList from './components/CidadesList';
 import CidadeForm from './components/CidadeForm';
 import CidadesKpis from './components/CidadesKpis';
+import ConfirmModal from '../../../components/ConfirmModal';
 
 const CidadesPage: React.FC = () => {
   const navigate = useNavigate();

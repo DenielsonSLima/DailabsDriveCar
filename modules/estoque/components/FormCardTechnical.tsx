@@ -38,8 +38,8 @@ const FormCardTechnical: React.FC<Props> = ({ formData, cores, onChange, onConsu
 
   const handleConsultarPlaca = async () => {
     const placa = formData.placa?.replace(/[^A-Z0-9]/gi, '') || '';
-    if (placa.length !== 7) {
-      setConsultaErro('Placa deve ter 7 caracteres (ex: ABC1D23)');
+    if (placa.length < 6 || placa.length > 7) {
+      setConsultaErro('Placa deve ter 6 ou 7 caracteres (ex: AB-1234 ou ABC1D23)');
       return;
     }
 
@@ -98,7 +98,8 @@ const FormCardTechnical: React.FC<Props> = ({ formData, cores, onChange, onConsu
   };
 
   const selectedCor = cores.find(c => c.id === formData.cor_id);
-  const placaValida = (formData.placa?.replace(/[^A-Z0-9]/gi, '') || '').length === 7;
+  const placaLength = (formData.placa?.replace(/[^A-Z0-9]/gi, '') || '').length;
+  const placaValida = placaLength >= 6 && placaLength <= 7;
 
   return (
     <div className="bg-white rounded-[2.5rem] p-8 border border-slate-200 shadow-sm animate-in slide-in-from-bottom-4">
@@ -150,8 +151,11 @@ const FormCardTechnical: React.FC<Props> = ({ formData, cores, onChange, onConsu
                 onChange={handlePlacaChange}
                 maxLength={7}
                 className="w-full bg-white border-2 border-slate-800 rounded-lg pt-6 pb-2 text-center text-4xl font-black uppercase tracking-widest text-slate-800 outline-none font-mono"
-                placeholder="ABC1D23"
+                placeholder="ABC-1234"
               />
+              <p className="text-[9px] text-center mt-2 text-slate-400 font-bold uppercase tracking-widest">
+                Aceita placas antigas (6 chars) e atuais (7 chars)
+              </p>
             </div>
 
             {/* Botão Consultar API */}

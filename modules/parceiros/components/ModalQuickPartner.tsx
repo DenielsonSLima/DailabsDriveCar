@@ -2,6 +2,7 @@
 import React from 'react';
 import ParceiroForm from './ParceiroForm';
 import { IParceiro, TipoParceiro, PessoaTipo } from '../parceiros.types';
+import { ParceirosService } from '../parceiros.service';
 
 interface Props {
   isOpen: boolean;
@@ -23,9 +24,14 @@ const ModalQuickPartner: React.FC<Props> = ({ isOpen, onClose, onSuccess, defaul
     <ParceiroForm
       initialData={initialValues as IParceiro}
       onClose={onClose}
-      onSubmit={(data) => {
-        onSuccess(data as IParceiro);
-        onClose();
+      onSubmit={async (data) => {
+        try {
+          const saved = await ParceirosService.save(data);
+          onSuccess(saved);
+          onClose();
+        } catch (error) {
+          console.error("Erro ao salvar parceiro rápido:", error);
+        }
       }}
     />
   );

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { IParceiro, TipoParceiro, PessoaTipo, ParceiroSchema } from '../parceiros.types';
 import { ParceirosService } from '../parceiros.service';
-import toast from 'react-hot-toast';
 import ParceiroIdentificationForm from './ParceiroIdentificationForm';
 import ParceiroContactForm from './ParceiroContactForm';
 import ParceiroAddressForm from './ParceiroAddressForm';
@@ -146,7 +145,7 @@ const ParceiroForm: React.FC<FormProps> = ({ initialData, onClose, onSubmit }) =
         return `${msgs?.[0]}`;
       });
 
-      errorMessages.forEach(msg => toast.error(msg));
+      alert(errorMessages.join('\n'));
       return;
     }
 
@@ -155,16 +154,15 @@ const ParceiroForm: React.FC<FormProps> = ({ initialData, onClose, onSubmit }) =
     if (cleanDoc) {
       const exists = await ParceirosService.checkDocumentExists(cleanDoc, initialData?.id);
       if (exists) {
-        toast.error('Já existe um parceiro cadastrado com este documento (CPF/CNPJ).');
+        alert('Já existe um parceiro cadastrado com este documento (CPF/CNPJ).');
         return;
       }
     }
 
     try {
       onSubmit(formData);
-      toast.success(initialData ? 'Parceiro atualizado!' : 'Parceiro cadastrado com sucesso!');
     } catch (error) {
-      toast.error('Erro ao salvar parceiro. Verifique os dados.');
+      alert('Erro ao salvar parceiro. Verifique os dados.');
     }
   };
 
