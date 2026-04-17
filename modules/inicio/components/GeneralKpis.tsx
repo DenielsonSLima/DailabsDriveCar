@@ -29,10 +29,7 @@ const KpiCard: React.FC<KpiCardProps> = ({ label, valor, icon, color, sublabel }
         <div className={`w-12 h-12 rounded-2xl bg-white border border-slate-100 flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-500 ${colorMap[color].split(' ')[2]}`}>
           {icon}
         </div>
-        <div className="flex flex-col items-end">
-          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Nexus KPI</span>
-          <div className={`w-6 h-1 rounded-full bg-slate-100 group-hover:w-full transition-all duration-500`} />
-        </div>
+
       </div>
 
       <div className="relative">

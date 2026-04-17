@@ -88,7 +88,7 @@ const InicioPage: React.FC = () => {
         <div className="absolute inset-0 border-4 border-indigo-50/50 rounded-full"></div>
         <div className="absolute inset-0 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
       </div>
-      <p className="mt-8 text-slate-400 font-black uppercase text-[10px] tracking-[0.4em] animate-pulse">Orquestrando Nexus Core...</p>
+      <p className="mt-8 text-slate-400 font-black uppercase text-[10px] tracking-[0.4em] animate-pulse">Orquestrando Dashboard...</p>
     </div>
   );
 
@@ -126,7 +126,7 @@ const InicioPage: React.FC = () => {
             <div className="relative">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 mb-6">
                 <div className="w-1.5 h-1.5 bg-indigo-300 rounded-full animate-pulse" />
-                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-indigo-100">Marketing Nexus</span>
+                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-indigo-100">Marketing</span>
               </div>
               <h4 className="text-2xl font-black tracking-tight leading-tight">Gerador de Stories</h4>
               <p className="mt-4 text-white/70 text-sm font-medium leading-relaxed">

@@ -2,7 +2,7 @@
 import React from 'react';
 import { IPedidoCompra } from '../pedidos-compra.types';
 import { IParceiro, TipoParceiro } from '../../parceiros/parceiros.types';
-import PartnerSelect from './PartnerSelect';
+import PartnerSelect from '../../parceiros/components/PartnerSelect';
 
 interface Props {
   formData: Partial<IPedidoCompra>;

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { IParceiro } from '../../parceiros/parceiros.types';
-import PartnerSelect from '../../pedidos-compra/components/PartnerSelect';
+import PartnerSelect from '../../parceiros/components/PartnerSelect';
 
 interface Props {
   parceiros: IParceiro[];

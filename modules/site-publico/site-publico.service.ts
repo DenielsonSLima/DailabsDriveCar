@@ -272,7 +272,7 @@ export const SitePublicoService = {
         veiculoValidado = VeiculoPublicSchema.parse(veiculoResult.data) as IVeiculoPublic;
       } catch (err) {
         if (err instanceof z.ZodError) {
-          console.error('Erro de validação no detalhe do veículo:', err.errors);
+          console.error('Erro de validação no detalhe do veículo:', err.issues);
         }
         throw err;
       }

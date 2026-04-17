@@ -1,6 +1,8 @@
-import { IParceiro, TipoParceiro, PessoaTipo } from '../../parceiros/parceiros.types';
+import React, { useState, useEffect, useRef } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { IParceiro, TipoParceiro, PessoaTipo } from '../parceiros.types';
 import { maskCPF, maskCNPJ } from '../../../utils/formatters';
-import ModalQuickPartner from '../../parceiros/components/ModalQuickPartner';
+import ModalQuickPartner from './ModalQuickPartner';
 
 interface Props {
   parceiros: IParceiro[];
