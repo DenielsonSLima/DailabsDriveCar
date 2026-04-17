@@ -8,34 +8,6 @@ import { MarcaDaguaService } from '../../ajustes/marca-dagua/marca-dagua.service
 import { RelatoriosService } from '../relatorios.service';
 
 const RelatorioPatrimonioConciliacaoPage: React.FC = () => {
-    const navigate = useNavigate();
-    const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-    const [empresa, setEmpresa] = useState<any>(null);
-    const [watermark, setWatermark] = useState<any>(null);
-    const [loading, setLoading] = useState(false);
-    const [reportData, setReportData] = useState<any>(null);
-
-    const now = new Date();
-    // Default to full current month
-    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-
-    const [dataInicio, setDataInicio] = useState(firstDay.toISOString().split('T')[0]);
-    const [dataFim, setDataFim] = useState(lastDay.toISOString().split('T')[0]);
-
-    useEffect(() => {
-        EmpresaService.getDadosEmpresa().then(setEmpresa);
-        MarcaDaguaService.getConfig().then(setWatermark);
-    }, []);
-
-    const handleGerar = async () => {
-        setLoading(true);
-        try {
-            const data = await RelatoriosService.getConciliacaoPatrimonial({
-                dataInicio,
-                dataFim
-            });
-
   const navigate = useNavigate();
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [empresa, setEmpresa] = useState<any>(null);
