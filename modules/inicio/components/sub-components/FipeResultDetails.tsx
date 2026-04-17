@@ -7,7 +7,7 @@ interface FipeResultDetailsProps {
   formatCurrency: (val: number) => string;
 }
 
-const FipeResultDetails: React.FC<FipeResultDetailsProps> = ({ vehicle, formatCurrency }) => {
+const FipeResultDetails: React.FC<FipeResultDetailsProps> = ({ vehicle, placa, formatCurrency }) => {
   
   // Função para dividir o nome do modelo em Nome Principal e Versão/Motorização
   const splitModelName = (fullModel: string) => {
