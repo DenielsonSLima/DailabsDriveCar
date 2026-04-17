@@ -8,6 +8,7 @@
 - **Conciliação Patrimonial**: Implementação completa do relatório de Conciliação Patrimonial, incluindo serviços, tipos e template de impressão.
 - **KPIs do Dashboard**: Correção na lógica de cálculo de lucro nos KPIs do dashboard.
 - **Módulo de Estoque**: Correções pontuais no formulário de estoque e modais de cadastro de modelos/versões.
+- **Correção de Build**: Resolvido erro de sintaxe em `RelatorioPatrimonioConciliacao.page.tsx` causado por código duplicado e um bloco `try` não encerrado.
 
 **Por quê:**
 Melhorar a experiência do usuário ao visualizar dados financeiros e corrigir imperfeições visuais críticas em documentos gerados pelo sistema.
