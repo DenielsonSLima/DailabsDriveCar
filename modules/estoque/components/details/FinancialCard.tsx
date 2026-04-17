@@ -14,8 +14,8 @@ const FinancialCard: React.FC<Props> = ({ veiculo }) => {
       custoServicos: veiculo.valor_custo_servicos || 0,
       custoTotal: (veiculo as any).valor_total_investido || 0,
       totalVenda: veiculo.valor_venda || 0,
-      lucroProjetado: (veiculo as any).lucro_projetado || 0,
-      margem: (veiculo as any).margem_projetada || 0,
+      lucroProjetado: (veiculo as any).valor_lucro_estimado || 0,
+      margem: Number((veiculo as any).valor_margem_estimada) || 0,
       retornoInvestimento: (veiculo as any).valor_total_investido > 0
          ? (veiculo.valor_venda || 0) / (veiculo as any).valor_total_investido
          : 0

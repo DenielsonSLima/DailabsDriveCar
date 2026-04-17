@@ -51,6 +51,18 @@ const FormCardTechnical: React.FC<Props> = ({ formData, cores, onChange, onConsu
       const dados = await consultarEParsear(placa);
       setConsultaSucesso(true);
 
+      // Validação de categoria (Moto vs Carro)
+      const selectedIsMoto = formData.tipo_veiculo_id === '87a79d16-42f5-4dc3-9d7b-c213e25f32fc';
+      const apiIsMoto = dados.categoriaSugerida === 'moto';
+
+      if (selectedIsMoto && !apiIsMoto) {
+        const confirm = window.confirm(`⚠️ Atenção: Você selecionou a categoria MOTOCICLETA, mas a placa consultada parece ser de um CARRO (${dados.marcaNome} ${dados.modeloNome}). Deseja importar os dados assim mesmo?`);
+        if (!confirm) return;
+      } else if (!selectedIsMoto && apiIsMoto) {
+        const confirm = window.confirm(`⚠️ Atenção: Você selecionou uma categoria de CARRO, mas a placa consultada parece ser de uma MOTO (${dados.marcaNome} ${dados.modeloNome}). Deseja importar os dados assim mesmo?`);
+        if (!confirm) return;
+      }
+
       // Preenche chassi e cor automaticamente
       const updates: Partial<IVeiculo> = {
         chassi: dados.chassi,

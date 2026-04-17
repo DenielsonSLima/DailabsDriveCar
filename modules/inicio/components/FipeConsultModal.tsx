@@ -254,7 +254,16 @@ const FipeConsultModal: React.FC<FipeConsultModalProps> = ({ isOpen, onClose }) 
                 </button>
                 <div className="flex-1" />
                 <button 
-                  onClick={() => navigate(`/pedidos-compra/novo`, { 
+                  onClick={() => {
+                   const isMoto = vehicle?.categoria?.toLowerCase().includes('moto') || 
+                                  vehicle?.extra?.categoria?.sintetico?.toLowerCase().includes('moto');
+
+                   if (isMoto) {
+                     const confirm = window.confirm(`⚠️ Atenção: Esta placa pertence a uma MOTO (${vehicle?.marca} ${vehicle?.modelo}). Deseja realmente iniciar um Pedido de Compra para este veículo?`);
+                     if (!confirm) return;
+                   }
+
+                   navigate(`/pedidos-compra/novo`, { 
                     state: { 
                       vehicleData: {
                         placa,
@@ -270,7 +279,8 @@ const FipeConsultModal: React.FC<FipeConsultModalProps> = ({ isOpen, onClose }) 
                         categoria: vehicle?.categoria
                       } 
                     } 
-                  })}
+                   });
+                  }}
                   className="bg-slate-900 hover:bg-black text-white px-10 py-4 rounded-xl font-black uppercase text-[10px] tracking-widest transition-all shadow-xl flex items-center gap-3 active:scale-95"
                 >
                   Iniciar Pedido de Compra <CheckCircle2 className="w-4 h-4 text-emerald-400" />

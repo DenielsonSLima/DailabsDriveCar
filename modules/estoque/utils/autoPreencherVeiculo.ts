@@ -40,6 +40,9 @@ export interface DadosParsedAPI {
   modelo: IModelo | null;
   corId: string | null;
 
+  // Informações de Categoria
+  categoriaSugerida: 'carro' | 'moto' | 'outros';
+
   // Informações de Custo
   consultasRestantes: number;
 
@@ -226,9 +229,12 @@ export async function consultarEParsear(placa: string): Promise<DadosParsedAPI> 
     }
   }
 
-  // 7. Buscar estatísticas de uso oficiais do banco (via RPC)
-  const usageStats = await consultaPlacaService.fetchUsageStats();
-  const consultasRestantes = usageStats.remaining;
+  // 8. Determinar categoria sugerida
+  const catRes = principal.extra?.categoria?.sintetico || principal.categoria || '';
+  const categoriaSugerida: 'carro' | 'moto' | 'outros' = 
+    catRes.toLowerCase().includes('moto') ? 'moto' : 
+    (catRes.toLowerCase().includes('carro') || catRes.toLowerCase().includes('utilitario') || catRes.toLowerCase().includes('passeio')) ? 'carro' : 
+    'outros';
 
   return {
     raw: apiResponse,
@@ -237,8 +243,8 @@ export async function consultarEParsear(placa: string): Promise<DadosParsedAPI> 
     versaoNome: parsed.versao,
     motorizacaoSugerida: parsed.motorizacao,
     combustivel,
-    anoFabricacao: principal.anoFabricacao,
-    anoModelo: parseInt(principal.anoModelo) || principal.anoFabricacao,
+    anoFabricacao: Number(principal.anoFabricacao),
+    anoModelo: parseInt(principal.anoModelo) || Number(principal.anoFabricacao),
     cor: principal.cor?.toUpperCase() || '',
     chassi: principal.chassi || '',
     placa: placa.toUpperCase().replace(/[^A-Z0-9]/g, ''),
@@ -247,6 +253,7 @@ export async function consultarEParsear(placa: string): Promise<DadosParsedAPI> 
     tipoVeiculo: null, // Sempre pede confirmação
     modelo: modeloEncontrado,
     corId,
+    categoriaSugerida,
     consultasRestantes,
     precisaCriarMontadora: !montadora,
     precisaConfirmarTipo: true, // API não diferencia SEDAN/HATCH/PICKUP
