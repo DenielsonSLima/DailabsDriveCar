@@ -84,5 +84,45 @@ export const RelatoriosService = {
         const { data, error } = await query.order('data_venda', { ascending: false });
         if (error) throw error;
         return data;
+    },
+
+    async getConciliacaoPatrimonial(params: { dataInicio: string; dataFim: string }) {
+        const lastDayPrev = new Date(params.dataInicio);
+        lastDayPrev.setDate(lastDayPrev.getDate() - 1);
+        const dataFimPrev = lastDayPrev.toISOString().split('T')[0];
+
+        // 1. Métricas do Mês Anterior (Saldo Inicial)
+        const { data: metricsInicial, error: errorMin } = await supabase.rpc('get_caixa_metrics', {
+            p_data_inicio: '2000-01-01',
+            p_data_fim: dataFimPrev
+        });
+        if (errorMin) throw errorMin;
+
+        // 2. Métricas do Mês Atual (Saldo Final e Lucro)
+        const { data: metricsFinal, error: errorMax } = await supabase.rpc('get_caixa_metrics', {
+            p_data_inicio: params.dataInicio,
+            p_data_fim: params.dataFim
+        });
+        if (errorMax) throw errorMax;
+
+        // 3. Extrato de Transações do Mês
+        const { data: transacoes, error: errorTrans } = await supabase
+            .from('fin_transacoes')
+            .select(`
+                id, data_pagamento, valor, tipo, descricao, categoria:fin_categorias(nome),
+                titulo:fin_titulos(id, origem_tipo, parceiro:parceiros(nome))
+            `)
+            .gte('data_pagamento', `${params.dataInicio}T00:00:00Z`)
+            .lte('data_pagamento', `${params.dataFim}T23:59:59Z`)
+            .order('data_pagamento', { ascending: true });
+        
+        if (errorTrans) throw errorTrans;
+
+        return {
+            inicial: metricsInicial,
+            final: metricsFinal,
+            transacoes
+        };
     }
 };
+

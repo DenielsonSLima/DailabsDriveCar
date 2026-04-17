@@ -51,6 +51,8 @@ import RelatorioAuditoriaPage from './modules/relatorios/pages/RelatorioAuditori
 import RelatorioComissoesPage from './modules/relatorios/pages/RelatorioComissoes.page.tsx';
 import RelatorioServicosPage from './modules/relatorios/pages/RelatorioServicos.page.tsx';
 import RelatorioExtratoBancarioPage from './modules/relatorios/pages/RelatorioExtratoBancario.page.tsx';
+import RelatorioPatrimonioConciliacaoPage from './modules/relatorios/pages/RelatorioPatrimonioConciliacao.page.tsx';
+
 
 // Submódulos Cadastros
 const CidadesPage = lazy(() => import('./modules/cadastros/cidades/Cidades.page.tsx'));
@@ -335,6 +337,8 @@ const App: React.FC = () => {
                   <Route path="/relatorios/comissoes" element={<RelatorioComissoesPage />} />
                   <Route path="/relatorios/servicos" element={<RelatorioServicosPage />} />
                   <Route path="/relatorios/extrato-bancario" element={<RelatorioExtratoBancarioPage />} />
+                  <Route path="/relatorios/conciliacao-patrimonial" element={<RelatorioPatrimonioConciliacaoPage />} />
+
 
                   <Route path="/editor-site" element={<EditorSitePage />} />
 

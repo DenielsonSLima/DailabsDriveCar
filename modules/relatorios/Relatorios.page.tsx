@@ -32,7 +32,9 @@ const RelatoriosPage: React.FC = () => {
       nome: 'Gestão & Auditoria',
       items: [
         { id: 'financeiro', titulo: 'Movimentação Financeira', descricao: 'Fluxo de caixa consolidado, entradas e saídas.', icon: 'M12 8v13m0-13V6a2 2 0 112 2h-2z', color: 'rose', path: '/relatorios/financeiro' },
+        { id: 'conciliacao-patrimonial', titulo: 'Conciliação Patrimonial', descricao: 'Analise a evolução do patrimônio líquido mês a mês com extrato de conciliação.', icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z', color: 'indigo', path: '/relatorios/conciliacao-patrimonial' },
         { id: 'extrato-bancario', titulo: 'Extrato Bancário', descricao: 'Histórico de transações linha a linha por conta bancária com saldo progressivo.', icon: 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z', color: 'blue', path: '/relatorios/extrato-bancario' },
+
         { id: 'auditoria', titulo: 'Logs de Auditoria', descricao: 'Rastreabilidade de alterações críticas no sistema.', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z', color: 'slate', path: '/relatorios/auditoria' },
       ]
     }

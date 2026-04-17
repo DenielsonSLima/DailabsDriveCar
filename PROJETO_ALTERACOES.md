@@ -1,5 +1,37 @@
 # Histórico de Alterações do Projeto
 
+## [2026-04-16—Noite] - Hardening de Segurança: Migração API Brasil para Edge Functions
+
+**O que foi feito:**
+- **Segurança Sênior**: Integrada a chamada da API Brasil (Fipe/Placas) em uma **Supabase Edge Function** (`consulta-veiculo`), removendo a chave `VITE_APIBRASIL_BEARER_TOKEN` do frontend.
+- **Centralização de Segredos**: A chave agora é gerenciada como um `Secret` no Supabase, impedindo que o token seja exposto no navegador do usuário final.
+- **Refatoração do Serviço**: Atualizado o `consultaPlacaService` para invocar a função via `supabase.functions.invoke`.
+- **Manutenção de Cache e Auditoria**: Toda a lógica de verificação de cache global e registro de uso (bilhetagem) agora ocorre do lado do servidor (Deno), garantindo maior confiabilidade nos dados.
+
+**Por quê:**
+Seguir os padrões sênior de engenharia para evitar o vazamento de chaves de API pagas no cliente (browser) e garantir que a lógica de consumo de créditos seja inviolável.
+
+**Arquivos afetados:**
+- `supabase/functions/consulta-veiculo/index.ts` [NEW]
+- `modules/ajustes/consulta-placa/consulta-placa.service.ts` [MODIFY]
+- `PROJETO_ALTERACOES.md` [MODIFY]
+
+## [2026-04-16] - Correção de Lucro Líquido e Patrimônio Líquido Histórico (Dashboard Caixa)
+
+**O que foi feito:**
+- **Lucro Líquido Real**: Atualizada a RPC `get_caixa_metrics` para calcular o lucro mensal subtraindo as despesas operacionais (fixas e variáveis) da margem bruta das vendas.
+- **Patrimônio Histórico Retoativo**: Refatorada a lógica da RPC `get_caixa_metrics` para gerar um "Instantâneo Histórico" (Snapshot) de todos os KPIs quando um mês passado é selecionado:
+    - **Saldo Bancário**: Agora calcula o saldo exato que a empresa tinha no último dia do mês filtrado (retroagindo transações).
+    - **Estoque**: Valor dos veículos que pertenciam à empresa na data final do período.
+    - **Contas a Receber/Pagar**: Saldo devedor/credor de títulos em aberto na data final do período.
+- **Sincronização de KPIs**: O card "PATRIMÔNIO LÍQUIDO" e "LUCRO DO MÊS" agora refletem os valores reais do fechamento de cada mês, garantindo que despesas e receitas do período sejam devidamente consideradas.
+
+**Por quê:**
+O usuário reportou que o Lucro do Mês ignorava despesas operacionais e que o Patrimônio Líquido não parecia considerar os gastos do mês. A causa era que os cards principais mostravam dados "em tempo real" (status atual de hoje) mesmo para períodos passados, gerando inconsistência visual e financeira.
+
+**Arquivos afetados:**
+- Banco de Dados: RPC `get_caixa_metrics` (migrations `fix_caixa_metrics_profit_calc` e `make_caixa_metrics_historical`)
+
 ## [2026-04-16] - Otimização Módulo Fipe e Refino de UX/UI do Dashboard
 
 **O que foi feito:**
