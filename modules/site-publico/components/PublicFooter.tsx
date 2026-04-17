@@ -105,7 +105,7 @@ const PublicFooter: React.FC<Props> = ({ empresa }) => {
             <div className="space-y-4">
               <div className="space-y-0.5">
                 <p className="text-[8px] font-bold text-blue-100/40 uppercase tracking-widest">Comercial</p>
-                <p className="text-lg font-black text-white tracking-tight leading-none">{empresa?.telefone || '(79) 3243-6183'}</p>
+                <p className="text-lg font-black text-white tracking-tight leading-none">{empresa?.telefone || '(79) 99119-2361'}</p>
               </div>
               <div className="space-y-0.5">
                 <p className="text-[8px] font-bold text-blue-100/40 uppercase tracking-widest">E-mail</p>

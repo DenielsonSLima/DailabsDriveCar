@@ -37,7 +37,7 @@ const DEFAULT_EMPRESA: IEmpresa = {
   bairro: 'Atalaia',
   cidade: 'Aracaju',
   uf: 'SE',
-  telefone: '(79) 99999-9999'
+  telefone: '(79) 99119-2361'
 };
 
 export const SitePublicoService = {
