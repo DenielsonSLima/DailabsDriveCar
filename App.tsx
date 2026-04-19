@@ -144,10 +144,12 @@ const App: React.FC = () => {
   }, [setSession, setProfile, setLoading]);
 
   // Constantes de tempo
-  const INACTIVITY_TIME = 29 * 60 * 1000; // 29 minutos
-  const COUNTDOWN_TIME = 120; // 120 segundos (2 minutos)
+  const INACTIVITY_THRESHOLD = 29 * 60 * 1000; // 29 minutos para mostrar aviso
+  const GRACE_PERIOD = 2 * 60 * 1000; // 2 minutos de countdown
+  const TOTAL_TIMEOUT = INACTIVITY_THRESHOLD + GRACE_PERIOD; // 31 minutos total
+  const LAST_ACTIVITY_KEY = 'souza-veiculos-last-activity';
 
-  // Monitoramento de inatividade (29 minutos + 2 minutos de aviso = 31 minutos total)
+  // Monitoramento de inatividade resiliente
   useEffect(() => {
     if (!session) {
       setShowTimeoutModal(false);
@@ -155,101 +157,131 @@ const App: React.FC = () => {
       return;
     }
 
+    const updateLastActivity = () => {
+      const now = Date.now().toString();
+      localStorage.setItem(LAST_ACTIVITY_KEY, now);
+      // Se o modal estiver aberto e o usuário interagir, fecha o modal (extende a sessão)
+      if (showTimeoutModalRef.current) {
+        handleContinueSession();
+      }
+    };
+
     const doLogout = async () => {
       try {
+        console.log('Executando logout por inatividade...');
         setShowTimeoutModal(false);
         showTimeoutModalRef.current = false;
-        setCountdown(COUNTDOWN_TIME);
-
-        // Se houver intervalo ativo, limpa
         if (countdownIntervalRef.current) {
           clearInterval(countdownIntervalRef.current);
           countdownIntervalRef.current = null;
         }
-
         await AuthService.signOut();
       } catch (err) {
         console.error('Logout error during session timeout:', err);
-        // Tenta limpar a sessão local caso o signOut falhe
         window.location.reload();
       }
     };
 
-    const startCountdown = () => {
-      // Evita iniciar múltiplos intervalos
-      if (countdownIntervalRef.current) {
-        clearInterval(countdownIntervalRef.current);
-      }
+    const checkInactivity = () => {
+      const lastActivity = parseInt(localStorage.getItem(LAST_ACTIVITY_KEY) || Date.now().toString());
+      const now = Date.now();
+      const elapsed = now - lastActivity;
 
-      setShowTimeoutModal(true);
-      showTimeoutModalRef.current = true;
-      setCountdown(COUNTDOWN_TIME);
-
-      const expTime = Date.now() + COUNTDOWN_TIME * 1000;
-
-      countdownIntervalRef.current = setInterval(() => {
-        const remaining = Math.max(0, Math.ceil((expTime - Date.now()) / 1000));
-        setCountdown(remaining);
-
-        if (remaining <= 0) {
+      if (elapsed >= TOTAL_TIMEOUT) {
+        // Tempo total expirado
+        doLogout();
+      } else if (elapsed >= INACTIVITY_THRESHOLD) {
+        // Entrou no período de carência (countdown)
+        if (!showTimeoutModalRef.current) {
+          setShowTimeoutModal(true);
+          showTimeoutModalRef.current = true;
+          
+          const expiresAt = lastActivity + TOTAL_TIMEOUT;
+          
+          if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current);
+          
+          countdownIntervalRef.current = setInterval(() => {
+            const remaining = Math.max(0, Math.ceil((expiresAt - Date.now()) / 1000));
+            setCountdown(remaining);
+            if (remaining <= 0) {
+              clearInterval(countdownIntervalRef.current!);
+              countdownIntervalRef.current = null;
+              doLogout();
+            }
+          }, 1000);
+        } else {
+          // Já está aberto, apenas garante que o countdown reflita o tempo real (caso de throttling)
+          const expiresAt = lastActivity + TOTAL_TIMEOUT;
+          const remaining = Math.max(0, Math.ceil((expiresAt - Date.now()) / 1000));
+          setCountdown(remaining);
+        }
+      } else {
+        // Ainda está dentro do tempo de atividade
+        if (showTimeoutModalRef.current) {
+          setShowTimeoutModal(false);
+          showTimeoutModalRef.current = false;
           if (countdownIntervalRef.current) {
             clearInterval(countdownIntervalRef.current);
             countdownIntervalRef.current = null;
           }
-          doLogout();
         }
-      }, 1000);
+      }
     };
 
-    const resetInactivityTimer = () => {
-      if (showTimeoutModalRef.current) return;
-      if (inactivityTimeoutRef.current) clearTimeout(inactivityTimeoutRef.current);
-      inactivityTimeoutRef.current = setTimeout(startCountdown, INACTIVITY_TIME);
+    // Inicializa a atividade se não existir
+    if (!localStorage.getItem(LAST_ACTIVITY_KEY)) {
+      updateLastActivity();
+    }
+
+    // Eventos de interação para resetar o timer
+    const events = ['mousedown', 'mousemove', 'keydown', 'click', 'scroll', 'touchstart'];
+    events.forEach(e => document.addEventListener(e, updateLastActivity));
+
+    // Sentinel: Verifica a inatividade a cada 5 segundos (suficiente para o check principal)
+    const sentinelInterval = setInterval(checkInactivity, 5000);
+
+    // Visibility Change: Re-checa instantaneamente ao voltar para a aba
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        checkInactivity();
+      }
     };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
-    // Atualiza a ref estável para uso externo (handleContinueSession)
-    startInactivityTimerRef.current = resetInactivityTimer;
+    // Storage: Sincroniza entre abas (se outra aba resetar a atividade)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === LAST_ACTIVITY_KEY) {
+        checkInactivity();
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
 
-    const events = ['mousedown', 'mousemove', 'keydown', 'click', 'scroll', 'touchstart', 'touchmove', 'touchend'];
-    events.forEach(e => document.addEventListener(e, resetInactivityTimer));
-    resetInactivityTimer();
+    // Executa check inicial
+    checkInactivity();
 
     return () => {
-      if (inactivityTimeoutRef.current) clearTimeout(inactivityTimeoutRef.current);
+      events.forEach(e => document.removeEventListener(e, updateLastActivity));
+      clearInterval(sentinelInterval);
       if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current);
-      events.forEach(e => document.removeEventListener(e, resetInactivityTimer));
-
-      // Reset state on cleanup to avoid freezes on re-runs
-      setShowTimeoutModal(false);
-      showTimeoutModalRef.current = false;
-      setCountdown(COUNTDOWN_TIME);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('storage', handleStorageChange);
     };
   }, [session]);
 
   const handleContinueSession = () => {
+    localStorage.setItem(LAST_ACTIVITY_KEY, Date.now().toString());
+    setShowTimeoutModal(false);
+    showTimeoutModalRef.current = false;
     if (countdownIntervalRef.current) {
       clearInterval(countdownIntervalRef.current);
       countdownIntervalRef.current = null;
     }
-    setShowTimeoutModal(false);
-    showTimeoutModalRef.current = false;
-    setCountdown(COUNTDOWN_TIME);
-    // Garante que o próximo ciclo de inatividade também vai disparar o modal
-    startInactivityTimerRef.current();
   };
 
   const handleManualLogout = () => {
-    if (countdownIntervalRef.current) {
-      clearInterval(countdownIntervalRef.current);
-      countdownIntervalRef.current = null;
-    }
-    if (inactivityTimeoutRef.current) {
-      clearTimeout(inactivityTimeoutRef.current);
-      inactivityTimeoutRef.current = null;
-    }
+    if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current);
     setShowTimeoutModal(false);
     showTimeoutModalRef.current = false;
-    setCountdown(120); // Valor fixo aqui para simplicidade ou usar COUNTDOWN_TIME se movermos a constante para fora do effect
     AuthService.signOut().catch(console.error);
   };
 

@@ -9,7 +9,7 @@ const DEFAULT_SLIDES: IHeroSlide[] = [
     subtitle: 'Curadoria rigorosa e transparência absoluta. Onde a confiança encontra o seu próximo carro em Aracaju.'
   },
   {
-    image_url: '/hero/banner-2.jpg',
+    image_url: '/hero/banner-souza.webp',
     title: 'NEGOCIAÇÃO INTELIGENTE E SEM BUROCRACIA',
     subtitle: 'Seu usado vale mais aqui. Financiamento acelerado com as taxas mais competitivas do mercado sergipano.'
   },

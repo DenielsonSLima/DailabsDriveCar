@@ -43,7 +43,7 @@ const InternalAnalysisPrint: React.FC<Props> = ({ pedido, empresa, watermark, al
                <span className="bg-indigo-600 text-white px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest">Confidencial</span>
                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Relatório de Inteligência de Ativo</span>
             </div>
-            <h1 className="text-3xl font-black uppercase tracking-tighter text-slate-900 leading-none">Nexus Core Business Intelligence</h1>
+            <h1 className="text-2xl font-black uppercase tracking-tight text-slate-900 leading-none">Nexus Core Business Intelligence</h1>
             <p className="text-xs font-bold text-slate-500 mt-2">Dossiê Analítico: {pedido.id.toUpperCase()}</p>
           </div>
           <div className="text-right">
@@ -56,19 +56,19 @@ const InternalAnalysisPrint: React.FC<Props> = ({ pedido, empresa, watermark, al
         <div className="grid grid-cols-4 gap-4 mb-12">
            <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 text-center">
               <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Custo Aquisição</p>
-              <p className="text-xl font-black text-slate-900">{formatCur(custoAquisicao)}</p>
+              <p className="text-lg font-black text-slate-900">{formatCur(custoAquisicao)}</p>
            </div>
            <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 text-center">
               <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Custo Serv./Prep.</p>
-              <p className="text-xl font-black text-amber-600">{formatCur(custoServicos)}</p>
+              <p className="text-lg font-black text-amber-600">{formatCur(custoServicos)}</p>
            </div>
            <div className="bg-emerald-50 p-5 rounded-2xl border border-emerald-100 text-center shadow-sm">
               <p className="text-[8px] font-black text-emerald-600 uppercase tracking-widest mb-1">Lucro Líquido Ref.</p>
-              <p className="text-xl font-black text-emerald-700">{formatCur(lucroEstimado)}</p>
+              <p className="text-lg font-black text-emerald-700">{formatCur(lucroEstimado)}</p>
            </div>
            <div className="bg-indigo-900 p-5 rounded-2xl shadow-xl text-center text-white">
               <p className="text-[8px] font-black text-indigo-300 uppercase tracking-widest mb-1">ROI / Margem</p>
-              <p className="text-xl font-black text-white">{margemPercent.toFixed(1)}%</p>
+              <p className="text-lg font-black text-white">{margemPercent.toFixed(1)}%</p>
            </div>
         </div>
 
@@ -89,7 +89,7 @@ const InternalAnalysisPrint: React.FC<Props> = ({ pedido, empresa, watermark, al
               <div className="p-8 grid grid-cols-2 gap-x-12 gap-y-8">
                  <div>
                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Identificação Comercial</p>
-                    <h4 className="text-lg font-black uppercase text-slate-900">{vAny.modelo?.nome}</h4>
+                    <h4 className="text-base font-black uppercase text-slate-900">{vAny.modelo?.nome}</h4>
                     <p className="text-xs font-bold text-slate-500 uppercase">{vAny.versao?.nome}</p>
                  </div>
                  <div className="text-right">

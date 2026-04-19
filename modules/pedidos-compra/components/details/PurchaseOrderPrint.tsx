@@ -28,7 +28,7 @@ const PurchaseOrderPrint: React.FC<Props> = ({ pedido, empresa, watermark, allCa
   const renderSpec = (label: string, val: string, highlight: boolean = false) => (
     <div className={`p-4 rounded-2xl border ${highlight ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-100/50'}`}>
       <p className={`text-[8px] font-black uppercase tracking-widest mb-1 ${highlight ? 'text-indigo-400' : 'text-slate-400'}`}>{label}</p>
-      <p className={`text-[11px] font-black uppercase truncate ${highlight ? 'text-white' : 'text-slate-700'}`}>{val || '---'}</p>
+      <p className={`text-[11px] font-black uppercase ${highlight ? 'text-white' : 'text-slate-700'}`}>{val || '---'}</p>
     </div>
   );
 
@@ -65,7 +65,7 @@ const PurchaseOrderPrint: React.FC<Props> = ({ pedido, empresa, watermark, allCa
           <div className="flex items-center gap-8">
             {empresa.logo_url && <img src={empresa.logo_url} className="h-20 w-auto object-contain" alt="Logo" />}
             <div className="space-y-1">
-              <h1 className="text-2xl font-black uppercase tracking-tighter text-slate-900 leading-none">{empresa.nome_fantasia}</h1>
+              <h1 className="text-xl font-black uppercase tracking-tight text-slate-900 leading-none">{empresa.nome_fantasia}</h1>
               <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{empresa.razao_social}</p>
               <div className="flex items-center gap-4 text-[10px] text-slate-400 font-bold mt-2">
                  <span>CNPJ: {empresa.cnpj}</span>
@@ -74,7 +74,7 @@ const PurchaseOrderPrint: React.FC<Props> = ({ pedido, empresa, watermark, allCa
             </div>
           </div>
           <div className="text-right">
-            <h2 className="text-3xl font-black uppercase tracking-tighter text-slate-300 mb-2">Pedido de Compra</h2>
+            <h2 className="text-2xl font-black uppercase tracking-tight text-slate-300 mb-2">Pedido de Compra</h2>
             <p className="text-base font-black text-slate-900 uppercase">Documento Nº {pedido.numero_pedido || pedido.id.substring(0,8).toUpperCase()}</p>
             <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Emissão: {dt(new Date().toISOString())}</p>
           </div>
@@ -133,7 +133,7 @@ const PurchaseOrderPrint: React.FC<Props> = ({ pedido, empresa, watermark, allCa
                    <div className="flex justify-between items-start">
                       <div>
                          <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-1">{vAny.montadora?.nome}</p>
-                         <h4 className="text-2xl font-[900] text-slate-900 uppercase tracking-tighter leading-none">{vAny.modelo?.nome}</h4>
+                         <h4 className="text-xl font-[900] text-slate-900 uppercase tracking-tight leading-none">{vAny.modelo?.nome}</h4>
                          <p className="text-sm font-medium text-slate-400 uppercase mt-2">{vAny.versao?.nome}</p>
                       </div>
                       <div className="text-right">
@@ -174,7 +174,7 @@ const PurchaseOrderPrint: React.FC<Props> = ({ pedido, empresa, watermark, allCa
                        <div className="w-3 h-3 border border-indigo-200 rounded bg-indigo-50 flex items-center justify-center">
                           <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full"></div>
                        </div>
-                       <span className="text-[10px] font-bold text-slate-600 uppercase truncate">{c.nome}</span>
+                       <span className="text-[10px] font-bold text-slate-600 uppercase">{c.nome}</span>
                     </div>
                  ))}
                  {tagsCar.length === 0 && <p className="text-[10px] text-slate-300 italic">Padrão de fábrica verificado.</p>}
@@ -186,7 +186,7 @@ const PurchaseOrderPrint: React.FC<Props> = ({ pedido, empresa, watermark, allCa
                  {tagsOp.slice(0, 10).map(o => (
                     <div key={o.id} className="flex items-center gap-2 py-1.5 border-b border-slate-50">
                        <svg className="w-3 h-3 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>
-                       <span className="text-[10px] font-bold text-slate-600 uppercase truncate">{o.nome}</span>
+                       <span className="text-[10px] font-bold text-slate-600 uppercase">{o.nome}</span>
                     </div>
                  ))}
                  {tagsOp.length > 10 && <span className="text-[8px] text-slate-400 font-black italic">+ {tagsOp.length - 10} Outros itens</span>}
@@ -215,15 +215,15 @@ const PurchaseOrderPrint: React.FC<Props> = ({ pedido, empresa, watermark, allCa
                  </div>
                  <div className="pt-6 border-t border-white/5">
                     <p className="text-[8px] font-black text-slate-500 uppercase mb-2">Notas Contratuais</p>
-                    <p className="text-[11px] text-slate-300 leading-relaxed font-medium italic truncate max-w-lg">
+                    <p className="text-[11px] text-slate-300 leading-relaxed font-medium italic">
                       {pedido.observacoes || 'Sem observações adicionais para este contrato.'}
                     </p>
                  </div>
               </div>
 
-              <div className="bg-white/5 p-8 rounded-[2rem] border border-white/10 flex flex-col justify-center items-center text-center min-w-[280px]">
+              <div className="bg-white/5 p-8 rounded-[2rem] border border-white/10 flex flex-col justify-center items-center text-center min-w-[220px]">
                  <p className="text-[10px] font-black text-indigo-300 uppercase tracking-[0.4em] mb-2">Total da Negociação</p>
-                 <h3 className="text-4xl font-black tracking-tighter text-white">{fmt(pedido.valor_negociado)}</h3>
+                 <h3 className="text-3xl font-black tracking-tight text-white">{fmt(pedido.valor_negociado)}</h3>
                  <span className="text-[8px] font-black text-slate-500 uppercase mt-4">Moeda Corrente: Real (BRL)</span>
               </div>
            </div>
