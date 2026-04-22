@@ -85,6 +85,9 @@ import SaldoInicialPage from './modules/ajustes/saldo-inicial/SaldoInicial.page.
 
 import { useAuthStore } from './store/auth.store.ts';
 
+// Chave do timer de inatividade — movida para escopo global para acesso facilitado
+const LAST_ACTIVITY_KEY = 'souza-veiculos-last-activity';
+
 const App: React.FC = () => {
   const queryClient = useQueryClient();
   const { session, profile, loading, setSession, setProfile, setLoading } = useAuthStore();
@@ -122,6 +125,9 @@ const App: React.FC = () => {
     // Busca sessão inicial
     AuthService.getSession().then(s => {
       setSession(s);
+      if (s) {
+        localStorage.setItem(LAST_ACTIVITY_KEY, Date.now().toString());
+      }
       if (s?.user) loadProfile(s.user.id);
     });
 
@@ -131,8 +137,13 @@ const App: React.FC = () => {
         setProfile(null);
         // Limpa todo o cache React Query para evitar dados stale na próxima sessão
         queryClient.clear();
+        // Limpa o timer de inatividade para evitar interferência na próxima sessão
+        localStorage.removeItem(LAST_ACTIVITY_KEY);
       } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
         setSession(currentSession);
+        // Reset vital do timer de inatividade ao logar para evitar o bug de reload imediato
+        localStorage.setItem(LAST_ACTIVITY_KEY, Date.now().toString());
+        
         if (currentSession?.user) loadProfile(currentSession.user.id);
         // Invalida todas as queries para forçar refetch com a nova sessão autenticada
         queryClient.invalidateQueries();
@@ -147,7 +158,6 @@ const App: React.FC = () => {
   const INACTIVITY_THRESHOLD = 29 * 60 * 1000; // 29 minutos para mostrar aviso
   const GRACE_PERIOD = 2 * 60 * 1000; // 2 minutos de countdown
   const TOTAL_TIMEOUT = INACTIVITY_THRESHOLD + GRACE_PERIOD; // 31 minutos total
-  const LAST_ACTIVITY_KEY = 'souza-veiculos-last-activity';
 
   // Monitoramento de inatividade resiliente
   useEffect(() => {

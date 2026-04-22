@@ -1,5 +1,18 @@
 # Histórico de Alterações do Projeto
 
+## [2026-04-22] - Correção do Fluxo de Login e Timer de Inatividade
+**O que foi feito:**
+- **Inatividade e Login**: Resolvido o bug onde o sistema realizava um logout forçado (reload) imediatamente após o primeiro login. A causa era o timer de inatividade utilizando um timestamp obsoleto de sessões anteriores.
+- **Sincronização de Estado**: Implementado o reset automático do timer de inatividade nos eventos `SIGNED_IN` e no carregamento inicial da sessão.
+- **Redirecionamento Robusto**: Refatorada a `AuthPage` para utilizar o estado global da sessão (`useAuthStore`) como gatilho de navegação, eliminando race conditions entre o login e a atualização do estado do App.
+
+**Por quê:**
+Garantir que o primeiro acesso do usuário seja fluido e livre de recarregamentos inesperados, melhorando a confiabilidade do sistema de autenticação.
+
+**Arquivos afetados:**
+- `App.tsx`
+- `modules/auth/Auth.page.tsx`
+
 ## [2026-04-17] - Modernização de Relatórios e Correções de Layout
 **O que foi feito:**
 - **Visualização de Relatórios**: Implementada a visualização inline automática ao carregar as páginas de relatórios, eliminando a dependência de PDF para visualização inicial.

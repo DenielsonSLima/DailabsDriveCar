@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthService } from './auth.service';
 import LoginForm from './components/LoginForm';
+import { useAuthStore } from '../../store/auth.store';
 
 // Imagens de fundo do login — ficam em public/login-bg/
 const backgroundImages = [
@@ -11,12 +12,20 @@ const backgroundImages = [
 
 const AuthPage: React.FC = () => {
   const navigate = useNavigate();
+  const { session } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<{ title: string, message: string } | null>(null);
   const [currentBgIndex, setCurrentBgIndex] = useState(0);
 
+  // Redirecionamento automático baseado no estado da sessão
+  // Isso garante que só saímos da tela de login quando o App.tsx já reconheceu a sessão
   useEffect(() => {
-    checkUser();
+    if (session) {
+      navigate(window.innerWidth < 768 ? '/caixa' : '/inicio', { replace: true });
+    }
+  }, [session, navigate]);
+
+  useEffect(() => {
     // Slideshow do background
     if (backgroundImages.length > 1) {
       const timer = setInterval(() => {
@@ -26,19 +35,13 @@ const AuthPage: React.FC = () => {
     }
   }, []);
 
-  const checkUser = async () => {
-    const session = await AuthService.getSession();
-    if (session) {
-      navigate(window.innerWidth < 768 ? '/caixa' : '/inicio');
-    }
-  };
 
   const handleLogin = async (email: string, pass: string) => {
     setLoading(true);
     setError(null);
     try {
       await AuthService.signIn(email, pass);
-      navigate(window.innerWidth < 768 ? '/caixa' : '/inicio');
+      // O redirecionamento agora é feito pelo useEffect monitorando o estado da session
     } catch (err: any) {
       console.error('Erro de login:', err);
       let message = 'Verifique seu e-mail e senha e tente novamente.';
