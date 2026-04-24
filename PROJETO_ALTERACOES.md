@@ -61,4 +61,16 @@ O sistema necessitava de uma base de dados inicial robusta para facilitar o uso 
 
 **Arquivos afetados:**
 - Banco de Dados (SQL: Update e Seeds)
-- `modules/cadastros/modelos/Modelos.page.tsx` [MODIFY]
+- `modules/cadastros/modelos/Modelos.page.tsx`
+
+## [2026-04-24] - Correção de Multi-tenancy no Lançamento de Despesas
+**O que foi feito:**
+- **Integridade de Organização**: Refatorado o RPC `salvar_despesa_veiculo` para herdar automaticamente o `organization_id` do veículo proprietário, eliminando o risco de despesas serem lançadas na empresa errada devido ao contexto do usuário.
+- **Pagamentos Blindados**: Atualizado o RPC `registrar_pagamento_despesa` para herdar a organização da despesa pai, garantindo que transações financeiras e registros de caixa sejam vinculados à empresa correta.
+- **Consistência de Dados**: Garantida a rastreabilidade do `user_id` e a manutenção automática do saldo bancário e custo do veículo dentro das fronteiras da organização correta.
+
+**Por quê:**
+Evitar o "vazamento" de registros financeiros entre empresas em ambientes multi-tenant, garantindo que despesas e pagamentos fiquem restritos à organização dona do patrimônio (veículo).
+
+**Arquivos afetados:**
+- Funções SQL (RPCs): `salvar_despesa_veiculo`, `registrar_pagamento_despesa`.
