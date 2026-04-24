@@ -65,7 +65,8 @@ O sistema necessitava de uma base de dados inicial robusta para facilitar o uso 
 
 ## [2026-04-24] - Correção de Multi-tenancy no Lançamento de Despesas
 **O que foi feito:**
-- **Integridade de Organização**: Refatorado o RPC `salvar_despesa_veiculo` para herdar automaticamente o `organization_id` do veículo proprietário, eliminando o risco de despesas serem lançadas na empresa errada devido ao contexto do usuário.
+- **Integridade Multi-tenant em Despesas**: Lançamentos de despesas vinculadas a veículos devem herdar o `organization_id` do veículo, nunca do usuário logado, para evitar vazamento de dados entre empresas.
+- **Isolamento de Sites Públicos**: O site público deve SEMPRE utilizar a variável `VITE_ORGANIZATION_ID` para filtrar veículos, montadoras e configurações. Consultas sem este filtro causarão vazamento de estoque entre empresas.
 - **Pagamentos Blindados**: Atualizado o RPC `registrar_pagamento_despesa` para herdar a organização da despesa pai, garantindo que transações financeiras e registros de caixa sejam vinculados à empresa correta.
 - **Consistência de Dados**: Garantida a rastreabilidade do `user_id` e a manutenção automática do saldo bancário e custo do veículo dentro das fronteiras da organização correta.
 
@@ -74,3 +75,15 @@ Evitar o "vazamento" de registros financeiros entre empresas em ambientes multi-
 
 **Arquivos afetados:**
 - Funções SQL (RPCs): `salvar_despesa_veiculo`, `registrar_pagamento_despesa`.
+
+## [2026-04-24] - Correção de Vazamento de Dados no Site Público
+**O que foi feito:**
+- **Isolamento de Site**: Implementada a obrigatoriedade do filtro `organization_id` em todas as consultas do `SitePublicoService`.
+- **Configuração Dinâmica**: Adicionado suporte à variável de ambiente `VITE_ORGANIZATION_ID` para que cada site (Hidrocar, Souza, etc.) exiba apenas seu próprio estoque e conteúdo.
+- **Correção de Conteúdo**: Refatorada a busca de `site_conteudo` para suportar fallback de conteúdo padrão (`null`) ou conteúdo específico por organização, garantindo que o cabeçalho e informações de contato sejam os corretos.
+
+**Por quê:**
+Evitar que veículos publicados por uma empresa apareçam no site de outra empresa em um ambiente multi-tenant que compartilha o mesmo banco de dados.
+
+**Arquivos afetados:**
+- `modules/site-publico/site-publico.service.ts` [MODIFY]

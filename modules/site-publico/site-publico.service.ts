@@ -43,13 +43,26 @@ const DEFAULT_EMPRESA: IEmpresa = {
 export const SitePublicoService = {
 
   /**
+   * Retorna o ID da organização para o site público.
+   * Prioriza a variável de ambiente VITE_ORGANIZATION_ID.
+   */
+  getPublicOrgId(): string | null {
+    return (import.meta.env.VITE_ORGANIZATION_ID as string) || null;
+  },
+
+  /**
    * Busca dados da empresa com fallback para evitar crashes.
    */
   async getEmpresa(): Promise<IEmpresa> {
     try {
-      const { data: empresa, error } = await supabase
-        .from('config_empresa')
-        .select('*')
+      const orgId = this.getPublicOrgId();
+      let query = supabase.from('config_empresa').select('*');
+      
+      if (orgId) {
+        query = query.eq('organization_id', orgId);
+      }
+
+      const { data: empresa, error } = await query
         .limit(1)
         .maybeSingle();
 
@@ -80,16 +93,23 @@ export const SitePublicoService = {
    * Busca montadoras que possuem veículos disponíveis no site de forma otimizada.
    */
   async getMontadorasComEstoque(): Promise<IMontadoraPublic[]> {
-    // Busca apenas as montadoras que realmente têm veículos publicados
-    const { data: montadorasComEstoque, error } = await supabase
+    const orgId = this.getPublicOrgId();
+    
+    let query = supabase
       .from('cad_montadoras')
       .select(`
         id, 
         nome, 
         logo_url,
-        est_veiculos!inner(id)
+        est_veiculos!inner(id, organization_id)
       `)
       .eq('est_veiculos.publicado_site', true);
+
+    if (orgId) {
+      query = query.eq('est_veiculos.organization_id', orgId);
+    }
+
+    const { data: montadorasComEstoque, error } = await query;
 
     if (error) {
       console.error('Erro ao buscar montadoras com estoque:', error);
@@ -114,11 +134,16 @@ export const SitePublicoService = {
    */
   async getStockData(params: IGetStockParams): Promise<IPaginatedStock> {
     const { page, pageSize, brand, minPrice, maxPrice, search, sort, includeMontadoras = true } = params;
+    const orgId = this.getPublicOrgId();
 
     let query = supabase
       .from('est_veiculos')
       .select(VEICULO_SELECT, { count: 'exact' })
       .eq('publicado_site', true);
+
+    if (orgId) {
+      query = query.eq('organization_id', orgId);
+    }
 
     if (brand) query = query.eq('montadora_id', brand);
     if (minPrice) query = query.gte('valor_venda', minPrice);
@@ -184,9 +209,15 @@ export const SitePublicoService = {
    */
   async getSiteConteudo(): Promise<ISiteConteudo | null> {
     try {
-      const { data, error } = await supabase
-        .from('site_conteudo')
-        .select('*')
+      const orgId = this.getPublicOrgId();
+      let query = supabase.from('site_conteudo').select('*');
+
+      if (orgId) {
+        // Se tem ID, busca o específico ou o padrão (null) como fallback
+        query = query.or(`organization_id.eq.${orgId},organization_id.is.null`).order('organization_id', { ascending: false, nullsFirst: false });
+      }
+
+      const { data, error } = await query
         .limit(1)
         .maybeSingle();
 
@@ -206,15 +237,23 @@ export const SitePublicoService = {
    * Cada parte é carregada e validada de forma independente para garantir resiliência.
    */
   async getHomePageData(): Promise<IPublicPageData> {
+    const orgId = this.getPublicOrgId();
+
+    let veiculosQuery = supabase
+      .from('est_veiculos')
+      .select(VEICULO_SELECT)
+      .eq('publicado_site', true);
+
+    if (orgId) {
+      veiculosQuery = veiculosQuery.eq('organization_id', orgId);
+    }
+
     const [empresaRaw, veiculosResult, montadoras, conteudo] = await Promise.all([
       this.getEmpresa().catch((err) => {
         console.error('Falha ao carregar empresa na home:', err);
         return {} as IEmpresa;
       }),
-      supabase
-        .from('est_veiculos')
-        .select(VEICULO_SELECT)
-        .eq('publicado_site', true)
+      veiculosQuery
         .order('created_at', { ascending: false })
         .limit(8),
       this.getMontadorasComEstoque().catch(() => []),
@@ -249,12 +288,18 @@ export const SitePublicoService = {
     cores: { id: string; nome: string; rgb_hex: string }[];
     empresa: IEmpresa;
   }> {
+    const orgId = this.getPublicOrgId();
+    let veiculoQuery = supabase
+      .from('est_veiculos')
+      .select(VEICULO_SELECT)
+      .eq('id', id);
+
+    if (orgId) {
+      veiculoQuery = veiculoQuery.eq('organization_id', orgId);
+    }
+
     const [veiculoResult, caracResult, opResult, coresResult, empresaRaw] = await Promise.all([
-      supabase
-        .from('est_veiculos')
-        .select(VEICULO_SELECT)
-        .eq('id', id)
-        .maybeSingle(),
+      veiculoQuery.maybeSingle(),
       supabase.from('cad_caracteristicas').select('id, nome'),
       supabase.from('cad_opcionais').select('id, nome'),
       supabase.from('cad_cores').select('id, nome, rgb_hex'),

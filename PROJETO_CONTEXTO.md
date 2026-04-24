@@ -42,3 +42,4 @@ Cada agente possui um arquivo `MEMORY.md` onde registra aprendizados e evita a r
 ## Erros comuns — não repita
 - **Dados Técnicos Vazios**: Nunca assumir que os campos `motorizacao`, `combustivel`, etc. no veículo estão preenchidos; sempre usar o fallback da `versao` se necessário.
 - **Integridade Multi-tenant em Despesas**: Lançamentos de despesas vinculadas a veículos devem herdar o `organization_id` do veículo, nunca do usuário logado, para evitar vazamento de dados entre empresas.
+- **Isolamento de Sites Públicos**: O site público deve SEMPRE utilizar a variável `VITE_ORGANIZATION_ID` para filtrar veículos, montadoras e configurações. Consultas sem este filtro causarão vazamento de estoque entre empresas.
