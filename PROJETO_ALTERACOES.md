@@ -87,3 +87,15 @@ Evitar que veículos publicados por uma empresa apareçam no site de outra empre
 
 **Arquivos afetados:**
 - `modules/site-publico/site-publico.service.ts` [MODIFY]
+
+## [2026-04-24] - Correção de Ambiguidade em Funções de Retirada
+**O que foi feito:**
+- **Eliminação de Duplicidade**: Removidas as versões redundantes das funções `registrar_retirada` e `atualizar_retirada` que causavam erro de ambiguidade no Postgres devido a tipos de dados conflitantes (`date` vs `timestamptz`).
+- **Padronização de Tipos**: Padronizado o uso do tipo `date` para os argumentos de data nestas funções, alinhando com a estrutura da tabela `fin_retiradas`.
+- **Melhoria na Descrição**: Aprimorada a lógica de geração de descrição automática nas transações de retirada, incluindo o link direto com o registro de retirada (`retirada_id`).
+
+**Por quê:**
+Resolver o erro "Could not choose the best candidate function" que impedia o lançamento de retiradas de sócios no módulo financeiro.
+
+**Arquivos afetados:**
+- Funções SQL (RPCs): `registrar_retirada`, `atualizar_retirada`.
