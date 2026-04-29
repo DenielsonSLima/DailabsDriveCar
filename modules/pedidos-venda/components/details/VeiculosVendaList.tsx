@@ -76,7 +76,7 @@ const VeiculosVendaList: React.FC<Props> = ({ pedido, veiculosDisponiveis, onLin
             className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${showSelector ? 'bg-slate-200 text-slate-600' : 'bg-indigo-50 text-indigo-600 border border-indigo-100 hover:bg-indigo-100'
               } ${(actionLoading || localLinking) ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            {showSelector ? 'Cancelar Adição' : 'Adicionar Outro Veículo'}
+            {showSelector ? 'Cancelar Adição' : 'Adicionar Dados do Veículo'}
           </button>
         )}
       </div>
