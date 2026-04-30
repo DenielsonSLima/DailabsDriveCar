@@ -17,7 +17,7 @@ const MobileBottomNav: React.FC<MobileBottomNavProps> = ({ onOpenMenu, isMenuOpe
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const mainNavItems = [
-    { path: '/inicio', label: 'Início', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011v4a1 1 0 001 1m-6 0h6' },
+    { label: 'Início', path: '/inicio', icon: 'M 3 12 L 5 10 M 5 10 L 12 3 L 19 10 M 5 10 V 20 A 1 1 0 0 0 6 21 H 9 M 19 10 L 21 12 M 19 10 V 20 A 1 1 0 0 1 18 21 H 15 M 9 21 A 1 1 0 0 0 10 20 V 16 A 1 1 0 0 1 11 15 H 13 A 1 1 0 0 1 14 16 V 20 A 1 1 0 0 0 15 21 M 9 21 H 15' },
     { path: '/caixa', label: 'Caixa', icon: 'M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z' },
     { path: '/estoque', label: 'Estoque', icon: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4' },
     { path: '/pedidos-venda', label: 'Vendas', icon: 'M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z' },

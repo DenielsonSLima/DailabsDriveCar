@@ -30,7 +30,7 @@ export const TituloSchema = z.object({
   forma_pagamento_id: z.string().optional().nullable(),
   veiculo_id: z.string().optional().nullable(),
   despesa_veiculo_id: z.string().optional().nullable(),
-  origem_tipo: z.enum(['PEDIDO_COMPRA', 'PEDIDO_VENDA', 'DESPESA_VEICULO', 'DESPESA_FIXA', 'DESPESA_VARIAVEL', 'OUTRO_CREDITO', 'MANUAL']).optional().nullable(),
+  origem_tipo: z.enum(['PEDIDO_COMPRA', 'PEDIDO_VENDA', 'DESPESA_VEICULO', 'DESPESA_FIXA', 'DESPESA_VARIAVEL', 'OUTRO_CREDITO', 'OUTRO_DEBITO', 'MANUAL']).optional().nullable(),
   origem_id: z.string().optional().nullable(),
   created_at: z.string(),
 });
@@ -70,6 +70,7 @@ export interface IFinanceiroKpis {
   despesas_fixas: number;
   despesas_variaveis: number;
   outras_receitas: number;
+  outros_debitos: number;
   retiradas: number;
 }
 
@@ -102,7 +103,7 @@ export interface ITitulo {
   veiculo_id?: string;
   despesa_veiculo_id?: string;
   // Rastreabilidade
-  origem_tipo?: 'PEDIDO_COMPRA' | 'PEDIDO_VENDA' | 'DESPESA_VEICULO' | 'DESPESA_FIXA' | 'DESPESA_VARIAVEL' | 'OUTRO_CREDITO' | 'MANUAL';
+  origem_tipo?: 'PEDIDO_COMPRA' | 'PEDIDO_VENDA' | 'DESPESA_VEICULO' | 'DESPESA_FIXA' | 'DESPESA_VARIAVEL' | 'OUTRO_CREDITO' | 'OUTRO_DEBITO' | 'MANUAL';
   origem_id?: string;
   created_at: string;
 
@@ -166,7 +167,7 @@ export interface IExtratoTotals {
 }
 
 // ─── HISTÓRICO GERAL UNIFICADO ─────────────────────────
-export type OrigemHistorico = 'COMPRA' | 'VENDA' | 'DESPESA_VEICULO' | 'TRANSFERENCIA' | 'RETIRADA' | 'CREDITO' | 'SALDO_INICIAL' | 'MANUAL';
+export type OrigemHistorico = 'COMPRA' | 'VENDA' | 'DESPESA_VEICULO' | 'TRANSFERENCIA' | 'RETIRADA' | 'CREDITO' | 'DEBITO' | 'SALDO_INICIAL' | 'MANUAL';
 export type StatusHistorico = 'REALIZADO' | 'PENDENTE' | 'PARCIAL' | 'ATRASADO' | 'CANCELADO';
 
 export interface IHistoricoUnificado {

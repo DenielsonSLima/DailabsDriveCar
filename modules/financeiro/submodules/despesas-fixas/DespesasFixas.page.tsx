@@ -91,7 +91,7 @@ const DespesasFixasPage: React.FC = () => {
       acc[key].push(t);
       return acc;
     }, {});
-  }, [titulos, groupBy]);
+  }, [titulos, groupBy, activeTab]);
 
   const handleDelete = async () => {
     if (!deleteId) return;

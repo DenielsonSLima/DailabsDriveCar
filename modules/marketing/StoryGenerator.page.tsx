@@ -91,6 +91,7 @@ const StoryGeneratorPage: React.FC = () => {
     const [selectedVeiculoId, setSelectedVeiculoId] = useState<string>('');
     const [selectedPhotos, setSelectedPhotos] = useState<string[]>([]);
     const [imageOffsets, setImageOffsets] = useState<number[]>([0, 0, 0]);
+    const [showPrice, setShowPrice] = useState(true);
 
     // Versões base64 das fotos (para preview e export)
     const [base64Photos, setBase64Photos] = useState<(string | null)[]>([null, null, null]);
@@ -406,10 +407,26 @@ const StoryGeneratorPage: React.FC = () => {
             }
         }
 
+        // ─── Preço de Venda ───────────────────────────────────────────────────
+        if (showPrice && veiculo?.valor_venda) {
+            const px = 22 * DPI;
+            const priceY = H - 110 * DPI;
+            const priceText = new Intl.NumberFormat('pt-BR', { 
+                style: 'currency', 
+                currency: 'BRL',
+                maximumFractionDigits: 0 
+            }).format(veiculo.valor_venda);
+
+            octx.textAlign = 'right';
+            octx.fillStyle = '#ffffff';
+            octx.font = `900 ${28 * DPI}px "Inter", system-ui`;
+            octx.fillText(priceText, W - px, priceY + 8 * DPI);
+        }
+
         // Copia offscreen para o canvas visível (atomic — sem flash)
         ctx.clearRect(0, 0, W, H);
         ctx.drawImage(offscreen, 0, 0);
-    }, [veiculo, imageOffsets]);
+    }, [veiculo, imageOffsets, showPrice]);
 
     // Mantém a ref do scheduleDraw sempre atualizada com o drawPreview mais recente
     useEffect(() => {
@@ -591,6 +608,20 @@ const StoryGeneratorPage: React.FC = () => {
                     ctx.fillText(badge.toUpperCase(), bx + 8 * scale, currentY + 13 * scale);
                     bx += badgeW + 8 * scale;
                 }
+
+                // ─── Preço de Venda (Export) ──────────────────────────────────
+                if (showPrice && veiculo.valor_venda) {
+                    const priceText = new Intl.NumberFormat('pt-BR', { 
+                        style: 'currency', 
+                        currency: 'BRL',
+                        maximumFractionDigits: 0 
+                    }).format(veiculo.valor_venda);
+
+                    ctx.textAlign = 'right';
+                    ctx.fillStyle = '#ffffff';
+                    ctx.font = `900 ${28 * scale}px "Inter", system-ui`;
+                    ctx.fillText(priceText, EXPORT_W - px, infoY + 8 * scale);
+                }
             }
 
             setExportProgress('Gerando arquivo...');
@@ -741,6 +772,27 @@ const StoryGeneratorPage: React.FC = () => {
                         />
                     </div>
 
+                    {/* Opções de Exibição */}
+                    <div className="bg-white p-6 rounded-[2rem] shadow-xl border border-slate-100 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Exibir Preço de Venda</p>
+                                <p className="text-xs font-bold text-slate-600">Mostrar valor no story</p>
+                            </div>
+                        </div>
+                        <button
+                            onClick={() => setShowPrice(!showPrice)}
+                            className={`w-14 h-8 rounded-full transition-all relative ${showPrice ? 'bg-indigo-600' : 'bg-slate-200'}`}
+                        >
+                            <div className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow-sm transition-all ${showPrice ? 'left-7' : 'left-1'}`} />
+                        </button>
+                    </div>
+
                     {/* Seleção de Fotos */}
                     {veiculo && (
                         <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100 space-y-6">
@@ -773,29 +825,31 @@ const StoryGeneratorPage: React.FC = () => {
                             </div>
                         </div>
                     )}
-
-                    <button
-                        disabled={selectedPhotos.length < 3 || isExporting}
-                        onClick={handleExport}
-                        className="w-full py-6 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-200 disabled:cursor-not-allowed text-white rounded-[2rem] font-black uppercase tracking-[0.2em] text-sm shadow-xl shadow-indigo-200 transition-all active:scale-95 flex items-center justify-center gap-3"
-                    >
-                        {isExporting ? (
-                            <>
-                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                <span>{exportProgress || 'Processando...'}</span>
-                            </>
-                        ) : (
-                            <>
-                                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                                Baixar Story para Instagram
-                            </>
-                        )}
-                    </button>
                 </div>
 
                 {/* ── Lado Direito: Preview ── */}
                 <div className="w-full md:w-[450px] flex-shrink-0 relative flex flex-col items-center">
-                    <div className="mb-4 text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                    <div className="w-full flex justify-between items-center mb-6">
+                        <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                            <div className="w-1.5 h-1.5 bg-rose-500 rounded-full animate-ping" />
+                            Live Preview
+                        </div>
+
+                        <button
+                            disabled={selectedPhotos.length < 3 || isExporting}
+                            onClick={handleExport}
+                            className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-200 disabled:cursor-not-allowed text-white rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-lg shadow-indigo-100 transition-all active:scale-95 flex items-center gap-2"
+                        >
+                            {isExporting ? (
+                                <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            ) : (
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                            )}
+                            {isExporting ? 'Processando...' : 'Salvar Imagem'}
+                        </button>
+                    </div>
+
+                    <div className="text-center mb-4 hidden">
                         <div className="w-1.5 h-1.5 bg-rose-500 rounded-full animate-ping" />
                         Live Preview (Instagram 9:16)
                     </div>

@@ -9,13 +9,14 @@ import ContasReceberPage from './submodules/contas-receber/ContasReceber.page';
 import DespesasVariaveisPage from './submodules/despesas-variaveis/DespesasVariaveis.page';
 import DespesasFixasPage from './submodules/despesas-fixas/DespesasFixas.page';
 import OutrosCreditosPage from './submodules/outros-creditos/OutrosCreditos.page';
+import OutrosDebitosPage from './submodules/outros-debitos/OutrosDebitos.page';
 import RetiradasSociosPage from './submodules/retiradas-socios/RetiradasSocios.page';
 import TransferenciasPage from './submodules/transferencias/Transferencias.page';
 import ExtratoPage from './submodules/extrato/Extrato.page';
 
 type SubModule =
   | 'GERAL' | 'PAGAR' | 'RECEBER' | 'VARIAVEIS' | 'FIXAS'
-  | 'CREDITOS' | 'RETIRADAS' | 'TRANSF' | 'HISTORICO';
+  | 'CREDITOS' | 'DEBITOS' | 'RETIRADAS' | 'TRANSF' | 'HISTORICO';
 
 const FinanceiroPage: React.FC = () => {
   const [activeSub, setActiveSub] = useState<SubModule>('GERAL');
@@ -63,6 +64,7 @@ const FinanceiroPage: React.FC = () => {
 
   const line2: { id: SubModule; label: string; icon: string; color: string }[] = [
     { id: 'CREDITOS', label: 'Outros Créditos', icon: 'M12 8v13m0-13V6a2 2 0 112 2h-2z', color: 'teal' },
+    { id: 'DEBITOS', label: 'Outros Débitos', icon: 'M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z', color: 'rose' },
     { id: 'RETIRADAS', label: 'Retiradas', icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2', color: 'amber' },
     { id: 'TRANSF', label: 'Transferências entre Contas', icon: 'M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4', color: 'blue' },
     { id: 'HISTORICO', label: 'Histórico Geral', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2', color: 'slate' },
@@ -121,7 +123,7 @@ const FinanceiroPage: React.FC = () => {
           </div>
         </div>
         {/* Linha 2 */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
           {/* Despesas Variáveis do Mês */}
           <div className="bg-white rounded-2xl px-5 py-4 border border-slate-200 shadow-sm">
             <p className="text-[9px] font-black text-orange-500 uppercase tracking-widest mb-0.5">Despesas Variáveis</p>
@@ -138,6 +140,15 @@ const FinanceiroPage: React.FC = () => {
               <div className="h-7 bg-slate-200 rounded animate-pulse w-32"></div>
             ) : (
               <h3 className="text-xl font-black text-slate-900 tracking-tight">{formatCurrency(kpis?.outras_receitas || 0)}</h3>
+            )}
+          </div>
+          {/* Outros Débitos */}
+          <div className="bg-white rounded-2xl px-5 py-4 border border-slate-200 shadow-sm">
+            <p className="text-[9px] font-black text-rose-500 uppercase tracking-widest mb-0.5">Outros Débitos</p>
+            {loading ? (
+              <div className="h-7 bg-slate-200 rounded animate-pulse w-32"></div>
+            ) : (
+              <h3 className="text-xl font-black text-slate-900 tracking-tight">{formatCurrency(kpis?.outros_debitos || 0)}</h3>
             )}
           </div>
           {/* Retiradas */}
@@ -172,6 +183,7 @@ const FinanceiroPage: React.FC = () => {
         {activeSub === 'VARIAVEIS' && <DespesasVariaveisPage />}
         {activeSub === 'FIXAS' && <DespesasFixasPage />}
         {activeSub === 'CREDITOS' && <OutrosCreditosPage />}
+        {activeSub === 'DEBITOS' && <OutrosDebitosPage />}
         {activeSub === 'RETIRADAS' && <RetiradasSociosPage />}
         {activeSub === 'TRANSF' && <TransferenciasPage />}
         {activeSub === 'HISTORICO' && <ExtratoPage />}

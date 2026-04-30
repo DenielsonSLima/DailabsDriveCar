@@ -84,6 +84,8 @@ const PedidoCompraDetalhesPage: React.FC = () => {
       setShowConfirm(false);
       queryClient.invalidateQueries({ queryKey: ['pedido_compra_detalhes', id] });
       queryClient.invalidateQueries({ queryKey: ['pedidos_compra_list'] });
+      queryClient.invalidateQueries({ queryKey: ['pedidos_compra_stats'] });
+      queryClient.invalidateQueries({ queryKey: ['pedidos_compra_draft_count'] });
       queryClient.invalidateQueries({ queryKey: ['estoque_list'] });
       queryClient.invalidateQueries({ queryKey: ['estoque_stats'] });
       queryClient.invalidateQueries({ queryKey: ['contas-pagar'] });
@@ -98,6 +100,8 @@ const PedidoCompraDetalhesPage: React.FC = () => {
       setShowReopen(false);
       queryClient.invalidateQueries({ queryKey: ['pedido_compra_detalhes', id] });
       queryClient.invalidateQueries({ queryKey: ['pedidos_compra_list'] });
+      queryClient.invalidateQueries({ queryKey: ['pedidos_compra_stats'] });
+      queryClient.invalidateQueries({ queryKey: ['pedidos_compra_draft_count'] });
       queryClient.invalidateQueries({ queryKey: ['estoque_list'] });
       queryClient.invalidateQueries({ queryKey: ['estoque_stats'] });
       queryClient.invalidateQueries({ queryKey: ['contas-pagar'] });
@@ -110,6 +114,8 @@ const PedidoCompraDetalhesPage: React.FC = () => {
     onSuccess: () => {
       navigate('/pedidos-compra');
       queryClient.invalidateQueries({ queryKey: ['pedidos_compra_list'] });
+      queryClient.invalidateQueries({ queryKey: ['pedidos_compra_stats'] });
+      queryClient.invalidateQueries({ queryKey: ['pedidos_compra_draft_count'] });
       queryClient.invalidateQueries({ queryKey: ['estoque_list'] });
       queryClient.invalidateQueries({ queryKey: ['estoque_stats'] });
     },
@@ -125,6 +131,7 @@ const PedidoCompraDetalhesPage: React.FC = () => {
     onSuccess: (_, variables) => {
       showNotification('success', `${variables.length} pagamento(s) lançado(s) com sucesso!`);
       queryClient.invalidateQueries({ queryKey: ['pedido_compra_detalhes', id] });
+      queryClient.invalidateQueries({ queryKey: ['pedidos_compra_stats'] });
     },
     onError: () => showNotification('error', 'Erro ao processar pagamentos.')
   });
@@ -134,6 +141,7 @@ const PedidoCompraDetalhesPage: React.FC = () => {
     onSuccess: () => {
       showNotification('success', 'Lançamento removido com sucesso.');
       queryClient.invalidateQueries({ queryKey: ['pedido_compra_detalhes', id] });
+      queryClient.invalidateQueries({ queryKey: ['pedidos_compra_stats'] });
     },
     onError: () => showNotification('error', 'Erro ao excluir lançamento.')
   });
@@ -143,6 +151,7 @@ const PedidoCompraDetalhesPage: React.FC = () => {
     onSuccess: () => {
       setUnlinkTargetId(null);
       queryClient.invalidateQueries({ queryKey: ['pedido_compra_detalhes', id] });
+      queryClient.invalidateQueries({ queryKey: ['pedidos_compra_stats'] });
       queryClient.invalidateQueries({ queryKey: ['estoque_list'] });
       queryClient.invalidateQueries({ queryKey: ['estoque_stats'] });
     },

@@ -86,7 +86,7 @@ import SaldoInicialPage from './modules/ajustes/saldo-inicial/SaldoInicial.page.
 import { useAuthStore } from './store/auth.store.ts';
 
 // Chave do timer de inatividade — movida para escopo global para acesso facilitado
-const LAST_ACTIVITY_KEY = 'souza-veiculos-last-activity';
+const LAST_ACTIVITY_KEY = 'dailabs-drivercar-last-activity';
 
 const App: React.FC = () => {
   const queryClient = useQueryClient();
@@ -296,14 +296,14 @@ const App: React.FC = () => {
   };
 
   // Se estiver carregando, mostramos um loader apenas para rotas internas (via hash)
-  const isPublicRoute = window.location.pathname === '/' || window.location.pathname.startsWith('/veiculo/') || window.location.pathname.startsWith('/estoque-publico');
+  const isPublicRoute = false;
 
   if (loading && !isPublicRoute) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="flex flex-col items-center space-y-4">
           <div className="w-12 h-12 border-4 border-orange-600 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-slate-600 font-black text-[10px] uppercase tracking-[0.4em]">SOUZA VEÍCULOS</p>
+          <p className="text-slate-600 font-black text-[10px] uppercase tracking-[0.4em]">DAILABS DRIVERCAR</p>
         </div>
       </div>
     );
@@ -314,10 +314,10 @@ const App: React.FC = () => {
     <BrowserRouter>
       <ScrollToTop />
       <Routes>
-        {/* Rotas Públicas (Souza Veículos) */}
-        <Route path="/" element={<SitePublicoPage />} />
-        <Route path="/estoque-publico" element={<EstoquePublicoPage />} />
-        <Route path="/veiculo/:id" element={<PublicVehicleDetailsPage />} />
+        {/* Rotas Públicas (Inativadas) */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/estoque-publico" element={<Navigate to="/login" replace />} />
+        <Route path="/veiculo/:id" element={<Navigate to="/login" replace />} />
 
         {/* Auth */}
         <Route path="/login" element={session ? <Navigate to={window.innerWidth < 768 ? '/caixa' : '/inicio'} /> : <AuthPage />} />

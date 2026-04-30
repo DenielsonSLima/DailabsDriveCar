@@ -119,6 +119,8 @@ const PedidoVendaDetalhesPage: React.FC = () => {
       }
       await PedidosVendaService.save(updates);
       queryClient.invalidateQueries({ queryKey: ['pedidos_venda_list'] });
+      queryClient.invalidateQueries({ queryKey: ['pedidos_venda_stats'] });
+      queryClient.invalidateQueries({ queryKey: ['pedidos_venda_draft_count'] });
       queryClient.invalidateQueries({ queryKey: ['estoque_list'] });
       queryClient.invalidateQueries({ queryKey: ['estoque_stats'] });
       loadData(true);
@@ -139,6 +141,8 @@ const PedidoVendaDetalhesPage: React.FC = () => {
       await PedidosVendaService.save({ id: pedido.id, veiculo_id: null } as any);
       setUnlinkVehicleId(null);
       queryClient.invalidateQueries({ queryKey: ['pedidos_venda_list'] });
+      queryClient.invalidateQueries({ queryKey: ['pedidos_venda_stats'] });
+      queryClient.invalidateQueries({ queryKey: ['pedidos_venda_draft_count'] });
       queryClient.invalidateQueries({ queryKey: ['estoque_list'] });
       queryClient.invalidateQueries({ queryKey: ['estoque_stats'] });
       loadData(true);
@@ -156,6 +160,7 @@ const PedidoVendaDetalhesPage: React.FC = () => {
       }
       showNotification('success', `${payments.length} recebimento(s) lançado(s) com sucesso!`);
       queryClient.invalidateQueries({ queryKey: ['pedidos_venda_list'] });
+      queryClient.invalidateQueries({ queryKey: ['pedidos_venda_stats'] });
       queryClient.invalidateQueries({ queryKey: ['contas-receber'] });
       loadData(true);
     } catch (e) {
@@ -171,6 +176,7 @@ const PedidoVendaDetalhesPage: React.FC = () => {
       await PedidosVendaService.deletePayment(payId);
       showNotification('success', 'Lançamento estornado com sucesso.');
       queryClient.invalidateQueries({ queryKey: ['pedidos_venda_list'] });
+      queryClient.invalidateQueries({ queryKey: ['pedidos_venda_stats'] });
       queryClient.invalidateQueries({ queryKey: ['contas-receber'] });
       loadData(true);
     } catch (e) {
@@ -235,6 +241,8 @@ const PedidoVendaDetalhesPage: React.FC = () => {
 
       setShowConfirm(false);
       queryClient.invalidateQueries({ queryKey: ['pedidos_venda_list'] });
+      queryClient.invalidateQueries({ queryKey: ['pedidos_venda_stats'] });
+      queryClient.invalidateQueries({ queryKey: ['pedidos_venda_draft_count'] });
       queryClient.invalidateQueries({ queryKey: ['estoque_list'] });
       queryClient.invalidateQueries({ queryKey: ['estoque_stats'] });
       queryClient.invalidateQueries({ queryKey: ['contas-receber'] });
@@ -254,6 +262,8 @@ const PedidoVendaDetalhesPage: React.FC = () => {
       showNotification('success', 'Venda cancelada com sucesso. Financeiro estornado e veículo liberado.');
       setShowCancel(false);
       queryClient.invalidateQueries({ queryKey: ['pedidos_venda_list'] });
+      queryClient.invalidateQueries({ queryKey: ['pedidos_venda_stats'] });
+      queryClient.invalidateQueries({ queryKey: ['pedidos_venda_draft_count'] });
       queryClient.invalidateQueries({ queryKey: ['estoque_list'] });
       queryClient.invalidateQueries({ queryKey: ['estoque_stats'] });
       queryClient.invalidateQueries({ queryKey: ['contas-receber'] });
@@ -356,6 +366,8 @@ const PedidoVendaDetalhesPage: React.FC = () => {
         onConfirm={async () => {
           await PedidosVendaService.delete(pedido.id);
           queryClient.invalidateQueries({ queryKey: ['pedidos_venda_list'] });
+          queryClient.invalidateQueries({ queryKey: ['pedidos_venda_stats'] });
+          queryClient.invalidateQueries({ queryKey: ['pedidos_venda_draft_count'] });
           queryClient.invalidateQueries({ queryKey: ['estoque_list'] });
           queryClient.invalidateQueries({ queryKey: ['estoque_stats'] });
           queryClient.invalidateQueries({ queryKey: ['contas-receber'] });

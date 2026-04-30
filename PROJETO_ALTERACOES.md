@@ -1,5 +1,73 @@
 # Histórico de Alterações do Projeto
 
+## [2026-04-29] - Fix: Cards KPIs em Branco + Integração OUTRO_DEBITO nos Cálculos
+**O que foi feito:**
+- **Bug KPIs em Branco (Root Cause)**: Os cards de KPIs nos módulos Outros Débitos e Outros Créditos mostravam skeleton loading infinito (barras cinza pulsando) ao invés de exibir `R$ 0,00`. A causa era dupla:
+  1. `Promise.all` fazia com que um erro em qualquer chamada (getAll ou getKpis) derrubasse ambas, e o `catch` não fazia `setKpis(null)`, deixando o estado como `null` (inicial).
+  2. O componente usava `!== undefined` para decidir entre mostrar o valor ou o skeleton — quando kpis era `null`, `null?.campo` retorna `undefined`, mostrando o skeleton indefinidamente.
+- **Fix Frontend**: Substituído `Promise.all` por `Promise.allSettled` para isolar erros. Componentes KPIs agora usam `?? 0` (fallback para zero) e prop `loading` para controlar skeleton.
+- **Fix Backend (RPCs)**: Atualizado `rpc_kpi_dashboard_financeiro` e `get_caixa_metrics` para incluir métrica `outros_debitos` nos cálculos de lucro mensal, lucro gerado e margem.
+- **Types**: Adicionado `total_outros_debitos` ao `ICaixaDashboardData` e `CaixaDashboardSchema` (Zod) + `outros_debitos` ao `IFinanceiroKpis`.
+- **Dashboard Financeiro**: Adicionado card "Outros Débitos" na segunda linha de KPIs (agora 4 colunas: Variáveis, Receitas, Débitos, Retiradas).
+- **Fix Preventivo**: Aplicada mesma correção no módulo Outros Créditos (CreditosKpis + OutrosCreditos.page).
+
+**Verificações realizadas (sem bugs):**
+- ✅ `rpc_kpi_outros_debitos` — SQL e permissões OK, usa `get_my_org_id()` e retorna zeros corretamente.
+- ✅ `lancar_debito` — RPC funcional, cria título PAGAR com origem OUTRO_DEBITO.
+- ✅ Contas a Pagar — já inclui OUTRO_DEBITO (filtra só `tipo = 'PAGAR'`, sem restrição de `origem_tipo`).
+- ✅ `rpc_kpi_contas_pagar` — já inclui OUTRO_DEBITO.
+- ✅ `get_caixa_metrics` → `total_saidas` e `total_passivo_circulante` já incluíam OUTRO_DEBITO.
+- ✅ Forecast financeiro — já inclui (busca todos títulos PAGAR).
+
+**Arquivos afetados:**
+- `modules/financeiro/submodules/outros-debitos/components/DebitosKpis.tsx` [FIX]
+- `modules/financeiro/submodules/outros-debitos/OutrosDebitos.page.tsx` [FIX]
+- `modules/financeiro/submodules/outros-creditos/components/CreditosKpis.tsx` [FIX PREVENTIVO]
+- `modules/financeiro/submodules/outros-creditos/OutrosCreditos.page.tsx` [FIX PREVENTIVO]
+- `modules/financeiro/Financeiro.page.tsx` [MODIFY - novo card]
+- `modules/financeiro/financeiro.types.ts` [MODIFY - novo campo]
+- `modules/caixa/caixa.types.ts` [MODIFY - novo campo]
+- Supabase RPCs: `rpc_kpi_dashboard_financeiro`, `get_caixa_metrics` [MIGRATE]
+
+---
+
+## [2026-04-29] - Novo Submódulo "Outros Débitos" no Financeiro
+**O que foi feito:**
+- **Novo Submódulo Completo**: Criado o submódulo `outros-debitos` espelhando a estrutura de `outros-creditos`, mantendo simetria perfeita no sistema financeiro.
+- **Frontend (9 arquivos)**: Page, Service, Types + 6 componentes (DebitoCard, DebitoForm, DebitosFilters, DebitosKpis, DebitosList, ModalDetalhesDebito).
+- **Banco de Dados (RPCs)**: Criados `lancar_debito` (cria título PAGAR com origem OUTRO_DEBITO) e `rpc_kpi_outros_debitos` (KPIs: total debitado, pendente, atrasado). Migração em `supabase/migrations/20260429_outros_debitos.sql`.
+- **Tipos**: Adicionado `OUTRO_DEBITO` ao enum `origem_tipo` em `financeiro.types.ts` (Zod + ITitulo + OrigemHistorico).
+- **Navegação**: Registrado no menu do `Financeiro.page.tsx` entre "Outros Créditos" e "Retiradas" com ícone e cor rose.
+- **Funcionalidades**: Divisão entre sócios (split), pagamento à vista opcional, descrição livre, documento de referência, filtros, paginação, ordenação, visualização card/lista, histórico de baixas, edição e estorno de pagamentos.
+
+**Por quê:**
+Necessidade de registrar débitos extraordinários de valores altos (ex: 400 mil) com divisão de responsabilidade entre sócios, separando-os das despesas operacionais (contas a pagar comuns).
+
+**Arquivos afetados:**
+- `modules/financeiro/submodules/outros-debitos/` (9 arquivos novos)
+- `modules/financeiro/Financeiro.page.tsx` [MODIFY]
+- `modules/financeiro/financeiro.types.ts` [MODIFY]
+- `supabase/migrations/20260429_outros_debitos.sql` [NEW]
+
+**Observações:**
+- ⚠️ A migração SQL precisa ser executada no Supabase (RPCs `lancar_debito` e `rpc_kpi_outros_debitos`). A rede externa não estava disponível durante a criação — executar via SQL Editor do Supabase Dashboard.
+- O ModalBaixa compartilhado é reutilizado para baixas de débitos, já que ele detecta automaticamente o tipo do título (PAGAR/RECEBER).
+- Design visual usa esquema de cores **rose/vermelho** para distinguir dos créditos (teal/verde).
+
+---
+
+## [2026-04-28] - Criação do Schema Base para Integração Meta Ads (Marketing)
+**O que foi feito:**
+- **Tabelas Criadas**: Criadas as tabelas `mkt_meta_integrations` e `mkt_campanhas` via Supabase MCP para suportar o novo módulo de integração com Facebook/Instagram.
+- **Isolamento de Dados**: Implementadas políticas RLS (`org_private_access`) em ambas as tabelas utilizando a função padrão `is_member_of(organization_id)` para garantir segurança multi-tenant.
+- **Relacionamentos**: Campanhas atreladas a `est_veiculos` para permitir métricas de impulsionamento por carro.
+
+**Por quê:**
+Preparar o banco de dados (fundação backend) para o novo ecossistema de marketing, permitindo salvar tokens da Meta Graph/Marketing API de forma segura e orquestrar campanhas pagas criadas de dentro do ERP.
+
+**Arquivos afetados:**
+- Banco de Dados (Supabase: `mkt_meta_integrations`, `mkt_campanhas`)
+
 ## [2026-04-22] - Correção do Fluxo de Login e Timer de Inatividade
 **O que foi feito:**
 - **Inatividade e Login**: Resolvido o bug onde o sistema realizava um logout forçado (reload) imediatamente após o primeiro login. A causa era o timer de inatividade utilizando um timestamp obsoleto de sessões anteriores.
@@ -98,4 +166,17 @@ Evitar que veículos publicados por uma empresa apareçam no site de outra empre
 Resolver o erro "Could not choose the best candidate function" que impedia o lançamento de retiradas de sócios no módulo financeiro.
 
 **Arquivos afetados:**
-- Funções SQL (RPCs): `registrar_retirada`, `atualizar_retirada`.
+
+## [2026-04-26] - Correção de Crash em Listas Financeiras e Estabilidade de UI
+**O que foi feito:**
+- **Crash "h.map is not a function"**: Identificado e corrigido um bug de sincronização de estado nos módulos de **Despesas Variáveis** e **Despesas Fixas**. A falha ocorria devido à ausência da dependência `activeTab` no `useMemo` dos dados processados, o que causava um descasamento entre o formato dos dados (Array vs Object) e o modo de exibição (Agrupado vs Lista), resultando em falha ao tentar iterar (.map) sobre um objeto.
+- **Resiliência de Estado**: Sincronizadas as dependências de memoização para garantir que a transição entre abas (Em Aberto, Pagos, Todos) e agrupamentos (Mês, Categoria) ocorra de forma atômica e segura.
+- **Auditoria de SVG**: Verificados os paths de ícones na `Sidebar` e `MobileBottomNav`. Identificado que erros de parsing reportados (`M3 12i2-2`) são provavelmente causados por ferramentas de tradução automática do navegador que corrompem strings de atributos SVG.
+
+**Por quê:**
+Estabilizar a plataforma em produção, eliminando o crash de "Tela Branca" ao navegar pelos módulos financeiros e garantindo a integridade visual da interface.
+
+**Arquivos afetados:**
+- `modules/financeiro/submodules/despesas-variaveis/DespesasVariaveis.page.tsx` [MODIFY]
+- `modules/financeiro/submodules/despesas-fixas/DespesasFixas.page.tsx` [MODIFY]
+

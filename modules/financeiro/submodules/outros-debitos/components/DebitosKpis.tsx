@@ -2,37 +2,37 @@ import React from 'react';
 
 interface Props {
   kpis?: {
-    total_creditado: number;
+    total_debitado: number;
     total_pendente: number;
     total_atrasado: number;
   } | null;
   loading?: boolean;
 }
 
-const CreditosKpis: React.FC<Props> = ({ kpis, loading }) => {
+const DebitosKpis: React.FC<Props> = ({ kpis, loading }) => {
   const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
-  const totalRecebido = kpis?.total_creditado ?? 0;
+  const totalDebitado = kpis?.total_debitado ?? 0;
   const totalPendente = kpis?.total_pendente ?? 0;
   const totalAtrasado = kpis?.total_atrasado ?? 0;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in slide-in-from-top-4 duration-700">
-      <div className="bg-white p-6 rounded-[2.5rem] border border-slate-200 shadow-sm flex items-center justify-between group hover:border-teal-300 transition-all">
+      <div className="bg-white p-6 rounded-[2.5rem] border border-slate-200 shadow-sm flex items-center justify-between group hover:border-rose-300 transition-all">
         <div>
-          <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest">Total Creditado</p>
+          <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest">Total Debitado</p>
           {loading ? (
             <div className="h-8 w-32 bg-slate-100 animate-pulse rounded-xl mt-1" />
           ) : (
-            <h3 className="text-2xl font-black text-teal-600 mt-1">{formatCurrency(totalRecebido)}</h3>
+            <h3 className="text-2xl font-black text-rose-600 mt-1">{formatCurrency(totalDebitado)}</h3>
           )}
         </div>
-        <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-teal-50 text-teal-600 shadow-sm">
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+        <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-rose-50 text-rose-600 shadow-sm">
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-[2.5rem] border border-slate-200 shadow-sm flex items-center justify-between group hover:border-teal-300 transition-all">
+      <div className="bg-white p-6 rounded-[2.5rem] border border-slate-200 shadow-sm flex items-center justify-between group hover:border-rose-300 transition-all">
         <div>
           <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest">Previsto (Em Aberto)</p>
           {loading ? (
@@ -63,4 +63,4 @@ const CreditosKpis: React.FC<Props> = ({ kpis, loading }) => {
   );
 };
 
-export default CreditosKpis;
+export default DebitosKpis;

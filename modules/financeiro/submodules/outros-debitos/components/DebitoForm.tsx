@@ -2,9 +2,9 @@ import React, { useState, useEffect, useMemo } from 'react';
 import ReactDOM from 'react-dom';
 import { ContasBancariasService } from '../../../../ajustes/contas-bancarias/contas.service';
 import { SociosService } from '../../../../ajustes/socios/socios.service';
-import { CondicoesRecebimentoService } from '../../../../cadastros/condicoes-recebimento/condicoes-recebimento.service';
-import { OutrosCreditosService } from '../outros-creditos.service';
-import { ITituloCredito } from '../outros-creditos.types';
+import { OutrosDebitosService } from '../outros-debitos.service';
+import { CondicoesPagamentoService } from '../../../../cadastros/condicoes-pagamento/condicoes-pagamento.service';
+import { ITituloDebito } from '../outros-debitos.types';
 
 interface ISocioSplit {
   socio_id: string;
@@ -13,19 +13,13 @@ interface ISocioSplit {
   valor: number;
 }
 
-interface IParcela {
-  numero: number;
-  data_vencimento: string;
-  valor: number;
-}
-
 interface Props {
-  editData?: ITituloCredito;
+  editData?: ITituloDebito;
   onClose: () => void;
   onSuccess: () => void;
 }
 
-const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
+const DebitoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
   const isEditing = !!editData;
   const [contas, setContas] = useState<any[]>([]);
   const [sociosDisponiveis, setSociosDisponiveis] = useState<any[]>([]);
@@ -37,26 +31,43 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
   const [dividirSocios, setDividirSocios] = useState(true);
   const [sociosVinculados, setSociosVinculados] = useState<ISocioSplit[]>([]);
 
-  const [formaPagamendoId, setFormaPagamentoId] = useState('');
   const [formasPagamento, setFormasPagamento] = useState<any[]>([]);
+  const [formaPagamentoId, setFormaPagamentoId] = useState('');
   const [condicoes, setCondicoes] = useState<any[]>([]);
   const [condicaoId, setCondicaoId] = useState('');
   const [loadingCondicoes, setLoadingCondicoes] = useState(false);
-  const [parcelas, setParcelas] = useState<IParcela[]>([]);
 
+  const today = new Date().toISOString().split('T')[0];
   const [formData, setFormData] = useState({
-    data_vencimento: editData?.data_vencimento || new Date().toISOString().split('T')[0],
+    data_lancamento: today,
+    data_vencimento: editData?.data_vencimento || today,
     descricao: editData?.descricao || '',
     valor_total: editData?.valor_total || 0,
     conta_id: '',
     documento_ref: editData?.documento_ref || '',
   });
 
+  const isVista = useMemo(() => {
+    if (!formaPagamentoId) return false;
+    const forma = formasPagamento.find(f => f.id === formaPagamentoId);
+    if (!forma) return false;
+    const nome = forma.nome.toUpperCase();
+    return nome.includes('PIX') || nome.includes('DINHEIRO') || forma.destino_lancamento === 'CAIXA';
+  }, [formaPagamentoId, formasPagamento]);
+
+  const isPrazo = useMemo(() => {
+    if (!formaPagamentoId) return false;
+    const forma = formasPagamento.find(f => f.id === formaPagamentoId);
+    if (!forma) return false;
+    const nome = forma.nome.toUpperCase();
+    return nome.includes('PRAZO') || forma.destino_lancamento === 'CONTAS_PAGAR' || forma.destino_lancamento === 'CONTAS_RECEBER';
+  }, [formaPagamentoId, formasPagamento]);
+
   useEffect(() => {
     Promise.all([
       ContasBancariasService.getAll(),
       SociosService.getAll(),
-      OutrosCreditosService.getFormasPagamento(),
+      OutrosDebitosService.getFormasPagamento(),
     ]).then(([cData, sData, fData]) => {
       setContas(cData.filter(c => c.ativo));
       const ativos = sData.filter((s: any) => s.ativo);
@@ -79,104 +90,26 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
     });
   }, []);
 
-  // Busca condições quando seleciona a forma
+  // Busca condições quando forma muda (apenas para prazo)
   useEffect(() => {
-    if (formaPagamendoId && !isEditing) {
+    if (formaPagamentoId && isPrazo) {
       setLoadingCondicoes(true);
-      CondicoesRecebimentoService.getByFormaPagamento(formaPagamendoId).then(data => {
-        const ativas = data.filter(c => c.ativo);
+      CondicoesPagamentoService.getByFormaPagamento(formaPagamentoId).then(data => {
+        const ativas = data.filter((c: any) => c.ativo !== false);
         setCondicoes(ativas);
-        // Auto-seleciona se houver apenas uma condição
-        if (ativas.length === 1) {
-          setCondicaoId(ativas[0].id);
-        } else {
-          setCondicaoId('');
-        }
+        if (ativas.length === 1) setCondicaoId(ativas[0].id);
+        else setCondicaoId('');
         setLoadingCondicoes(false);
       });
     } else {
       setCondicoes([]);
       setCondicaoId('');
     }
-    setParcelas([]);
-  }, [formaPagamendoId]);
-
-  // Gera parcelas quando muda condição ou valor
-  useEffect(() => {
-    if (!condicaoId || formData.valor_total <= 0) {
-      setParcelas([]);
-      return;
-    }
-
-    if (condicaoId === '__avista__') {
-      setParcelas([{
-        numero: 1,
-        data_vencimento: formData.data_vencimento,
-        valor: formData.valor_total
-      }]);
-      return;
-    }
-
-    const cond = condicoes.find(c => c.id === condicaoId);
-    if (!cond) return;
-
-    const novasParcelas: IParcela[] = [];
-    const valorParcela = formData.valor_total / cond.qtd_parcelas;
-    const baseDate = new Date(formData.data_vencimento);
-
-    for (let i = 0; i < cond.qtd_parcelas; i++) {
-      const d = new Date(baseDate);
-      d.setDate(d.getDate() + cond.dias_primeira_parcela + (i * cond.dias_entre_parcelas));
-      novasParcelas.push({
-        numero: i + 1,
-        data_vencimento: d.toISOString().split('T')[0],
-        valor: parseFloat(valorParcela.toFixed(2))
-      });
-    }
-
-    // Se houver parcelas recorrentes, garantir que a soma bate com o total (ajuste de centavos na última)
-    if (novasParcelas.length > 0) {
-      const soma = novasParcelas.reduce((acc, p) => acc + p.valor, 0);
-      const diff = parseFloat((formData.valor_total - soma).toFixed(2));
-      if (diff !== 0) {
-        novasParcelas[novasParcelas.length - 1].valor = parseFloat((novasParcelas[novasParcelas.length - 1].valor + diff).toFixed(2));
-      }
-    }
-
-    setParcelas(novasParcelas);
-  }, [condicaoId, formData.valor_total, formData.data_vencimento, condicoes]);
-
-  const updateParcelaDate = (numero: number, newDate: string) => {
-    setParcelas(prev => prev.map(p => p.numero === numero ? { ...p, data_vencimento: newDate } : p));
-  };
-
-  const isVista = useMemo(() => {
-    if (!formaPagamendoId) return false;
-    const forma = formasPagamento.find(f => f.id === formaPagamendoId);
-    if (!forma) return false;
-
-    // Identifica como vista se for PIX ou DINHEIRO (CAIXA físico)
-    const nomeForma = forma.nome.toUpperCase();
-    if (nomeForma.includes('PIX') || nomeForma.includes('DINHEIRO') || forma.destino_lancamento === 'CAIXA') {
-      return true;
-    }
-
-    // Se for PRAZO ou CONTAS_RECEBER, nunca é considerado "vista" para efeito de entrada imediata no banco/caixa
-    if (nomeForma.includes('PRAZO') || forma.destino_lancamento === 'CONTAS_RECEBER') {
-      return false;
-    }
-
-    if (condicaoId === '__avista__') return true;
-
-    // Se houver apenas uma parcela e o vencimento for hoje ou no passado
-    const hoje = new Date().toISOString().split('T')[0];
-    return parcelas.length === 1 && parcelas[0].data_vencimento <= hoje;
-  }, [formaPagamendoId, condicaoId, parcelas, formasPagamento]);
+  }, [formaPagamentoId, isPrazo]);
 
   // Recalculate valores when valor_total changes
   useEffect(() => {
     if (sociosVinculados.length > 0 && formData.valor_total > 0) {
-      // Se já temos porcentagens, recalculamos os valores mas mantemos a soma correta
       const count = sociosVinculados.length;
       const novosValores = sociosVinculados.map((s, i) => {
         const v = i === count - 1 ?
@@ -220,11 +153,9 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
     if (sociosVinculados.length === 0 || formData.valor_total <= 0) return;
     const count = sociosVinculados.length;
 
-    // Calcula o valor base por sócio
     const baseValue = Math.floor((formData.valor_total / count) * 100) / 100;
     const leftoverValue = parseFloat((formData.valor_total - (baseValue * count)).toFixed(2));
 
-    // Calcula a porcentagem base por sócio
     const basePercent = Math.floor((100 / count) * 100) / 100;
     const leftoverPercent = parseFloat((100 - (basePercent * count)).toFixed(2));
 
@@ -275,7 +206,7 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
       if (!formData.descricao.trim()) { setFormError('Informe a descrição.'); return; }
       setIsSaving(true);
       try {
-        await OutrosCreditosService.update(editData!.id, {
+        await OutrosDebitosService.update(editData!.id, {
           descricao: formData.descricao,
           data_vencimento: formData.data_vencimento,
           documento_ref: formData.documento_ref,
@@ -295,44 +226,38 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
     }
 
     if (formData.valor_total <= 0) { setFormError('Informe um valor maior que zero.'); return; }
-    if (!formaPagamendoId) { setFormError('Selecione a forma de recebimento.'); return; }
-    if (!condicaoId) { setFormError('Selecione a condição de pagamento.'); return; }
-    if (isVista && !formData.conta_id) {
-      setFormError('Selecione uma conta bancária de destino.');
-      return;
-    }
-
+    if (!formData.descricao.trim()) { setFormError('Informe a descrição / motivo do débito.'); return; }
+    if (isVista && !formData.conta_id) { setFormError('Selecione a conta de saída para pagamento imediato.'); return; }
+    if (isPrazo && !condicaoId) { setFormError('Selecione a condição de pagamento.'); return; }
     if (dividirSocios && sociosVinculados.length === 0) { setFormError('Selecione pelo menos um sócio para dividir.'); return; }
     if (dividirSocios && totalPorcentagem < 99.99) { setFormError('A soma das porcentagens deve totalizar 100%. Ajuste as participações.'); return; }
 
+    // Data de vencimento: à vista = data de lançamento; prazo = data escolhida
+    const dataVenc = isVista ? formData.data_lancamento : formData.data_vencimento;
+
     setIsSaving(true);
     try {
-      // Para cada parcela gerada, cria um lançamento de crédito
-      // NOTA: Se houver sócios, o valor de cada parcela deve ser dividido proporcionalmente?
-      // Neste momento, vamos simplificar seguindo o desejo do usuário de "lancar" após ver a lista.
+      const resp = await OutrosDebitosService.save({
+        descricao: formData.descricao,
+        valor_total: formData.valor_total,
+        data_vencimento: dataVenc,
+        conta_id: isVista ? (formData.conta_id || null) : null,
+        documento_ref: formData.documento_ref,
+        socios: dividirSocios ? sociosVinculados.map(s => ({
+          socio_id: s.socio_id,
+          valor: s.valor,
+          porcentagem: s.porcentagem,
+        })) : undefined,
+      });
 
-      for (const p of parcelas) {
-        const resp = await OutrosCreditosService.save({
-          ...formData,
-          valor_total: p.valor,
-          data_vencimento: p.data_vencimento,
-          conta_id: isVista ? formData.conta_id : null,
-          socios: dividirSocios ? sociosVinculados.map(s => ({
-            socio_id: s.socio_id,
-            valor: s.valor,
-            porcentagem: s.porcentagem,
-          })) : undefined,
+      // Baixa imediata somente se for à vista
+      if (isVista && formData.conta_id && formaPagamentoId && resp?.id) {
+        await OutrosDebitosService.baixarDebito(resp.id, {
+          valor: formData.valor_total,
+          data_pagamento: formData.data_lancamento,
+          conta_id: formData.conta_id,
+          forma_pagamento_id: formaPagamentoId
         });
-
-        // Se for a vista (ou vencimento hoje), realiza a baixa imediata
-        if (isVista && resp?.id) {
-          await OutrosCreditosService.baixarCredito(resp.id, {
-            valor: p.valor,
-            data_pagamento: p.data_vencimento,
-            conta_id: formData.conta_id,
-            forma_pagamento_id: formaPagamendoId
-          });
-        }
       }
 
       onSuccess();
@@ -350,6 +275,7 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
     'from-rose-500 to-pink-500',
     'from-purple-500 to-violet-500',
   ];
+
   // Travar scroll do body
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -360,10 +286,10 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
     <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
       <div className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 border border-slate-100 max-h-[90vh] flex flex-col">
         {/* Header */}
-        <div className="p-8 border-b border-slate-50 bg-teal-600 text-white shrink-0">
-          <h3 className="text-xl font-black uppercase tracking-tighter">{isEditing ? 'Editar Crédito' : 'Lançar Crédito'}</h3>
+        <div className="p-8 border-b border-slate-50 bg-rose-600 text-white shrink-0">
+          <h3 className="text-xl font-black uppercase tracking-tighter">{isEditing ? 'Editar Débito' : 'Lançar Débito'}</h3>
           <p className="text-[10px] font-bold uppercase tracking-widest opacity-80 mt-1">
-            {isEditing ? 'Alterar dados do crédito lançado' : 'Aportes, rendimentos e entradas extraordinárias'}
+            {isEditing ? 'Alterar dados do débito lançado' : 'Empréstimos, financiamentos e saídas extraordinárias'}
           </p>
         </div>
 
@@ -394,140 +320,96 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
               type="text"
               value={formData.descricao}
               onChange={e => setFormData({ ...formData, descricao: e.target.value.toUpperCase() })}
-              placeholder="Ex: Rendimento aplicação, aporte sócio, bonificação..."
-              className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3.5 font-bold text-[#111827] outline-none focus:ring-2 focus:ring-teal-500"
+              placeholder="Ex: Empréstimo bancário, financiamento, devolução cliente..."
+              className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3.5 font-bold text-[#111827] outline-none focus:ring-2 focus:ring-rose-500"
               required
             />
           </div>
 
-          {/* 2. Valor + Data Base */}
+          {/* 2. Valor + Data de Lançamento */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">
-                Valor Total
-              </label>
+              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">Valor Total</label>
               <input
                 type="text"
                 value={valorFormatado}
                 onChange={handleCurrencyChange}
-                className="w-full bg-white border-2 border-teal-100 rounded-2xl px-5 py-3.5 text-lg font-black text-teal-600 outline-none focus:border-teal-500 text-center"
+                className="w-full bg-white border-2 border-rose-100 rounded-2xl px-5 py-3.5 text-lg font-black text-rose-600 outline-none focus:border-rose-500 text-center"
                 required
               />
             </div>
             <div>
-              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">
-                Data do Lançamento
-              </label>
+              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">Data de Lançamento</label>
               <input
                 type="date"
-                value={formData.data_vencimento}
-                onChange={e => setFormData({ ...formData, data_vencimento: e.target.value })}
-                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3.5 font-bold text-[#111827] outline-none focus:ring-2 focus:ring-teal-500"
+                value={formData.data_lancamento}
+                onChange={e => setFormData({ ...formData, data_lancamento: e.target.value })}
+                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3.5 font-bold text-[#111827] outline-none focus:ring-2 focus:ring-rose-500"
                 required
               />
             </div>
           </div>
 
-          {/* 3. Forma de Recebimento */}
+          {/* 3. Forma de Pagamento */}
           {!isEditing && (
             <div>
-              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">
-                Forma de Recebimento
-              </label>
+              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">Forma de Pagamento <span className="text-slate-300">(opcional — sem seleção = Pendente)</span></label>
               <select
-                required
-                value={formaPagamendoId}
-                onChange={e => setFormaPagamentoId(e.target.value)}
-                className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-bold text-[#111827] outline-none appearance-none focus:ring-2 focus:ring-teal-500"
+                value={formaPagamentoId}
+                onChange={e => { setFormaPagamentoId(e.target.value); setFormData(p => ({ ...p, conta_id: '' })); }}
+                className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-bold text-[#111827] outline-none appearance-none focus:ring-2 focus:ring-rose-500"
               >
-                <option value="">Selecione a forma...</option>
-                {formasPagamento.map(f => (
-                  <option key={f.id} value={f.id}>{f.nome}</option>
-                ))}
+                <option value="">Deixar pendente...</option>
+                {formasPagamento.map(f => <option key={f.id} value={f.id}>{f.nome}</option>)}
               </select>
             </div>
           )}
 
-          {/* 4. Condição de Pagamento (Prazo) */}
-          {formaPagamendoId && !isEditing && (
-            <div className="animate-in slide-in-from-top-2 duration-300">
-              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1 flex justify-between">
-                Condição / Regra de Prazo
-                {loadingCondicoes && <div className="w-3 h-3 border-2 border-teal-500 border-t-transparent rounded-full animate-spin"></div>}
-              </label>
-              <select
-                required
-                value={condicaoId}
-                onChange={e => setCondicaoId(e.target.value)}
-                className="w-full bg-teal-50 border border-teal-100 rounded-xl px-4 py-3.5 text-sm font-bold text-teal-700 outline-none appearance-none focus:ring-2 focus:ring-teal-500"
-              >
-                <option value="">{loadingCondicoes ? 'Buscando...' : 'Selecione a condição...'}</option>
-                {condicoes.map(c => (
-                  <option key={c.id} value={c.id}>{c.nome}</option>
-                ))}
-              </select>
-            </div>
-          )}
-
-          {/* 5. Cronograma de Parcelas */}
-          {parcelas.length > 0 && condicaoId && (
-            <div className="bg-slate-50 border border-slate-100 p-5 rounded-3xl space-y-4 animate-in slide-in-from-bottom-2">
-              <div className="flex items-center justify-between px-1">
-                <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Cronograma de Recebimento</h4>
-                <span className="text-[9px] font-black bg-teal-500 text-white px-2 py-0.5 rounded uppercase">
-                  {parcelas.length} {parcelas.length === 1 ? 'Parcela' : 'Parcelas'}
-                </span>
-              </div>
-
-              <div className="max-h-[220px] overflow-y-auto space-y-3 pr-1 custom-scrollbar">
-                {parcelas.map(p => (
-                  <div key={p.numero} className="flex items-center gap-4 bg-white p-4 rounded-2xl border border-slate-100 group shadow-sm hover:border-teal-200 transition-all">
-                    <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0">
-                      <span className="text-xs font-black text-slate-400">{p.numero}º</span>
-                    </div>
-
-                    <div className="flex-1">
-                      <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Data Prevista</p>
-                      <input
-                        type="date"
-                        value={p.data_vencimento}
-                        onChange={(e) => updateParcelaDate(p.numero, e.target.value)}
-                        className="w-full bg-transparent font-black text-slate-800 text-xs outline-none cursor-pointer focus:text-teal-600"
-                      />
-                    </div>
-
-                    <div className="text-right">
-                      <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Valor</p>
-                      <p className="text-sm font-black text-[#111827]">
-                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(p.valor)}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* 6. Conta Bancária (Apenas se for Vista) */}
-          {isVista && !isEditing && (
-            <div className="animate-in slide-in-from-top-2 duration-300 bg-emerald-50 border border-emerald-100 p-5 rounded-3xl">
-              <label className="block text-[10px] font-black text-emerald-600 uppercase mb-3 ml-1">
-                Conta para Recebimento Imediato
-              </label>
+          {/* 4a. À Vista: Conta de Saída */}
+          {!isEditing && isVista && (
+            <div className="bg-rose-50 border border-rose-100 p-5 rounded-3xl animate-in slide-in-from-top-2 duration-200">
+              <label className="block text-[10px] font-black text-rose-600 uppercase mb-3">Conta de Saída</label>
               <select
                 required
                 value={formData.conta_id}
                 onChange={e => setFormData({ ...formData, conta_id: e.target.value })}
-                className="w-full bg-white border border-emerald-200 rounded-xl px-4 py-3.5 text-sm font-bold text-emerald-900 outline-none appearance-none focus:ring-2 focus:ring-emerald-500 shadow-sm"
+                className="w-full bg-white border border-rose-200 rounded-xl px-4 py-3 text-sm font-bold text-[#111827] outline-none appearance-none focus:ring-2 focus:ring-rose-500"
               >
                 <option value="">Selecione a conta...</option>
-                {contas.map(c => (
-                  <option key={c.id} value={c.id}>
-                    {c.banco_nome} - {c.titular} | Saldo:{' '}
-                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(c.saldo_atual || 0)}
-                  </option>
-                ))}
+                {contas.map(c => <option key={c.id} value={c.id}>{c.banco_nome} - {c.titular} | Saldo: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(c.saldo_atual || 0)}</option>)}
               </select>
+              <p className="text-[9px] text-rose-400 font-bold mt-2">Pagamento registrado na data de lançamento.</p>
+            </div>
+          )}
+
+          {/* 4b. A Prazo: Condição + Data de Vencimento */}
+          {!isEditing && isPrazo && (
+            <div className="bg-amber-50 border border-amber-100 p-5 rounded-3xl space-y-4 animate-in slide-in-from-top-2 duration-200">
+              <div>
+                <label className="block text-[10px] font-black text-amber-700 uppercase mb-2 flex justify-between">
+                  Condição de Pagamento
+                  {loadingCondicoes && <div className="w-3 h-3 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />}
+                </label>
+                <select
+                  required
+                  value={condicaoId}
+                  onChange={e => setCondicaoId(e.target.value)}
+                  className="w-full bg-white border border-amber-200 rounded-xl px-4 py-3 text-sm font-bold text-[#111827] outline-none appearance-none focus:ring-2 focus:ring-amber-500"
+                >
+                  <option value="">{loadingCondicoes ? 'Buscando...' : 'Selecione a condição...'}</option>
+                  {condicoes.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-[10px] font-black text-amber-700 uppercase mb-2">Data de Vencimento</label>
+                <input
+                  type="date"
+                  required
+                  value={formData.data_vencimento}
+                  onChange={e => setFormData({ ...formData, data_vencimento: e.target.value })}
+                  className="w-full bg-white border border-amber-200 rounded-xl px-4 py-3 font-bold text-[#111827] outline-none focus:ring-2 focus:ring-amber-500"
+                />
+              </div>
             </div>
           )}
 
@@ -540,12 +422,12 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
               type="text"
               value={formData.documento_ref}
               onChange={e => setFormData({ ...formData, documento_ref: e.target.value })}
-              placeholder="Ex: NF-1234, TED-5678..."
-              className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3.5 font-bold text-[#111827] outline-none focus:ring-2 focus:ring-teal-500"
+              placeholder="Ex: Contrato-1234, NF-5678..."
+              className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3.5 font-bold text-[#111827] outline-none focus:ring-2 focus:ring-rose-500"
             />
           </div>
 
-          {/* Divisão entre Sócios - Tornada obrigatória */}
+          {/* Divisão entre Sócios */}
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center">
               <div className="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mr-4">
@@ -555,12 +437,12 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
               </div>
               <div>
                 <h3 className="text-sm font-black text-slate-800 uppercase tracking-tight">Divisão entre Sócios</h3>
-                <p className="text-[10px] text-slate-500 font-medium">Selecione os sócios e defina as participações</p>
+                <p className="text-[10px] text-slate-500 font-medium">Selecione os sócios responsáveis pelo débito</p>
               </div>
             </div>
           </div>
 
-          {/* Partner Split Section - Always visible now */}
+          {/* Partner Split Section */}
           <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
             {/* Progress Bar */}
             {sociosVinculados.length > 0 && (
@@ -674,9 +556,9 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
             <button
               type="submit"
               disabled={isSaving}
-              className="flex-1 py-4 bg-teal-600 text-white font-black text-xs uppercase tracking-widest rounded-2xl shadow-lg hover:bg-teal-700 transition-all flex items-center justify-center"
+              className="flex-1 py-4 bg-rose-600 text-white font-black text-xs uppercase tracking-widest rounded-2xl shadow-lg hover:bg-rose-700 transition-all flex items-center justify-center"
             >
-              {isSaving ? 'Gravando...' : isEditing ? 'Salvar Alterações' : 'Confirmar Crédito'}
+              {isSaving ? 'Gravando...' : isEditing ? 'Salvar Alterações' : 'Confirmar Débito'}
             </button>
           </div>
         </form>
@@ -687,4 +569,4 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
   return ReactDOM.createPortal(content, document.body);
 };
 
-export default CreditoForm;
+export default DebitoForm;
