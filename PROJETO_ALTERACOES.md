@@ -1,5 +1,17 @@
 # Histórico de Alterações do Projeto
 
+## [2026-04-30] - Fix: Sincronização entre Outros Débitos/Créditos e Módulo Caixa
+**O que foi feito:**
+- **Bug de Sincronização**: Ao excluir ou lançar registros nos módulos "Outros Débitos" e "Outros Créditos", o dashboard do "Módulo Caixa" não atualizava automaticamente (exigia F5). Isso ocorria porque as deleções em tempo real do Supabase às vezes são filtradas por RLS se a replica identity não for FULL, e o frontend não invalidava manualmente as queries globais.
+- **Fix Frontend**: Adicionado `useQueryClient` aos módulos de Outros Débitos e Outros Créditos. Agora, qualquer operação bem-sucedida (Lançar, Editar, Excluir, Baixar) dispara um `queryClient.invalidateQueries({ queryKey: ['caixa_dashboard'] })`, garantindo que o dashboard financeiro reflita os dados atualizados instantaneamente.
+- **Fix Backend (DB)**: Criada migração `20260430_fix_realtime_delete.sql` que define `REPLICA IDENTITY FULL` nas tabelas `fin_titulos`, `fin_transacoes` e `fin_contas_bancarias`. Isso garante que o Supabase Realtime envie todos os campos nas deleções, permitindo que o RLS processe os eventos corretamente no lado do cliente.
+- **Estabilidade**: Otimizada a experiência do usuário eliminando a necessidade de recarregar a página para ver o saldo e passivos atualizados no Caixa.
+
+**Arquivos afetados:**
+- `modules/financeiro/submodules/outros-debitos/OutrosDebitos.page.tsx` [FIX]
+- `modules/financeiro/submodules/outros-creditos/OutrosCreditos.page.tsx` [FIX]
+- `supabase/migrations/20260430_fix_realtime_delete.sql` [NEW]
+
 ## [2026-04-29] - Fix: Cards KPIs em Branco + Integração OUTRO_DEBITO nos Cálculos
 **O que foi feito:**
 - **Bug KPIs em Branco (Root Cause)**: Os cards de KPIs nos módulos Outros Débitos e Outros Créditos mostravam skeleton loading infinito (barras cinza pulsando) ao invés de exibir `R$ 0,00`. A causa era dupla:

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { OutrosCreditosService } from './outros-creditos.service';
 import { ITituloCredito, CreditosTab, ICreditoFiltros, SortFieldCredito, SortOrder } from './outros-creditos.types';
 import CreditosFilters from './components/CreditosFilters';
@@ -11,6 +12,7 @@ import ConfirmModal from '../../../../components/ConfirmModal';
 
 // force-refresh-v2
 const OutrosCreditosPage: React.FC = () => {
+  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<CreditosTab>('ABERTO');
   const [titulos, setTitulos] = useState<ITituloCredito[]>([]);
   const [kpis, setKpis] = useState<any>(null);
@@ -108,6 +110,10 @@ const OutrosCreditosPage: React.FC = () => {
       await OutrosCreditosService.delete(deleteId);
       setDeleteId(null);
       setToast({ type: 'success', message: 'Crédito removido com sucesso!' });
+      
+      // Invalida o dashboard do caixa para refletir a mudança
+      queryClient.invalidateQueries({ queryKey: ['caixa_dashboard'] });
+      
       loadData(true);
     } catch (e) {
       setToast({ type: 'error', message: 'Erro ao remover lançamento.' });
@@ -198,7 +204,12 @@ const OutrosCreditosPage: React.FC = () => {
         <ModalDetalhesCredito
           titulo={selectedTitulo as any}
           onClose={() => setSelectedTitulo(null)}
-          onSuccess={() => { setSelectedTitulo(null); loadData(true); setToast({ type: 'success', message: 'Operação realizada com sucesso!' }); }}
+          onSuccess={() => { 
+            setSelectedTitulo(null); 
+            queryClient.invalidateQueries({ queryKey: ['caixa_dashboard'] });
+            loadData(true); 
+            setToast({ type: 'success', message: 'Operação realizada com sucesso!' }); 
+          }}
         />
       )}
 
@@ -206,7 +217,12 @@ const OutrosCreditosPage: React.FC = () => {
         <ModalBaixa
           titulo={selectedBaixaTitulo as any}
           onClose={() => setSelectedBaixaTitulo(null)}
-          onSuccess={() => { setSelectedBaixaTitulo(null); loadData(true); setToast({ type: 'success', message: 'Recebimento realizado com sucesso!' }); }}
+          onSuccess={() => { 
+            setSelectedBaixaTitulo(null); 
+            queryClient.invalidateQueries({ queryKey: ['caixa_dashboard'] });
+            loadData(true); 
+            setToast({ type: 'success', message: 'Recebimento realizado com sucesso!' }); 
+          }}
         />
       )}
 
@@ -214,7 +230,13 @@ const OutrosCreditosPage: React.FC = () => {
         <CreditoForm
           editData={editTitulo || undefined}
           onClose={() => { setIsFormOpen(false); setEditTitulo(null); }}
-          onSuccess={() => { setIsFormOpen(false); setEditTitulo(null); loadData(true); setToast({ type: 'success', message: editTitulo ? 'Crédito atualizado com sucesso!' : 'Crédito lançado com sucesso!' }); }}
+          onSuccess={() => { 
+            setIsFormOpen(false); 
+            setEditTitulo(null); 
+            queryClient.invalidateQueries({ queryKey: ['caixa_dashboard'] });
+            loadData(true); 
+            setToast({ type: 'success', message: editTitulo ? 'Crédito atualizado com sucesso!' : 'Crédito lançado com sucesso!' }); 
+          }}
         />
       )}
 
