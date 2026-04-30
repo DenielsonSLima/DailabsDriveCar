@@ -91,32 +91,43 @@ serve(async (req) => {
     })
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
-      console.error('Erro na API Brasil:', errorData)
+      const errorText = await response.text().catch(() => 'Erro desconhecido')
+      console.error(`FIPE: [EDGE] Erro na API Brasil (${response.status}):`, errorText)
+      
+      let errorData: any = {}
+      try {
+        errorData = JSON.parse(errorText)
+      } catch (e) {
+        // Não é JSON
+      }
 
       if (response.status === 402 || (errorData.message && errorData.message.toLowerCase().includes('saldo'))) {
         throw new Error('SALDO_SISTEMA_INSUFICIENTE')
       }
-      throw new Error(errorData.message || 'Falha ao consultar a placa na API Brasil.')
+      
+      // Se a API retornar uma mensagem específica, usamos ela
+      const apiMessage = errorData.message || errorData.error || errorText
+      throw new Error(`API_BRASIL_ERROR: ${apiMessage}`)
     }
 
     const apiData = await response.json()
+    console.log(`FIPE: [EDGE] Dados recebidos para placa ${limpaPlaca}`)
     
     if (apiData.error) {
+      console.error('FIPE: [EDGE] API retornou erro no corpo:', apiData)
       throw new Error(apiData.message || 'A API retornou erro para esta consulta.')
     }
 
     // 4. Salvar no Cache Global
     if (apiData.data?.resultados?.[0]) {
       const result = apiData.data.resultados[0]
-      // Usamos o Service Role ou o cliente atual para salvar o cache? 
-      // Como o cache é global, idealmente qualquer um pode salvar.
+      console.log('FIPE: [EDGE] Salvando no cache...')
       await supabaseClient.from('fipe_api_cache').upsert({
         placa: limpaPlaca,
         dados_json: apiData,
         mes_referencia: result.mesReferencia || mesAtual,
         updated_at: new Date().toISOString()
-      })
+      }).catch(err => console.error('Erro ao salvar cache:', err))
     }
 
     return new Response(
@@ -134,6 +145,8 @@ serve(async (req) => {
       message = 'Você atingiu o limite de 100 consultas mensais da sua loja.'
     } else if (message === 'SALDO_SISTEMA_INSUFICIENTE') {
       message = 'O sistema está em manutenção de saldo. Tente novamente mais tarde.'
+    } else if (message.startsWith('API_BRASIL_ERROR: ')) {
+      message = message.replace('API_BRASIL_ERROR: ', '')
     }
 
     return new Response(

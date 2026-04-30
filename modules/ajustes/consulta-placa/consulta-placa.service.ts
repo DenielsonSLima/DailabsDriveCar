@@ -70,15 +70,29 @@ export const consultaPlacaService = {
       if (error) {
         console.error('Erro ao invocar função consulta-veiculo:', error);
         
-        // Mapeamento de erros amigáveis retornados pela função
-        if (error.message?.includes('LIMITE_MENSAL_ATINGIDO')) {
+        // Se for um erro da Edge Function, tentamos extrair a mensagem do corpo da resposta
+        // Em versões recentes do @supabase/supabase-js, o erro pode vir com o corpo parseado
+        // ou precisamos checar o context.
+        let errorMessage = error.message;
+
+        if (error.context && typeof error.context.json === 'function') {
+          try {
+            const body = await error.context.json();
+            if (body && body.message) errorMessage = body.message;
+          } catch (e) {
+            console.error('Erro ao parsear corpo do erro:', e);
+          }
+        }
+
+        // Mapeamento de erros amigáveis baseados na mensagem final
+        if (errorMessage.includes('LIMITE_MENSAL_ATINGIDO')) {
           throw new Error('Você atingiu o limite de 100 consultas mensais da sua loja.');
         }
-        if (error.message?.includes('SALDO_SISTEMA_INSUFICIENTE')) {
+        if (errorMessage.includes('SALDO_SISTEMA_INSUFICIENTE')) {
           throw new Error('O sistema está em manutenção de saldo. Tente novamente mais tarde.');
         }
         
-        throw new Error(error.message || 'Falha ao consultar a placa.');
+        throw new Error(errorMessage || 'Falha ao consultar a placa.');
       }
 
       // Se a função retornou erro no corpo
