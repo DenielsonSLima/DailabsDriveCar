@@ -12,6 +12,7 @@ export const TituloSchema = z.object({
   parceiro_id: z.string().optional().nullable(),
   categoria_id: z.string().optional().nullable(),
   pedido_id: z.string().optional().nullable(),
+  venda_pedido_id: z.string().optional().nullable(),
   descricao: z.string(),
   tipo: z.enum(['PAGAR', 'RECEBER']),
   status: z.enum(['PENDENTE', 'PARCIAL', 'PAGO', 'ATRASADO', 'CANCELADO']),
@@ -84,6 +85,7 @@ export interface ITitulo {
   parceiro_id?: string;
   categoria_id?: string;
   pedido_id?: string;
+  venda_pedido_id?: string;
   descricao: string;
   tipo: TipoTitulo;
   status: StatusTitulo;

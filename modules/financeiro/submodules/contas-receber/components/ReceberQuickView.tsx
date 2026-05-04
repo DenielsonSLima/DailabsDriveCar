@@ -4,6 +4,10 @@ import { ITituloReceber } from '../contas-receber.types';
 import { useQueryClient } from '@tanstack/react-query';
 import { TitulosService } from '../../../services/titulos.service';
 import ConfirmModal from '../../../../../components/ConfirmModal';
+// import toast from 'react-hot-toast';
+import { FinanceiroService } from '../../../financeiro.service';
+import { ContasReceberService } from '../contas-receber.service';
+import { IContaBancaria } from '../../../ajustes/contas-bancarias/contas.types';
 
 interface ReceberQuickViewProps {
     titulo: ITituloReceber;
@@ -20,7 +24,35 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
     const [novoValor, setNovoValor] = useState<number>(0);
     const [novaData, setNovaData] = useState<string>('');
     const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+    const [confirmDeleteLoanId, setConfirmDeleteLoanId] = useState<string | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
+
+    // Estados para adicionar empréstimo
+    const [isAdicionandoEmprestimo, setIsAdicionandoEmprestimo] = useState(false);
+    const [emprestimoValor, setEmprestimoValor] = useState<number>(0);
+    const [emprestimoData, setEmprestimoData] = useState<string>(new Date().toISOString().split('T')[0]);
+    const [emprestimoDescricao, setEmprestimoDescricao] = useState<string>('Empréstimo Adicional');
+    const [isSubmittingEmprestimo, setIsSubmittingEmprestimo] = useState(false);
+    const [editandoLoanId, setEditandoLoanId] = useState<string | null>(null);
+
+    // Estados para saída financeira (Empréstimo)
+    const [contasBancarias, setContasBancarias] = useState<IContaBancaria[]>([]);
+    const [vaiDebitarConta, setVaiDebitarConta] = useState(false);
+    const [contaSaidaId, setContaSaidaId] = useState('');
+    const [valorSaida, setValorSaida] = useState<number>(0);
+
+    const [toast, setToast] = useState<{ type: 'success' | 'error' | 'warning', message: string } | null>(null);
+
+    const showToast = (type: 'success' | 'error' | 'warning', message: string) => {
+        setToast({ type, message });
+        setTimeout(() => setToast(null), 3500);
+    };
+
+    useEffect(() => {
+        if (isAdicionandoEmprestimo && contasBancarias.length === 0) {
+            FinanceiroService.getContasBancarias().then(setContasBancarias).catch(console.error);
+        }
+    }, [isAdicionandoEmprestimo]);
 
     if (!isOpen) return null;
 
@@ -47,10 +79,11 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
             queryClient.invalidateQueries({ queryKey: ['contas-receber'] });
             queryClient.invalidateQueries({ queryKey: ['caixa-transacoes'] });
             setConfirmDeleteId(null);
+            toast.success('Recebimento estornado com sucesso!');
             onClose();
         } catch (err) {
             console.error('Erro ao excluir recebimento:', err);
-            alert('Erro ao excluir recebimento.');
+            toast.error('Erro ao estornar recebimento.');
         } finally {
             setIsDeleting(false);
         }
@@ -72,11 +105,115 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
             setEditandoId(null);
             queryClient.invalidateQueries({ queryKey: ['contas-receber'] });
             queryClient.invalidateQueries({ queryKey: ['caixa-transacoes'] });
+            showToast('success', 'Recebimento atualizado com sucesso!');
             onClose(); // Fecha para forçar refresh do pai já que é via props
         } catch (err) {
             console.error('Erro ao editar recebimento:', err);
-            alert('Erro ao editar recebimento.');
+            showToast('error', 'Erro ao editar recebimento.');
         }
+    };
+
+    const handleAddEmprestimo = async () => {
+        const t = titulo as any;
+        if (!t.venda_pedido_id) return;
+        setIsSubmittingEmprestimo(true);
+        try {
+            if (editandoLoanId) {
+                await TitulosService.editarCobrancaAvulsa(editandoLoanId, {
+                    descricao: emprestimoDescricao,
+                    valor: emprestimoValor,
+                    data_vencimento: emprestimoData,
+                    valor_saida: vaiDebitarConta ? valorSaida : undefined,
+                    conta_saida_id: vaiDebitarConta ? contaSaidaId : undefined
+                });
+                showToast('success', 'Cobrança / Empréstimo atualizado com sucesso!');
+            } else {
+                await TitulosService.lancarCobrancaAvulsa({
+                    descricao: emprestimoDescricao,
+                    valor: emprestimoValor,
+                    data_vencimento: emprestimoData,
+                    venda_pedido_id: t.venda_pedido_id,
+                    parceiro_id: t.parceiro_id || '',
+                    veiculo_id: t.veiculo_id || undefined,
+                    valor_saida: vaiDebitarConta ? valorSaida : undefined,
+                    conta_saida_id: vaiDebitarConta ? contaSaidaId : undefined
+                });
+                showToast('success', 'Cobrança / Empréstimo adicionado com sucesso!');
+            }
+            setIsAdicionandoEmprestimo(false);
+            setEditandoLoanId(null);
+            setEmprestimoValor(0);
+            setValorSaida(0);
+            setVaiDebitarConta(false);
+            setContaSaidaId('');
+            setEmprestimoDescricao('Empréstimo Adicional');
+            queryClient.invalidateQueries({ queryKey: ['contas-receber'] });
+            queryClient.invalidateQueries({ queryKey: ['contas-receber-kpis'] });
+        } catch(err) {
+            console.error(err);
+            showToast('error', 'Erro ao salvar empréstimo');
+        } finally {
+            setIsSubmittingEmprestimo(false);
+        }
+    };
+
+    const handleEditLoan = (sub: any) => {
+        const loanTx = sub.transacoes?.find((t: any) => t.tipo_transacao === 'EMPRESTIMO_CONCEDIDO' && t.tipo === 'SAIDA');
+        setEditandoLoanId(sub.id);
+        setEmprestimoValor(sub.valor_total || 0);
+        setEmprestimoDescricao(sub.descricao);
+        setEmprestimoData(new Date(sub.data_vencimento).toISOString().split('T')[0]);
+        if (loanTx) {
+            setVaiDebitarConta(true);
+            setValorSaida(loanTx.valor);
+            setContaSaidaId(loanTx.conta_origem_id || '');
+        } else {
+            setVaiDebitarConta(false);
+            setValorSaida(0);
+            setContaSaidaId('');
+        }
+        setIsAdicionandoEmprestimo(true);
+        // Tenta rolar o form para a visão
+        setTimeout(() => {
+            document.getElementById('form-emprestimo-container')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+    };
+
+    const onConfirmDeleteLoan = async () => {
+        if (!confirmDeleteLoanId) return;
+        setIsDeleting(true);
+        try {
+            await ContasReceberService.delete(confirmDeleteLoanId);
+            setConfirmDeleteLoanId(null);
+            queryClient.invalidateQueries({ queryKey: ['contas-receber'] });
+            queryClient.invalidateQueries({ queryKey: ['contas-receber-kpis'] });
+            showToast('success', 'Empréstimo removido com sucesso!');
+        } catch (e) {
+            console.error(e);
+            showToast('error', 'Erro ao remover empréstimo');
+        } finally {
+            setIsDeleting(false);
+        }
+    };
+
+    const handleValorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value.replace(/\D/g, '');
+        if (value === '') {
+            setEmprestimoValor(0);
+            return;
+        }
+        const floatValue = parseInt(value, 10) / 100;
+        setEmprestimoValor(floatValue);
+    };
+
+    const handleValorSaidaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value.replace(/\D/g, '');
+        if (value === '') {
+            setValorSaida(0);
+            return;
+        }
+        const floatValue = parseInt(value, 10) / 100;
+        setValorSaida(floatValue);
     };
 
     // Travar o scroll do corpo quando o modal estiver aberto
@@ -93,10 +230,16 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
 
     const content = (
         <>
-            <div
-                className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[150] transition-opacity animate-in fade-in duration-300"
+            <div 
+                className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[150] transition-opacity animate-in fade-in duration-300" 
                 onClick={onClose}
-            />
+            ></div>
+
+            {toast && (
+                <div className={`fixed top-6 right-6 z-[300] px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 animate-in slide-in-from-right duration-300 border backdrop-blur-md ${toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' : 'bg-rose-600 text-white border-rose-400/50'} `}>
+                    <span className="font-bold text-sm tracking-tight">{toast.message}</span>
+                </div>
+            )}
 
             <div className={`fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl z-[151] transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'} flex flex-col`}>
                 {/* Header */}
@@ -123,10 +266,15 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                     {/* Valor Principal e Resumo */}
                     <div className="space-y-4">
                         <div className="px-6 py-8 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-3xl text-center shadow-lg shadow-emerald-200">
-                            <p className="text-xs font-black text-emerald-100 uppercase tracking-widest mb-2">Valor Total</p>
+                            <p className="text-xs font-black text-emerald-100 uppercase tracking-widest mb-2">Valor Total Consolidado</p>
                             <h2 className="text-4xl font-black text-white tracking-tighter">
                                 {formatCurrency(titulo.valor_total)}
                             </h2>
+                            {(titulo as any).sub_titulos && (titulo as any).sub_titulos.length > 0 && (
+                                <p className="mt-2 text-[10px] font-bold text-emerald-100 uppercase tracking-widest opacity-90">
+                                    Original do Veículo: {formatCurrency((titulo as any).valor_base_carro)}
+                                </p>
+                            )}
                             <div className="mt-4 flex justify-center">
                                 <span className={`px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-full border ${titulo.status === 'PAGO' ? 'bg-emerald-400/20 border-white/30 text-white' :
                                     'bg-white/20 border-white/30 text-white'
@@ -227,6 +375,196 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                             </div>
                         </div>
                     ) : null}
+
+                    {/* Lançamento Adicional / Empréstimo */}
+                    {(titulo as any).venda_pedido_id && (
+                        <div className="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100/50">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <h4 className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-0.5">Cobrança Adicional</h4>
+                                    <p className="text-xs text-slate-500 font-medium">Lançar empréstimo ou acréscimo para este cliente vinculado à venda</p>
+                                </div>
+                                {!isAdicionandoEmprestimo ? (
+                                    <button 
+                                        onClick={() => setIsAdicionandoEmprestimo(true)}
+                                        className="px-3 py-1.5 bg-indigo-100 text-indigo-700 text-xs font-bold rounded-lg hover:bg-indigo-200 transition-colors shrink-0"
+                                    >
+                                        + Adicionar
+                                    </button>
+                                ) : (
+                                    <button 
+                                        onClick={() => setIsAdicionandoEmprestimo(false)}
+                                        className="px-3 py-1.5 bg-slate-200 text-slate-600 text-xs font-bold rounded-lg hover:bg-slate-300 transition-colors shrink-0"
+                                    >
+                                        Cancelar
+                                    </button>
+                                )}
+                            </div>
+                            
+                            {isAdicionandoEmprestimo && (
+                                <div className="mt-4 p-4 bg-white rounded-xl border border-indigo-100 shadow-sm space-y-3 animate-in fade-in slide-in-from-top-2">
+                                    <div>
+                                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Descrição</label>
+                                        <input 
+                                            type="text" 
+                                            value={emprestimoDescricao}
+                                            onChange={(e) => setEmprestimoDescricao(e.target.value)}
+                                            className="w-full text-sm bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                            placeholder="Ex: Empréstimo Adicional"
+                                        />
+                                    </div>
+                                    
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Data (Vencimento)</label>
+                                            <input 
+                                                type="date" 
+                                                value={emprestimoData}
+                                                onChange={(e) => setEmprestimoData(e.target.value)}
+                                                className="w-full text-sm bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Valor Emprestado (R$)</label>
+                                            <input 
+                                                type="text" 
+                                                value={valorSaida === 0 ? '' : valorSaida.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                                onChange={handleValorSaidaChange}
+                                                className="w-full text-sm bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                                placeholder="0,00"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="pt-2 border-t border-slate-100">
+                                        <label className="flex items-center space-x-2 cursor-pointer">
+                                            <input 
+                                                type="checkbox" 
+                                                checked={vaiDebitarConta}
+                                                onChange={(e) => setVaiDebitarConta(e.target.checked)}
+                                                className="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500"
+                                            />
+                                            <span className="text-xs font-bold text-slate-700">Houve saída de dinheiro? (Debitar Conta)</span>
+                                        </label>
+                                    </div>
+                                    
+                                    {vaiDebitarConta && (
+                                        <div className="animate-in fade-in slide-in-from-top-1 bg-slate-50 p-3 rounded-lg border border-slate-200">
+                                            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Conta de Origem</label>
+                                            <select 
+                                                value={contaSaidaId}
+                                                onChange={(e) => setContaSaidaId(e.target.value)}
+                                                className="w-full text-sm bg-white border border-slate-200 rounded-lg px-3 py-2 font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                            >
+                                                <option value="">Selecione a Conta...</option>
+                                                {contasBancarias.map(c => (
+                                                    <option key={c.id} value={c.id}>
+                                                        {c.banco_nome || c.nome} - {c.titular} | Saldo: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(c.saldo_atual || 0)}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    )}
+
+                                    <div className="pt-2">
+                                        <label className="block text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-1">Valor a Receber (R$)</label>
+                                        <input 
+                                            type="text" 
+                                            value={emprestimoValor === 0 ? '' : emprestimoValor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                            onChange={handleValorChange}
+                                            className="w-full text-sm bg-indigo-50 border border-indigo-200 rounded-lg px-3 py-2 font-black text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                            placeholder="0,00"
+                                        />
+                                    </div>
+
+                                    <button 
+                                        onClick={handleAddEmprestimo}
+                                        disabled={isSubmittingEmprestimo || emprestimoValor <= 0 || (vaiDebitarConta && (!contaSaidaId || valorSaida <= 0))}
+                                        className="w-full py-2.5 mt-2 bg-indigo-600 text-white rounded-lg text-xs font-black uppercase tracking-widest hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                    >
+                                        {isSubmittingEmprestimo ? 'Salvando...' : 'Confirmar Lançamento'}
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* Histórico de Empréstimos/Acréscimos (Sub-títulos) */}
+                    {(titulo as any).sub_titulos && (titulo as any).sub_titulos.length > 0 && (
+                        <div>
+                            <h4 className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-3 flex items-center">
+                                <svg className="w-3 h-3 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                </svg>
+                                Histórico de Acréscimos / Empréstimos
+                            </h4>
+                            <div className="space-y-3">
+                                {(titulo as any).sub_titulos.map((sub: any) => {
+                                    // Calculate values
+                                    const valorReceber = sub.valor_total || 0;
+                                    
+                                    // Extract the outflow transaction to find the actual loaned amount
+                                    const loanTx = sub.transacoes?.find((t: any) => t.tipo_transacao === 'EMPRESTIMO_CONCEDIDO' && t.tipo === 'SAIDA');
+                                    const valorEmprestado = loanTx ? loanTx.valor : 0;
+                                    
+                                    const margemLucro = valorEmprestado > 0 ? (valorReceber - valorEmprestado) : 0;
+
+                                    return (
+                                        <div key={sub.id} className="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100/50 group hover:border-indigo-200 transition-all flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+                                            <div className="flex-1">
+                                                <div className="flex items-center space-x-2 mb-1">
+                                                    <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest bg-white/60 px-2 py-0.5 rounded-md border border-indigo-100/50">Venc: {formatDate(sub.data_vencimento)}</p>
+                                                </div>
+                                                <p className="text-sm font-bold text-slate-700">{sub.descricao}</p>
+                                            </div>
+                                            
+                                            <div className="flex flex-wrap gap-2 w-full sm:w-auto mb-3 sm:mb-0">
+                                                {valorEmprestado > 0 && (
+                                                    <div className="text-center bg-white/60 p-2 rounded-xl border border-indigo-100/50 flex-1 min-w-[70px]">
+                                                        <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Emprestado</p>
+                                                        <p className="text-xs font-black text-rose-500">{formatCurrency(valorEmprestado)}</p>
+                                                    </div>
+                                                )}
+                                                
+                                                {valorEmprestado > 0 && (
+                                                    <div className="text-center bg-white/60 p-2 rounded-xl border border-indigo-100/50 flex-1 min-w-[70px]">
+                                                        <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Lucro</p>
+                                                        <p className="text-xs font-black text-emerald-500">+{formatCurrency(margemLucro)}</p>
+                                                    </div>
+                                                )}
+
+                                                <div className="text-center bg-indigo-100/50 p-2 rounded-xl border border-indigo-200/50 flex-1 min-w-[70px]">
+                                                    <p className="text-[8px] font-black text-indigo-600 uppercase tracking-widest mb-0.5">A Receber</p>
+                                                    <p className="text-xs font-black text-indigo-700">{formatCurrency(valorReceber)}</p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-center sm:flex-col gap-1 border-t sm:border-t-0 sm:border-l border-indigo-100 pt-3 sm:pt-0 sm:pl-3">
+                                                <button 
+                                                    onClick={() => handleEditLoan(sub)}
+                                                    className="flex-1 sm:flex-none p-2 text-indigo-400 hover:text-indigo-600 rounded-lg transition-colors bg-white/50 border border-slate-200/50 hover:bg-indigo-50 hover:border-indigo-200 flex justify-center items-center"
+                                                    title="Editar Lançamento"
+                                                >
+                                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                                    </svg>
+                                                </button>
+                                                <button 
+                                                    onClick={() => setConfirmDeleteLoanId(sub.id)}
+                                                    className="flex-1 sm:flex-none p-2 text-slate-300 hover:text-rose-600 rounded-lg transition-colors bg-white/50 border border-slate-200/50 hover:bg-rose-50 hover:border-rose-200 flex justify-center items-center"
+                                                    title="Remover cobrança adicional"
+                                                >
+                                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
 
                     {/* Histórico de Liquidações */}
                     <div>
@@ -361,6 +699,16 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                 onConfirm={onConfirmDelete}
                 title="Estornar Recebimento?"
                 message="Tem certeza que deseja estornar este recebimento? O saldo do título será recalculado."
+                confirmText="Sim, Estornar"
+                variant="danger"
+                isLoading={isDeleting}
+            />
+            <ConfirmModal
+                isOpen={!!confirmDeleteLoanId}
+                onClose={() => setConfirmDeleteLoanId(null)}
+                onConfirm={onConfirmDeleteLoan}
+                title="Estornar Empréstimo / Acréscimo?"
+                message="Tem certeza que deseja estornar este lançamento? O valor será removido do saldo do cliente."
                 confirmText="Sim, Estornar"
                 variant="danger"
                 isLoading={isDeleting}

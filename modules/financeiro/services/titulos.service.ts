@@ -116,5 +116,90 @@ export const TitulosService = {
     // mas agora é um "no-op" já que o banco cuida disso via Trigger.
     // Isso garante que nada quebre e o sistema continue evoluindo.
     console.log(`[Financeiro] Recálculo automático acionado pelo Banco para o título ${titulo_id}`);
+  },
+
+  async lancarCobrancaAvulsa(payload: {
+    descricao: string;
+    valor: number;
+    valor_saida?: number;
+    conta_saida_id?: string;
+    data_vencimento: string;
+    venda_pedido_id: string;
+    parceiro_id: string;
+    veiculo_id?: string;
+  }): Promise<void> {
+    const { data: titulo, error } = await supabase.from('fin_titulos').insert({
+      tipo: 'RECEBER',
+      origem_tipo: 'MANUAL', // Manual is used to identify these loan sub-titles
+      descricao: payload.descricao,
+      valor_total: payload.valor,
+      data_vencimento: payload.data_vencimento,
+      venda_pedido_id: payload.venda_pedido_id,
+      parceiro_id: payload.parceiro_id,
+      veiculo_id: payload.veiculo_id || null,
+      status: 'PENDENTE',
+      data_emissao: new Date().toISOString().split('T')[0],
+      parcela_numero: 1,
+      parcela_total: 1
+    }).select('id').single();
+
+    if (error) {
+      console.error('Erro ao lançar cobrança avulsa:', error);
+      throw error;
+    }
+
+    if (payload.valor_saida && payload.valor_saida > 0) {
+      const { error: txError } = await supabase.from('fin_transacoes').insert({
+        tipo: 'SAIDA',
+        tipo_transacao: 'EMPRESTIMO_CONCEDIDO',
+        conta_origem_id: payload.conta_saida_id || null,
+        valor: payload.valor_saida,
+        data_pagamento: new Date().toISOString().split('T')[0],
+        descricao: `Saída ref. Empréstimo: ${payload.descricao}`,
+        titulo_id: titulo.id
+      });
+
+      if (txError) {
+        console.error('Erro ao registrar saída bancária:', txError);
+        throw txError;
+      }
+    }
+  },
+
+  async editarCobrancaAvulsa(id: string, payload: {
+    descricao: string;
+    valor: number;
+    valor_saida?: number;
+    conta_saida_id?: string;
+    data_vencimento: string;
+  }): Promise<void> {
+    const { error: tituloError } = await supabase.from('fin_titulos').update({
+      descricao: payload.descricao,
+      valor_total: payload.valor,
+      data_vencimento: payload.data_vencimento,
+    }).eq('id', id);
+
+    if (tituloError) throw tituloError;
+
+    // Delete existing loan out transactions
+    await supabase.from('fin_transacoes')
+      .delete()
+      .eq('titulo_id', id)
+      .eq('tipo_transacao', 'EMPRESTIMO_CONCEDIDO');
+
+    // Recreate if needed
+    if (payload.valor_saida && payload.valor_saida > 0) {
+      const { error: txError } = await supabase.from('fin_transacoes').insert({
+        tipo: 'SAIDA',
+        tipo_transacao: 'EMPRESTIMO_CONCEDIDO',
+        conta_origem_id: payload.conta_saida_id || null,
+        valor: payload.valor_saida,
+        data_pagamento: new Date().toISOString().split('T')[0],
+        descricao: `Saída ref. Empréstimo: ${payload.descricao}`,
+        titulo_id: id
+      });
+
+      if (txError) throw txError;
+    }
   }
 };
