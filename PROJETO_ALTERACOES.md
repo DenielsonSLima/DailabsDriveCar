@@ -12,6 +12,20 @@
 - `modules/financeiro/submodules/contas-pagar/components/ModalDetalhesTitulo.tsx` [FIX/REFATORAÇÃO]
 - `modules/financeiro/submodules/contas-pagar/ContasPagar.page.tsx` [MODIFY]
 
+## [2026-06-03] - Fix: Contabilização de Descontos e Acréscimos nos Pedidos de Compra e Caixa
+
+**O que foi feito:**
+- **Pedido de Compra (Frontend)**: Corrigido o componente `CardPaymentData.tsx` para somar `valor_desconto` e subtrair `valor_acrescimo` no cálculo do saldo em aberto e percentual de quitação real. Agora exibe "Quitação Confirmada (R$ 0,00)" e "100.0%" se o título estiver quitado com desconto.
+- **Histórico de Baixas (Frontend)**: Customizada a exibição de transações do tipo `DESCONTO_TITULO` e `ACRESCIMO_TITULO` com cores específicas (amber/rose) e rótulos descritivos adequados.
+- **Métricas do Caixa (Database)**: Criada migração `20260603_fix_metrics_discounts.sql` que:
+  - Exclui transações de `DESCONTO_TITULO` dos fluxos de caixa reais (`v_total_entradas` e `v_total_saidas`), evitando que descontos obtidos/concedidos finjam ser saídas/entradas de dinheiro nas contas bancárias.
+  - Exclui descontos das despesas operacionais (`v_total_despesas_fixas`, `v_total_despesas_variaveis`, `v_total_outros_debitos`).
+  - Soma descontos obtidos (ganhos) e subtrai descontos concedidos (perdas) no cálculo de `lucro_mensal` e `lucro_gerado`, garantindo que o desconto de R$ 4.000,00 no pedido aumente corretamente o lucro e consequentemente o patrimônio líquido.
+
+**Arquivos afetados:**
+- `modules/pedidos-compra/components/details/CardPaymentData.tsx` [FIX]
+- `supabase/migrations/20260603_fix_metrics_discounts.sql` [NEW]
+
 ## [2026-04-30] - Fix: Sincronização entre Outros Débitos/Créditos e Módulo Caixa
 **O que foi feito:**
 - **Bug de Sincronização**: Ao excluir ou lançar registros nos módulos "Outros Débitos" e "Outros Créditos", o dashboard do "Módulo Caixa" não atualizava automaticamente (exigia F5). Isso ocorria porque as deleções em tempo real do Supabase às vezes são filtradas por RLS se a replica identity não for FULL, e o frontend não invalidava manualmente as queries globais.

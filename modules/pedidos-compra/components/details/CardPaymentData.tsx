@@ -18,11 +18,18 @@ const CardPaymentData: React.FC<Props> = ({ pedido, totalAquisicaoReferencia, on
   const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
   const valorTotalPagos = (pedido.pagamentos || []).reduce((acc, p) => acc + p.valor, 0);
-  const valorRealPago = (pedido.titulos || []).reduce((acc, t) => acc + (t.valor_pago || 0), 0);
+  const totalPagoDinheiro = (pedido.titulos || []).reduce((acc, t) => acc + (t.valor_pago || 0), 0);
+  const totalDescontos = (pedido.titulos || []).reduce((acc, t) => acc + (t.valor_desconto || 0), 0);
+  const totalAcrescimos = (pedido.titulos || []).reduce((acc, t) => acc + (t.valor_acrescimo || 0), 0);
+
+  const valorRealPago = totalPagoDinheiro;
   const valorReferencia = totalAquisicaoReferencia || pedido.valor_negociado || 0;
-  const valorRestante = valorReferencia - valorTotalPagos;
+  const custoFinal = valorReferencia + totalAcrescimos;
+  const totalLiquidado = totalPagoDinheiro + totalDescontos;
+  const valorRestante = Math.max(0, valorReferencia - valorTotalPagos);
   const percentualLancado = Math.min(100, (valorTotalPagos / (valorReferencia || 1)) * 100);
-  const percentualRealPago = Math.min(100, (valorRealPago / (valorReferencia || 1)) * 100);
+  const percentualRealPago = Math.min(100, (totalLiquidado / (custoFinal || 1)) * 100);
+  const saldoEmAberto = Math.max(0, custoFinal - totalLiquidado);
 
   return (
     <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm p-8 animate-in slide-in-from-bottom-10 duration-700">
@@ -60,11 +67,11 @@ const CardPaymentData: React.FC<Props> = ({ pedido, totalAquisicaoReferencia, on
           <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-1">Total Pago (Real)</p>
           <p className="text-lg font-black text-emerald-700">{formatCurrency(valorRealPago)}</p>
         </div>
-        <div className={`p-5 rounded-3xl border ${valorReferencia - valorRealPago > 0.05 ? 'bg-rose-50 border-rose-100' : 'bg-blue-50 border-blue-100'}`}>
-          <p className={`text-[9px] font-black uppercase tracking-widest mb-1 ${valorReferencia - valorRealPago > 0.05 ? 'text-rose-600' : 'text-blue-600'}`}>
-            {valorReferencia - valorRealPago > 0.05 ? 'Saldo em Aberto' : 'Quitação Confirmada'}
+        <div className={`p-5 rounded-3xl border ${saldoEmAberto > 0.05 ? 'bg-rose-50 border-rose-100' : 'bg-blue-50 border-blue-100'}`}>
+          <p className={`text-[9px] font-black uppercase tracking-widest mb-1 ${saldoEmAberto > 0.05 ? 'text-rose-600' : 'text-blue-600'}`}>
+            {saldoEmAberto > 0.05 ? 'Saldo em Aberto' : 'Quitação Confirmada'}
           </p>
-          <p className={`text-lg font-black ${valorReferencia - valorRealPago > 0.05 ? 'text-rose-700' : 'text-blue-700'}`}>{formatCurrency(Math.max(0, valorReferencia - valorRealPago))}</p>
+          <p className={`text-lg font-black ${saldoEmAberto > 0.05 ? 'text-rose-700' : 'text-blue-700'}`}>{formatCurrency(saldoEmAberto)}</p>
         </div>
 
         <div className="md:col-span-4 grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
@@ -222,10 +229,20 @@ const CardPaymentData: React.FC<Props> = ({ pedido, totalAquisicaoReferencia, on
                               <div className="flex flex-col">
                                 <span className="text-[10px] font-black text-slate-900">{dataPagamento}</span>
                                 <span className="text-[9px] font-bold text-slate-400 uppercase truncate max-w-[120px]">
-                                  {tx?.conta?.banco_nome || tx?.forma?.nome || 'CAIXA'}
+                                  {tx?.tipo_transacao === 'DESCONTO_TITULO'
+                                    ? 'DESCONTO OBTIDO'
+                                    : tx?.tipo_transacao === 'ACRESCIMO_TITULO'
+                                      ? 'JUROS / ACRÉSCIMO'
+                                      : (tx?.conta?.banco_nome || tx?.forma?.nome || 'CAIXA')}
                                 </span>
                               </div>
-                              <span className="text-xs font-black text-emerald-600">{formatCurrency(tx?.valor || 0)}</span>
+                              <span className={`text-xs font-black ${
+                                tx?.tipo_transacao === 'DESCONTO_TITULO'
+                                  ? 'text-amber-600'
+                                  : tx?.tipo_transacao === 'ACRESCIMO_TITULO'
+                                    ? 'text-rose-600'
+                                    : 'text-emerald-600'
+                              }`}>{formatCurrency(tx?.valor || 0)}</span>
                             </div>
                           );
                         })}
