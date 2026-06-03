@@ -1,5 +1,14 @@
 # Histórico de Alterações do Projeto
 
+## [2026-06-03] - Fix: Correção de Erro de Relacionamento no Relatório de Conciliação Patrimonial (PGRST200)
+
+**O que foi feito:**
+- **Correção da Query de Transações**: Alterada a query em `RelatoriosService.getConciliacaoPatrimonial` para buscar a categoria através do relacionamento com o título (`titulo:fin_titulos(categoria:fin_categorias(nome))`) em vez de diretamente pela tabela `fin_transacoes`. Isso resolve o erro `PGRST200` ("no foreign key relationship between 'fin_transacoes' and 'fin_categorias'") que impedia a visualização da tela.
+- **Mapeamento de Dados**: Mapeados os campos retornados da query para compatibilidade com o template do extrato impresso e os cards da dashboard de conciliação. Agora os valores como `total_entradas`, `total_saidas`, `patrimonio_inicial`, `patrimonio_final`, `data` e `tipo_movimento` são preenchidos corretamente, evitando crashes e dados em branco no dashboard.
+
+**Arquivos afetados:**
+- `modules/relatorios/relatorios.service.ts` [FIX]
+
 ## [2026-06-03] - Fix: Scroll e Botão de Baixa no Modal de Detalhes do Título (Contas a Pagar)
 
 **O que foi feito:**

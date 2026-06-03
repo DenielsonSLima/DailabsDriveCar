@@ -105,12 +105,12 @@ export const RelatoriosService = {
         });
         if (errorMax) throw errorMax;
 
-        // 3. Extrato de Transações do Mês
-        const { data: transacoes, error: errorTrans } = await supabase
+        // 3. Extrato de Transações do Mês (busca categoria através do título)
+        const { data: transacoesRaw, error: errorTrans } = await supabase
             .from('fin_transacoes')
             .select(`
-                id, data_pagamento, valor, tipo, descricao, categoria:fin_categorias(nome),
-                titulo:fin_titulos(id, origem_tipo, parceiro:parceiros(nome))
+                id, data_pagamento, valor, tipo, descricao,
+                titulo:fin_titulos(id, origem_tipo, categoria:fin_categorias(nome), parceiro:parceiros(nome))
             `)
             .gte('data_pagamento', `${params.dataInicio}T00:00:00Z`)
             .lte('data_pagamento', `${params.dataFim}T23:59:59Z`)
@@ -118,10 +118,25 @@ export const RelatoriosService = {
         
         if (errorTrans) throw errorTrans;
 
+        // Mapeia os dados para compatibilidade com o template e a página de relatórios
+        const transacoes = (transacoesRaw || []).map((t: any) => ({
+            ...t,
+            categoria: t.titulo?.categoria || null,
+            data: t.data_pagamento,
+            tipo_movimento: t.tipo
+        }));
+
+        const totalEntradas = transacoes.filter((t: any) => t.tipo === 'ENTRADA').reduce((acc: number, t: any) => acc + (t.valor || 0), 0);
+        const totalSaidas = transacoes.filter((t: any) => t.tipo === 'SAIDA').reduce((acc: number, t: any) => acc + (t.valor || 0), 0);
+
         return {
             inicial: metricsInicial || {},
             final: metricsFinal || {},
-            transacoes: transacoes || []
+            transacoes: transacoes || [],
+            patrimonio_inicial: metricsInicial?.patrimonio_liquido || 0,
+            patrimonio_final: metricsFinal?.patrimonio_liquido || 0,
+            total_entradas: totalEntradas,
+            total_saidas: totalSaidas
         };
     }
 };
