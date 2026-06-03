@@ -1,5 +1,17 @@
 # Histórico de Alterações do Projeto
 
+## [2026-06-03] - Fix: Scroll e Botão de Baixa no Modal de Detalhes do Título (Contas a Pagar)
+
+**O que foi feito:**
+- **Correção de Scroll e Interação**: Convertido o `ModalDetalhesTitulo` em um React Portal (`ReactDOM.createPortal`) injetado diretamente no `document.body` e com `z-[9998]`. Isso corrige o bug em que o modal herdava restrições de contexto 3D/transformações dos elementos pais, permitindo rolar a página de fundo e clicar atrás dele.
+- **Bloqueio de Scroll**: Adicionado `document.body.style.overflow = 'hidden'` quando aberto e `unset` ao desmontar.
+- **Botão de Pagar**: Adicionada a prop `onPagar` e o botão "Registrar Pagamento" no rodapé do modal, que abre o modal de baixa (`ModalBaixa`) do título selecionado.
+- **Integração**: Passada a prop `onPagar` do `ContasPagarPage` para o `ModalDetalhesTitulo`.
+
+**Arquivos afetados:**
+- `modules/financeiro/submodules/contas-pagar/components/ModalDetalhesTitulo.tsx` [FIX/REFATORAÇÃO]
+- `modules/financeiro/submodules/contas-pagar/ContasPagar.page.tsx` [MODIFY]
+
 ## [2026-04-30] - Fix: Sincronização entre Outros Débitos/Créditos e Módulo Caixa
 **O que foi feito:**
 - **Bug de Sincronização**: Ao excluir ou lançar registros nos módulos "Outros Débitos" e "Outros Créditos", o dashboard do "Módulo Caixa" não atualizava automaticamente (exigia F5). Isso ocorria porque as deleções em tempo real do Supabase às vezes são filtradas por RLS se a replica identity não for FULL, e o frontend não invalidava manualmente as queries globais.

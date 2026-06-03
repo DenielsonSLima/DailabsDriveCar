@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { ContasPagarService } from '../contas-pagar.service';
 import { TitulosService } from '../../../services/titulos.service';
@@ -7,13 +8,20 @@ import ConfirmModal from '../../../../../components/ConfirmModal';
 interface Props {
     titulo: any;
     onClose: () => void;
+    onPagar?: () => void;
 }
 
-const ModalDetalhesTitulo: React.FC<Props> = ({ titulo, onClose }) => {
+const ModalDetalhesTitulo: React.FC<Props> = ({ titulo, onClose, onPagar }) => {
     const queryClient = useQueryClient();
     const [pagamentos, setPagamentos] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [refreshKey, setRefreshKey] = useState(0);
+
+    // Bloqueia scroll da página de fundo enquanto modal está aberto
+    useEffect(() => {
+        document.body.style.overflow = 'hidden';
+        return () => { document.body.style.overflow = 'unset'; };
+    }, []);
 
     // Estados para edição
     const [editandoId, setEditandoId] = useState<string | null>(null);
@@ -87,9 +95,16 @@ const ModalDetalhesTitulo: React.FC<Props> = ({ titulo, onClose }) => {
         }
     };
 
-    return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300">
-            <div className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 border border-slate-200">
+    const content = (
+        <div
+            className="fixed inset-0 z-[9998] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300"
+            onWheel={(e) => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
+        >
+            <div 
+                className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl flex flex-col animate-in zoom-in-95 duration-300 border border-slate-200 max-h-[90vh]"
+                onClick={(e) => e.stopPropagation()}
+            >
 
                 {/* Header */}
                 <div className="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
@@ -102,7 +117,7 @@ const ModalDetalhesTitulo: React.FC<Props> = ({ titulo, onClose }) => {
                     </button>
                 </div>
 
-                <div className="p-8 space-y-8">
+                <div className="p-8 space-y-8 overflow-y-auto flex-1">
                     {/* Resumo de Valores */}
                     <div className="grid grid-cols-3 gap-4">
                         <div className="bg-slate-50 p-4 rounded-3xl border border-slate-100">
@@ -334,7 +349,16 @@ const ModalDetalhesTitulo: React.FC<Props> = ({ titulo, onClose }) => {
                 </div>
 
                 {/* Footer */}
-                <div className="p-6 bg-slate-50 border-t border-slate-100 flex justify-end">
+                <div className="p-6 bg-slate-50 border-t border-slate-100 flex justify-between items-center gap-3">
+                    {onPagar && titulo.status !== 'PAGO' && (
+                        <button
+                            onClick={onPagar}
+                            className="flex-1 px-8 py-3 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 active:scale-95 flex items-center justify-center gap-2"
+                        >
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                            Registrar Pagamento
+                        </button>
+                    )}
                     <button
                         onClick={onClose}
                         className="px-8 py-3 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg active:scale-95"
@@ -356,6 +380,8 @@ const ModalDetalhesTitulo: React.FC<Props> = ({ titulo, onClose }) => {
             />
         </div >
     );
+
+    return ReactDOM.createPortal(content, document.body);
 };
 
 export default ModalDetalhesTitulo;

@@ -214,6 +214,10 @@ const ContasPagarPage: React.FC = () => {
         <ModalDetalhesTitulo
           titulo={viewingTitulo}
           onClose={() => setViewingTitulo(null)}
+          onPagar={() => {
+            setSelectedTitulo(viewingTitulo);
+            setViewingTitulo(null);
+          }}
         />
       )}
 
