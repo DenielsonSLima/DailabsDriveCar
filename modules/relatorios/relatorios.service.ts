@@ -109,7 +109,7 @@ export const RelatoriosService = {
         const { data: transacoesRaw, error: errorTrans } = await supabase
             .from('fin_transacoes')
             .select(`
-                id, data_pagamento, valor, tipo, descricao,
+                id, data_pagamento, valor, tipo, tipo_transacao, descricao,
                 titulo:fin_titulos(id, origem_tipo, categoria:fin_categorias(nome), parceiro:parceiros(nome))
             `)
             .gte('data_pagamento', `${params.dataInicio}T00:00:00Z`)
@@ -119,15 +119,31 @@ export const RelatoriosService = {
         if (errorTrans) throw errorTrans;
 
         // Mapeia os dados para compatibilidade com o template e a página de relatórios
-        const transacoes = (transacoesRaw || []).map((t: any) => ({
-            ...t,
-            categoria: t.titulo?.categoria || null,
-            data: t.data_pagamento,
-            tipo_movimento: t.tipo
-        }));
+        const transacoes = (transacoesRaw || []).map((t: any) => {
+            const isDesconto = t.tipo_transacao === 'DESCONTO_TITULO';
+            let tipoMovimento = t.tipo;
+            let mappedTipo = t.tipo;
 
-        const totalEntradas = transacoes.filter((t: any) => t.tipo === 'ENTRADA').reduce((acc: number, t: any) => acc + (t.valor || 0), 0);
-        const totalSaidas = transacoes.filter((t: any) => t.tipo === 'SAIDA').reduce((acc: number, t: any) => acc + (t.valor || 0), 0);
+            if (isDesconto) {
+                // Inverte os sinais para exibição lógica correta dos descontos obtidos/concedidos:
+                // - Desconto em contas a pagar (t.tipo === 'SAIDA') é um desconto OBTIDO (benefício/positivo)
+                // - Desconto em contas a receber (t.tipo === 'ENTRADA') é um desconto CONCEDIDO (custo/negativo)
+                tipoMovimento = t.tipo === 'SAIDA' ? 'ENTRADA' : 'SAIDA';
+                mappedTipo = t.tipo === 'SAIDA' ? 'ENTRADA' : 'SAIDA';
+            }
+
+            return {
+                ...t,
+                categoria: t.titulo?.categoria || null,
+                data: t.data_pagamento,
+                tipo_movimento: tipoMovimento,
+                tipo: mappedTipo
+            };
+        });
+
+        // Usa os totais oficiais do banco de dados (que já excluem descontos e estornos do fluxo financeiro físico)
+        const totalEntradas = metricsFinal?.total_entradas || 0;
+        const totalSaidas = metricsFinal?.total_saidas || 0;
 
         return {
             inicial: metricsInicial || {},

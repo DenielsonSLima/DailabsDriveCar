@@ -315,8 +315,8 @@ export const CaixaService = {
           const fixas = (caixaValid.total_despesas_fixas || 0);
           const variaveis = (caixaValid.total_despesas_variaveis || 0) + (perfValid.despesas_veiculos || 0);
 
-          // Lucro Líquido: Lucro Bruto - (Despesas Fixas + Variáveis)
-          const lucro = perfValid.lucro_bruto - (fixas + variaveis);
+          // Lucro Líquido: Alinhado com o lucro_mensal da RPC get_caixa_metrics (SSOT)
+          const lucro = caixaValid.lucro_mensal;
 
           // Custo calculado para fechar com o lucro bruto mostrado no sistema
           const custo = faturado > 0 ? (faturado - perfValid.lucro_bruto) : 0;

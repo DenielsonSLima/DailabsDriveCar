@@ -1,5 +1,34 @@
 # Histórico de Alterações do Projeto
 
+## [2026-06-03] - Fix: Alinhamento do Lucro Líquido no Desempenho Trimestral
+
+**O que foi feito:**
+- **Sincronização de Lucro no Gráfico**: Alterado o cálculo de lucro em `CaixaService.getPerformanceHistory` para utilizar o valor real do lucro líquido calculado pelo backend (`caixaValid.lucro_mensal`) em vez de recalcular no frontend sem considerar descontos obtidos/concedidos e receitas adicionais. Isso resolve a divergência onde o gráfico "Desempenho Trimestral" exibia R$ 15.378,00 enquanto os cartões de KPI exibiam R$ 17.878,00.
+
+**Arquivos afetados:**
+- `modules/caixa/caixa.service.ts` [FIX]
+
+## [2026-06-03] - Fix: Correção visual e lógica dos sinais de Descontos na Conciliação Patrimonial
+
+**O que foi feito:**
+- **Correção dos Sinais de Desconto**: Ajustada a lógica de mapeamento em `RelatoriosService.getConciliacaoPatrimonial` para que descontos sejam exibidos com o sinal correto na tabela de movimentações do período:
+  - **Desconto Obtido (Compra - R$ 4.000,00)**: Era exibido erroneamente como `- R$ 4.000,00` (saída/vermelho). Agora é exibido como `+ R$ 4.000,00` (entrada/verde), pois representa uma economia/ganho real para a empresa.
+  - **Desconto Concedido (Venda - R$ 1.500,00)**: Era exibido erroneamente como `+ R$ 1.500,00` (entrada/verde). Agora é exibido como `- R$ 1.500,00` (saída/vermelho), pois representa uma redução de receita.
+- **Correção de Totais de Caixa**: Alterado o dashboard de conciliação e o template do PDF (`PatrimonioConciliacaoTemplate.tsx`) para usar os totais reais do banco de dados (que já excluem descontos do fluxo de caixa físico) e filtrar transações locais de desconto na hora de somar, garantindo consistência matemática entre as tabelas e os cartões de cabeçalho.
+
+**Arquivos afetados:**
+- `modules/relatorios/relatorios.service.ts` [FIX/REFATORAÇÃO]
+- `modules/relatorios/templates/caixa/PatrimonioConciliacaoTemplate.tsx` [FIX]
+
+## [2026-06-03] - Exec: Aplicação da Migração de Descontos e Acréscimos nas Métricas de Caixa/DRE
+
+**O que foi feito:**
+- **Aplicação da RPC**: Executada a migração `20260603_fix_metrics_discounts.sql` que recria a função RPC `get_caixa_metrics` no Supabase. Isso resolve a divergência onde os descontos obtidos (como o de R$ 4.000,00 do Pedido #57) e concedidos não estavam sendo somados/subtraídos no cálculo do Lucro Mensal e Patrimônio Líquido no backend.
+- **Validação de Cálculos**: Validado que para o mês de Junho/2026 o lucro mensal subiu de R$ 15.378,00 para R$ 17.878,00 após a aplicação (um incremento exato de R$ 4.000,00 do desconto obtido menos R$ 1.500,00 de descontos concedidos).
+
+**Arquivos afetados:**
+- Banco de Dados (Supabase: Função `get_caixa_metrics`) [APPLIED]
+
 ## [2026-06-03] - Fix: Correção de Erro de Relacionamento no Relatório de Conciliação Patrimonial (PGRST200)
 
 **O que foi feito:**

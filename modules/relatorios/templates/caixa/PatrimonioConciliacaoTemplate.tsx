@@ -19,9 +19,9 @@ const PatrimonioConciliacaoTemplate: React.FC<Props> = ({ data, empresa, waterma
     const { inicial = {}, final = {}, transacoes = [], periodo } = data;
     const transacoesList = Array.isArray(transacoes) ? transacoes : [];
 
-    // Totais do Período
-    const totalEntradas = transacoesList.filter(t => t.tipo === 'ENTRADA').reduce((acc, t) => acc + (t.valor || 0), 0);
-    const totalSaidas = transacoesList.filter(t => t.tipo === 'SAIDA').reduce((acc, t) => acc + (t.valor || 0), 0);
+    // Totais do Período (descontos são apenas informativos e não contam no fluxo financeiro físico)
+    const totalEntradas = transacoesList.filter(t => t.tipo === 'ENTRADA' && t.tipo_transacao !== 'DESCONTO_TITULO').reduce((acc, t) => acc + (t.valor || 0), 0);
+    const totalSaidas = transacoesList.filter(t => t.tipo === 'SAIDA' && t.tipo_transacao !== 'DESCONTO_TITULO').reduce((acc, t) => acc + (t.valor || 0), 0);
     const saldoMovimentacao = totalEntradas - totalSaidas;
 
     return (
