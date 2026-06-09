@@ -1,5 +1,11 @@
 # Histórico de Alterações do Projeto
 
+## [2026-06-09] - Fix: Lucro do Mês com Outros Créditos em Regime de Competência
+
+**O que foi feito:**
+- **Atualização da RPC `get_caixa_metrics`**: Modificado o cálculo de `v_total_outros_creditos` para computar a soma de `valor_total` dos títulos de `origem_tipo = 'OUTRO_CREDITO'` baseado em sua data de lançamento (`data_vencimento BETWEEN p_data_inicio AND p_data_fim`), mesmo que o título ainda não tenha sido recebido/pago (Regime de Competência), atendendo à solicitação do cliente.
+- **Migração Criada**: Criada e aplicada a migração [20260609_fix_competencia_outros_creditos.sql](file:///Users/denielson/Desktop/Dailabs%20DriveCar/supabase/migrations/20260609_fix_competencia_outros_creditos.sql).
+
 ## [2026-06-09] - Feature: Novos KPIs de Despesas Fixas e Variáveis (Total, Pago, Pendente) via Banco
 
 **O que foi feito:**
