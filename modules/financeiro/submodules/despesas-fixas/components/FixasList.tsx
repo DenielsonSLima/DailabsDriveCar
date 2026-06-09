@@ -95,16 +95,21 @@ const FixasList: React.FC<Props> = ({ items, loading, isGrouped, onPagar, onEdit
 
   return (
     <div className="divide-y divide-slate-100">
-      {keys.map(groupKey => (
-        <div key={groupKey} className="animate-in fade-in slide-in-from-bottom-2 duration-300">
-          <div className="bg-slate-50/80 px-8 py-3 sticky top-0 z-10 backdrop-blur-sm border-y border-slate-100 flex items-center">
-            <div className="w-1.5 h-1.5 rounded-full bg-slate-400 mr-3"></div>
-            <h3 className="text-[11px] font-black text-slate-600 uppercase tracking-[0.2em]">{groupKey}</h3>
-            <span className="ml-auto text-[9px] font-black text-slate-400 bg-white px-2 py-0.5 rounded-md border border-slate-100 uppercase">{grouped[groupKey].length} Títulos</span>
+      {keys.map(groupKey => {
+        const totalGroup = grouped[groupKey].reduce((sum, t) => sum + t.valor_total, 0);
+        return (
+          <div key={groupKey} className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <div className="bg-slate-50/80 px-8 py-3 sticky top-0 z-10 backdrop-blur-sm border-y border-slate-100 flex items-center">
+              <div className="w-1.5 h-1.5 rounded-full bg-slate-400 mr-3"></div>
+              <h3 className="text-[11px] font-black text-slate-600 uppercase tracking-[0.2em]">
+                {groupKey} <span className="text-slate-400 font-bold ml-2">— {formatCurrency(totalGroup)}</span>
+              </h3>
+              <span className="ml-auto text-[9px] font-black text-slate-400 bg-white px-2 py-0.5 rounded-md border border-slate-100 uppercase">{grouped[groupKey].length} Títulos</span>
+            </div>
+            {renderTable(grouped[groupKey])}
           </div>
-          {renderTable(grouped[groupKey])}
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import { ITitulo } from '../../financeiro.types';
 
-export type VariaveisTab = 'EM_ABERTO' | 'PAGOS' | 'TODOS';
+export type VariaveisTab = 'MES_ATUAL' | 'FUTUROS' | 'PAGO' | 'PENDENTES' | 'TODOS';
 export type GroupByVariavel = 'nenhum' | 'mes' | 'categoria';
 
 export interface IVariaveisFiltros {

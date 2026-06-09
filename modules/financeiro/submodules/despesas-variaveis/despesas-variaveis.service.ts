@@ -18,14 +18,30 @@ export const DespesasVariaveisService = {
       .eq('origem_tipo', 'DESPESA_VARIAVEL')
       .neq('status', 'CANCELADO');
 
-    const hoje = new Date().toISOString().split('T')[0];
+    const getLocalDateStrings = () => {
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = d.getMonth();
+      const mesInicio = `${y}-${String(m + 1).padStart(2, '0')}-01`;
+      const ultimoDia = new Date(y, m + 1, 0).getDate();
+      const mesFim = `${y}-${String(m + 1).padStart(2, '0')}-${String(ultimoDia).padStart(2, '0')}`;
+      const proximoY = m === 11 ? y + 1 : y;
+      const proximoM = m === 11 ? 0 : m + 1;
+      const proximoMesInicio = `${proximoY}-${String(proximoM + 1).padStart(2, '0')}-01`;
+      return { mesInicio, mesFim, proximoMesInicio };
+    };
 
-    if (tab === 'EM_ABERTO') {
-      query = query.neq('status', 'PAGO');
-    } else if (tab === 'PAGOS') {
+    if (tab === 'MES_ATUAL') {
+      const { mesInicio, mesFim } = getLocalDateStrings();
+      query = query.gte('data_vencimento', mesInicio).lte('data_vencimento', mesFim);
+    } else if (tab === 'FUTUROS') {
+      const { proximoMesInicio } = getLocalDateStrings();
+      query = query.gte('data_vencimento', proximoMesInicio);
+    } else if (tab === 'PAGO') {
       query = query.eq('status', 'PAGO');
+    } else if (tab === 'PENDENTES') {
+      query = query.neq('status', 'PAGO');
     }
-    // Para 'TODOS', não adicionamos filtro de status (já removemos CANCELADO acima)
 
     if (filtros.busca) {
       query = query.or(`descricao.ilike.%${filtros.busca}%, documento_ref.ilike.%${filtros.busca}%`);
@@ -89,27 +105,23 @@ export const DespesasVariaveisService = {
     }
   },
 
-  async getKpis() {
-    const hoje = new Date().toISOString().split('T')[0];
-
-    const { data, error } = await supabase
-      .from('fin_titulos')
-      .select('valor_total, valor_pago, data_vencimento, status')
-      .eq('tipo', 'PAGAR')
-      .eq('origem_tipo', 'DESPESA_VARIAVEL')
-      .neq('status', 'CANCELADO');
+  async getKpis(tab: VariaveisTab, filtros: IVariaveisFiltros) {
+    const { data, error } = await supabase.rpc('get_despesas_kpis', {
+      p_origem_tipo: 'DESPESA_VARIAVEL',
+      p_tab: tab,
+      p_busca: filtros.busca || null,
+      p_categoria_id: filtros.categoriaId || null,
+      p_data_inicio: filtros.dataInicio || null,
+      p_data_fim: filtros.dataFim || null,
+      p_hoje: new Date().toISOString().split('T')[0]
+    });
 
     if (error) {
       console.error('Erro ao buscar KPIs de despesas variáveis:', error);
       throw error;
     }
 
-    const pendentes = (data || []).filter(t => t.status !== 'PAGO');
-    const total_liquidar = pendentes.reduce((sum, t) => sum + (t.valor_total - (t.valor_pago || 0)), 0);
-    const vencendo_hoje = pendentes.filter(t => t.data_vencimento === hoje).reduce((sum, t) => sum + (t.valor_total - (t.valor_pago || 0)), 0);
-    const total_atrasado = pendentes.filter(t => t.data_vencimento < hoje).reduce((sum, t) => sum + (t.valor_total - (t.valor_pago || 0)), 0);
-
-    return { total_liquidar, vencendo_hoje, total_atrasado };
+    return data;
   },
 
   subscribe(onUpdate: () => void) {

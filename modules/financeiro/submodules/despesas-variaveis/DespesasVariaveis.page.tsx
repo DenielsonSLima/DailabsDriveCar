@@ -10,7 +10,7 @@ import ModalBaixa from '../components/ModalBaixa';
 import ConfirmModal from '../../../../components/ConfirmModal';
 
 const DespesasVariaveisPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<VariaveisTab>('EM_ABERTO');
+  const [activeTab, setActiveTab] = useState<VariaveisTab>('MES_ATUAL');
   const [titulos, setTitulos] = useState<ITituloVariavel[]>([]);
   const [categorias, setCategorias] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,12 +50,27 @@ const DespesasVariaveisPage: React.FC = () => {
   async function loadData(silent = false) {
     if (!silent) setLoading(true);
     try {
-      const [data, kpisData] = await Promise.all([
+      const results = await Promise.allSettled([
         DespesasVariaveisService.getAll(activeTab, filtros),
-        DespesasVariaveisService.getKpis()
+        DespesasVariaveisService.getKpis(activeTab, filtros)
       ]);
-      setTitulos(data);
-      setKpis(kpisData);
+
+      if (results[0].status === 'fulfilled') {
+        setTitulos(results[0].value);
+      } else {
+        console.error('Erro ao carregar despesas variáveis:', results[0].reason);
+        setTitulos([]);
+      }
+
+      if (results[1].status === 'fulfilled') {
+        setKpis(results[1].value);
+      } else {
+        console.error('Erro ao carregar KPIs de despesas variáveis:', results[1].reason);
+        setKpis(null);
+      }
+    } catch (e) {
+      console.error('Erro ao carregar dados:', e);
+      setKpis(null);
     } finally {
       setLoading(false);
     }
@@ -131,9 +146,11 @@ const DespesasVariaveisPage: React.FC = () => {
 
       <VariaveisKpis kpis={kpis} />
 
-      <div className="flex bg-white p-1.5 rounded-2xl border border-slate-200 w-fit shadow-sm overflow-x-auto max-w-full">
-        <button onClick={() => setActiveTab('EM_ABERTO')} className={`px-6 py-2.5 rounded-xl text-[10px] whitespace-nowrap font-black uppercase tracking-widest transition-all ${activeTab === 'EM_ABERTO' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Em Aberto</button>
-        <button onClick={() => setActiveTab('PAGOS')} className={`px-6 py-2.5 rounded-xl text-[10px] whitespace-nowrap font-black uppercase tracking-widest transition-all ${activeTab === 'PAGOS' ? 'bg-orange-600 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Pagos</button>
+      <div className="flex bg-white p-1.5 rounded-2xl border border-slate-200 w-fit shadow-sm overflow-x-auto max-w-full gap-1">
+        <button onClick={() => setActiveTab('MES_ATUAL')} className={`px-6 py-2.5 rounded-xl text-[10px] whitespace-nowrap font-black uppercase tracking-widest transition-all ${activeTab === 'MES_ATUAL' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Mês Atual</button>
+        <button onClick={() => setActiveTab('FUTUROS')} className={`px-6 py-2.5 rounded-xl text-[10px] whitespace-nowrap font-black uppercase tracking-widest transition-all ${activeTab === 'FUTUROS' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Futuros</button>
+        <button onClick={() => setActiveTab('PAGO')} className={`px-6 py-2.5 rounded-xl text-[10px] whitespace-nowrap font-black uppercase tracking-widest transition-all ${activeTab === 'PAGO' ? 'bg-orange-600 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Pago</button>
+        <button onClick={() => setActiveTab('PENDENTES')} className={`px-6 py-2.5 rounded-xl text-[10px] whitespace-nowrap font-black uppercase tracking-widest transition-all ${activeTab === 'PENDENTES' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Pendentes</button>
         <button onClick={() => setActiveTab('TODOS')} className={`px-6 py-2.5 rounded-xl text-[10px] whitespace-nowrap font-black uppercase tracking-widest transition-all ${activeTab === 'TODOS' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Todos</button>
       </div>
 
