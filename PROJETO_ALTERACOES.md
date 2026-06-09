@@ -10,7 +10,6 @@
 - **Frontend Services**: Refatorados `DespesasFixasService.getKpis` e `DespesasVariaveisService.getKpis` para invocar as respectivas novas RPCs em vez da antiga `get_despesas_kpis`.
 - **Componentes de KPI**: Atualizados os componentes de interface `FixasKpis.tsx` e `VariaveisKpis.tsx` para exibir os novos valores de **Valor Total**, **Valor Pago** e **Valor Pendente** em substituição aos KPIs anteriores ("Total a Pagar", "Vencendo Hoje", "Total em Atraso").
 - **TanStack Query Invalidation**: Importado e configurado o `useQueryClient` nas páginas `DespesasFixas.page.tsx` e `DespesasVariaveis.page.tsx` para invalidar a chave `['caixa_dashboard']` após qualquer criação, edição, estorno ou pagamento de títulos, garantindo sincronização instantânea com os gráficos e saldos do dashboard financeiro global do caixa.
-
 **Arquivos afetados:**
 - `modules/financeiro/submodules/despesas-fixas/components/FixasKpis.tsx` [MODIFY]
 - `modules/financeiro/submodules/despesas-variaveis/components/VariaveisKpis.tsx` [MODIFY]
@@ -19,6 +18,21 @@
 - `modules/financeiro/submodules/despesas-fixas/DespesasFixas.page.tsx` [MODIFY]
 - `modules/financeiro/submodules/despesas-variaveis/DespesasVariaveis.page.tsx` [MODIFY]
 - `supabase/migrations/20260609_create_rpc_despesas_kpis.sql` [NEW]
+
+## [2026-06-09] - Feat: Colunas de Saldo do Patrimônio Líquido e Tipo de Lançamento na Conciliação Patrimonial
+
+**O que foi feito:**
+- **Banco de Dados (Supabase)**: Criadas as funções RPC `get_patrimonio_liquido_at_date(p_org_id, p_date)` e `get_conciliacao_patrimonial_transacoes(p_data_inicio, p_data_fim)` no Postgres para calcular de forma segura e retroativa o Patrimônio Líquido no momento exato de cada transação, e categorizar amigavelmente cada tipo de lançamento.
+- **Frontend Services**: Refatorado `RelatoriosService.getConciliacaoPatrimonial` para chamar a nova RPC e remapear seus dados estruturados com total retrocompatibilidade para o frontend.
+- **Frontend Pages e Templates**:
+  - Atualizada a tabela de transações do período na página `RelatorioPatrimonioConciliacao.page.tsx` com as colunas "Tipo" (exibindo `tipo_descricao`) e "Saldo Patr. Líquido" (exibindo `patrimonio_liquido`).
+  - Atualizado o template PDF/Impressão `PatrimonioConciliacaoTemplate.tsx` com a coluna "Classificação" e a coluna de saldo acumulado "Saldo PL", com o alinhamento de largura ideal para impressão.
+
+**Arquivos afetados:**
+- `supabase/migrations/20260609_patrimonio_liquido_running_balance.sql` [NEW/APPLIED]
+- `modules/relatorios/relatorios.service.ts` [MODIFY]
+- `modules/relatorios/pages/RelatorioPatrimonioConciliacao.page.tsx` [MODIFY]
+- `modules/relatorios/templates/caixa/PatrimonioConciliacaoTemplate.tsx` [MODIFY]
 
 ## [2026-06-09] - Fix/Feat: Ativação do Recebimento A Prazo e Toggle de Status na Interface
 

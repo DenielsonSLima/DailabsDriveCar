@@ -105,16 +105,11 @@ export const RelatoriosService = {
         });
         if (errorMax) throw errorMax;
 
-        // 3. Extrato de Transações do Mês (busca categoria através do título)
-        const { data: transacoesRaw, error: errorTrans } = await supabase
-            .from('fin_transacoes')
-            .select(`
-                id, data_pagamento, valor, tipo, tipo_transacao, descricao,
-                titulo:fin_titulos(id, origem_tipo, categoria:fin_categorias(nome), parceiro:parceiros(nome))
-            `)
-            .gte('data_pagamento', `${params.dataInicio}T00:00:00Z`)
-            .lte('data_pagamento', `${params.dataFim}T23:59:59Z`)
-            .order('data_pagamento', { ascending: true });
+        // 3. Extrato de Transações do Mês via RPC (calcula saldo do PL e tipo no banco)
+        const { data: transacoesRaw, error: errorTrans } = await supabase.rpc('get_conciliacao_patrimonial_transacoes', {
+            p_data_inicio: params.dataInicio,
+            p_data_fim: params.dataFim
+        });
         
         if (errorTrans) throw errorTrans;
 
@@ -133,11 +128,21 @@ export const RelatoriosService = {
             }
 
             return {
-                ...t,
-                categoria: t.titulo?.categoria || null,
+                id: t.id,
+                data_pagamento: t.data_pagamento,
                 data: t.data_pagamento,
+                valor: t.valor,
+                tipo: mappedTipo,
                 tipo_movimento: tipoMovimento,
-                tipo: mappedTipo
+                tipo_transacao: t.tipo_transacao,
+                descricao: t.descricao,
+                tipo_descricao: t.tipo_descricao,
+                patrimonio_liquido: t.patrimonio_liquido,
+                categoria: t.categoria_nome ? { nome: t.categoria_nome } : null,
+                titulo: {
+                    origem_tipo: t.origem_tipo,
+                    parceiro: t.parceiro_nome ? { nome: t.parceiro_nome } : null
+                }
             };
         });
 

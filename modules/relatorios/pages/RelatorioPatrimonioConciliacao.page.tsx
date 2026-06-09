@@ -150,21 +150,27 @@ const RelatorioPatrimonioConciliacaoPage: React.FC = () => {
                   <tr className="border-b border-slate-50">
                     <th className="px-8 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Data</th>
                     <th className="px-8 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Descrição</th>
+                    <th className="px-8 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Tipo</th>
                     <th className="px-8 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest text-right">Valor</th>
+                    <th className="px-8 py-4 text-[9px] font-black text-slate-400 uppercase tracking-widest text-right">Saldo Patr. Líquido</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50 text-sm font-medium">
                   {(!reportData.transacoes || reportData.transacoes.length === 0) ? (
                     <tr>
-                      <td colSpan={3} className="px-8 py-12 text-center text-slate-300 font-bold uppercase text-xs">Sem lançamentos no intervalo analítico</td>
+                      <td colSpan={5} className="px-8 py-12 text-center text-slate-300 font-bold uppercase text-xs">Sem lançamentos no intervalo analítico</td>
                     </tr>
                   ) : (
                     reportData.transacoes.map((t: any, i: number) => (
                       <tr key={i} className="hover:bg-slate-50/50 transition-colors group">
                         <td className="px-8 py-4 text-xs text-slate-400 font-bold">{new Date(t.data).toLocaleDateString('pt-BR')}</td>
                         <td className="px-8 py-4 text-xs font-black text-slate-800 uppercase tracking-tight">{t.descricao}</td>
+                        <td className="px-8 py-4 text-xs text-slate-500 font-bold uppercase tracking-tight">{t.tipo_descricao || t.categoria?.nome || 'GERAL'}</td>
                         <td className={`px-8 py-4 text-xs font-black text-right ${t.tipo_movimento === 'ENTRADA' ? 'text-emerald-600' : 'text-rose-600'}`}>
                           {t.tipo_movimento === 'ENTRADA' ? '+' : '-'} {formatCur(t.valor)}
+                        </td>
+                        <td className="px-8 py-4 text-xs font-black text-right text-slate-900">
+                          {formatCur(t.patrimonio_liquido)}
                         </td>
                       </tr>
                     ))

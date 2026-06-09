@@ -122,11 +122,12 @@ const PatrimonioConciliacaoTemplate: React.FC<Props> = ({ data, empresa, waterma
                     <table className="extrato-table">
                         <thead>
                             <tr>
-                                <th style={{ width: '12%' }}>Data</th>
-                                <th style={{ width: '40%' }}>Descrição / Parceiro</th>
-                                <th style={{ width: '20%' }}>Categoria</th>
-                                <th style={{ width: '13%', textAlign: 'center' }}>Tipo</th>
-                                <th style={{ width: '15%', textAlign: 'right' }}>Valor</th>
+                                <th style={{ width: '10%' }}>Data</th>
+                                <th style={{ width: '32%' }}>Descrição / Parceiro</th>
+                                <th style={{ width: '18%' }}>Classificação</th>
+                                <th style={{ width: '10%', textAlign: 'center' }}>Operação</th>
+                                <th style={{ width: '14%', textAlign: 'right' }}>Valor</th>
+                                <th style={{ width: '16%', textAlign: 'right' }}>Saldo PL</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -137,7 +138,7 @@ const PatrimonioConciliacaoTemplate: React.FC<Props> = ({ data, empresa, waterma
                                         <div style={{ fontWeight: '800', color: '#1e293b' }}>{t.descricao || 'Sem descrição'}</div>
                                         <div style={{ fontSize: '7px', color: '#94a3b8', textTransform: 'uppercase' }}>{t.titulo?.parceiro?.nome || '—'}</div>
                                     </td>
-                                    <td style={{ textTransform: 'uppercase', color: '#64748b', fontWeight: 'bold', fontSize: '7px' }}>{t.categoria?.nome || t.titulo?.origem_tipo || 'Geral'}</td>
+                                    <td style={{ textTransform: 'uppercase', color: '#64748b', fontWeight: 'bold', fontSize: '7px' }}>{t.tipo_descricao || t.categoria?.nome || 'Geral'}</td>
                                     <td style={{ textAlign: 'center' }}>
                                         <span style={{ 
                                             padding: '2px 6px', borderRadius: '4px', fontSize: '6px', fontWeight: '900', 
@@ -149,6 +150,9 @@ const PatrimonioConciliacaoTemplate: React.FC<Props> = ({ data, empresa, waterma
                                     </td>
                                     <td style={{ textAlign: 'right', fontSize: '10px' }} className={t.tipo === 'ENTRADA' ? 'val-pos' : 'val-neg'}>
                                         {t.tipo === 'SAIDA' ? '-' : ''} {fmt(t.valor)}
+                                    </td>
+                                    <td style={{ textAlign: 'right', fontSize: '10px', fontWeight: '900', color: '#0f172a' }}>
+                                        {fmt(t.patrimonio_liquido)}
                                     </td>
                                 </tr>
                             ))}
