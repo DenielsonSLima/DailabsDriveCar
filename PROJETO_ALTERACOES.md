@@ -1,5 +1,13 @@
 # Histórico de Alterações do Projeto
 
+## [2026-06-09] - Remove: Desativação do Nexus AI (Assistente de RAG)
+
+**O que foi feito:**
+- **Remoção do Chatbot**: Desativado o assistente flutuante "Nexus AI" (`AIAssistant`) removendo a sua importação e declaração do componente principal global [Layout.tsx](file:///Users/denielson/Desktop/Dailabs%20DriveCar/components/Layout.tsx), atendendo ao pedido do usuário de ocultar o boneco/chatbot do ERP.
+
+**Arquivos afetados:**
+- `components/Layout.tsx` [MODIFY]
+
 ## [2026-06-09] - Fix: Lucro do Mês com Outros Créditos em Regime de Competência
 
 **O que foi feito:**

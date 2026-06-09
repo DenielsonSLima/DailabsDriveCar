@@ -4,7 +4,6 @@ import Sidebar from './Sidebar';
 import Header from './Header';
 import { Toaster } from 'react-hot-toast';
 import MobileBottomNav from './MobileBottomNav';
-import AIAssistant from './AIAssistant';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -39,8 +38,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         isMenuOpen={isMobileMenuOpen} 
       />
 
-      {/* RAG Memory Assistant */}
-      <AIAssistant />
     </div>
   );
 };
