@@ -35,8 +35,7 @@ export const HistoricoService = {
         pedido_id, despesa_veiculo_id,
         parceiro:parceiros(nome),
         categoria:fin_categorias(nome, natureza),
-        forma_pagamento:cad_formas_pagamento(nome),
-        conta_prevista:fin_contas_bancarias(banco_nome)
+        forma_pagamento:cad_formas_pagamento(nome)
       `)
       .in('status', ['PENDENTE', 'PARCIAL', 'ATRASADO']);
 
@@ -125,7 +124,7 @@ export const HistoricoService = {
         status: statusMap[t.status] || 'PENDENTE',
         origem: origemTit(),
         parceiro_nome: t.parceiro?.nome,
-        conta_nome: t.conta_prevista?.banco_nome,
+        conta_nome: '—',
         forma_pagamento: t.forma_pagamento?.nome,
         parcela_info: t.parcela_numero ? `${t.parcela_numero}/${t.parcela_total}` : undefined,
         pedido_ref: pedidoInfo?.ref,

@@ -74,7 +74,7 @@ export const RelatoriosService = {
       id, numero_venda, data_venda, valor_venda, corretor_id,
       cliente:parceiros(nome),
       veiculo:est_veiculos(placa, montadora:cad_montadoras(nome), modelo:cad_modelos(nome)),
-      corretor:cad_corretores(nome, comissao_percentual)
+      corretor:cad_corretores(nome)
     `).eq('status', 'CONCLUIDO').not('corretor_id', 'is', null);
 
         if (params.dataInicio) query = query.gte('data_venda', params.dataInicio);

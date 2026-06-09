@@ -1,5 +1,15 @@
 # Histórico de Alterações do Projeto
 
+## [2026-06-09] - Fix: Correção de Queries de Relatórios (Comissões e Histórico Financeiro)
+
+**O que foi feito:**
+- **Relatório de Comissões**: Removida a coluna `comissao_percentual` do SELECT da tabela `cad_corretores` na query `getComissoesParaRelatorio` em `modules/relatorios/relatorios.service.ts` para evitar que a consulta falhasse com coluna inexistente no banco de dados.
+- **Histórico / Relatório Financeiro**: Removido o relacionamento `conta_prevista:fin_contas_bancarias` do SELECT na query de títulos pendentes em `modules/financeiro/services/historico.service.ts` (uma vez que contas só são associadas ao liquidar transações) e atualizado o mapeamento correspondente para definir a conta como `'—'`, resolvendo os erros de relacionamento no carregamento de histórico financeiro.
+
+**Arquivos afetados:**
+- `modules/relatorios/relatorios.service.ts` [FIX]
+- `modules/financeiro/services/historico.service.ts` [FIX]
+
 ## [2026-06-09] - Fix: Contabilização de Outros Créditos no Lucro Líquido (Caixa/DRE)
 
 **O que foi feito:**

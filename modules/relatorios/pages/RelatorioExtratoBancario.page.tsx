@@ -16,10 +16,12 @@ const RelatorioExtratoBancarioPage: React.FC = () => {
     const [watermark, setWatermark] = useState<any>(null);
     const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
+    const now = new Date();
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
     const [filtros, setFiltros] = useState({
         contaId: '',
-        dataInicio: '',
-        dataFim: '',
+        dataInicio: firstDay.toISOString().split('T')[0],
+        dataFim: now.toISOString().split('T')[0],
         tipo: '' // ENTRADA, SAIDA, TRANSFERENCIA, ou vazio
     });
 
@@ -41,10 +43,10 @@ const RelatorioExtratoBancarioPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (filtros.contaId && !reportData && !loading) {
+    if (filtros.contaId && filtros.dataInicio && filtros.dataFim && !loading) {
       fetchData();
     }
-  }, [filtros.contaId]);
+  }, [filtros.contaId, filtros.dataInicio, filtros.dataFim]);
 
   const loadContas = async () => {
     try {
@@ -166,7 +168,12 @@ const RelatorioExtratoBancarioPage: React.FC = () => {
           </button>
         </div>
 
-        {reportData ? (
+        {loading ? (
+          <div className="py-32 flex flex-col items-center justify-center space-y-4">
+            <div className="w-16 h-16 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
+            <p className="text-slate-400 font-black uppercase text-[10px] tracking-widest animate-pulse">Cruzando extratos bancários...</p>
+          </div>
+        ) : reportData ? (
           <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* KPI GRID */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -226,9 +233,9 @@ const RelatorioExtratoBancarioPage: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="py-32 flex flex-col items-center justify-center space-y-4">
-            <div className="w-16 h-16 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
-            <p className="text-slate-400 font-black uppercase text-[10px] tracking-widest animate-pulse">Cruzando extratos bancários...</p>
+          <div className="py-32 flex flex-col items-center justify-center text-center space-y-2">
+            <p className="text-slate-400 font-black uppercase text-xs tracking-wider">Nenhum extrato gerado</p>
+            <p className="text-slate-300 text-xs font-bold">Selecione uma conta e período, então clique em Conciliar Extrato.</p>
           </div>
         )}
       </div>

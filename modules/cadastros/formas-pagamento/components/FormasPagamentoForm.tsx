@@ -87,11 +87,31 @@ const FormasPagamentoForm: React.FC<Props> = ({ initialData, isSaving, onClose, 
               <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1">Configuração de Pagamento/Recebimento</p>
             </div>
           </div>
-          <button onClick={onClose} disabled={isSaving} className="p-2 hover:bg-white rounded-full transition-all text-slate-400">
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+          <div className="flex items-center space-x-4">
+            {/* Status Toggle in Form */}
+            <label className="flex items-center cursor-pointer space-x-2 bg-white px-3 py-1.5 rounded-full border border-slate-200 shadow-sm">
+              <span className={`text-[10px] font-black uppercase tracking-widest ${formData.ativo ? 'text-emerald-600' : 'text-slate-400'}`}>
+                {formData.ativo ? 'Ativo' : 'Inativo'}
+              </span>
+              <div className="relative">
+                <input 
+                  type="checkbox" 
+                  name="ativo"
+                  checked={formData.ativo || false} 
+                  onChange={(e) => setFormData(prev => ({ ...prev, ativo: e.target.checked }))} 
+                  disabled={isSaving}
+                  className="sr-only peer" 
+                />
+                <div className="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+              </div>
+            </label>
+
+            <button onClick={onClose} disabled={isSaving} className="p-2 hover:bg-white rounded-full transition-all text-slate-400">
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-8 space-y-8">
