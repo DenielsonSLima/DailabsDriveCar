@@ -1,5 +1,38 @@
 # Histórico de Alterações do Projeto
 
+## [2026-06-09] - Fix/Feat: Ativação do Recebimento A Prazo e Toggle de Status na Interface
+
+**O que foi feito:**
+- **Ativação do Recebimento "PRAZO"**: Executado comando SQL diretamente na base remota do Supabase para reativar (`ativo = true`) a forma de pagamento "PRAZO" (`destino_lancamento = 'CONTAS_RECEBER'`), permitindo o seu uso imediato na tela de "Lançar Crédito" (Outros Créditos) com as regras pré-programadas de parcelamento.
+- **Toggle de Status na Interface**: Adicionado o componente de alternância visual de status (Ativo/Inativo) no cabeçalho do formulário de Formas de Pagamento (`FormasPagamentoForm.tsx`). Isso garante que os administradores do sistema possam facilmente habilitar ou desabilitar métodos de pagamento diretamente na tela do ERP, prevenindo a necessidade de intervenção direta no banco.
+- **Documentação de Acesso MCP**: Registrado no arquivo de contexto do projeto (`PROJETO_CONTEXTO.md`) e nas diretrizes de habilidades (`.agent/skills/Acesso/SKILL.md`) que o agente de IA possui permissão de escrita e leitura na base remota via CLI do Supabase com o token de acesso obtido de `mcp_config.json`.
+
+**Arquivos afetados:**
+- `modules/cadastros/formas-pagamento/components/FormasPagamentoForm.tsx` [MODIFY]
+- `supabase/migrations/20260609_activate_prazo_payment_form.sql` [NEW]
+- `PROJETO_CONTEXTO.md` [MODIFY]
+- `.agent/skills/Acesso/SKILL.md` [MODIFY]
+
+## [2026-06-09] - Feature: Abas Dinâmicas, KPIs no Servidor e Totais de Agrupamento nas Despesas Fixas e Variáveis
+
+**O que foi feito:**
+- **Banco de Dados**: Criada a função RPC `get_despesas_kpis` no Supabase com RLS `SECURITY INVOKER` para computar os KPIs (Total a Pagar, Vencendo Hoje, Total em Atraso) baseados na aba, busca, categoria e datas de início/fim passadas pelo cliente.
+- **Frontend Services**: Refatorados `despesas-fixas.service.ts` e `despesas-variaveis.service.ts` para implementar as 5 abas requeridas ("Mês Atual", "Futuros", "Pago", "Pendentes", "Todos") e realizar o carregamento de KPIs delegando a computação à nova RPC do Supabase.
+- **Componentes e Páginas**:
+  - Atualizadas as páginas `DespesasFixas.page.tsx` e `DespesasVariaveis.page.tsx` com as novas abas, e implementado carregamento paralelo resiliente via `Promise.allSettled` (evitando skeletons infinitos em caso de erros de rede ou banco).
+  - Atualizados os componentes de listagem `FixasList.tsx` e `VariaveisList.tsx` para exibir a soma do `valor_total` dos títulos ao lado do cabeçalho de cada agrupamento (por mês ou por categoria).
+
+**Arquivos afetados:**
+- `supabase/migrations/20260609_create_rpc_kpis.sql` [NEW/APPLIED]
+- `modules/financeiro/submodules/despesas-fixas/despesas-fixas.types.ts` [MODIFY]
+- `modules/financeiro/submodules/despesas-fixas/despesas-fixas.service.ts` [MODIFY]
+- `modules/financeiro/submodules/despesas-fixas/DespesasFixas.page.tsx` [MODIFY]
+- `modules/financeiro/submodules/despesas-fixas/components/FixasList.tsx` [MODIFY]
+- `modules/financeiro/submodules/despesas-variaveis/despesas-variaveis.types.ts` [MODIFY]
+- `modules/financeiro/submodules/despesas-variaveis/despesas-variaveis.service.ts` [MODIFY]
+- `modules/financeiro/submodules/despesas-variaveis/DespesasVariaveis.page.tsx` [MODIFY]
+- `modules/financeiro/submodules/despesas-variaveis/components/VariaveisList.tsx` [MODIFY]
+
 ## [2026-06-09] - Fix: Correção de Queries de Relatórios (Comissões e Histórico Financeiro)
 
 **O que foi feito:**

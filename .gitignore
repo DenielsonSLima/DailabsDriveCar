@@ -132,3 +132,4 @@ debug_schema.cjs
 # Cache and local agent state
 .npm-cache/
 .claude/
+scratch/
