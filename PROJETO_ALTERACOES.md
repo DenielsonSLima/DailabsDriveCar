@@ -1,5 +1,14 @@
 # Histórico de Alterações do Projeto
 
+## [2026-06-09] - Fix: Contabilização de Outros Créditos no Lucro Líquido (Caixa/DRE)
+
+**O que foi feito:**
+- **Inclusão de Outros Créditos no Lucro**: Atualizada a RPC `get_caixa_metrics` no Supabase para somar recebimentos efetivos de títulos vinculados a `origem_tipo = 'OUTRO_CREDITO'` (outros créditos extraordinários, como aluguéis e receitas adicionais) no cálculo de `lucro_mensal`, `lucro_gerado` e `margem_lucro`.
+- **Regime de Caixa para Outros Créditos**: Garantido que o cálculo do lucro contabilize a data de pagamento real da transação (`data_pagamento` em `fin_transacoes`), seja ela uma parcela integral ou parcial, em vez da data de vencimento do título.
+
+**Arquivos afetados:**
+- `supabase/migrations/20260609_fix_lucro_outros_creditos.sql` [NEW/APPLIED]
+
 ## [2026-06-03] - Fix: Alinhamento do Lucro Líquido no Desempenho Trimestral
 
 **O que foi feito:**
