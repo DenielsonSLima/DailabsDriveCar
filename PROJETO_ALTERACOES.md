@@ -1,5 +1,16 @@
 # Histórico de Alterações do Projeto
 
+## [2026-06-28] — Refinamento: Suporte a Múltiplas Plataformas no Wizard de Criação de Anúncios
+
+**O que foi feito:**
+- **Wizard de Novo Anúncio**: Refatorada a lógica em `NovoAnuncio.page.tsx` para permitir a seleção de múltiplas plataformas de anúncio simultaneamente e configurar orçamentos individuais/compartilhados por plataforma.
+- **Resumo e Estimativas**: Melhorado o layout da tela de revisão com uma exibição em grid contendo o detalhamento de investimento diário e a estimativa consolidada de alcance e geração de leads.
+
+**Arquivos afetados:**
+- `modules/marketing/NovoAnuncio.page.tsx` [MODIFY]
+
+---
+
 ## [2026-06-27] — Fix: Fluxo de Recuperação de Senha e Auto-confirmação de E-mail
 
 **O que foi feito:**
