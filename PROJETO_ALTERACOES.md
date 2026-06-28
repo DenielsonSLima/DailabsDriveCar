@@ -1,5 +1,19 @@
 # Histórico de Alterações do Projeto
 
+## [2026-06-27] — Fix: Fluxo de Recuperação de Senha e Auto-confirmação de E-mail
+
+**O que foi feito:**
+- **Recuperação de Senha**: Adicionada a rota `/reset-password` e ajustado o fluxo em `App.tsx` para detectar quando o usuário navega para a redefinição de senha a partir do link de recuperação, ativando o modal correspondente (`setShowRecoveryPasswordChange(true)`).
+- **Redirecionamento do Reset**: Alterada a URL de redirecionamento (`redirectTo`) no método `sendPasswordReset` de `AuthService` para `/reset-password` (antes apontava para `/login`), além de normalizar o e-mail informado (trim e lowercase).
+- **Painel Administrativo**: Adicionada a propriedade `email_confirm = true` na Edge Function `admin-update-user` para confirmar automaticamente o e-mail editado via painel.
+
+**Arquivos afetados:**
+- `App.tsx` [MODIFY]
+- `modules/auth/auth.service.ts` [MODIFY]
+- `supabase/functions/admin-update-user/index.ts` [MODIFY]
+
+---
+
 ## [2026-06-18] — Refinamento: Padrões de Anúncios para Seminovos em Sergipe
 
 **O que foi feito:**

@@ -53,6 +53,7 @@ serve(async (req) => {
     const updates: any = {}
     if (password) updates.password = password
     if (body.email) updates.email = String(body.email).trim().toLowerCase()
+    updates.email_confirm = true
     if (metadata) updates.user_metadata = metadata
 
     let data = null

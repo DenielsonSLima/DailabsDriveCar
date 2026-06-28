@@ -134,6 +134,9 @@ const App: React.FC = () => {
         localStorage.setItem(LAST_ACTIVITY_KEY, Date.now().toString());
       }
       if (s?.user) loadProfile(s.user.id);
+      if (s && window.location.pathname === '/reset-password') {
+        setShowRecoveryPasswordChange(true);
+      }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, currentSession) => {
@@ -151,6 +154,9 @@ const App: React.FC = () => {
         localStorage.setItem(LAST_ACTIVITY_KEY, Date.now().toString());
         
         if (currentSession?.user) loadProfile(currentSession.user.id);
+        if (currentSession && window.location.pathname === '/reset-password') {
+          setShowRecoveryPasswordChange(true);
+        }
         // Invalida todas as queries para forçar refetch com a nova sessão autenticada
         queryClient.invalidateQueries();
       } else if (event === 'PASSWORD_RECOVERY') {
@@ -331,6 +337,7 @@ const App: React.FC = () => {
 
         {/* Auth */}
         <Route path="/login" element={session ? <Navigate to={window.innerWidth < 768 ? '/caixa' : '/inicio'} /> : <AuthPage />} />
+        <Route path="/reset-password" element={session ? <Navigate to={window.innerWidth < 768 ? '/caixa' : '/inicio'} /> : <AuthPage />} />
 
         {/* Módulos Administrativos (ERP) */}
         <Route path="/*" element={
