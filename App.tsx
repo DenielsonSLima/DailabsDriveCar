@@ -85,6 +85,7 @@ import BackupPage from './modules/ajustes/backup/Backup.page.tsx';
 import ApiResetPage from './modules/ajustes/api-reset/ApiReset.page.tsx';
 import ContasBancariasPage from './modules/ajustes/contas-bancarias/ContasBancarias.page.tsx';
 import SaldoInicialPage from './modules/ajustes/saldo-inicial/SaldoInicial.page.tsx';
+import AjustesFinanceiroPage from './modules/financeiro/submodules/ajustes/AjustesFinanceiro.page.tsx';
 import EditorSitePage from './modules/editor-site/EditorSite.page.tsx';
 
 import { useAuthStore } from './store/auth.store.ts';
@@ -112,15 +113,21 @@ const App: React.FC = () => {
         .eq('id', userId)
         .single();
 
-      if (!error && data) {
-        if (data.ativo === false) {
-          await AuthService.signOut();
-          alert("Sua conta foi desativada pelo administrador.");
-          window.location.href = '/login';
-          return;
-        }
-        setProfile(data);
+      if (error || !data) {
+        await AuthService.signOut();
+        alert("Conta sem perfil cadastrado. Solicite liberação ao administrador.");
+        window.location.href = '/login';
+        return;
       }
+
+      if (data.ativo === false) {
+        await AuthService.signOut();
+        alert("Sua conta foi desativada pelo administrador.");
+        window.location.href = '/login';
+        return;
+      }
+
+      setProfile(data);
     } catch (err) {
       console.error('Error fetching profile:', err);
     }
@@ -411,6 +418,7 @@ const App: React.FC = () => {
                   <Route path="/ajustes/api-reset" element={<ApiResetPage />} />
                   <Route path="/ajustes/contas-bancarias" element={<ContasBancariasPage />} />
                   <Route path="/ajustes/saldo-inicial" element={<SaldoInicialPage />} />
+                  <Route path="/ajustes/financeiro" element={<AjustesFinanceiroPage />} />
                   <Route path="/ajustes/site-publico" element={<EditorSitePage />} />
 
                   <Route path="/marketing" element={<MarketingPage />} />

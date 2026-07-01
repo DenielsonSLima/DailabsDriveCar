@@ -5,6 +5,7 @@ import { UsuariosService } from './usuarios.service';
 import { IUsuario } from './usuarios.types';
 import ListUsuarios from './components/ListUsuarios';
 import FormUsuario from './components/FormUsuario';
+import GoogleAccountLinkCard from '../../auth/components/GoogleAccountLinkCard';
 
 const UsuariosPage: React.FC = () => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const UsuariosPage: React.FC = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<IUsuario | null>(null);
   const [errorStatus, setErrorStatus] = useState<string | null>(null);
-  const [successCreds, setSuccessCreds] = useState<{ email: string, tempPassword: string } | null>(null);
+  const [successInvite, setSuccessInvite] = useState<{ email: string } | null>(null);
   // Modal de sucesso de exclusão
   const [successDelete, setSuccessDelete] = useState<string | null>(null);
   // Modal de confirmação de exclusão
@@ -61,13 +62,13 @@ const UsuariosPage: React.FC = () => {
 
   const handleSubmit = async (data: Partial<IUsuario>) => {
     try {
-      const result = await UsuariosService.save(data) as { tempPassword?: string } | void;
+      const result = await UsuariosService.save(data) as { inviteSent?: boolean } | void;
       await loadUsuarios();
       setIsFormOpen(false);
       setEditingUser(null);
 
-      if (result && result.tempPassword && data.email) {
-        setSuccessCreds({ email: data.email, tempPassword: result.tempPassword });
+      if (result && result.inviteSent && data.email) {
+        setSuccessInvite({ email: data.email });
       }
     } catch (err: any) {
       setErrorModal(err.message);
@@ -170,16 +171,20 @@ const UsuariosPage: React.FC = () => {
             )}
 
             {!errorStatus && (
-              <div className="bg-indigo-50 border border-indigo-100 p-4 rounded-2xl flex items-start space-x-3">
-                <div className="text-indigo-500 mt-0.5">
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
+              <>
+                <GoogleAccountLinkCard />
+
+                <div className="bg-indigo-50 border border-indigo-100 p-4 rounded-2xl flex items-start space-x-3">
+                  <div className="text-indigo-500 mt-0.5">
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <p className="text-xs text-indigo-700 font-medium leading-relaxed">
+                    <span className="font-bold">Gerenciamento de Perfis:</span> Esta lista exibe os dados da tabela <code className="bg-indigo-100 px-1 rounded font-bold italic">profiles</code>.
+                  </p>
                 </div>
-                <p className="text-xs text-indigo-700 font-medium leading-relaxed">
-                  <span className="font-bold">Gerenciamento de Perfis:</span> Esta lista exibe os dados da tabela <code className="bg-indigo-100 px-1 rounded font-bold italic">profiles</code>.
-                </p>
-              </div>
+              </>
             )}
 
             {loading ? (
@@ -292,8 +297,8 @@ const UsuariosPage: React.FC = () => {
         </div>
       )}
 
-      {/* Modal de Credenciais de Acesso Criadas */}
-      {successCreds && (
+      {/* Modal de Convite de Acesso Enviado */}
+      {successInvite && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
           <div className="bg-white max-w-md w-full rounded-3xl shadow-xl overflow-hidden animate-in zoom-in-95 duration-300">
             <div className="bg-emerald-500 p-6 flex items-center justify-center">
@@ -305,28 +310,22 @@ const UsuariosPage: React.FC = () => {
             </div>
 
             <div className="p-8 text-center space-y-4">
-              <h2 className="text-2xl font-black text-slate-800 tracking-tighter uppercase">Acesso Criado!</h2>
+              <h2 className="text-2xl font-black text-slate-800 tracking-tighter uppercase">Convite Enviado!</h2>
               <p className="text-slate-500 text-sm leading-relaxed">
-                O usuário foi criado com sucesso. Copie a senha provisória abaixo e envie ao novo colaborador. <b>Ele terá que trocá-la no primeiro acesso.</b>
+                O usuário foi cadastrado e recebeu um e-mail para confirmar o acesso. Ao abrir o link, ele será direcionado para definir a senha.
               </p>
 
               <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-left space-y-3 mt-6">
                 <div>
-                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">E-mail (Login)</label>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Convite enviado para</label>
                   <div className="font-mono text-sm text-slate-800 bg-white px-3 py-2 rounded-xl border border-slate-100 select-all">
-                    {successCreds.email}
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Senha Gerada</label>
-                  <div className="font-mono text-lg font-bold text-indigo-600 bg-indigo-50 px-3 py-2 rounded-xl border border-indigo-100 select-all tracking-wider text-center">
-                    {successCreds.tempPassword}
+                    {successInvite.email}
                   </div>
                 </div>
               </div>
 
               <button
-                onClick={() => setSuccessCreds(null)}
+                onClick={() => setSuccessInvite(null)}
                 className="w-full py-4 mt-6 bg-slate-900 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg active:scale-95"
               >
                 Entendi, Fechar

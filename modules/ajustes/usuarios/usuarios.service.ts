@@ -36,7 +36,7 @@ export const UsuariosService = {
   /**
    * Salva ou atualiza um usuário.
    */
-  async save(usuario: Partial<IUsuario>): Promise<{ tempPassword?: string } | void> {
+  async save(usuario: Partial<IUsuario>): Promise<{ inviteSent?: boolean } | void> {
     const isNew = !usuario.id;
     const email = usuario.email?.trim().toLowerCase();
 
@@ -54,7 +54,8 @@ export const UsuariosService = {
           telefone: usuario.telefone,
           cpf: usuario.cpf,
           role: usuario.role,
-          ativo: usuario.ativo !== undefined ? usuario.ativo : true
+          ativo: usuario.ativo !== undefined ? usuario.ativo : true,
+          redirectTo: `${window.location.origin}/reset-password`
         }
       });
 
@@ -67,8 +68,7 @@ export const UsuariosService = {
         throw new Error(`Erro ao criar usuário: ${authData.error}`);
       }
 
-      // Retornar a senha provisória apenas na criação
-      return { tempPassword: authData.tempPassword };
+      return { inviteSent: !!authData.inviteSent };
 
     } else {
       const { data, error } = await supabase.functions.invoke('admin-update-user', {

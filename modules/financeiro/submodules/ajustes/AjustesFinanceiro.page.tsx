@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { AjustesCentralService } from '../../../ajustes/ajustes.service';
 
 interface FinanceiroSettings {
@@ -6,8 +7,11 @@ interface FinanceiroSettings {
 }
 
 const AjustesFinanceiroPage: React.FC = () => {
+   const navigate = useNavigate();
+   const location = useLocation();
    const [settings, setSettings] = useState<FinanceiroSettings>({});
    const [saving, setSaving] = useState(false);
+   const openedFromAjustes = location.pathname.startsWith('/ajustes');
 
    useEffect(() => {
       AjustesCentralService.getSettings('financeiro').then(data => {
@@ -35,19 +39,31 @@ const AjustesFinanceiroPage: React.FC = () => {
       <div className="space-y-6">
          <div className="bg-white rounded-[2.5rem] border border-slate-200 p-8 shadow-sm">
             <div className="flex items-center space-x-4 mb-8">
+               {openedFromAjustes && (
+                  <button
+                     type="button"
+                     onClick={() => navigate('/ajustes')}
+                     className="p-2 bg-white border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-all shadow-sm group"
+                     aria-label="Voltar para ajustes"
+                  >
+                     <svg className="w-5 h-5 transform group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                     </svg>
+                  </button>
+               )}
                <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400">
                   <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924-1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /></svg>
                </div>
                <div>
-                  <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter leading-none">Ajustes & Configurações</h2>
+                  <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter leading-none">Configurações Financeiras</h2>
                   <p className="text-slate-500 text-xs mt-2 uppercase font-bold tracking-widest">Plano de Contas e Regras de Negócio</p>
                </div>
             </div>
 
             <div className="mb-8 rounded-[2rem] border border-slate-200 bg-slate-50 p-6 flex flex-col md:flex-row md:items-center justify-between gap-5">
                <div>
-                  <h4 className="text-sm font-black text-slate-800 uppercase tracking-tight">Despesa única no Financeiro</h4>
-                  <p className="text-[10px] text-slate-500 font-bold uppercase mt-1 leading-relaxed">Oculta a divisão visual entre despesas fixas e variáveis no menu financeiro.</p>
+                  <h4 className="text-sm font-black text-slate-800 uppercase tracking-tight">Módulo único de despesas</h4>
+                  <p className="text-[10px] text-slate-500 font-bold uppercase mt-1 leading-relaxed">Desativa os submódulos separados de despesas fixas e variáveis e mostra um único módulo chamado Despesas.</p>
                </div>
                <button
                   type="button"

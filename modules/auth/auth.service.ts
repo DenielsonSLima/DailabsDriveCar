@@ -1,6 +1,8 @@
 
 import { supabase } from '../../lib/supabase';
 
+const getAuthRedirectUrl = (path = '/login') => `${window.location.origin}${path}`;
+
 export const AuthService = {
   async signIn(email: string, senha: string) {
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -31,11 +33,46 @@ export const AuthService = {
       email,
       password: senha,
       options: {
-        data: { nome }
+        data: { nome },
+        emailRedirectTo: getAuthRedirectUrl('/login')
       }
     });
     if (error) throw error;
     return data;
+  },
+
+  async signInWithGoogle() {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: getAuthRedirectUrl('/login'),
+        queryParams: {
+          prompt: 'select_account',
+        },
+      },
+    });
+    if (error) throw error;
+    return data;
+  },
+
+  async linkGoogleAccount() {
+    const { data, error } = await supabase.auth.linkIdentity({
+      provider: 'google',
+      options: {
+        redirectTo: getAuthRedirectUrl('/ajustes/usuarios'),
+        queryParams: {
+          prompt: 'select_account',
+        },
+      },
+    });
+    if (error) throw error;
+    return data;
+  },
+
+  async getUserIdentities() {
+    const { data, error } = await supabase.auth.getUserIdentities();
+    if (error) throw error;
+    return data.identities;
   },
 
   async sendPasswordReset(email: string) {

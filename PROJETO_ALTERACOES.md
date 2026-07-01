@@ -1,5 +1,29 @@
 # Histórico de Alterações do Projeto
 
+## [2026-07-01] — Feature: Login e Vinculação Google OAuth e Painel Unificado de Despesas
+
+**O que foi feito:**
+- **Google OAuth**: Implementados os métodos de Login e Vinculação com contas Google no `auth.service.ts`. Atualizado o `LoginForm.tsx` e `Auth.page.tsx` para suportar o fluxo e adicionado o componente `GoogleAccountLinkCard.tsx`.
+- **Gestão de Usuários**: Atualizados os formulários e serviços de usuários (`Usuarios.page.tsx`, `FormUsuario.tsx`, `usuarios.service.ts`, `admin-create-user` Edge function) para exibir identidades vinculadas e permitir criação e alteração corretas com Google.
+- **Unificação de Despesas**: Implementado o painel unificado de despesas em `DespesasVariaveis.page.tsx` e `VariaveisList.tsx`, permitindo gerenciar (lançar, editar, listar e estornar) tanto despesas fixas quanto variáveis no mesmo fluxo operacional.
+
+**Arquivos afetados:**
+- `App.tsx` [MODIFY]
+- `modules/ajustes/Ajustes.page.tsx` [MODIFY]
+- `modules/ajustes/usuarios/Usuarios.page.tsx` [MODIFY]
+- `modules/ajustes/usuarios/components/FormUsuario.tsx` [MODIFY]
+- `modules/ajustes/usuarios/usuarios.service.ts` [MODIFY]
+- `modules/auth/Auth.page.tsx` [MODIFY]
+- `modules/auth/auth.service.ts` [MODIFY]
+- `modules/auth/components/LoginForm.tsx` [MODIFY]
+- `modules/auth/components/GoogleAccountLinkCard.tsx` [NEW]
+- `modules/financeiro/submodules/ajustes/AjustesFinanceiro.page.tsx` [MODIFY]
+- `modules/financeiro/submodules/despesas-variaveis/DespesasVariaveis.page.tsx` [MODIFY]
+- `modules/financeiro/submodules/despesas-variaveis/components/VariaveisList.tsx` [MODIFY]
+- `supabase/functions/admin-create-user/index.ts` [MODIFY]
+
+---
+
 ## [2026-06-29] — Feature: Integração OAuth no Hub de Marketing e Refinamento de UX nos Modais
 
 **O que foi feito:**

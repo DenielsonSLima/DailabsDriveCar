@@ -1,4 +1,3 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
 
 const CORS_HEADERS = {
@@ -7,14 +6,7 @@ const CORS_HEADERS = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
-const generateTempPassword = () => {
-  const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%&*'
-  const bytes = new Uint8Array(14)
-  crypto.getRandomValues(bytes)
-  return Array.from(bytes, (byte) => alphabet[byte % alphabet.length]).join('')
-}
-
-serve(async (req) => {
+Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: CORS_HEADERS })
   }
@@ -53,13 +45,11 @@ serve(async (req) => {
     if (!email) throw new Error('email is required')
     if (!body.nome) throw new Error('nome is required')
 
-    const tempPassword = generateTempPassword()
+    const redirectTo = String(body.redirectTo || '').trim() || undefined
 
-    const { data: created, error: createError } = await adminClient.auth.admin.createUser({
-      email,
-      password: tempPassword,
-      email_confirm: true,
-      user_metadata: {
+    const { data: created, error: createError } = await adminClient.auth.admin.inviteUserByEmail(email, {
+      redirectTo,
+      data: {
         nome: body.nome,
         sobrenome: body.sobrenome,
         role: body.role ?? 'OPERADOR',
@@ -67,7 +57,7 @@ serve(async (req) => {
     })
 
     if (createError) throw createError
-    if (!created.user) throw new Error('User was not created')
+    if (!created.user) throw new Error('User was not invited')
 
     const { error: profileInsertError } = await adminClient
       .from('profiles')
@@ -94,7 +84,7 @@ serve(async (req) => {
         id: created.user.id,
         email: created.user.email,
       },
-      tempPassword,
+      inviteSent: true,
     }), {
       headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
       status: 200,

@@ -7,12 +7,14 @@ interface Props {
   isGrouped: boolean;
   onPagar: (titulo: ITituloVariavel) => void;
   onEdit: (titulo: ITituloVariavel) => void;
-  onDelete: (id: string) => void;
+  onDelete: (id: string, titulo: ITituloVariavel) => void;
+  modoUnificado?: boolean;
 }
 
-const VariaveisList: React.FC<Props> = ({ items, loading, isGrouped, onPagar, onEdit, onDelete }) => {
+const VariaveisList: React.FC<Props> = ({ items, loading, isGrouped, onPagar, onEdit, onDelete, modoUnificado = false }) => {
   const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
   const formatDate = (date: string) => new Date(date).toLocaleDateString('pt-BR');
+  const getTipoLabel = (titulo: ITituloVariavel) => titulo.origem_tipo === 'DESPESA_FIXA' ? 'Fixa' : 'Variável';
 
   if (loading) return (
     <div className="py-32 flex flex-col items-center justify-center space-y-4">
@@ -28,6 +30,7 @@ const VariaveisList: React.FC<Props> = ({ items, loading, isGrouped, onPagar, on
           <tr className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
             <th className="px-8 py-5">Vencimento</th>
             <th className="px-8 py-5">Status</th>
+            {modoUnificado && <th className="px-8 py-5">Tipo</th>}
             <th className="px-8 py-5">Fornecedor / Descrição</th>
             <th className="px-8 py-5">Categoria</th>
             <th className="px-8 py-5 text-right w-32">Lançado</th>
@@ -47,6 +50,17 @@ const VariaveisList: React.FC<Props> = ({ items, loading, isGrouped, onPagar, on
                   {t.status}
                 </span>
               </td>
+              {modoUnificado && (
+                <td className="px-8 py-6">
+                  <span className={`px-2 py-1 rounded text-[8px] font-black uppercase tracking-widest border ${
+                    t.origem_tipo === 'DESPESA_FIXA'
+                      ? 'bg-slate-100 text-slate-600 border-slate-200'
+                      : 'bg-orange-50 text-orange-600 border-orange-100'
+                  }`}>
+                    {getTipoLabel(t)}
+                  </span>
+                </td>
+              )}
               <td className="px-8 py-6">
                 <p className="text-xs font-bold text-slate-700 uppercase truncate max-w-[200px]">{t.descricao}</p>
                 <p className="text-[9px] text-slate-400 font-bold uppercase mt-0.5">{t.parceiro?.nome || 'Fornecedor Avulso'}</p>
@@ -72,7 +86,7 @@ const VariaveisList: React.FC<Props> = ({ items, loading, isGrouped, onPagar, on
                   <button onClick={() => onEdit(t)} className="p-2 text-orange-500 hover:bg-orange-50 rounded-lg transition-colors" title="Editar">
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                   </button>
-                  <button onClick={() => onDelete(t.id)} className="p-2 text-slate-300 hover:text-rose-600 rounded-lg transition-colors">
+                  <button onClick={() => onDelete(t.id, t)} className="p-2 text-slate-300 hover:text-rose-600 rounded-lg transition-colors">
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                   </button>
                 </div>

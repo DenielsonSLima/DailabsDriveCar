@@ -15,6 +15,7 @@ const AuthPage: React.FC = () => {
   const { session } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [resetLoading, setResetLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState<{ title: string, message: string } | null>(null);
   const [success, setSuccess] = useState<{ title: string, message: string } | null>(null);
   const [currentBgIndex, setCurrentBgIndex] = useState(0);
@@ -91,6 +92,22 @@ const AuthPage: React.FC = () => {
       });
     } finally {
       setResetLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setGoogleLoading(true);
+    setError(null);
+    setSuccess(null);
+    try {
+      await AuthService.signInWithGoogle();
+    } catch (err: any) {
+      console.error('Erro no login com Google:', err);
+      setError({
+        title: 'Google indisponível',
+        message: err.message || 'Não foi possível iniciar o login com Google agora.',
+      });
+      setGoogleLoading(false);
     }
   };
 
@@ -178,8 +195,10 @@ const AuthPage: React.FC = () => {
           <LoginForm
             onSubmit={handleLogin}
             onForgotPassword={handleForgotPassword}
+            onGoogleLogin={handleGoogleLogin}
             isLoading={loading}
             isResetLoading={resetLoading}
+            isGoogleLoading={googleLoading}
           />
 
           {/* Link para site público removido pois o sistema é restrito */}

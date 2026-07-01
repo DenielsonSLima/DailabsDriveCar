@@ -247,16 +247,16 @@ const FormUsuario: React.FC<FormUsuarioProps> = ({ initialData, onSubmit, onCanc
             </div>
           </div>
         ) : (
-          <div className="bg-amber-50 border border-amber-200 p-4 rounded-2xl flex items-start space-x-3 mb-6">
-            <div className="text-amber-500 mt-0.5">
+          <div className="bg-indigo-50 border border-indigo-200 p-4 rounded-2xl flex items-start space-x-3 mb-6">
+            <div className="text-indigo-500 mt-0.5">
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8m-18 8h18a2 2 0 002-2V8a2 2 0 00-2-2H3a2 2 0 00-2 2v6a2 2 0 002 2z" />
               </svg>
             </div>
             <div>
-              <h4 className="text-xs font-black text-amber-900 uppercase tracking-widest">Geração de Senha Segura</h4>
-              <p className="text-sm text-amber-700 mt-1 leading-relaxed">
-                A senha de acesso será gerada automaticamente de forma segura. Após a criação, <b>copie as credenciais geradas</b> e repasse ao usuário. Ele será obrigado a alterar a senha no primeiro acesso.
+              <h4 className="text-xs font-black text-indigo-900 uppercase tracking-widest">Confirmação por E-mail</h4>
+              <p className="text-sm text-indigo-700 mt-1 leading-relaxed">
+                Ao criar o acesso, o sistema enviará um convite para o e-mail informado. O usuário confirmará o acesso pelo link e definirá a senha no primeiro acesso.
               </p>
             </div>
           </div>
