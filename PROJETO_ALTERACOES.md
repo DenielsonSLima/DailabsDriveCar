@@ -1,5 +1,17 @@
 # Histórico de Alterações do Projeto
 
+## [2026-07-09] — Fix: Sincronização em Tempo Real na Deleção de Retiradas e Correção de KPI
+
+**O que foi feito:**
+- **Replication / Replica Identity**: Alteradas as tabelas `fin_retiradas` e `fin_transferencias` no banco de dados Supabase para `REPLICA IDENTITY FULL`. Isso garante que eventos de deleção (DELETE) enviem o campo `organization_id` no payload, permitindo que filtros de RLS em tempo real funcionem corretamente e atualizem o frontend instantaneamente sem exigir F5.
+- **Correção de RPC de KPIs**: Corrigido o cálculo de `v_retiradas` na função `rpc_kpi_dashboard_financeiro` no banco de dados. Anteriormente a query tentava realizar `JOIN fin_titulos`, o que ignorava as retiradas reais cadastradas pelo módulo (que não possuem títulos). Agora calcula a soma diretamente da tabela `fin_retiradas`.
+- **Frontend Retiradas**: Adicionado `useQueryClient` em `RetiradasSocios.page.tsx` para invalidar a query `caixa_dashboard` e atualizar o saldo disponível em tempo real quando uma retirada for adicionada ou estornada.
+
+**Arquivos afetados:**
+- `modules/financeiro/submodules/retiradas-socios/RetiradasSocios.page.tsx` [MODIFY]
+- `supabase/migrations/20260709_fix_retiradas_realtime_delete.sql` [NEW/APPLIED]
+- `supabase/migrations/20260709_fix_dashboard_retiradas_kpi.sql` [NEW/APPLIED]
+
 ## [2026-07-01] — Feature: Login e Vinculação Google OAuth e Painel Unificado de Despesas
 
 **O que foi feito:**

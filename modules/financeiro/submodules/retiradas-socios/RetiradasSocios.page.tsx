@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { RetiradasService } from './retiradas.service';
 import { IRetirada, RetiradaTab, IRetiradaFiltros, GroupByRetirada } from './retiradas.types';
 import { SociosService } from '../../../ajustes/socios/socios.service';
@@ -10,6 +11,7 @@ import RetiradaForm from './components/RetiradaForm';
 import ConfirmModal from '../../../../components/ConfirmModal';
 
 const RetiradasSociosPage: React.FC = () => {
+  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<RetiradaTab>('MES_ATUAL');
   const [retiradas, setRetiradas] = useState<IRetirada[]>([]);
   const [socios, setSocios] = useState<any[]>([]);
@@ -81,6 +83,7 @@ const RetiradasSociosPage: React.FC = () => {
     setIsDeleting(true);
     try {
       await RetiradasService.delete(deleteId);
+      queryClient.invalidateQueries({ queryKey: ['caixa_dashboard'] });
       setDeleteId(null);
       setToast({ type: 'success', message: 'Retirada estornada com sucesso!' });
       loadData(true);
@@ -157,7 +160,12 @@ const RetiradasSociosPage: React.FC = () => {
         <RetiradaForm
           editItem={editItem}
           onClose={() => setIsFormOpen(false)}
-          onSuccess={() => { setIsFormOpen(false); loadData(true); setToast({ type: 'success', message: 'Lançamento salvo com sucesso!' }); }}
+          onSuccess={() => { 
+            setIsFormOpen(false); 
+            queryClient.invalidateQueries({ queryKey: ['caixa_dashboard'] });
+            loadData(true); 
+            setToast({ type: 'success', message: 'Lançamento salvo com sucesso!' }); 
+          }}
         />
       )}
 
