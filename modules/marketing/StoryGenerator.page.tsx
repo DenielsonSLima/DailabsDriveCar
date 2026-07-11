@@ -363,7 +363,7 @@ const StoryGeneratorPage: React.FC = () => {
         // ─── Texto das informações do veículo ─────────────────────────────────
 
         if (veiculo) {
-            const infoY = H - 110 * DPI;
+            const infoY = H - (showPrice && veiculo.valor_venda ? 160 : 110) * DPI;
             const px = 22 * DPI;
             let currentY = infoY;
 
@@ -545,7 +545,7 @@ const StoryGeneratorPage: React.FC = () => {
 
                 const scale = EXPORT_W / 360; // escala proporcional
                 const px = 22 * scale;
-                const infoY = EXPORT_H - 110 * scale;
+                const infoY = EXPORT_H - (showPrice && veiculo.valor_venda ? 160 : 110) * scale;
 
 
 

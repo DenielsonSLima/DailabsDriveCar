@@ -23,6 +23,7 @@ export const ContasPagarService = {
         )
       `, { count: 'exact' })
       .eq('tipo', 'PAGAR')
+      .not('origem_tipo', 'in', '("DESPESA_VEICULO")')
       .neq('status', 'CANCELADO');
 
     // Lógica de Abas Temporais

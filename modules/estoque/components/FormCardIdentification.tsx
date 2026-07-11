@@ -8,12 +8,15 @@ import { ModelosService } from '../../cadastros/modelos/modelos.service';
 import { VersoesService } from '../../cadastros/versoes/versoes.service';
 import { IModelo } from '../../cadastros/modelos/modelos.types';
 import { IVersao } from '../../cadastros/versoes/versoes.types';
+import { consultarEParsear, DadosParsedAPI } from '../utils/autoPreencherVeiculo';
 import ModalNovoModelo from './ModalNovoModelo';
 import ModalNovaVersao from './ModalNovaVersao';
 
 interface Props {
   formData: Partial<IVeiculo>;
   onChange: (updates: Partial<IVeiculo>) => void;
+  onConsultaPlaca?: (dados: DadosParsedAPI) => void;
+  onNotification?: (type: 'success' | 'error' | 'warning', message: string) => void;
 }
 
 const PlusButton: React.FC<{ onClick: () => void; disabled?: boolean }> = ({ onClick, disabled }) => (
@@ -30,9 +33,11 @@ const PlusButton: React.FC<{ onClick: () => void; disabled?: boolean }> = ({ onC
   </button>
 );
 
-const FormCardIdentification: React.FC<Props> = ({ formData, onChange }) => {
+const FormCardIdentification: React.FC<Props> = ({ formData, onChange, onConsultaPlaca, onNotification }) => {
   const [showNovoModelo, setShowNovoModelo] = useState(false);
   const [showNovaVersao, setShowNovaVersao] = useState(false);
+  const [isConsultando, setIsConsultando] = useState(false);
+  const [consultaErro, setConsultaErro] = useState<string | null>(null);
 
   // Queries com Cache
   const { data: montadoras = [], isLoading: isLoadingMontadoras } = useQuery({
@@ -85,8 +90,77 @@ const FormCardIdentification: React.FC<Props> = ({ formData, onChange }) => {
     handleVersaoSelect(versao.id);
   };
 
+  const handlePlacaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 7);
+    onChange({ placa: val });
+    setConsultaErro(null);
+  };
+
+  const handleConsultarPlaca = async () => {
+    const placa = formData.placa?.replace(/[^A-Z0-9]/gi, '') || '';
+    if (placa.length < 6 || placa.length > 7) {
+      setConsultaErro('Placa deve ter 6 ou 7 caracteres (ex: AB-1234 ou ABC1D23)');
+      return;
+    }
+
+    setIsConsultando(true);
+    setConsultaErro(null);
+
+    try {
+      const dados = await consultarEParsear(placa);
+
+      if (formData.tipo_veiculo_id) {
+        const selectedIsMoto = formData.tipo_veiculo_id === '87a79d16-42f5-4dc3-9d7b-c213e25f32fc';
+        const apiIsMoto = dados.categoriaSugerida === 'moto';
+
+        if (selectedIsMoto && !apiIsMoto) {
+          const confirm = window.confirm(`Atenção: você selecionou motocicleta, mas a placa consultada parece ser de um carro (${dados.marcaNome} ${dados.modeloNome}). Deseja importar assim mesmo?`);
+          if (!confirm) return;
+        } else if (!selectedIsMoto && apiIsMoto) {
+          const confirm = window.confirm(`Atenção: você selecionou um tipo de carro, mas a placa consultada parece ser de uma moto (${dados.marcaNome} ${dados.modeloNome}). Deseja importar assim mesmo?`);
+          if (!confirm) return;
+        }
+      }
+
+      const updates: Partial<IVeiculo> = {
+        placa: dados.placa,
+        chassi: dados.chassi,
+        ano_fabricacao: dados.anoFabricacao,
+        ano_modelo: dados.anoModelo,
+      };
+
+      if (dados.corId) updates.cor_id = dados.corId;
+      if (dados.montadora) updates.montadora_id = dados.montadora.id;
+
+      onChange(updates);
+
+      if (onNotification) {
+        if (dados.consultasRestantes <= 10) {
+          onNotification('warning', `Atenção: limite mensal chegando ao fim. Restam ${dados.consultasRestantes} de 100 consultas.`);
+        } else {
+          onNotification('success', `Placa consultada. Restam ${dados.consultasRestantes} consultas disponíveis este mês.`);
+        }
+      }
+
+      onConsultaPlaca?.(dados);
+    } catch (error: any) {
+      console.error('Erro na consulta de placa:', error);
+      const isLimitError = error.message?.includes('limite') || error.message?.includes('LIMITE');
+      const message = isLimitError
+        ? 'Limite de 100 consultas mensais atingido para sua loja. Entre em contato para contratar mais.'
+        : error.message || 'Erro ao consultar placa';
+
+      if (isLimitError && onNotification) onNotification('error', message);
+      else setConsultaErro(message);
+    } finally {
+      setIsConsultando(false);
+    }
+  };
+
   const selectedVersao = versoes.find(v => v.id === formData.versao_id);
   const selectedModelo = modelos.find(m => m.id === formData.modelo_id);
+  const placaLength = (formData.placa?.replace(/[^A-Z0-9]/gi, '') || '').length;
+  const placaValida = placaLength >= 6 && placaLength <= 7;
 
   // Selects precisam de padding-right extra para não sobrepor o botão "+"
   const selectCls = "w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 pr-14 text-sm font-bold text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 appearance-none transition-all disabled:bg-slate-50 disabled:opacity-50";
@@ -98,6 +172,72 @@ const FormCardIdentification: React.FC<Props> = ({ formData, onChange }) => {
           <span className="w-8 h-8 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center mr-3 text-sm">01</span>
           Identificação do Veículo
         </h3>
+
+        <div className="mb-8 grid grid-cols-1 lg:grid-cols-[minmax(240px,320px)_1fr] gap-6 items-stretch">
+          <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100">
+            <label className="block text-[10px] font-black text-slate-400 uppercase mb-4 ml-1 tracking-widest">Placa do Veículo</label>
+            <div className="relative max-w-[280px] mx-auto">
+              <div className="absolute top-0 left-0 w-full h-4 bg-blue-700 rounded-t-lg flex items-center justify-between px-2">
+                <span className="text-[6px] font-bold text-white">BRASIL</span>
+                <div className="w-4 h-2.5 bg-green-500 opacity-20"></div>
+              </div>
+              <input
+                type="text"
+                value={formData.placa || ''}
+                onChange={handlePlacaChange}
+                maxLength={7}
+                className="w-full bg-white border-2 border-slate-800 rounded-lg pt-6 pb-2 text-center text-4xl font-black uppercase tracking-widest text-slate-800 outline-none font-mono"
+                placeholder="ABC1D23"
+              />
+              <p className="text-[9px] text-center mt-2 text-slate-400 font-bold uppercase tracking-widest">
+                Consulta por placa antiga ou Mercosul
+              </p>
+            </div>
+
+            <div className="mt-4 flex justify-center">
+              <button
+                type="button"
+                onClick={handleConsultarPlaca}
+                disabled={!placaValida || isConsultando}
+                className="px-6 py-3 bg-emerald-600 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-emerald-700 shadow-lg shadow-emerald-200 transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 flex items-center gap-2"
+              >
+                {isConsultando ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                    Consultando...
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    Consultar Placa
+                  </>
+                )}
+              </button>
+            </div>
+
+            {consultaErro && (
+              <div className="mt-3 text-center">
+                <p className="text-xs text-rose-500 font-bold bg-rose-50 px-4 py-2 rounded-xl inline-block">
+                  {consultaErro}
+                </p>
+              </div>
+            )}
+          </div>
+
+          <div className="bg-indigo-50/50 rounded-3xl p-6 border border-indigo-100 flex flex-col justify-center">
+            <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-2">Cadastro guiado pela placa</p>
+            <p className="text-sm font-bold text-slate-700 leading-relaxed">
+              Ao consultar, o sistema já preenche chassi, cor e anos quando a API retornar esses dados, além de conduzir o cadastro de montadora, tipo, modelo e versão.
+            </p>
+            {formData.chassi && (
+              <p className="mt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                Chassi identificado: <span className="text-slate-700 font-mono">{formData.chassi}</span>
+              </p>
+            )}
+          </div>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           {/* Montadora */}

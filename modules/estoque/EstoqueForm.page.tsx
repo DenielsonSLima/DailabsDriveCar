@@ -166,6 +166,13 @@ const ModalConfirmTipo: React.FC<ModalConfirmTipoProps> = ({ tipos, onConfirm, o
 // COMPONENTE PRINCIPAL
 // ============================================================
 
+const normalizeVehicleName = (value?: string | null) =>
+  (value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toUpperCase()
+    .trim();
+
 const EstoqueFormPage: React.FC = () => {
   const navigate = useNavigate();
   const { id, pedidoId } = useParams();
@@ -293,18 +300,28 @@ const EstoqueFormPage: React.FC = () => {
     setWizardStep('tipo');
   };
 
-  const handleTipoConfirmado = (tipo: ITipoVeiculo) => {
+  const handleTipoConfirmado = async (tipo: ITipoVeiculo) => {
     setWizardTipoId(tipo.id);
     handleUpdateField({ tipo_veiculo_id: tipo.id });
 
-    // Verificar se modelo existe
-    if (wizardDados!.precisaCriarModelo) {
+    const montadoraId = wizardMontadora?.id || wizardDados?.montadora?.id;
+    if (!wizardDados || !montadoraId) {
       setWizardStep('modelo');
-    } else {
-      // Modelo existe, pular para versão
-      setWizardModeloId(wizardDados!.modelo!.id);
-      handleUpdateField({ modelo_id: wizardDados!.modelo!.id });
+      return;
+    }
+
+    const modelosDoTipo = await ModelosService.getByMontadoraAndTipo(montadoraId, tipo.id);
+    const modeloDoTipo = modelosDoTipo.find(
+      m => normalizeVehicleName(m.nome) === normalizeVehicleName(wizardDados.modeloNome)
+    );
+
+    if (modeloDoTipo) {
+      setWizardModeloId(modeloDoTipo.id);
+      handleUpdateField({ modelo_id: modeloDoTipo.id, versao_id: '' });
+      queryClient.invalidateQueries({ queryKey: ['modelos_by_montadora_tipo', montadoraId, tipo.id] });
       setWizardStep('versao');
+    } else {
+      setWizardStep('modelo');
     }
   };
 
@@ -438,10 +455,10 @@ const EstoqueFormPage: React.FC = () => {
       </div>
 
       <div className="max-w-5xl mx-auto px-6 mt-8 space-y-8">
+        <FormCardIdentification formData={formData} onChange={handleUpdateField} onConsultaPlaca={handleConsultaPlaca} onNotification={showToast} />
         <FormCardGallery formData={formData} onChange={handleUpdateField} onNotification={showToast} />
-        <FormCardIdentification formData={formData} onChange={handleUpdateField} />
         <FormCardFinance formData={formData} onChange={handleUpdateField} onNotification={showToast} isConsignacao={isConsignacao} />
-        <FormCardTechnical formData={formData} cores={cores} onChange={handleUpdateField} onConsultaPlaca={handleConsultaPlaca} onNotification={showToast} />
+        <FormCardTechnical formData={formData} cores={cores} onChange={handleUpdateField} />
         <FormCardChecklist formData={formData} onChange={handleUpdateField} />
         <FormCardObservations formData={formData} onChange={handleUpdateField} />
       </div>

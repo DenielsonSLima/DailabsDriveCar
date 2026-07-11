@@ -93,9 +93,13 @@ import { useAuthStore } from './store/auth.store.ts';
 // Chave do timer de inatividade — movida para escopo global para acesso facilitado
 const LAST_ACTIVITY_KEY = 'dailabs-drivercar-last-activity';
 
+const isPublicPath = (pathname: string) =>
+  pathname === '/' || pathname === '/estoque-publico' || pathname.startsWith('/veiculo/');
+
 const App: React.FC = () => {
   const queryClient = useQueryClient();
   const { session, profile, loading, setSession, setProfile, setLoading } = useAuthStore();
+  const [pathname, setPathname] = useState(window.location.pathname);
   const [showTimeoutModal, setShowTimeoutModal] = useState(false);
   const [showRecoveryPasswordChange, setShowRecoveryPasswordChange] = useState(false);
   const [countdown, setCountdown] = useState(120);
@@ -104,6 +108,32 @@ const App: React.FC = () => {
   const countdownIntervalRef = React.useRef<NodeJS.Timeout | null>(null);
   // Ref estavél para o startInactivityTimer, atualizado pelo useEffect
   const startInactivityTimerRef = React.useRef<() => void>(() => { });
+  const isPublicRoute = isPublicPath(pathname);
+
+  useEffect(() => {
+    const syncPathname = () => setPathname(window.location.pathname);
+    const originalPushState = window.history.pushState;
+    const originalReplaceState = window.history.replaceState;
+
+    window.history.pushState = function (...args) {
+      const result = originalPushState.apply(this, args);
+      syncPathname();
+      return result;
+    };
+
+    window.history.replaceState = function (...args) {
+      const result = originalReplaceState.apply(this, args);
+      syncPathname();
+      return result;
+    };
+
+    window.addEventListener('popstate', syncPathname);
+    return () => {
+      window.history.pushState = originalPushState;
+      window.history.replaceState = originalReplaceState;
+      window.removeEventListener('popstate', syncPathname);
+    };
+  }, []);
 
   const loadProfile = async (userId: string) => {
     try {
@@ -184,7 +214,7 @@ const App: React.FC = () => {
 
   // Monitoramento de inatividade resiliente
   useEffect(() => {
-    if (!session) {
+    if (!session || isPublicRoute) {
       setShowTimeoutModal(false);
       showTimeoutModalRef.current = false;
       return;
@@ -299,7 +329,7 @@ const App: React.FC = () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('storage', handleStorageChange);
     };
-  }, [session]);
+  }, [session, isPublicRoute]);
 
   const handleContinueSession = () => {
     localStorage.setItem(LAST_ACTIVITY_KEY, Date.now().toString());
@@ -317,9 +347,6 @@ const App: React.FC = () => {
     showTimeoutModalRef.current = false;
     AuthService.signOut().catch(console.error);
   };
-
-  // Se estiver carregando, mostramos um loader apenas para rotas internas (via hash)
-  const isPublicRoute = false;
 
   if (loading && !isPublicRoute) {
     return (

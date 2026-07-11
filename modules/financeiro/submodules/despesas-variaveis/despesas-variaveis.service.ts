@@ -15,7 +15,7 @@ export const DespesasVariaveisService = {
         categoria:fin_categorias(id, nome)
       `)
       .eq('tipo', 'PAGAR')
-      .eq('origem_tipo', 'DESPESA_VARIAVEL')
+      .in('origem_tipo', ['DESPESA_VARIAVEL', 'DESPESA_VEICULO'])
       .neq('status', 'CANCELADO');
 
     const getLocalDateStrings = () => {

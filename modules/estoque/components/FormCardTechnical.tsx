@@ -2,28 +2,14 @@
 import React, { useState } from 'react';
 import { IVeiculo } from '../estoque.types';
 import { ICor } from '../../cadastros/cores/cores.types';
-import { consultarEParsear, DadosParsedAPI } from '../utils/autoPreencherVeiculo';
 
 interface Props {
   formData: Partial<IVeiculo>;
   cores: ICor[];
   onChange: (updates: Partial<IVeiculo>) => void;
-  onConsultaPlaca?: (dados: DadosParsedAPI) => void;
-  onNotification?: (type: 'success' | 'error' | 'warning', message: string) => void;
 }
 
-const FormCardTechnical: React.FC<Props> = ({ formData, cores, onChange, onConsultaPlaca, onNotification }) => {
-  const [isConsultando, setIsConsultando] = useState(false);
-  const [consultaErro, setConsultaErro] = useState<string | null>(null);
-  const [consultaSucesso, setConsultaSucesso] = useState(false);
-
-  const handlePlacaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 7);
-    onChange({ placa: val });
-    setConsultaErro(null);
-    setConsultaSucesso(false);
-  };
-
+const FormCardTechnical: React.FC<Props> = ({ formData, cores, onChange }) => {
   const handleKmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     if (val === '') {
@@ -36,82 +22,7 @@ const FormCardTechnical: React.FC<Props> = ({ formData, cores, onChange, onConsu
     }
   };
 
-  const handleConsultarPlaca = async () => {
-    const placa = formData.placa?.replace(/[^A-Z0-9]/gi, '') || '';
-    if (placa.length < 6 || placa.length > 7) {
-      setConsultaErro('Placa deve ter 6 ou 7 caracteres (ex: AB-1234 ou ABC1D23)');
-      return;
-    }
-
-    setIsConsultando(true);
-    setConsultaErro(null);
-    setConsultaSucesso(false);
-
-    try {
-      const dados = await consultarEParsear(placa);
-      setConsultaSucesso(true);
-
-      // Validação de categoria (Moto vs Carro)
-      const selectedIsMoto = formData.tipo_veiculo_id === '87a79d16-42f5-4dc3-9d7b-c213e25f32fc';
-      const apiIsMoto = dados.categoriaSugerida === 'moto';
-
-      if (selectedIsMoto && !apiIsMoto) {
-        const confirm = window.confirm(`⚠️ Atenção: Você selecionou a categoria MOTOCICLETA, mas a placa consultada parece ser de um CARRO (${dados.marcaNome} ${dados.modeloNome}). Deseja importar os dados assim mesmo?`);
-        if (!confirm) return;
-      } else if (!selectedIsMoto && apiIsMoto) {
-        const confirm = window.confirm(`⚠️ Atenção: Você selecionou uma categoria de CARRO, mas a placa consultada parece ser de uma MOTO (${dados.marcaNome} ${dados.modeloNome}). Deseja importar os dados assim mesmo?`);
-        if (!confirm) return;
-      }
-
-      // Preenche chassi e cor automaticamente
-      const updates: Partial<IVeiculo> = {
-        chassi: dados.chassi,
-        ano_fabricacao: dados.anoFabricacao,
-        ano_modelo: dados.anoModelo,
-      };
-
-      if (dados.corId) {
-        updates.cor_id = dados.corId;
-      }
-
-      onChange(updates);
-
-      // Notificações de saldo (Limite de 100 por Loja)
-      if (onNotification) {
-        if (dados.consultasRestantes <= 10) { 
-          onNotification('warning', `⚠️ Atenção: Limite mensal chegando ao fim! Restam apenas ${dados.consultasRestantes} de 100 consultas.`);
-        } else {
-          onNotification('success', `Placa consultada! Você ainda tem ${dados.consultasRestantes} consultas disponíveis este mês.`);
-        }
-      }
-
-      // Notifica o componente pai para iniciar o fluxo wizard
-      if (onConsultaPlaca) {
-        onConsultaPlaca(dados);
-      }
-    } catch (error: any) {
-      console.error('Erro na consulta de placa:', error);
-      
-      const isLimitError = error.message?.includes('limite') || error.message?.includes('LIMITE');
-
-      if (isLimitError) {
-        const errorMsg = '⚠️ Limite de 100 consultas mensais atingido para sua loja. Entre em contato para contratar mais.';
-        if (onNotification) {
-          onNotification('error', errorMsg);
-        } else {
-          setConsultaErro(errorMsg);
-        }
-      } else {
-        setConsultaErro(error.message || 'Erro ao consultar placa');
-      }
-    } finally {
-      setIsConsultando(false);
-    }
-  };
-
   const selectedCor = cores.find(c => c.id === formData.cor_id);
-  const placaLength = (formData.placa?.replace(/[^A-Z0-9]/gi, '') || '').length;
-  const placaValida = placaLength >= 6 && placaLength <= 7;
 
   return (
     <div className="bg-white rounded-[2.5rem] p-8 border border-slate-200 shadow-sm animate-in slide-in-from-bottom-4">
@@ -149,61 +60,6 @@ const FormCardTechnical: React.FC<Props> = ({ formData, cores, onChange, onConsu
             </div>
           </div>
 
-          {/* Placa + Botão Consultar */}
-          <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100">
-            <label className="block text-[10px] font-black text-slate-400 uppercase mb-4 ml-1 tracking-widest">Identificação Placa</label>
-            <div className="relative max-w-[300px] mx-auto">
-              <div className="absolute top-0 left-0 w-full h-4 bg-blue-700 rounded-t-lg flex items-center justify-between px-2">
-                <span className="text-[6px] font-bold text-white">BRASIL</span>
-                <div className="w-4 h-2.5 bg-green-500 opacity-20"></div>
-              </div>
-              <input
-                type="text"
-                value={formData.placa || ''}
-                onChange={handlePlacaChange}
-                maxLength={7}
-                className="w-full bg-white border-2 border-slate-800 rounded-lg pt-6 pb-2 text-center text-4xl font-black uppercase tracking-widest text-slate-800 outline-none font-mono"
-                placeholder="ABC-1234"
-              />
-              <p className="text-[9px] text-center mt-2 text-slate-400 font-bold uppercase tracking-widest">
-                Aceita placas antigas (6 chars) e atuais (7 chars)
-              </p>
-            </div>
-
-            {/* Botão Consultar API */}
-            <div className="mt-4 flex justify-center">
-              <button
-                type="button"
-                onClick={handleConsultarPlaca}
-                disabled={!placaValida || isConsultando}
-                className="px-6 py-3 bg-emerald-600 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-emerald-700 shadow-lg shadow-emerald-200 transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 flex items-center gap-2"
-              >
-                {isConsultando ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                    Consultando...
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                    Consultar Placa
-                  </>
-                )}
-              </button>
-            </div>
-
-            {/* Mensagens de status */}
-            {consultaErro && (
-              <div className="mt-3 text-center">
-                <p className="text-xs text-rose-500 font-bold bg-rose-50 px-4 py-2 rounded-xl inline-block">
-                  ⚠️ {consultaErro}
-                </p>
-              </div>
-            )}
-
-          </div>
         </div>
 
         <div className="space-y-8 flex flex-col">
