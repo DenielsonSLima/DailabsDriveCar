@@ -44,11 +44,43 @@ serve(async (req) => {
       throw new Error('Only active ADMIN users can update users')
     }
 
+    const { data: callerMembership, error: callerMembershipError } = await supabaseClient
+      .from('organization_members')
+      .select('organization_id')
+      .eq('user_id', callerData.user.id)
+      .not('organization_id', 'is', null)
+      .maybeSingle()
+
+    if (callerMembershipError) {
+      console.warn('Falha ao validar organização do admin:', callerMembershipError.message)
+    }
+
+    const callerOrgId = normalizeOrgId((callerMembership as any)?.organization_id)
+      || normalizeOrgId((callerData.user as any)?.app_metadata?.organization_id)
+      || normalizeOrgId((callerData.user as any)?.user_metadata?.organization_id)
+
+    if (!callerOrgId) {
+      throw new Error('Não foi possível identificar a organização do usuário logado.')
+    }
+
     const body = await req.json()
     const userId = body.userId ?? body.id
     const { password, metadata } = body
 
     if (!userId) throw new Error('userId is required')
+
+    const { data: targetProfile, error: targetProfileError } = await supabaseClient
+      .from('profiles')
+      .select('organization_id')
+      .eq('id', userId)
+      .single()
+
+    if (targetProfileError) throw targetProfileError
+
+    const targetOrgId = normalizeOrgId((targetProfile as any)?.organization_id)
+    if (targetOrgId && callerOrgId !== targetOrgId) {
+      throw new Error('Acesso negado: usuário alvo pertence a outra organização.')
+    }
 
     const updates: any = {}
     if (password) updates.password = password
@@ -75,6 +107,7 @@ serve(async (req) => {
 
     if (body.email) profileUpdates.email = String(body.email).trim().toLowerCase()
     if (password) profileUpdates.force_password_change = true
+    profileUpdates.organization_id = targetOrgId || callerOrgId
 
     Object.keys(profileUpdates).forEach((key) => {
       if (profileUpdates[key] === undefined) delete profileUpdates[key]
@@ -100,3 +133,7 @@ serve(async (req) => {
     })
   }
 })
+
+function normalizeOrgId(value: unknown): string | null {
+  return typeof value === 'string' && value.trim().length > 0 ? value.trim() : null
+}

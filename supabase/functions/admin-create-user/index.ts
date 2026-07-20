@@ -39,6 +39,27 @@ Deno.serve(async (req) => {
       throw new Error('Only active ADMIN users can create users')
     }
 
+    const { data: callerMembership, error: membershipError } = await adminClient
+      .from('organization_members')
+      .select('organization_id')
+      .eq('user_id', callerData.user.id)
+      .limit(1)
+      .maybeSingle()
+
+    if (membershipError) {
+      console.warn('Falha ao resolver organização do admin via organization_members:', membershipError.message)
+    }
+
+    const organizationId = normalizeOrgId(
+      (callerMembership as any)?.organization_id ??
+      (callerData.user as any)?.app_metadata?.organization_id ??
+      (callerData.user as any)?.user_metadata?.organization_id
+    )
+
+    if (!organizationId) {
+      throw new Error('Não foi possível identificar a organização do usuário logado.')
+    }
+
     const body = await req.json()
     const email = String(body.email || '').trim().toLowerCase()
 
@@ -53,16 +74,32 @@ Deno.serve(async (req) => {
         nome: body.nome,
         sobrenome: body.sobrenome,
         role: body.role ?? 'OPERADOR',
+        organization_id: organizationId,
       },
     })
 
     if (createError) throw createError
     if (!created.user) throw new Error('User was not invited')
 
+    if (organizationId) {
+      const { error: metadataError } = await adminClient.auth.admin.updateUserById(created.user.id, {
+        app_metadata: {
+          ...(created.user?.app_metadata || {}),
+          organization_id: organizationId,
+        },
+      })
+
+      if (metadataError) {
+        await adminClient.auth.admin.deleteUser(created.user.id)
+        throw metadataError
+      }
+    }
+
     const { error: profileInsertError } = await adminClient
       .from('profiles')
       .upsert({
         id: created.user.id,
+        organization_id: organizationId,
         email,
         nome: body.nome,
         sobrenome: body.sobrenome,
@@ -96,3 +133,7 @@ Deno.serve(async (req) => {
     })
   }
 })
+
+function normalizeOrgId(value: unknown): string | null {
+  return typeof value === 'string' && value.trim().length > 0 ? value.trim() : null
+}

@@ -4,6 +4,7 @@ import { FinanceiroService } from '../financeiro/financeiro.service';
 import { ITitulo } from '../financeiro/financeiro.types';
 import { IVeiculo, IVeiculoDespesa, IEstoqueFilters, IEstoqueResponse, IVeiculoFoto, VeiculoSchema } from './estoque.types';
 import { EstVeiculosDespesasService } from './est-veiculos-despesas.service';
+import { EmpresaService } from '../ajustes/empresa/empresa.service';
 
 const TABLE = 'est_veiculos';
 
@@ -13,6 +14,7 @@ export const EstoqueService = {
     const limit = filters?.limit || 12;
     const from = (page - 1) * limit;
     const to = from + limit - 1;
+    const orgId = await EmpresaService.getCurrentOrganizationId();
 
     let query = supabase
       .from(TABLE)
@@ -39,6 +41,17 @@ export const EstoqueService = {
         else if (filters.statusTab === 'RASCUNHO') query = query.eq('status', 'PREPARACAO');
       }
     }
+
+    if (!orgId) {
+      return {
+        data: [],
+        count: 0,
+        currentPage: page,
+        totalPages: 0
+      };
+    }
+
+    query = query.eq('organization_id', orgId);
 
     const { data, error, count } = await query
       .order('created_at', { ascending: false })
@@ -83,7 +96,11 @@ export const EstoqueService = {
   },
 
   async getById(id: string): Promise<IVeiculo | null> {
-    const { data, error } = await supabase
+    const orgId = await EmpresaService.getCurrentOrganizationId();
+
+    if (!orgId) return null;
+
+    let query = supabase
       .from(TABLE)
       .select(`
         *,
@@ -104,6 +121,9 @@ export const EstoqueService = {
         )
       `)
       .eq('id', id)
+      .eq('organization_id', orgId)
+
+    const { data, error } = await query
       .maybeSingle();
 
     if (error) {
@@ -164,8 +184,11 @@ export const EstoqueService = {
       ...rest
     } = validatedVeiculo as any;
 
+    const resolvedOrgId = organization_id || (await EmpresaService.getCurrentOrganizationId());
+
     const dataToSave = {
       ...rest,
+      organization_id: resolvedOrgId,
       updated_at: new Date().toISOString()
     };
 

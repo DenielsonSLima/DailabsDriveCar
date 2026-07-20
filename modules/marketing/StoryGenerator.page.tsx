@@ -668,7 +668,7 @@ const StoryGeneratorPage: React.FC = () => {
                     const publicUrl = await StorageService.uploadImage(fileObj, 'veiculos', 'marketing-creatives');
                     
                     const { data: userData } = await supabase.auth.getUser();
-                    const orgId = userData.user?.app_metadata?.organization_id;
+                    const orgId = await EmpresaService.getCurrentOrganizationId();
                     if (orgId && veiculo?.id) {
                         await supabase.from('mkt_creatives').insert({
                             organization_id: orgId,

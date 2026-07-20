@@ -14,6 +14,7 @@ import {
 } from './site-publico.types';
 import { SiteConteudoSchema } from '../editor-site/editor-site.types';
 import { IEmpresa, EmpresaSchema } from '../ajustes/empresa/empresa.types';
+import { EmpresaService } from '../ajustes/empresa/empresa.service';
 
 // ─── Select padrão para veículos (evita duplicação) ───
 const VEICULO_SELECT = `
@@ -54,6 +55,13 @@ export const SitePublicoService = {
       resolvedOrgId = envOrgId;
       return envOrgId;
     }
+
+    const currentOrgId = await EmpresaService.getCurrentOrganizationId();
+    if (currentOrgId) {
+      resolvedOrgId = currentOrgId;
+      return currentOrgId;
+    }
+
     try {
       const { data, error } = await supabase
         .from('config_empresa')

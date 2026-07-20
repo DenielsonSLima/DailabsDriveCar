@@ -4,15 +4,77 @@ import { IEmpresa, IBrasilAPICNPJ } from './empresa.types';
 
 const TABLE = 'config_empresa';
 
+const normalizeOrgId = (value: unknown): string | null => {
+  if (typeof value === 'string' && value.trim().length > 0) {
+    return value.trim();
+  }
+  return null;
+};
+
 export const EmpresaService = {
+  async getCurrentOrganizationId(): Promise<string | null> {
+    const { data: { session } } = await supabase.auth.getSession();
+
+    const metadataOrgId = normalizeOrgId((session?.user as any)?.app_metadata?.organization_id);
+    const userId = session?.user?.id;
+
+    if (!userId) return null;
+
+    const { data: members, error: memberError } = await supabase
+      .from('organization_members')
+      .select('organization_id')
+      .eq('user_id', userId)
+      .not('organization_id', 'is', null);
+
+    const memberOrgIds = (members || [])
+      .map((m: any) => normalizeOrgId(m?.organization_id))
+      .filter(Boolean) as string[];
+
+    if (!memberError && metadataOrgId && memberOrgIds.includes(metadataOrgId)) {
+      return metadataOrgId;
+    }
+
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('organization_id')
+      .eq('id', userId)
+      .limit(1)
+      .maybeSingle();
+
+    const profileOrgId = normalizeOrgId((profile as any)?.organization_id);
+
+    if (!profileError && profileOrgId && metadataOrgId && profileOrgId === metadataOrgId) {
+      return metadataOrgId;
+    }
+
+    if (profileOrgId) {
+      return profileOrgId;
+    }
+
+    if (!memberError && memberOrgIds.length > 0) {
+      return memberOrgIds[0];
+    }
+
+    if (metadataOrgId) {
+      return metadataOrgId;
+    }
+  },
+
   /**
    * Busca o registro único da empresa.
    * Se não existir, retorna null (o formulário tratará como criação).
    */
-  async getDadosEmpresa(): Promise<IEmpresa | null> {
-    const { data, error } = await supabase
-      .from(TABLE)
-      .select('*')
+  async getDadosEmpresa(organizationId?: string): Promise<IEmpresa | null> {
+    const orgId = organizationId || await this.getCurrentOrganizationId();
+    let query = supabase.from(TABLE).select('*');
+
+    if (orgId) {
+      query = query.eq('organization_id', orgId);
+    } else {
+      query = query.is('organization_id', null);
+    }
+
+    const { data, error } = await query
       .limit(1)
       .maybeSingle();
 
@@ -36,9 +98,10 @@ export const EmpresaService = {
   async saveDadosEmpresa(payload: Partial<IEmpresa>): Promise<IEmpresa> {
     // Verificamos se já existe um registro para não duplicar se o payload vier sem ID
     let idToUpdate = payload.id;
+    const resolvedOrgId = payload.organization_id || await this.getCurrentOrganizationId();
     
     if (!idToUpdate) {
-      const existing = await this.getDadosEmpresa();
+      const existing = await this.getDadosEmpresa(resolvedOrgId || undefined);
       if (existing) {
         idToUpdate = existing.id;
       }
@@ -47,6 +110,7 @@ export const EmpresaService = {
     const dataToSave = {
       ...payload,
       id: idToUpdate, // Se undefined, o Supabase gera novo UUID (Insert), se tiver ID, faz Update
+      organization_id: payload.organization_id || resolvedOrgId || undefined,
       updated_at: new Date().toISOString()
     };
 

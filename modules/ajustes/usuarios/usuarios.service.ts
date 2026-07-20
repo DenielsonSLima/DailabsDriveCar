@@ -1,6 +1,7 @@
 
 import { supabase } from '../../../lib/supabase';
 import { IUsuario } from './usuarios.types';
+import { EmpresaService } from '../empresa/empresa.service';
 
 export const UsuariosService = {
   /**
@@ -9,9 +10,20 @@ export const UsuariosService = {
    */
   async getAll(): Promise<IUsuario[]> {
     try {
-      const { data, error, status } = await supabase
+      const orgId = await EmpresaService.getCurrentOrganizationId();
+
+      let query = supabase
         .from('profiles')
         .select('id, nome, sobrenome, cpf, telefone, role, avatar_url, email, ativo, force_password_change')
+
+      if (!orgId) {
+        console.warn('Organization id não encontrado; bloqueando listagem de usuários para evitar vazamento entre empresas.');
+        return [];
+      }
+
+      query = query.eq('organization_id', orgId);
+
+      const { data, error, status } = await query
         .order('nome', { ascending: true });
 
       if (error) {
