@@ -3,6 +3,7 @@ import { useQuery, useQueryClient, keepPreviousData } from '@tanstack/react-quer
 import { CaixaService } from './caixa.service';
 import { EmpresaService } from '../ajustes/empresa/empresa.service';
 import { MarcaDaguaService } from '../ajustes/marca-dagua/marca-dagua.service';
+import { AnotacoesService } from '../financeiro/submodules/anotacoes/anotacoes.service';
 
 // Componentes
 import CaixaKpis from './components/CaixaKpis';
@@ -94,6 +95,17 @@ const CaixaPage: React.FC = () => {
   const { data: watermark } = useQuery({
     queryKey: ['watermark'],
     queryFn: () => MarcaDaguaService.getConfig(),
+  });
+
+  const { data: anotacoes = [] } = useQuery({
+    queryKey: ['fin_anotacoes', startDate, endDate],
+    queryFn: () => {
+      // Converte ISO para YYYY-MM-DD para o filtro de data
+      const di = startDate.split('T')[0];
+      const df = endDate.split('T')[0];
+      return AnotacoesService.getAll(di, df);
+    },
+    enabled: !!startDate && !!endDate,
   });
 
   // Real-time Subscription
@@ -226,6 +238,7 @@ const CaixaPage: React.FC = () => {
               empresa={empresa}
               watermark={watermark}
               periodo={formattedPeriod}
+              anotacoes={anotacoes}
             />
           </RelatoriosQuickPreview>
         </div>

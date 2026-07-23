@@ -1,5 +1,40 @@
 # Histórico de Alterações do Projeto
 
+## [2026-07-23] — Feature: Desativação do Site Público + Aba Anotações no Financeiro
+
+**O que foi feito:**
+
+### Desativação do Site Público
+- **App.tsx**: Rotas `/`, `/estoque-publico` e `/veiculo/:id` agora redirecionam para `/login` via `<Navigate replace />`. A função `isPublicPath` foi alterada para retornar sempre `false`, garantindo que o timer de inatividade monitore o sistema inteiro.
+- O site continua existindo no código mas está inacessível publicamente — fácil de reativar se necessário.
+
+### Aba Anotações no Módulo Financeiro
+- **Banco de Dados**: Criada tabela `fin_anotacoes` com campos `data` (DATE), `descricao` (TEXT), `valor` (NUMERIC, opcional), `organization_id`, `created_by`, timestamps. RLS configurada com `org_private_access`. **Não movimenta financeiro** — é puramente informativa.
+- **Migração SQL**: `supabase/migrations/20260723_fin_anotacoes.sql` — aplicada no Supabase via MCP.
+- **Tipos**: `anotacoes.types.ts` — interfaces `IAnotacao` e `IAnotacaoForm`.
+- **Service**: `anotacoes.service.ts` — CRUD completo (`getAll`, `create`, `update`, `delete`) com filtragem opcional por período.
+- **Página**: `Anotacoes.page.tsx` — Interface completa com formulário inline (data, descrição, valor opcional), listagem em cards com data badge, edição e exclusão com hover actions.
+- **Financeiro.page.tsx**: Adicionada aba "Anotações" no menu `line2` com ícone de nota e cor violet. Tipo `SubModule` expandido com `'ANOTACOES'`.
+- **CaixaTemplate.tsx**: Nova página condicional "Anotações do Período" no PDF — tabela com Data | Descrição | Valor, rodapé com total quando há valores, nota informativa. A página só aparece se houver anotações no período.
+- **Caixa.page.tsx**: Busca anotações do período via `useQuery` com `AnotacoesService.getAll(di, df)` e passa para `CaixaTemplate` como prop `anotacoes`.
+
+**Por quê:**
+- Site público desativado a pedido do cliente para acesso exclusivo interno.
+- Anotações necessárias para registro de notas livres que devem constar no relatório do caixa sem impactar o fluxo financeiro.
+
+**Arquivos afetados:**
+- `App.tsx` [MODIFY — rotas públicas → redirect login]
+- `modules/financeiro/submodules/anotacoes/anotacoes.types.ts` [NEW]
+- `modules/financeiro/submodules/anotacoes/anotacoes.service.ts` [NEW]
+- `modules/financeiro/submodules/anotacoes/Anotacoes.page.tsx` [NEW]
+- `modules/financeiro/Financeiro.page.tsx` [MODIFY — import + aba Anotações]
+- `modules/relatorios/templates/caixa/CaixaTemplate.tsx` [MODIFY — seção Anotações no PDF]
+- `modules/caixa/Caixa.page.tsx` [MODIFY — fetch anotacoes + prop para template]
+- `supabase/migrations/20260723_fin_anotacoes.sql` [NEW/APPLIED]
+
+---
+
+
 ## [2026-07-13] — Fix: Correção de RLS e Salvamento do Editor do Site por Organização
 
 **O que foi feito:**

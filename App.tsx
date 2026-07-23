@@ -93,8 +93,7 @@ import { useAuthStore } from './store/auth.store.ts';
 // Chave do timer de inatividade — movida para escopo global para acesso facilitado
 const LAST_ACTIVITY_KEY = 'dailabs-drivercar-last-activity';
 
-const isPublicPath = (pathname: string) =>
-  pathname === '/' || pathname === '/estoque-publico' || pathname.startsWith('/veiculo/');
+const isPublicPath = (_pathname: string) => false;
 
 const App: React.FC = () => {
   const queryClient = useQueryClient();
@@ -364,10 +363,10 @@ const App: React.FC = () => {
     <BrowserRouter>
       <ScrollToTop />
       <Routes>
-        {/* Rotas Públicas */}
-        <Route path="/" element={<SitePublicoPage />} />
-        <Route path="/estoque-publico" element={<EstoquePublicoPage />} />
-        <Route path="/veiculo/:id" element={<PublicVehicleDetailsPage />} />
+        {/* Rotas Públicas — Desativadas: Redireciona para login */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/estoque-publico" element={<Navigate to="/login" replace />} />
+        <Route path="/veiculo/:id" element={<Navigate to="/login" replace />} />
 
         {/* Auth */}
         <Route path="/login" element={session ? <Navigate to={window.innerWidth < 768 ? '/caixa' : '/inicio'} /> : <AuthPage />} />

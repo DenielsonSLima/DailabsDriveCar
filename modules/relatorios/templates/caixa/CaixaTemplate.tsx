@@ -1,15 +1,17 @@
 import React from 'react';
 import BaseReportLayout from '../BaseReportLayout';
 import { IEmpresa } from '../../../ajustes/empresa/empresa.types';
+import { IAnotacao } from '../../../financeiro/submodules/anotacoes/anotacoes.types';
 
 interface Props {
     data: any;
     empresa?: IEmpresa;
     watermark?: any; // Config object
     periodo?: string;
+    anotacoes?: IAnotacao[];
 }
 
-const CaixaTemplate: React.FC<Props> = ({ data, empresa, watermark, periodo }) => {
+const CaixaTemplate: React.FC<Props> = ({ data, empresa, watermark, periodo, anotacoes = [] }) => {
     const fmt = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v || 0);
     const fmtK = (v: number) => {
         if (Math.abs(v) >= 1000000) return `${(v / 1000000).toFixed(1)}M`;
@@ -488,6 +490,70 @@ const CaixaTemplate: React.FC<Props> = ({ data, empresa, watermark, periodo }) =
                     </div>
                 </div>
             </BaseReportLayout>
+
+            {/* ═══════════ PÁGINA DE ANOTAÇÕES (condicional) ═══════════ */}
+            {anotacoes.length > 0 && (
+                <div className="page-break">
+                    <BaseReportLayout
+                        empresa={empresa}
+                        watermark={watermark}
+                        title="Anotações do Período"
+                        subtitle={periodo}
+                        pageNumber={vehicleChunks.length + 3}
+                        isManualPagination={true}
+                    >
+                        <div style={{ padding: '2rem' }}>
+                            <div style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <div style={{ width: '4px', height: '24px', background: '#7c3aed', borderRadius: '2px' }} />
+                                <div>
+                                    <h4 style={{ fontSize: '12px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px', color: '#1e293b', margin: 0 }}>Anotações</h4>
+                                    <p style={{ fontSize: '9px', fontWeight: 'bold', color: '#7c3aed', textTransform: 'uppercase', letterSpacing: '1px', margin: '2px 0 0' }}>Registros informativos — sem movimentação financeira</p>
+                                </div>
+                            </div>
+                            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '10px' }}>
+                                <thead>
+                                    <tr style={{ background: '#7c3aed' }}>
+                                        <th style={{ padding: '8px 12px', textAlign: 'left', color: 'white', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '8px', width: '100px' }}>Data</th>
+                                        <th style={{ padding: '8px 12px', textAlign: 'left', color: 'white', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '8px' }}>Descrição</th>
+                                        <th style={{ padding: '8px 12px', textAlign: 'right', color: 'white', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '8px', width: '120px' }}>Valor</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {anotacoes.map((a, i) => {
+                                        const [y, m, d] = a.data.split('T')[0].split('-');
+                                        const dateFormatted = `${d}/${m}/${y}`;
+                                        return (
+                                            <tr key={a.id} style={{ background: i % 2 === 0 ? '#f8f9ff' : 'white', borderBottom: '1px solid #e8e0ff' }}>
+                                                <td style={{ padding: '8px 12px', fontWeight: '700', color: '#7c3aed', fontSize: '9px' }}>{dateFormatted}</td>
+                                                <td style={{ padding: '8px 12px', color: '#334155', fontWeight: '500', fontSize: '10px' }}>{a.descricao}</td>
+                                                <td style={{ padding: '8px 12px', textAlign: 'right', fontWeight: '800', color: a.valor !== null ? '#059669' : '#cbd5e1', fontSize: '10px' }}>
+                                                    {a.valor !== null
+                                                        ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(a.valor)
+                                                        : '—'
+                                                    }
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                                {anotacoes.some(a => a.valor !== null) && (
+                                    <tfoot>
+                                        <tr style={{ background: '#ede9fe', borderTop: '2px solid #7c3aed' }}>
+                                            <td colSpan={2} style={{ padding: '8px 12px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '8px', color: '#7c3aed' }}>Total com Valor</td>
+                                            <td style={{ padding: '8px 12px', textAlign: 'right', fontWeight: '900', color: '#059669', fontSize: '11px' }}>
+                                                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+                                                    anotacoes.filter(a => a.valor !== null).reduce((acc, a) => acc + (a.valor || 0), 0)
+                                                )}
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                )}
+                            </table>
+                            <p style={{ fontSize: '8px', color: '#94a3b8', marginTop: '16px', fontStyle: 'italic' }}>* Estes registros são informativos e não representam movimentação financeira real.</p>
+                        </div>
+                    </BaseReportLayout>
+                </div>
+            )}
         </div>
     );
 };

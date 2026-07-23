@@ -14,11 +14,12 @@ import RetiradasSociosPage from './submodules/retiradas-socios/RetiradasSocios.p
 import TransferenciasPage from './submodules/transferencias/Transferencias.page';
 import ExtratoPage from './submodules/extrato/Extrato.page';
 import AjustesFinanceiroPage from './submodules/ajustes/AjustesFinanceiro.page';
+import AnotacoesPage from './submodules/anotacoes/Anotacoes.page';
 import { AjustesCentralService } from '../ajustes/ajustes.service';
 
 type SubModule =
   | 'GERAL' | 'PAGAR' | 'RECEBER' | 'DESPESAS' | 'VARIAVEIS' | 'FIXAS'
-  | 'CREDITOS' | 'DEBITOS' | 'RETIRADAS' | 'TRANSF' | 'HISTORICO' | 'AJUSTES';
+  | 'CREDITOS' | 'DEBITOS' | 'RETIRADAS' | 'TRANSF' | 'HISTORICO' | 'AJUSTES' | 'ANOTACOES';
 
 const FinanceiroPage: React.FC = () => {
   const [activeSub, setActiveSub] = useState<SubModule>('GERAL');
@@ -99,6 +100,7 @@ const FinanceiroPage: React.FC = () => {
     { id: 'RETIRADAS', label: 'Retiradas', icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2', color: 'amber' },
     { id: 'TRANSF', label: 'Transferências entre Contas', icon: 'M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4', color: 'blue' },
     { id: 'HISTORICO', label: 'Histórico Geral', icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2', color: 'slate' },
+    { id: 'ANOTACOES', label: 'Anotações', icon: 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z', color: 'violet' },
     { id: 'AJUSTES', label: 'Ajustes', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35', color: 'indigo' },
   ];
 
@@ -222,6 +224,7 @@ const FinanceiroPage: React.FC = () => {
         {activeSub === 'RETIRADAS' && <RetiradasSociosPage />}
         {activeSub === 'TRANSF' && <TransferenciasPage />}
         {activeSub === 'HISTORICO' && <ExtratoPage />}
+        {activeSub === 'ANOTACOES' && <AnotacoesPage />}
         {activeSub === 'AJUSTES' && <AjustesFinanceiroPage />}
       </div>
 
