@@ -82,12 +82,20 @@ const RelatoriosQuickPreview: React.FC<Props> = ({ isOpen, onClose, title, child
               }
             });
 
-            // Garantir que containers não tenham margens ou bordas extras na renderização do canvas
+            // Garantir que containers não tenham margens ou bordas extras e apliquem quebra CSS precisa apenas entre páginas
             const allContainers = clonedDoc.querySelectorAll('.report-container');
-            allContainers.forEach((el) => {
+            allContainers.forEach((el, index) => {
               const htmlEl = el as HTMLElement;
               htmlEl.style.margin = '0';
               htmlEl.style.border = 'none';
+              htmlEl.style.boxSizing = 'border-box';
+              if (index < allContainers.length - 1) {
+                htmlEl.style.pageBreakAfter = 'always';
+                htmlEl.style.breakAfter = 'page';
+              } else {
+                htmlEl.style.pageBreakAfter = 'avoid';
+                htmlEl.style.breakAfter = 'avoid';
+              }
             });
           }
         },
