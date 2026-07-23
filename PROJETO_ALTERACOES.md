@@ -1,5 +1,14 @@
 # Histórico de Alterações do Projeto
 
+## [2026-07-23] — Fix: Correção de Layout, Deslocamento e Paginação no PDF do Caixa
+
+**O que foi feito:**
+- **RelatoriosQuickPreview.tsx**: Adicionados `scrollY: 0` e `scrollX: 0` nas opções do `html2canvas`. Isso resolveu a falha onde rolar o modal antes de clicar em "Baixar PDF" capturava a imagem do canvas com um grande deslocamento vertical (topo branco).
+- **BaseReportLayout.tsx**: Adicionada a classe `html2pdf__page-break` no container principal de cada folha para forçar quebras de página atômicas no gerador de PDF.
+- **CaixaTemplate.tsx**: Ajustado o cálculo dinâmico de `totalPagesCalculated` (considerando se a aba Anotações possui registros no período) e corrigida a paginação de todas as seções (KPIs, Contas Pendentes, Estoque, Equity Consolidado e Anotações).
+
+---
+
 ## [2026-07-23] — Feature: Desativação do Site Público + Aba Anotações no Financeiro
 
 **O que foi feito:**
