@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { ITitulo } from '../financeiro/financeiro.types';
 import { IParceiro } from '../parceiros/parceiros.types';
 import { IVeiculo } from '../estoque/estoque.types';
 import { IFormaPagamento } from '../cadastros/formas-pagamento/formas-pagamento.types';
@@ -61,6 +62,7 @@ export interface IPedidoVenda {
   cliente?: IParceiro;
   veiculo?: IVeiculo & { pedido_compra?: { id: string, forma_pagamento?: IFormaPagamento } };
   pagamentos?: IVendaPagamento[];
+  titulos?: ITitulo[];
   forma_pagamento?: IFormaPagamento;
   corretor?: ICorretor;
 }

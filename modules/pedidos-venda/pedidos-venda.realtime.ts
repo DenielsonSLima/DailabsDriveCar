@@ -13,6 +13,7 @@ export const PedidosVendaRealtime = {
       .on('postgres_changes', { event: '*', schema: 'public', table: PAYMENTS_TABLE }, () => {
         onUpdate();
       })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'fin_titulos' }, onUpdate)
       .subscribe();
   }
 };

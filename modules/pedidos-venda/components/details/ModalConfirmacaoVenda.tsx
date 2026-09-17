@@ -1,9 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { IPedidoVenda } from '../../pedidos-venda.types';
-import { CondicoesRecebimentoService } from '../../../cadastros/condicoes-recebimento/condicoes-recebimento.service';
 import { ContasBancariasService } from '../../../ajustes/contas-bancarias/contas.service';
-import { FinanceiroService } from '../../../financeiro/financeiro.service';
+import { formatDateOnly, todayLocal } from '../../../../utils/date';
 
 interface Props {
   pedido: IPedidoVenda;
@@ -14,18 +13,19 @@ interface Props {
 }
 
 const ModalConfirmacaoVenda: React.FC<Props> = ({ pedido, valorVendaEfetivo, onClose, onConfirm, isLoading }) => {
-  const [condicoes, setCondicoes] = useState<any[]>([]);
   const [contas, setContas] = useState<any[]>([]);
-  const [selectedCondicaoId, setSelectedCondicaoId] = useState('');
   const [selectedContaId, setSelectedContaId] = useState('');
-  const [parcelasPrevia, setParcelasPrevia] = useState<any[]>([]);
+  const parcelasPrevia = (pedido.pagamentos || []).map((p, index) => ({
+    ...p, numero: index + 1, data_vencimento: p.data_recebimento,
+  }));
+  const totalComposto = parcelasPrevia.reduce((sum, p) => sum + Math.round(p.valor * 100), 0);
+  const composicaoValida = parcelasPrevia.length > 0 && (pedido.is_consignado
+    ? totalComposto > 0
+    : totalComposto === Math.round(valorVendaEfetivo * 100));
 
   const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
   useEffect(() => {
-    if (pedido.forma_pagamento_id) {
-      CondicoesRecebimentoService.getByFormaPagamento(pedido.forma_pagamento_id).then(setCondicoes);
-    }
     ContasBancariasService.getAll().then(data => {
       const active = data.filter((c: any) => c.ativo);
       setContas(active);
@@ -35,28 +35,8 @@ const ModalConfirmacaoVenda: React.FC<Props> = ({ pedido, valorVendaEfetivo, onC
     });
   }, [pedido.forma_pagamento_id]);
 
-  useEffect(() => {
-    if (selectedCondicaoId && valorVendaEfetivo > 0) {
-      FinanceiroService.previewCronograma({
-        valorTotal: valorVendaEfetivo,
-        condicaoId: selectedCondicaoId,
-        tipo: 'VENDA'
-      }).then(setParcelasPrevia);
-    } else {
-      setParcelasPrevia([]);
-    }
-  }, [selectedCondicaoId, valorVendaEfetivo]);
-
-  const selectedCondicao = condicoes.find(c => c.id === selectedCondicaoId);
-
-  // Normalize today's date for string comparison (YYYY-MM-DD)
-  const hoje = new Date().toLocaleDateString('en-CA'); // en-CA gives YYYY-MM-DD
-
-  // A bank account is required IF:
-  // 1. The payment destination is 'CAIXA'
-  // 2. AND (the payment method is by nature immediate [non-parcelable] OR there's an immediate/overdue installment)
-  const isImmediate = !pedido.forma_pagamento?.permite_parcelamento || parcelasPrevia.some(p => p.data_vencimento <= hoje);
-  const requiresAccount = pedido.forma_pagamento?.destino_lancamento === 'CAIXA' && isImmediate;
+  const hoje = todayLocal();
+  const requiresAccount = parcelasPrevia.some(p => p.data_vencimento <= hoje && !p.conta_bancaria_id);
 
   return (
     <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
@@ -82,15 +62,14 @@ const ModalConfirmacaoVenda: React.FC<Props> = ({ pedido, valorVendaEfetivo, onC
           </div>
 
           <div className="space-y-4">
-            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Plano de Recebimento (Condição)</label>
-            <select
-              value={selectedCondicaoId}
-              onChange={e => setSelectedCondicaoId(e.target.value)}
-              className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 font-bold text-slate-800 outline-none focus:border-emerald-500 appearance-none cursor-pointer"
-            >
-              <option value="">Escolha a regra de recebimento...</option>
-              {condicoes.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
-            </select>
+            <p className="text-xs font-bold text-slate-600">
+              Confira os lançamentos da composição do recebimento. Estes valores e vencimentos serão gerados no financeiro.
+            </p>
+            {!composicaoValida && (
+              <p role="alert" className="text-xs font-bold text-rose-600">
+                A composição precisa totalizar {formatCurrency(valorVendaEfetivo)}. Feche esta janela e ajuste os lançamentos antes de faturar.
+              </p>
+            )}
 
             {requiresAccount && (
               <div className="bg-blue-50 border border-blue-100 p-6 rounded-3xl animate-in slide-in-from-right">
@@ -119,7 +98,7 @@ const ModalConfirmacaoVenda: React.FC<Props> = ({ pedido, valorVendaEfetivo, onC
                     <div key={i} className="flex items-center justify-between p-4 bg-emerald-50/30 border border-emerald-100 rounded-2xl">
                       <div className="flex items-center space-x-3">
                         <span className="w-6 h-6 rounded-lg bg-white border border-emerald-100 flex items-center justify-center text-[10px] font-black text-emerald-500 shadow-sm">{p.numero}</span>
-                        <span className="text-xs font-bold text-slate-700">{new Date(p.data_vencimento).toLocaleDateString('pt-BR')}</span>
+                        <span className="text-xs font-bold text-slate-700">{formatDateOnly(p.data_vencimento)} • {p.forma_pagamento?.nome}</span>
                       </div>
                       <span className="text-sm font-black text-emerald-600">{formatCurrency(p.valor)}</span>
                     </div>
@@ -133,11 +112,11 @@ const ModalConfirmacaoVenda: React.FC<Props> = ({ pedido, valorVendaEfetivo, onC
         <div className="p-8 border-t border-slate-100 bg-slate-50">
           <button
             onClick={() => {
-              if (!selectedCondicaoId) return alert('Selecione uma condição.');
+              if (!composicaoValida) return;
               if (requiresAccount && !selectedContaId) return alert('Selecione a conta de destino.');
-              onConfirm({ condicao: selectedCondicao!, contaId: selectedContaId });
+              onConfirm({ condicao: undefined, contaId: requiresAccount ? selectedContaId : undefined });
             }}
-            disabled={isLoading || !selectedCondicaoId}
+            disabled={isLoading || !composicaoValida || (requiresAccount && !selectedContaId)}
             className="w-full py-5 bg-emerald-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-emerald-700 shadow-2xl transition-all active:scale-95 disabled:opacity-30"
           >
             {isLoading ? 'Faturando...' : 'Finalizar Venda e Gerar Recebíveis'}

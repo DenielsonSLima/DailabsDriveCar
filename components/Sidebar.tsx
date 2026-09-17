@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { AuthService } from '../modules/auth/auth.service';
 import ConfirmModal from './ConfirmModal';
 
@@ -63,11 +63,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const location = useLocation();
-  const navigate = useNavigate();
+  const sidebarExpanded = isOpen || !!isMobileOpen;
   const { profile } = useAuthStore();
 
   const toggleExpand = (label: string) => {
-    if (!isOpen) setIsOpen(true);
+    if (!sidebarExpanded) setIsOpen(true);
     setExpanded(expanded === label ? null : label);
   };
 
@@ -93,29 +93,30 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
     <>
       {/* Overlay Mobile */}
       {isMobileOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[60] md:hidden"
           onClick={() => setIsMobileOpen?.(false)}
         />
       )}
-      
+
       <aside
-        className={`fixed left-0 top-0 h-full bg-slate-900 text-white transition-all duration-300 z-[70] flex flex-col 
-          ${isOpen ? 'w-64' : 'w-20'}
-          ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+        aria-label="Menu principal"
+        className={`app-sidebar fixed left-0 top-0 h-dvh bg-slate-900 text-white transition-[width,transform] duration-200 motion-reduce:transition-none z-[70] flex flex-col
+          ${sidebarExpanded ? 'w-60' : 'w-20'}
+          ${isMobileOpen ? 'translate-x-0 md:transform-none' : '-translate-x-full md:transform-none'}
         `}
       >
-      <div className="p-4 flex items-center justify-between border-b border-slate-800">
-        <div className={`flex items-center space-x-3 overflow-hidden transition-all ${isOpen ? 'opacity-100 w-auto' : 'opacity-0 w-0'}`}>
+      <div className="h-16 shrink-0 px-4 flex items-center justify-between border-b border-slate-800">
+        <div className={`flex items-center space-x-2.5 overflow-hidden ${sidebarExpanded ? 'opacity-100 w-auto' : 'opacity-0 w-0'}`}>
           <div className="flex-shrink-0">
             <img
               src="/logos/dailabs_logo.png"
               alt="Dailabs Logo"
-              className="w-10 h-10 object-contain"
+              className="w-8 h-8 object-contain"
             />
           </div>
           <div className="flex flex-col">
-            <span className="font-bold text-xl tracking-tight leading-none text-white">Dailabs</span>
+            <span className="font-semibold text-lg tracking-tight leading-none text-white">Dailabs</span>
             <span className="text-[9px] text-slate-400 font-medium whitespace-nowrap">Creative AI & Softwares</span>
           </div>
         </div>
@@ -128,12 +129,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
               if (isOpen) setExpanded(null);
             }
           }}
-          className="p-1 hover:bg-slate-800 rounded-md"
+          aria-label={sidebarExpanded ? "Recolher menu" : "Expandir menu"}
+          className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
         >
-          <svg className="w-6 h-6 md:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-5 h-5 md:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
-          <svg className="w-6 h-6 hidden md:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-5 h-5 hidden md:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             {isOpen ? (
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7m0 0l7-7m-7 7h18" />
             ) : (
@@ -143,7 +145,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
         </button>
       </div>
 
-      <nav className="flex-1 overflow-y-auto py-4 px-2 space-y-1 custom-scrollbar">
+      <nav className="flex-1 min-h-0 overflow-y-auto py-3 px-3 space-y-0.5 custom-scrollbar">
         {menuItems.map((item) => {
           const hasChildren = item.children && item.children.length > 0;
           const isExpanded = expanded === item.label;
@@ -154,21 +156,23 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
               {hasChildren ? (
                 <button
                   onClick={() => toggleExpand(item.label)}
-                  className={`flex items-center p-3 rounded-xl transition-colors duration-200 group w-full text-left ${isActive ? 'bg-[#004691]/10 text-[#004691]' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                  aria-expanded={isExpanded && sidebarExpanded}
+                  title={!sidebarExpanded ? item.label : undefined}
+                  className={`flex items-center min-h-11 md:min-h-10 px-3 py-2 rounded-lg text-sm leading-5 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 group w-full text-left ${isActive ? 'bg-slate-800 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'
                     }`}
                 >
-                  <svg className={`w-6 h-6 shrink-0 ${isOpen ? 'mr-3' : 'mx-auto'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
+                  <svg className={`w-5 h-5 shrink-0 ${sidebarExpanded ? 'mr-3' : 'mx-auto'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d={item.icon} />
                   </svg>
-                  <span className={`whitespace-nowrap font-medium transition-all duration-300 flex-1 ${isOpen ? 'opacity-100 w-auto block' : 'opacity-0 w-0 hidden'}`}>
+                  <span className={`whitespace-nowrap font-medium flex-1 ${sidebarExpanded ? 'opacity-100 w-auto block' : 'opacity-0 w-0 hidden'}`}>
                     {item.label}
                   </span>
-                  {isOpen && (
+                  {sidebarExpanded && (
                     <svg className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   )}
-                  {!isOpen && (
+                  {!sidebarExpanded && (
                     <div className="absolute left-16 px-3 py-2 bg-slate-800 text-white text-xs font-bold rounded-lg shadow-xl border border-slate-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-[100] pointer-events-none flex items-center">
                       {item.label}
                       <div className="absolute w-2 h-2 bg-slate-800 border-l border-b border-slate-700 transform rotate-45 -left-1 top-1/2 -translate-y-1/2"></div>
@@ -178,18 +182,20 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
               ) : (
                 <NavLink
                   to={item.path}
+                  title={!sidebarExpanded ? item.label : undefined}
+                  onClick={() => setIsMobileOpen?.(false)}
                   className={({ isActive }) =>
-                    `flex items-center p-3 rounded-xl transition-colors duration-200 group ${isActive ? 'bg-[#004691] text-white shadow-lg' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                    `flex items-center min-h-11 md:min-h-10 px-3 py-2 rounded-lg text-sm leading-5 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 group ${isActive ? 'bg-[#004691] text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'
                     }`
                   }
                 >
-                  <svg className={`w-6 h-6 shrink-0 ${isOpen ? 'mr-3' : 'mx-auto'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
+                  <svg className={`w-5 h-5 shrink-0 ${sidebarExpanded ? 'mr-3' : 'mx-auto'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d={item.icon} />
                   </svg>
-                  <span className={`whitespace-nowrap font-medium transition-all duration-300 ${isOpen ? 'opacity-100 w-auto block' : 'opacity-0 w-0 hidden'}`}>
+                  <span className={`whitespace-nowrap font-medium ${sidebarExpanded ? 'opacity-100 w-auto block' : 'opacity-0 w-0 hidden'}`}>
                     {item.label}
                   </span>
-                  {!isOpen && (
+                  {!sidebarExpanded && (
                     <div className="absolute left-16 px-3 py-2 bg-slate-800 text-white text-xs font-bold rounded-lg shadow-xl border border-slate-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-[100] pointer-events-none flex items-center">
                       {item.label}
                       <div className="absolute w-2 h-2 bg-slate-800 border-l border-b border-slate-700 transform rotate-45 -left-1 top-1/2 -translate-y-1/2"></div>
@@ -198,14 +204,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
                 </NavLink>
               )}
 
-              {hasChildren && isExpanded && isOpen && (
-                <div className="ml-9 mt-1 space-y-1 animate-in slide-in-from-left-2 duration-200">
+              {hasChildren && isExpanded && sidebarExpanded && (
+                <div className="ml-5 pl-4 mt-1 space-y-0.5 border-l border-slate-700">
                   {item.children?.map((child) => (
                     <NavLink
                       key={child.path}
                       to={child.path}
+                      onClick={() => setIsMobileOpen?.(false)}
                       className={({ isActive }) =>
-                        `block p-2 text-xs font-medium rounded-md transition-colors ${isActive ? 'text-white bg-[#004691]/50' : 'text-slate-500 hover:text-white hover:bg-slate-800/50'
+                        `block px-2 py-2 text-xs leading-4 font-medium rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${isActive ? 'text-white bg-[#004691]/50' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
                         }`
                       }
                     >
@@ -219,41 +226,31 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
         })}
       </nav>
 
-      <div className="p-4 border-t border-slate-800 space-y-4">
-        <div className={`flex items-center ${isOpen ? 'space-x-3' : 'justify-center'}`}>
-          <div className="w-8 h-8 rounded-full bg-[#004691] flex items-center justify-center text-[10px] font-black shadow-lg ring-2 ring-slate-800 uppercase">
+      <div className="shrink-0 p-3 border-t border-slate-800">
+        <div className={`flex items-center rounded-xl border border-slate-700/60 bg-slate-800/50 ${sidebarExpanded ? 'gap-2.5 p-2.5' : 'flex-col gap-2 py-2'}`}>
+          <div className="w-8 h-8 shrink-0 rounded-lg bg-[#004691] flex items-center justify-center text-xs font-semibold uppercase">
             {profile?.nome?.charAt(0) || 'U'}
           </div>
-          {isOpen && (
-            <div className="flex flex-col min-w-0">
-              <span className="text-xs font-bold truncate text-white">{profile?.nome || 'Usuário'}</span>
-              <span className="text-[9px] text-emerald-500 font-black uppercase tracking-wider">{profile?.role || 'Online'}</span>
+          {sidebarExpanded && (
+            <div className="flex-1 min-w-0">
+              <p className="text-xs leading-4 font-semibold truncate text-white">{profile?.nome || 'Usuário'}</p>
+              <p className="mt-0.5 flex items-center gap-1.5 text-[10px] leading-4 text-slate-400">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                {profile?.role || 'Sessão ativa'}
+              </p>
             </div>
           )}
+          <button
+            onClick={() => setShowLogoutConfirm(true)}
+            title="Sair do sistema"
+            aria-label="Sair do sistema"
+            className="shrink-0 p-2 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+          </button>
         </div>
-
-        <button
-          onClick={() => setShowLogoutConfirm(true)}
-          className={`w-full flex items-center p-3 rounded-xl transition-all group ${isOpen
-            ? 'bg-slate-800/40 hover:bg-rose-500/10 text-slate-400 hover:text-rose-400 border border-transparent hover:border-rose-500/20'
-            : 'justify-center text-slate-400 hover:text-rose-400 hover:bg-rose-500/10'
-            }`}
-        >
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-          </svg>
-          {isOpen && (
-            <span className="ml-3 text-[10px] font-black uppercase tracking-[0.2em] whitespace-nowrap">
-              Sair
-            </span>
-          )}
-          {!isOpen && (
-            <div className="absolute left-16 px-3 py-2 bg-rose-600 text-white text-xs font-bold rounded-lg shadow-xl border border-rose-500 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-[100] pointer-events-none flex items-center">
-              Sair do Sistema
-              <div className="absolute w-2 h-2 bg-rose-600 border-l border-b border-rose-500 transform rotate-45 -left-1 top-1/2 -translate-y-1/2"></div>
-            </div>
-          )}
-        </button>
       </div>
 
       <ConfirmModal

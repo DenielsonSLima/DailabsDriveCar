@@ -1,3 +1,5 @@
+import { formatDateOnly } from '../../../../utils/date';
+import { getSaleSettlement } from '../../utils/payment-schedule';
 import React, { useState } from 'react';
 import { IPedidoVenda, IVendaPagamento } from '../../pedidos-venda.types';
 import ModalVendaPaymentForm from './ModalVendaPaymentForm';
@@ -13,10 +15,14 @@ interface Props {
 const FinancialCard: React.FC<Props> = ({ pedido, valorVendaEfetivo, onAddPayments, onDeletePayment, isSaving }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
-  const formatDate = (date: string) => new Date(date).toLocaleDateString('pt-BR');
+  const formatDate = formatDateOnly;
 
-  const totalRecebido = (pedido.pagamentos || []).reduce((acc, p) => acc + p.valor, 0);
-  const saldoRestante = valorVendaEfetivo - totalRecebido;
+  const isConcluido = pedido.status === 'CONCLUIDO';
+  const settlement = getSaleSettlement(pedido.titulos || []);
+  const totalEstruturado = (pedido.pagamentos || []).reduce((acc, p) => acc + Math.round(p.valor * 100), 0) / 100;
+  const totalRecebido = isConcluido ? settlement.recebido : totalEstruturado;
+  const totalLiquidado = isConcluido ? settlement.liquidado : totalEstruturado;
+  const saldoRestante = Math.max(0, valorVendaEfetivo - totalLiquidado);
 
   return (
     <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm p-8 animate-in slide-in-from-bottom-6 duration-700 w-full">
@@ -71,7 +77,7 @@ const FinancialCard: React.FC<Props> = ({ pedido, valorVendaEfetivo, onAddPaymen
       {/* Indicador de Quitação */}
       <div className="mb-8 px-1">
         <div className="flex justify-between items-center text-[10px] font-black uppercase mb-2">
-          <span className="text-slate-400">Progresso da Quitação</span>
+          <span className="text-slate-400">{isConcluido ? 'Recebido no financeiro' : 'Composição do pagamento'}</span>
           <span className={saldoRestante <= 0 ? 'text-emerald-500' : 'text-indigo-500'}>
             {formatCurrency(totalRecebido)} de {formatCurrency(valorVendaEfetivo)}
           </span>
@@ -79,13 +85,13 @@ const FinancialCard: React.FC<Props> = ({ pedido, valorVendaEfetivo, onAddPaymen
         <div className="h-3 w-full bg-slate-100 rounded-full overflow-hidden p-0.5 shadow-inner">
           <div
             className={`h-full rounded-full transition-all duration-1000 ease-out ${saldoRestante <= 0 ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]' : 'bg-indigo-600'}`}
-            style={{ width: `${Math.min(100, valorVendaEfetivo > 0 ? (totalRecebido / valorVendaEfetivo) * 100 : 0)}%` }}
+            style={{ width: `${Math.min(100, valorVendaEfetivo > 0 ? (totalLiquidado / valorVendaEfetivo) * 100 : 0)}%` }}
           ></div>
         </div>
         {saldoRestante > 0 && (
           <p className="text-[9px] font-black text-rose-500 uppercase mt-2 flex items-center">
             <svg className="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-            Pendente: {formatCurrency(saldoRestante)}
+            {isConcluido ? 'Saldo a receber' : 'Falta compor'}: {formatCurrency(saldoRestante)}
           </p>
         )}
       </div>
@@ -95,7 +101,7 @@ const FinancialCard: React.FC<Props> = ({ pedido, valorVendaEfetivo, onAddPaymen
         <table className="w-full text-left border-collapse">
           <thead className="bg-slate-50 border-b border-slate-100">
             <tr className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-              <th className="px-6 py-5">Data</th>
+              <th className="px-6 py-5">Lançado em</th>
               <th className="px-6 py-5">Vencimento</th>
               <th className="px-6 py-5">Condição de Recebimento</th>
               <th className="px-6 py-5">Conta de Destino</th>
@@ -112,7 +118,7 @@ const FinancialCard: React.FC<Props> = ({ pedido, valorVendaEfetivo, onAddPaymen
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex flex-col">
-                      <span className="text-xs font-black text-slate-900 uppercase tracking-tight">{new Date(p.data_recebimento).toLocaleDateString('pt-BR')}</span>
+                      <span className="text-xs font-black text-slate-900 uppercase tracking-tight">{formatDate(p.data_recebimento)}</span>
                       <span className="text-[9px] font-bold text-slate-400 uppercase">Vencimento</span>
                     </div>
                   </td>
@@ -136,7 +142,7 @@ const FinancialCard: React.FC<Props> = ({ pedido, valorVendaEfetivo, onAddPaymen
                       <span className="text-[10px] font-bold text-slate-300 uppercase italic">Não vinculada</span>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-sm font-black text-emerald-600 text-right">
+                  <td className="px-6 py-4 text-sm font-black text-slate-800 text-right">
                     {formatCurrency(p.valor)}
                   </td>
                   {pedido.status !== 'CONCLUIDO' && (

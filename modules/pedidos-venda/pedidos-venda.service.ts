@@ -121,9 +121,11 @@ export const PedidosVendaService = {
           versao:cad_versoes(*),
           tipo_veiculo:cad_tipos_veiculos(*)
         ),
+        titulos:fin_titulos!venda_pedido_id(*),
         pagamentos:venda_pedidos_pagamentos(
           *,
           forma_pagamento:cad_formas_pagamento(*),
+          condicao:cad_condicoes_recebimento(*),
           conta_bancaria:fin_contas_bancarias(banco_nome, conta, agencia, titular)
         ),
         corretor:cad_corretores(*)

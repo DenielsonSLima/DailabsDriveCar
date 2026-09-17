@@ -8,3 +8,11 @@
     font-size: 16px !important;
   }
 }
+
+/* Tipografia restrita à navegação, sem alterar os demais módulos. */
+.app-sidebar {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 14px;
+  line-height: 20px;
+}

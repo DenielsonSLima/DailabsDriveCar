@@ -1,3 +1,4 @@
+import { parseDateOnly } from '../../../../utils/date';
 import React, { useState, useEffect, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ContasReceberService } from './contas-receber.service';
@@ -80,59 +81,11 @@ const ContasReceberPage: React.FC = () => {
     setCurrentPage(1);
   }, [activeTab, filtros]);
 
-  const titulos = useMemo(() => {
-    const raw = data?.data || [];
-    
-    // Agrupa os títulos pelo venda_pedido_id
-    const agrupados = new Map<string, any>();
-    const soltos: any[] = [];
-
-    for (const t of raw) {
-      if (t.venda_pedido_id) {
-        if (!agrupados.has(t.venda_pedido_id)) {
-          agrupados.set(t.venda_pedido_id, { ...t, sub_titulos: [] });
-        } else {
-          const main = agrupados.get(t.venda_pedido_id);
-          if (t.origem_tipo === 'PEDIDO_VENDA') {
-            const oldMain = { ...main };
-            delete oldMain.sub_titulos;
-            const newMain = { ...t, sub_titulos: main.sub_titulos };
-            newMain.sub_titulos.push(oldMain);
-            agrupados.set(t.venda_pedido_id, newMain);
-          } else {
-            main.sub_titulos.push(t);
-          }
-        }
-      } else {
-        soltos.push(t);
-      }
-    }
-
-    const unificados = Array.from(agrupados.values()).map(main => {
-      let totalAdicional = 0;
-      let pagoAdicional = 0;
-      let pendenteAdicional = 0;
-
-      for (const sub of main.sub_titulos) {
-        totalAdicional += sub.valor_total || 0;
-        pagoAdicional += sub.valor_pago || 0;
-        pendenteAdicional += sub.valor_pendente || 0;
-      }
-
-      return {
-        ...main,
-        valor_base_carro: main.valor_total,
-        valor_total: main.valor_total + totalAdicional,
-        valor_pago: main.valor_pago + pagoAdicional,
-        valor_pendente: main.valor_pendente + pendenteAdicional,
-      };
-    });
-
-    return [...unificados, ...soltos].sort((a, b) => new Date(a.data_vencimento).getTime() - new Date(b.data_vencimento).getTime());
-  }, [data?.data]);
-
-  const totalCount = titulos.length;
-  const totalPages = Math.ceil(totalCount / 10) || 1; // Simplificado localmente já que unificamos
+  // Cada título mantém seu vencimento e seu próprio saldo para a baixa.
+  // Agrupar após paginar ocultava parcelas e misturava valores de títulos distintos.
+  const titulos = useMemo(() => data?.data || [], [data]);
+  const totalCount = data?.count || 0;
+  const totalPages = data?.totalPages || 1;
 
   const processedData = useMemo(() => {
     if (activeTab === 'TODOS') {
@@ -149,7 +102,7 @@ const ContasReceberPage: React.FC = () => {
     return titulos.reduce((acc: any, t) => {
       let key = 'DIVERSOS';
       if (groupBy === 'mes') {
-        const d = new Date(t.data_vencimento);
+        const d = parseDateOnly(t.data_vencimento);
         key = d.toLocaleString('pt-BR', { month: 'long', year: 'numeric' }).toUpperCase();
       } else if (groupBy === 'parceiro') {
         key = t.parceiro?.nome || 'CLIENTE NÃO IDENTIFICADO';
@@ -242,7 +195,7 @@ const ContasReceberPage: React.FC = () => {
         />
 
         {/* Pagination Controls */}
-        {!isLoading && totalPages > 1 && groupBy === 'nenhum' && (
+        {!isLoading && totalPages > 1 && (
           <div className="flex items-center justify-between p-6 border-t border-slate-100 bg-slate-50/50">
             <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
               Página <span className="text-slate-900">{currentPage}</span> de <span className="text-slate-900">{totalPages}</span>

@@ -31,6 +31,7 @@ export const invalidatePedidosVendaStock = (queryClient: QueryClient) => {
 
 export const invalidatePedidoVendaFinancial = (queryClient: QueryClient) => {
   invalidate(queryClient, pedidosVendaQueryKeys.contasReceber);
+  invalidate(queryClient, ['contas-receber-kpis']);
 };
 
 export const invalidatePedidoVendaFullChange = (queryClient: QueryClient, id?: string) => {

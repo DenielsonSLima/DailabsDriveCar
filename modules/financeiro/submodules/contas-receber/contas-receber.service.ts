@@ -54,6 +54,7 @@ export const ContasReceberService = {
 
     const { data, error, count } = await query
       .order('data_vencimento', { ascending: true })
+      .order('id', { ascending: true })
       .range(from, to);
 
     if (error) throw error;

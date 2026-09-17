@@ -1,3 +1,4 @@
+import { formatDateOnly, todayLocal } from '../../../../../utils/date';
 import React from 'react';
 import { ITituloReceber } from '../contas-receber.types';
 
@@ -10,10 +11,10 @@ interface ReceberCardProps {
 
 const ReceberCard: React.FC<ReceberCardProps> = ({ titulo, onBaixa, onDelete, onClick }) => {
     const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
-    const formatDate = (date: string) => new Date(date).toLocaleDateString('pt-BR');
+    const formatDate = formatDateOnly;
 
     const getStatusStyle = (status: string, vencimento: string) => {
-        const hoje = new Date().toISOString().split('T')[0];
+        const hoje = todayLocal();
         if (status === 'PAGO') return 'bg-emerald-50 text-emerald-600 border-emerald-100';
         if (vencimento < hoje) return 'bg-rose-50 text-rose-600 border-rose-100';
         if (status === 'PARCIAL') return 'bg-blue-50 text-blue-600 border-blue-100';
@@ -22,7 +23,7 @@ const ReceberCard: React.FC<ReceberCardProps> = ({ titulo, onBaixa, onDelete, on
 
     const valorLiquidado = titulo.valor_liquidado || 0;
     const valorPendente = titulo.valor_pendente || 0;
-    const isVencido = titulo.data_vencimento < new Date().toISOString().split('T')[0] && titulo.status !== 'PAGO';
+    const isVencido = titulo.data_vencimento < todayLocal() && titulo.status !== 'PAGO';
 
     return (
         <div

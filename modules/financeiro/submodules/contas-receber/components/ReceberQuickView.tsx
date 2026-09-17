@@ -1,3 +1,4 @@
+import { formatDateOnly, todayLocal } from '../../../../../utils/date';
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { ITituloReceber } from '../contas-receber.types';
@@ -7,7 +8,7 @@ import ConfirmModal from '../../../../../components/ConfirmModal';
 // import toast from 'react-hot-toast';
 import { FinanceiroService } from '../../../financeiro.service';
 import { ContasReceberService } from '../contas-receber.service';
-import { IContaBancaria } from '../../../ajustes/contas-bancarias/contas.types';
+import { IContaBancaria } from '../../../../ajustes/contas-bancarias/contas.types';
 
 interface ReceberQuickViewProps {
     titulo: ITituloReceber;
@@ -30,7 +31,7 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
     // Estados para adicionar empréstimo
     const [isAdicionandoEmprestimo, setIsAdicionandoEmprestimo] = useState(false);
     const [emprestimoValor, setEmprestimoValor] = useState<number>(0);
-    const [emprestimoData, setEmprestimoData] = useState<string>(new Date().toISOString().split('T')[0]);
+    const [emprestimoData, setEmprestimoData] = useState<string>(todayLocal());
     const [emprestimoDescricao, setEmprestimoDescricao] = useState<string>('Empréstimo Adicional');
     const [isSubmittingEmprestimo, setIsSubmittingEmprestimo] = useState(false);
     const [editandoLoanId, setEditandoLoanId] = useState<string | null>(null);
@@ -57,7 +58,7 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
     if (!isOpen) return null;
 
     const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
-    const formatDate = (date: string) => new Date(date).toLocaleDateString('pt-BR');
+    const formatDate = formatDateOnly;
 
     // Mapeia apenas pagamentos reais (ignora descontos e acréscimos informativos na soma do recebido)
     const transacoes = titulo.transacoes || [];
@@ -79,11 +80,11 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
             queryClient.invalidateQueries({ queryKey: ['contas-receber'] });
             queryClient.invalidateQueries({ queryKey: ['caixa-transacoes'] });
             setConfirmDeleteId(null);
-            toast.success('Recebimento estornado com sucesso!');
+            showToast('success', 'Recebimento estornado com sucesso!');
             onClose();
         } catch (err) {
             console.error('Erro ao excluir recebimento:', err);
-            toast.error('Erro ao estornar recebimento.');
+            showToast('error', 'Erro ao estornar recebimento.');
         } finally {
             setIsDeleting(false);
         }
@@ -313,6 +314,15 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                         )}
                     </div>
 
+                    {titulo.origem_tipo === 'MANUAL' && titulo.venda_pedido_id && (
+                        <button
+                            onClick={() => handleEditLoan(titulo)}
+                            className="w-full px-4 py-3 rounded-xl text-xs font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition-colors"
+                        >
+                            Editar cobrança adicional
+                        </button>
+                    )}
+
                     {/* Dados do Cliente */}
                     <div>
                         <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Dados do Cliente</h4>
@@ -459,7 +469,7 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                                                 <option value="">Selecione a Conta...</option>
                                                 {contasBancarias.map(c => (
                                                     <option key={c.id} value={c.id}>
-                                                        {c.banco_nome || c.nome} - {c.titular} | Saldo: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(c.saldo_atual || 0)}
+                                                        {c.banco_nome || 'Conta bancária'} - {c.titular} | Saldo: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(c.saldo_atual || 0)}
                                                     </option>
                                                 ))}
                                             </select>
@@ -622,11 +632,11 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                                                                     ? 'Desconto'
                                                                     : t.tipo_transacao === 'ACRESCIMO_TITULO'
                                                                         ? 'Juros'
-                                                                        : formatDate(t.data_pagamento)}
+                                                                        : new Date(t.data_pagamento).toLocaleDateString('pt-BR')}
                                                             </p>
                                                             {(t.tipo_transacao === 'DESCONTO_TITULO' || t.tipo_transacao === 'ACRESCIMO_TITULO') && (
                                                                 <span className="text-[8px] font-black underline uppercase tracking-tighter text-slate-400">
-                                                                    {formatDate(t.data_pagamento)}
+                                                                    {new Date(t.data_pagamento).toLocaleDateString('pt-BR')}
                                                                 </span>
                                                             )}
                                                         </div>

@@ -1,3 +1,5 @@
+import { buildPaymentSchedule } from '../../utils/payment-schedule';
+import { todayLocal } from '../../../../utils/date';
 import React, { useState, useEffect, useMemo } from 'react';
 import ReactDOM from 'react-dom';
 import { IFormaPagamento } from '../../../cadastros/formas-pagamento/formas-pagamento.types';
@@ -95,31 +97,17 @@ const ModalVendaPaymentForm: React.FC<Props> = ({ pedido, onClose, onSubmit, isS
     const condicao = condicoes.find(c => c.id === condicaoId);
     const valorNumerico = parseCurrency(valorTotalACompor);
 
-    if (condicao && valorNumerico > 0) {
-      const novasParcelas: IParcelaGerada[] = [];
-      const valorParcela = valorNumerico / condicao.qtd_parcelas;
-      const hoje = new Date();
-
-      for (let i = 0; i < condicao.qtd_parcelas; i++) {
-        const dataVenc = new Date();
-        const diasAdicionais = condicao.dias_primeira_parcela + (i * condicao.dias_entre_parcelas);
-        dataVenc.setDate(hoje.getDate() + diasAdicionais);
-
-        novasParcelas.push({
-          id_temporario: Math.random().toString(36).substr(2, 9),
-          numero: i + 1,
-          data_vencimento: dataVenc.toISOString().split('T')[0],
-          valor: valorParcela
-        });
-      }
+    if (condicao && condicao.qtd_parcelas > 0 && Math.round(valorNumerico * 100) >= condicao.qtd_parcelas) {
+      const novasParcelas = buildPaymentSchedule(valorNumerico, pedido.data_venda, condicao)
+        .map(p => ({ ...p, id_temporario: String(p.numero) }));
       setParcelas(novasParcelas);
     } else {
       setParcelas([]);
     }
-  }, [condicaoId, valorTotalACompor, condicoes]);
+  }, [condicaoId, valorTotalACompor, condicoes, pedido.data_venda]);
 
   const hasRecebimentoHoje = useMemo(() => {
-    const hoje = new Date().toISOString().split('T')[0];
+    const hoje = todayLocal();
     return parcelas.some(p => p.data_vencimento <= hoje);
   }, [parcelas]);
 
@@ -163,7 +151,7 @@ const ModalVendaPaymentForm: React.FC<Props> = ({ pedido, onClose, onSubmit, isS
       data_recebimento: p.data_vencimento,
       forma_pagamento_id: formaId,
       condicao_id: condicaoId,
-      conta_bancaria_id: p.data_vencimento <= new Date().toISOString().split('T')[0] ? contaBancariaId : undefined,
+      conta_bancaria_id: p.data_vencimento <= todayLocal() ? contaBancariaId : undefined,
       valor: p.valor,
       observacao: parcelas.length > 1 ? `Recebimento Parcela ${p.numero}/${parcelas.length} - ${observacaoConsignacao}` : observacaoConsignacao
     }));
@@ -291,7 +279,7 @@ const ModalVendaPaymentForm: React.FC<Props> = ({ pedido, onClose, onSubmit, isS
                 className="w-full bg-white border border-indigo-100 rounded-2xl px-4 py-3.5 text-xs font-bold text-indigo-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 appearance-none shadow-sm hover:shadow-md transition-all disabled:opacity-30"
               >
                 <option value="">{loadingCondicoes ? 'Buscando...' : 'Escolha a regra...'}</option>
-                {condicoes.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
+                {condicoes.map(c => <option key={c.id} value={c.id}>{c.nome} — {c.qtd_parcelas}x, primeira em {c.dias_primeira_parcela} dias</option>)}
               </select>
             </div>
           </div>

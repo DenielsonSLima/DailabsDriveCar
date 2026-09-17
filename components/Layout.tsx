@@ -23,7 +23,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         setIsMobileOpen={setIsMobileMenuOpen}
       />
 
-      <div className={`flex flex-col flex-1 transition-all duration-300 md:${isSidebarOpen ? 'ml-64' : 'ml-20'}`}>
+      <div className={`flex min-w-0 flex-col flex-1 transition-[margin-left] duration-200 motion-reduce:transition-none ${isSidebarOpen ? 'md:ml-60' : 'md:ml-20'}`}>
         <Header onOpenMobileMenu={() => setIsMobileMenuOpen(true)} />
         {/* Padding extra no mobile para evitar sobrepor a tab bar */}
         <main className="p-4 md:p-6 pb-24 md:pb-6">
