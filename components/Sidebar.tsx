@@ -158,13 +158,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
                   onClick={() => toggleExpand(item.label)}
                   aria-expanded={isExpanded && sidebarExpanded}
                   title={!sidebarExpanded ? item.label : undefined}
-                  className={`flex items-center min-h-11 md:min-h-10 px-3 py-2 rounded-lg text-sm leading-5 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 group w-full text-left ${isActive ? 'bg-slate-800 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                  className={`flex items-center min-h-11 md:min-h-10 px-3 py-2 rounded-lg text-sm leading-5 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 group w-full text-left ${isActive ? 'bg-slate-800 text-white font-medium' : 'text-slate-200 font-normal hover:bg-slate-800 hover:text-white'
                     }`}
                 >
                   <svg className={`w-5 h-5 shrink-0 ${sidebarExpanded ? 'mr-3' : 'mx-auto'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d={item.icon} />
                   </svg>
-                  <span className={`whitespace-nowrap font-medium flex-1 ${sidebarExpanded ? 'opacity-100 w-auto block' : 'opacity-0 w-0 hidden'}`}>
+                  <span className={`whitespace-nowrap flex-1 ${sidebarExpanded ? 'opacity-100 w-auto block' : 'opacity-0 w-0 hidden'}`}>
                     {item.label}
                   </span>
                   {sidebarExpanded && (
@@ -185,14 +185,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
                   title={!sidebarExpanded ? item.label : undefined}
                   onClick={() => setIsMobileOpen?.(false)}
                   className={({ isActive }) =>
-                    `flex items-center min-h-11 md:min-h-10 px-3 py-2 rounded-lg text-sm leading-5 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 group ${isActive ? 'bg-[#004691] text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                    `flex items-center min-h-11 md:min-h-10 px-3 py-2 rounded-lg text-sm leading-5 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 group ${isActive ? 'bg-[#004691] text-white font-medium' : 'text-slate-200 font-normal hover:bg-slate-800 hover:text-white'
                     }`
                   }
                 >
                   <svg className={`w-5 h-5 shrink-0 ${sidebarExpanded ? 'mr-3' : 'mx-auto'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d={item.icon} />
                   </svg>
-                  <span className={`whitespace-nowrap font-medium ${sidebarExpanded ? 'opacity-100 w-auto block' : 'opacity-0 w-0 hidden'}`}>
+                  <span className={`whitespace-nowrap ${sidebarExpanded ? 'opacity-100 w-auto block' : 'opacity-0 w-0 hidden'}`}>
                     {item.label}
                   </span>
                   {!sidebarExpanded && (
@@ -212,7 +212,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
                       to={child.path}
                       onClick={() => setIsMobileOpen?.(false)}
                       className={({ isActive }) =>
-                        `block px-2 py-2 text-xs leading-4 font-medium rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${isActive ? 'text-white bg-[#004691]/50' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                        `block px-2 py-2 text-xs leading-4 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${isActive ? 'text-white font-medium bg-[#004691]/50' : 'text-slate-300 font-normal hover:text-white hover:bg-slate-800/50'
                         }`
                       }
                     >
