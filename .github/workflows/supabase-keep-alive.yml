@@ -1,0 +1,42 @@
+name: Manter Supabase ativo
+
+on:
+  schedule:
+    # 00:17, 08:17 e 16:17 em America/Maceio (horários em UTC abaixo).
+    - cron: '17 3,11,19 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: supabase-keep-alive
+  cancel-in-progress: false
+
+jobs:
+  consultar-banco:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Fazer consulta mínima no banco
+        env:
+          SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          if [ -z "$SUPABASE_PUBLISHABLE_KEY" ]; then
+            echo "O secret SUPABASE_PUBLISHABLE_KEY não foi configurado."
+            exit 1
+          fi
+
+          status_http="$(
+            curl --silent --show-error --fail-with-body \
+              --retry 2 \
+              --connect-timeout 10 \
+              --max-time 30 \
+              --output /dev/null \
+              --write-out '%{http_code}' \
+              'https://hlmhlltmgwxlibklyrzc.supabase.co/rest/v1/config_empresa?select=id&limit=1' \
+              --header "apikey: $SUPABASE_PUBLISHABLE_KEY" \
+              --header 'Accept: application/json'
+          )"
+
+          echo "Supabase respondeu com HTTP $status_http."
