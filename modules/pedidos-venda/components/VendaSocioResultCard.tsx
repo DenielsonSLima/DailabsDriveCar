@@ -1,7 +1,7 @@
 
+import { getVendaPartnerResults } from '../utils/venda-values';
 import React, { useMemo } from 'react';
 import { IPedidoVenda } from '../pedidos-venda.types';
-import { calculateNormalizedValue } from '../utils/profit-distribution';
 
 interface Props {
   pedidos: IPedidoVenda[];
@@ -17,17 +17,16 @@ const VendaSocioResultCard: React.FC<Props> = ({ pedidos, socioIdFiltro }) => {
     let totalVGVGeral = 0;
 
     pedidos.forEach(p => {
-      const v = p.veiculo as any;
+      const socios = getVendaPartnerResults(p);
       const valorVenda = p.valor_venda || 0;
       totalVGVGeral += valorVenda;
 
-      if (v?.socios && Array.isArray(v.socios)) {
-        const participacao = v.socios.find((s: any) => s.socio_id === socioIdFiltro);
+      {
+        const participacao = socios.find(s => s.socio_id === socioIdFiltro);
 
         if (participacao) {
-          const custoBase = (v.valor_custo || 0) + (v.valor_custo_servicos || 0);
-          const vgvS = calculateNormalizedValue(valorVenda, participacao.porcentagem, v.socios);
-          const custoS = calculateNormalizedValue(custoBase, participacao.porcentagem, v.socios);
+          const vgvS = participacao.valorVenda;
+          const custoS = participacao.investido;
 
           vgvProporcional += vgvS;
           custoProporcional += custoS;

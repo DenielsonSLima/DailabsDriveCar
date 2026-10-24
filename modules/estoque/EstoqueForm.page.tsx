@@ -235,6 +235,10 @@ const EstoqueFormPage: React.FC = () => {
 
         if (id) {
           const veiculo = await EstoqueService.getById(id);
+          if (veiculo?.lote_id) {
+            navigate(`/lotes/${veiculo.lote_id}`, { replace: true });
+            return;
+          }
           if (veiculo) setFormData(veiculo);
         }
       } catch (error) {

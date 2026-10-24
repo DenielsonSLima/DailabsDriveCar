@@ -12,7 +12,7 @@ export const HistoricoService = {
       .from('fin_transacoes')
       .select(`
         id, valor, data_pagamento, tipo, tipo_transacao, descricao,
-        titulo:fin_titulos(id, descricao, pedido_id, tipo, parcela_numero, parcela_total, status, parceiro:parceiros(nome)),
+        titulo:fin_titulos(id, descricao, pedido_id, venda_pedido_id, origem_tipo, tipo, parcela_numero, parcela_total, status, parceiro:parceiros(nome)),
         conta:fin_contas_bancarias(banco_nome),
         forma_pagamento:cad_formas_pagamento(nome)
       `);
@@ -32,7 +32,7 @@ export const HistoricoService = {
       .select(`
         id, descricao, tipo, status, valor_total, valor_pago,
         data_emissao, data_vencimento, parcela_numero, parcela_total,
-        pedido_id, despesa_veiculo_id,
+        pedido_id, venda_pedido_id, origem_tipo, despesa_veiculo_id, valor_pendente, valor_desconto, valor_acrescimo,
         parceiro:parceiros(nome),
         categoria:fin_categorias(nome, natureza),
         forma_pagamento:cad_formas_pagamento(nome)
@@ -49,8 +49,8 @@ export const HistoricoService = {
 
     // ── 3. Se temos pedido_ids, buscar referências de pedidos ──
     const pedidoIds = new Set<string>();
-    (transacoes || []).forEach((t: any) => { if (t.titulo?.pedido_id) pedidoIds.add(t.titulo.pedido_id); });
-    (titulos || []).forEach((t: any) => { if (t.pedido_id) pedidoIds.add(t.pedido_id); });
+    (transacoes || []).forEach((t: any) => { const id = t.titulo?.venda_pedido_id || t.titulo?.pedido_id; if (id) pedidoIds.add(id); });
+    (titulos || []).forEach((t: any) => { const id = t.venda_pedido_id || t.pedido_id; if (id) pedidoIds.add(id); });
 
     let pedidoRefMap: Record<string, { ref: string; tipo: 'COMPRA' | 'VENDA' }> = {};
     if (pedidoIds.size > 0) {
@@ -69,6 +69,9 @@ export const HistoricoService = {
       if (tt === 'SALDO_INICIAL') return 'SALDO_INICIAL';
       if (tt === 'RETIRADA_SOCIO') return 'RETIRADA';
       if (tt.includes('TRANSFERENCIA')) return 'TRANSFERENCIA';
+      if (t.titulo?.origem_tipo === 'DESPESA_LOTE') return 'DESPESA_LOTE';
+      if (t.titulo?.origem_tipo === 'PEDIDO_VENDA') return 'VENDA';
+      if (t.titulo?.origem_tipo === 'DESPESA_VEICULO') return 'DESPESA_VEICULO';
       if (t.titulo?.pedido_id && pedidoRefMap[t.titulo.pedido_id]) return pedidoRefMap[t.titulo.pedido_id].tipo;
       if (tt === 'PAGAMENTO_TITULO' || tt === 'RECEBIMENTO_TITULO') return 'MANUAL';
       return 'MANUAL';
@@ -77,7 +80,7 @@ export const HistoricoService = {
     const historicoTx: IHistoricoUnificado[] = (transacoes || [])
       .filter((t: any) => t.tipo_transacao !== 'ESTORNO' && t.titulo?.status !== 'CANCELADO')
       .map((t: any) => {
-        const pedidoId = t.titulo?.pedido_id;
+        const pedidoId = t.titulo?.venda_pedido_id || t.titulo?.pedido_id;
         const pedidoInfo = pedidoId ? pedidoRefMap[pedidoId] : null;
         return {
           id: `tx_${t.id}`,
@@ -100,7 +103,8 @@ export const HistoricoService = {
 
     // ── 5. Mapear títulos pendentes para IHistoricoUnificado ──
     const historicoTit: IHistoricoUnificado[] = (titulos || []).map((t: any) => {
-      const pedidoInfo = t.pedido_id ? pedidoRefMap[t.pedido_id] : null;
+      const pedidoId = t.venda_pedido_id || t.pedido_id;
+      const pedidoInfo = pedidoId ? pedidoRefMap[pedidoId] : null;
       const isAtrasado = t.data_vencimento < hoje && t.status !== 'PAGO';
       const statusMap: Record<string, StatusHistorico> = {
         'PENDENTE': isAtrasado ? 'ATRASADO' : 'PENDENTE',
@@ -108,6 +112,8 @@ export const HistoricoService = {
         'ATRASADO': 'ATRASADO',
       };
       const origemTit = (): OrigemHistorico => {
+        if (t.origem_tipo === 'DESPESA_LOTE') return 'DESPESA_LOTE';
+        if (t.origem_tipo === 'PEDIDO_VENDA') return 'VENDA';
         if (pedidoInfo) return pedidoInfo.tipo;
         if (t.despesa_veiculo_id) return 'DESPESA_VEICULO';
         return 'MANUAL';
@@ -120,7 +126,8 @@ export const HistoricoService = {
         descricao: t.descricao || 'Título financeiro',
         valor: t.valor_total || 0,
         valor_pago: t.valor_pago || 0,
-        valor_restante: (t.valor_total || 0) - (t.valor_pago || 0),
+        valor_restante: t.valor_pendente ?? Math.max(0, Number(t.valor_total || 0) + Number(t.valor_acrescimo || 0)
+          - Number(t.valor_desconto || 0) - Number(t.valor_pago || 0)),
         status: statusMap[t.status] || 'PENDENTE',
         origem: origemTit(),
         parceiro_nome: t.parceiro?.nome,
@@ -128,7 +135,7 @@ export const HistoricoService = {
         forma_pagamento: t.forma_pagamento?.nome,
         parcela_info: t.parcela_numero ? `${t.parcela_numero}/${t.parcela_total}` : undefined,
         pedido_ref: pedidoInfo?.ref,
-        pedido_id: t.pedido_id,
+        pedido_id: pedidoId,
         titulo_id: t.id,
         source: 'TITULO' as const,
       };

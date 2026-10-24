@@ -55,6 +55,10 @@ const VendaVeiculoDetalhesPage: React.FC = () => {
         id ? PedidosVendaService.getById(id) : Promise.resolve(null)
       ]);
 
+      if (pData?.lote_id) {
+        navigate(`/lotes/${pData.lote_id}`, { replace: true });
+        return;
+      }
       setVeiculo(vData);
       setAllCaracteristicas(carData);
       setAllOpcionais(opData);

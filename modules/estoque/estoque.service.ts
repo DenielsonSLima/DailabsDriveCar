@@ -8,6 +8,93 @@ import { EmpresaService } from '../ajustes/empresa/empresa.service';
 
 const TABLE = 'est_veiculos';
 
+// Os aliases de busca preservam os relacionamentos completos usados pelos cards.
+function createFilteredQuery(orgId: string, filters: IEstoqueFilters | undefined, selection: string, count = false) {
+  const search = filters?.search?.trim();
+  const searchRelations = search ? `,
+    busca_montadora:cad_montadoras(),
+    busca_modelo:cad_modelos(),
+    busca_versao:cad_versoes()
+  ` : '';
+
+  let query = supabase.from(TABLE)
+    .select(selection + searchRelations, count ? { count: 'exact' } : {})
+    .eq('organization_id', orgId);
+
+  if (search) {
+    const pattern = `%${search.replace(/[\\%_]/g, '\\$&')}%`;
+    query = query
+      .ilike('busca_montadora.nome', pattern)
+      .ilike('busca_modelo.nome', pattern)
+      .ilike('busca_versao.nome', pattern)
+      .or(`placa.ilike.${JSON.stringify(pattern)},busca_montadora.not.is.null,busca_modelo.not.is.null,busca_versao.not.is.null`);
+  }
+
+  if (filters?.montadoraId) query = query.eq('montadora_id', filters.montadoraId);
+  if (filters?.tipoId) query = query.eq('tipo_veiculo_id', filters.tipoId);
+  if (filters?.statusTab === 'DISPONIVEL') query = query.eq('status', 'DISPONIVEL');
+  else if (filters?.statusTab === 'RASCUNHO') query = query.eq('status', 'PREPARACAO');
+
+  return query;
+}
+
+function emptyDashboardStats() {
+  return {
+    totalVenda: 0, totalCustoBase: 0, totalServicos: 0, totalInvestido: 0,
+    ticketMedioVenda: 0, count: 0, socioStats: []
+  };
+}
+
+// Com texto, os indicadores compartilham o filtro da lista. Lemos apenas os
+// campos necessários, em lotes, incluindo todas as páginas do resultado.
+async function getSearchedDashboardStats(filters: IEstoqueFilters) {
+  const orgId = await EmpresaService.getCurrentOrganizationId();
+  const stats = emptyDashboardStats();
+  if (!orgId) return stats;
+
+  const partners = new Map<string, { nome: string; totalValor: number; count: number }>();
+  const batchSize = 500;
+  for (let offset = 0; ; offset += batchSize) {
+    const { data, error } = await createFilteredQuery(orgId, filters,
+      'valor_venda, valor_custo, valor_custo_servicos, is_consignado, socios')
+      .order('id', { ascending: true })
+      .range(offset, offset + batchSize - 1)
+      .returns<Pick<IVeiculo, 'valor_venda' | 'valor_custo' | 'valor_custo_servicos' | 'is_consignado' | 'socios'>[]>();
+    if (error) throw error;
+
+    const rows = data || [];
+    for (const vehicle of rows) {
+      // Mesma regra da RPC: consignados investem apenas os serviços; o rateio
+      // considera o percentual do sócio sobre o investimento atualizado.
+      const baseCost = vehicle.is_consignado ? 0 : Number(vehicle.valor_custo || 0);
+      const services = Number(vehicle.valor_custo_servicos || 0);
+      const invested = baseCost + services;
+      stats.count += 1;
+      stats.totalVenda += Number(vehicle.valor_venda || 0);
+      stats.totalCustoBase += baseCost;
+      stats.totalServicos += services;
+      stats.totalInvestido += invested;
+      for (const partner of vehicle.socios || []) {
+        const key = JSON.stringify([partner.socio_id, partner.nome]);
+        const entry = partners.get(key) || { nome: partner.nome, totalValor: 0, count: 0 };
+        entry.totalValor += invested * Number(partner.porcentagem || 0) / 100;
+        entry.count += 1;
+        partners.set(key, entry);
+      }
+    }
+    if (rows.length < batchSize) break;
+  }
+
+  return {
+    ...stats,
+    ticketMedioVenda: stats.count ? stats.totalVenda / stats.count : 0,
+    socioStats: Array.from(partners.values()).map(partner => ({
+      ...partner,
+      percent: stats.totalInvestido > 0 ? partner.totalValor / stats.totalInvestido * 100 : 0
+    })).sort((a, b) => b.totalValor - a.totalValor)
+  };
+}
+
 export const EstoqueService = {
   async getAll(filters?: IEstoqueFilters): Promise<IEstoqueResponse> {
     const page = filters?.page || 1;
@@ -16,46 +103,23 @@ export const EstoqueService = {
     const to = from + limit - 1;
     const orgId = await EmpresaService.getCurrentOrganizationId();
 
-    let query = supabase
-      .from(TABLE)
-      .select(`
+    if (!orgId) {
+      return { data: [], count: 0, currentPage: page, totalPages: 0 };
+    }
+
+    const query = createFilteredQuery(orgId, filters, `
         *,
         montadora:cad_montadoras(nome, logo_url),
         modelo:cad_modelos(nome),
         versao:cad_versoes(nome, motorizacao, combustivel, transmissao, ano_fabricacao, ano_modelo),
         tipo_veiculo:cad_tipos_veiculos(nome),
         pedido_compra:cmp_pedidos!est_veiculos_pedido_id_fkey(forma_pagamento:cad_formas_pagamento(nome))
-      `, { count: 'exact' });
-
-    // Aplicar Filtros
-    if (filters) {
-      if (filters.search) {
-        // Busca simples por placa (pode ser expandido via RPC se necessário)
-        query = query.ilike('placa', `%${filters.search}%`);
-      }
-      if (filters.montadoraId) query = query.eq('montadora_id', filters.montadoraId);
-      if (filters.tipoId) query = query.eq('tipo_veiculo_id', filters.tipoId);
-
-      if (filters.statusTab) {
-        if (filters.statusTab === 'DISPONIVEL') query = query.eq('status', 'DISPONIVEL');
-        else if (filters.statusTab === 'RASCUNHO') query = query.eq('status', 'PREPARACAO');
-      }
-    }
-
-    if (!orgId) {
-      return {
-        data: [],
-        count: 0,
-        currentPage: page,
-        totalPages: 0
-      };
-    }
-
-    query = query.eq('organization_id', orgId);
+      `, true).is('lote_id', null);
 
     const { data, error, count } = await query
       .order('created_at', { ascending: false })
-      .range(from, to);
+      .range(from, to)
+      .returns<IVeiculo[]>();
 
     if (error) {
       console.error('Erro ao buscar estoque:', error);
@@ -73,8 +137,12 @@ export const EstoqueService = {
   },
 
   async getDashboardStats(filters?: IEstoqueFilters): Promise<any> {
+    if (filters?.search?.trim()) {
+      return getSearchedDashboardStats(filters);
+    }
+
     const { data, error } = await supabase.rpc('get_estoque_dashboard_stats', {
-      p_search: filters?.search || null,
+      p_search: null,
       p_montadora_id: filters?.montadoraId || null,
       p_tipo_id: filters?.tipoId || null,
       p_status: filters?.statusTab || null

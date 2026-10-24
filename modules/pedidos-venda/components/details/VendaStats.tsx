@@ -1,4 +1,5 @@
 
+import { getVendaCost } from '../../utils/venda-values';
 import React from 'react';
 import { IPedidoVenda } from '../../pedidos-venda.types';
 
@@ -10,7 +11,7 @@ const VendaStats: React.FC<Props> = ({ pedido }) => {
   const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
   
   const v = pedido.veiculo as any;
-  const custoTotal = (v?.valor_custo || 0) + (v?.valor_custo_servicos || 0);
+  const custoTotal = getVendaCost(pedido);
   const lucro = pedido.valor_venda - custoTotal;
   const margem = custoTotal > 0 ? (lucro / custoTotal) * 100 : 0;
 

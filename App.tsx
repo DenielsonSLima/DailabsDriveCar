@@ -29,6 +29,7 @@ import PedidoCompraPage from './modules/pedidos-compra/PedidoCompra.page.tsx';
 import PedidoCompraFormPage from './modules/pedidos-compra/PedidoCompraForm.page.tsx';
 import PedidoCompraDetalhesPage from './modules/pedidos-compra/PedidoCompraDetalhes.page.tsx';
 import PedidoCompraVeiculoDetalhesPage from './modules/pedidos-compra/PedidoCompraVeiculoDetalhes.page.tsx';
+const LoteDetalhesPage = lazy(() => import('./modules/lotes/LoteDetalhes.page.tsx'));
 import PedidoVendaPage from './modules/pedidos-venda/PedidoVenda.page.tsx';
 import VendaFormPage from './modules/pedidos-venda/VendaForm.page.tsx';
 import PedidoVendaDetalhesPage from './modules/pedidos-venda/PedidoVendaDetalhes.page.tsx';
@@ -400,6 +401,7 @@ const App: React.FC = () => {
 
                   <Route path="/estoque" element={<EstoquePage />} />
                   <Route path="/estoque/:id" element={<EstoqueDetalhesPage />} />
+                  <Route path="/lotes/:id" element={<LoteDetalhesPage />} />
                   <Route path="/estoque/editar/:id" element={<EstoqueFormPage />} />
 
                   <Route path="/pedidos-compra" element={<PedidoCompraPage />} />

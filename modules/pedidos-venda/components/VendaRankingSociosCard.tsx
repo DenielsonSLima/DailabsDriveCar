@@ -1,7 +1,7 @@
 
+import { getVendaCost, getVendaPartnerResults } from '../utils/venda-values';
 import React, { useMemo } from 'react';
 import { IPedidoVenda } from '../pedidos-venda.types';
-import { calculateNormalizedValue } from '../utils/profit-distribution';
 
 interface Props {
   pedidos: IPedidoVenda[];
@@ -13,17 +13,15 @@ const VendaRankingSociosCard: React.FC<Props> = ({ pedidos }) => {
     let lucroBrutoTotalLote = 0;
 
     pedidos.forEach(p => {
-      const v = p.veiculo as any;
-      if (!v) return;
-
-      const custoV = (v.valor_custo || 0) + (v.valor_custo_servicos || 0);
+      const socios = getVendaPartnerResults(p);
+      const custoV = getVendaCost(p);
       const lucroVenda = (p.valor_venda || 0) - custoV;
       lucroBrutoTotalLote += lucroVenda;
 
-      if (v.socios && Array.isArray(v.socios)) {
-        v.socios.forEach((s: any) => {
-          const lucroSocio = calculateNormalizedValue(lucroVenda, s.porcentagem, v.socios);
-          const vgvSocio = calculateNormalizedValue(p.valor_venda, s.porcentagem, v.socios);
+      {
+        socios.forEach(s => {
+          const lucroSocio = s.retorno;
+          const vgvSocio = s.valorVenda;
 
           const current = map.get(s.socio_id) || { nome: s.nome, lucroAcumulado: 0, vgvProporcional: 0 };
           map.set(s.socio_id, {

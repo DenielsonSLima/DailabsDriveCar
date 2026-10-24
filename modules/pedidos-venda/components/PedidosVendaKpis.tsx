@@ -1,7 +1,7 @@
 
+import { getVendaCost, getVendaValue, getVendaUnits, getVendaPartnerResults } from '../utils/venda-values';
 import React, { useMemo } from 'react';
 import { IPedidoVenda } from '../pedidos-venda.types';
-import { calculateNormalizedValue } from '../utils/profit-distribution';
 
 interface Props {
   pedidos: IPedidoVenda[];
@@ -9,36 +9,28 @@ interface Props {
 
 const PedidosVendaKpis: React.FC<Props> = ({ pedidos }) => {
   const stats = useMemo(() => {
-    const vgvTotal = pedidos.reduce((acc, p) => acc + (p.valor_venda || 0), 0);
-
-    const custoTotal = pedidos.reduce((acc, p) => {
-      const v = p.veiculo as any;
-      return acc + ((v?.valor_custo || 0) + (v?.valor_custo_servicos || 0));
-    }, 0);
+    const ativos = pedidos.filter(p => p.status !== 'CANCELADO');
+    const vgvTotal = ativos.reduce((acc, p) => acc + getVendaValue(p), 0);
+    const custoTotal = ativos.reduce((acc, p) => acc + getVendaCost(p), 0);
+    const unidades = ativos.reduce((acc, p) => acc + getVendaUnits(p), 0);
 
     const lucroBrutoTotal = vgvTotal - custoTotal;
-    const ticketMedio = pedidos.length > 0 ? vgvTotal / pedidos.length : 0;
+    const ticketMedio = unidades > 0 ? vgvTotal / unidades : 0;
 
     // Mapa de Lucro por Sócio
     const socioMap = new Map<string, { nome: string, lucroReal: number, vgvRef: number, count: number }>();
 
-    pedidos.forEach(p => {
-      const v = p.veiculo as any;
-      if (!v || !v.socios) return;
-
-      const custoV = (v.valor_custo || 0) + (v.valor_custo_servicos || 0);
-      const lucroDaVenda = (p.valor_venda || 0) - custoV;
-
-      v.socios.forEach((s: any) => {
-        const lucroSocio = calculateNormalizedValue(lucroDaVenda, s.porcentagem, v.socios);
-        const vgvSocio = calculateNormalizedValue(p.valor_venda, s.porcentagem, v.socios);
+    ativos.forEach(p => {
+      getVendaPartnerResults(p).forEach(s => {
+        const lucroSocio = s.retorno;
+        const vgvSocio = s.valorVenda;
 
         const current = socioMap.get(s.socio_id) || { nome: s.nome, lucroReal: 0, vgvRef: 0, count: 0 };
         socioMap.set(s.socio_id, {
           ...current,
           lucroReal: current.lucroReal + lucroSocio,
           vgvRef: current.vgvRef + vgvSocio,
-          count: current.count + 1
+          count: current.count + s.count
         });
       });
     });
@@ -54,7 +46,7 @@ const PedidosVendaKpis: React.FC<Props> = ({ pedidos }) => {
       lucroBrutoTotal,
       ticketMedio,
       rankingSocios,
-      count: pedidos.length
+      count: unidades
     };
   }, [pedidos]);
 
@@ -79,7 +71,7 @@ const PedidosVendaKpis: React.FC<Props> = ({ pedidos }) => {
         </div>
 
         <div className="bg-slate-900 p-6 rounded-[2.5rem] border border-slate-800 shadow-xl">
-          <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Lucro Bruto Realizado</p>
+          <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Resultado bruto das vendas</p>
           <h3 className="text-2xl font-black text-emerald-400 mt-1">{formatCurrency(stats.lucroBrutoTotal)}</h3>
           <div className="mt-2 flex items-center space-x-2">
             <div className="bg-emerald-500 text-white px-2 py-0.5 rounded text-[9px] font-black uppercase">
@@ -97,7 +89,7 @@ const PedidosVendaKpis: React.FC<Props> = ({ pedidos }) => {
           <div className="bg-indigo-700 rounded-[2.5rem] p-8 text-white h-full relative overflow-hidden shadow-2xl">
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-[80px]"></div>
             <p className="text-[10px] font-black text-indigo-200 uppercase tracking-[0.3em] mb-4">Métrica de Saída</p>
-            <h2 className="text-2xl font-black tracking-tighter uppercase mb-2">Ticket Médio</h2>
+            <h2 className="text-2xl font-black tracking-tighter uppercase mb-2">Ticket por unidade</h2>
             <p className="text-4xl font-black text-white tracking-tight">{formatCurrency(stats.ticketMedio)}</p>
             <div className="mt-8 pt-8 border-t border-white/10">
               <p className="text-[9px] font-bold text-indigo-300 uppercase tracking-widest text-center">Baseado em faturamento bruto</p>
@@ -125,7 +117,7 @@ const PedidosVendaKpis: React.FC<Props> = ({ pedidos }) => {
                       <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-[10px] font-black uppercase shadow-lg">{s.nome.charAt(0)}</div>
                       <div>
                         <p className="text-xs font-black text-slate-800 uppercase truncate max-w-[180px]">{s.nome}</p>
-                        <p className="text-[9px] text-slate-400 font-bold uppercase">{s.count} {s.count === 1 ? 'Venda' : 'Vendas'}</p>
+                        <p className="text-[9px] text-slate-400 font-bold uppercase">{s.count} {s.count === 1 ? 'Unidade' : 'Unidades'}</p>
                       </div>
                     </div>
                     <div className="text-right">

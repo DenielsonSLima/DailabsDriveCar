@@ -1,4 +1,5 @@
 
+import { getVendaUnits } from '../utils/venda-values';
 import React from 'react';
 import { IPedidoVenda } from '../pedidos-venda.types';
 
@@ -29,7 +30,7 @@ const VendaCard: React.FC<Props> = ({ pedido, onClick }) => {
       </div>
       <div className="p-6">
         <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Pedido #{pedido.numero_venda}</p>
-        <h3 className="text-lg font-black text-slate-900 uppercase truncate">{v?.modelo?.nome} {v?.versao?.nome}</h3>
+        <h3 className="text-lg font-black text-slate-900 uppercase truncate">{pedido.lote_id ? `${getVendaUnits(pedido)} unidades do lote` : `${v?.modelo?.nome || ''} ${v?.versao?.nome || ''}`}</h3>
         <p className="text-xs font-bold text-slate-500 mt-1">{pedido.cliente?.nome}</p>
         
         <div className="mt-6 pt-4 border-t border-slate-100 flex justify-between items-end">

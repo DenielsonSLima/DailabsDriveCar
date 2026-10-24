@@ -1,4 +1,5 @@
 
+import { getVendaCost, getVendaValue } from './utils/venda-values';
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
@@ -44,7 +45,7 @@ const PedidoVendaDetalhesPage: React.FC = () => {
   useEffect(() => {
     loadData();
     EstoqueService.getAll({ page: 1, limit: 200, statusTab: 'DISPONIVEL' })
-      .then(data => setVeiculosDisponiveis(data.data || []));
+      .then(data => setVeiculosDisponiveis((data.data || []).filter((v: any) => !v.lote_id)));
     const sub = PedidosVendaRealtime.subscribe(() => loadData(true));
     return () => { sub.unsubscribe(); };
   }, [id]);
@@ -100,15 +101,15 @@ const PedidoVendaDetalhesPage: React.FC = () => {
   const valorVenda = pedido?.valor_venda || 0;
   const veiculoEfetivo: any = (pedido as any)?.veiculo || ((pedido as any)?.veiculos?.[0] ?? null);
   const hasVeiculoVinculado = !!pedido?.veiculo_id || !!veiculoEfetivo?.id;
-  const valorVendaEfetivo = valorVenda > 0 ? valorVenda : (veiculoEfetivo?.valor_venda || 0);
+  const valorVendaEfetivo = pedido ? getVendaValue(pedido) : 0;
 
   const isConsignado = pedido?.is_consignado || false;
-  const valorCustoEfetivo = (veiculoEfetivo?.valor_custo || 0) + (veiculoEfetivo?.valor_custo_servicos || 0);
+  const valorCustoEfetivo = pedido ? getVendaCost(pedido) : 0;
   const valorFinanceiroEfetivo = isConsignado ? Math.max(0, valorVendaEfetivo - valorCustoEfetivo) : valorVendaEfetivo;
 
   // Permitir confirmar se houver dados mínimos para faturamento
   // A composição de recebimentos pode ser estruturada no fluxo de confirmação.
-  const isFinanceiroOK = hasVeiculoVinculado && valorVendaEfetivo > 0 && !!pedido?.forma_pagamento_id;
+  const isFinanceiroOK = !pedido?.lote_id && hasVeiculoVinculado && valorVendaEfetivo > 0 && !!pedido?.forma_pagamento_id;
 
   const showNotification = (type: 'success' | 'error', message: string) => {
     setToast({ type, message });
@@ -301,6 +302,7 @@ const PedidoVendaDetalhesPage: React.FC = () => {
         onDelete={() => setShowDelete(true)}
         loadingAction={actionLoading}
         canConfirm={isFinanceiroOK}
+        onManageLote={() => navigate(`/lotes/${pedido.lote_id}`)}
       />
 
       {/* 2. Dados do Comprador e Vendedor */}
@@ -337,7 +339,9 @@ const PedidoVendaDetalhesPage: React.FC = () => {
       </section>
 
       {/* 7. Notas e Observações */}
-      <ObservationsCard
+      {pedido.lote_id ? (
+        <div className="p-6 bg-white border border-slate-200 rounded-2xl text-sm whitespace-pre-wrap">{pedido.observacoes || 'Sem observações.'}</div>
+      ) : <ObservationsCard
         observacoes={pedido.observacoes}
         onSave={async (v) => {
           await PedidosVendaService.save({ id: pedido.id, observacoes: v });
@@ -345,10 +349,10 @@ const PedidoVendaDetalhesPage: React.FC = () => {
           loadData(true);
         }}
         isSaving={actionLoading}
-      />
+      />}
 
       {/* Modais de Fluxo */}
-      {showConfirm && (
+      {showConfirm && !pedido.lote_id && (
         <ModalConfirmacaoVenda
           pedido={pedido}
           valorVendaEfetivo={valorFinanceiroEfetivo}

@@ -5,6 +5,8 @@ import VendasTemplate from '../templates/vendas/VendasTemplate';
 import { EmpresaService } from '../../ajustes/empresa/empresa.service';
 import { MarcaDaguaService } from '../../ajustes/marca-dagua/marca-dagua.service';
 import { RelatoriosService } from '../relatorios.service';
+import { getVendaReportItem } from '../../pedidos-venda/utils/venda-values';
+import { formatDateOnly } from '../../../utils/date';
 
 const RelatorioVendasPage: React.FC = () => {
   const navigate = useNavigate();
@@ -43,29 +45,18 @@ const RelatorioVendasPage: React.FC = () => {
         vendedorId
       });
 
-      const items = (vendas || []).map((v: any) => {
-        const custoTotal = (v.veiculo?.valor_custo || 0) + (v.veiculo?.valor_custo_servicos || 0);
-        const valorVenda = v.valor_venda || 0;
-        const lucro = valorVenda - custoTotal;
-        const veiculoNome = `${v.veiculo?.montadora?.nome || ''} ${v.veiculo?.modelo?.nome || ''} ${v.veiculo?.versao?.nome || ''}`.trim() || 'Veículo';
-        return {
-          data: new Date(v.data_venda).toLocaleDateString('pt-BR'),
-          veiculo: veiculoNome,
-          cliente: v.cliente?.nome || '—',
-          custo: custoTotal,
-          venda: valorVenda,
-          lucro
-        };
-      });
+      const items = (vendas || []).map((v: any) => ({ ...getVendaReportItem(v), data: formatDateOnly(v.data_venda) }));
+      const totalUnidades = items.reduce((sum, item) => sum + item.quantidade, 0);
 
       const totalVendas = items.reduce((a: number, i: any) => a + i.venda, 0);
       const lucroBruto = items.reduce((a: number, i: any) => a + i.lucro, 0);
-      const ticketMedio = items.length > 0 ? totalVendas / items.length : 0;
+      const ticketMedio = totalUnidades > 0 ? totalVendas / totalUnidades : 0;
       const margemMedia = totalVendas > 0 ? ((lucroBruto / totalVendas) * 100) : 0;
 
       setReportData({
         periodo: `${new Date(dataInicio + 'T12:00:00').toLocaleDateString('pt-BR')} - ${new Date(dataFim + 'T12:00:00').toLocaleDateString('pt-BR')}`,
         totalVendas,
+        totalUnidades,
         ticketMedio,
         lucroBruto,
         margemMedia: Number(margemMedia.toFixed(1)),
@@ -141,10 +132,10 @@ const RelatorioVendasPage: React.FC = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="bg-slate-50 p-6 rounded-[2rem] border border-slate-100 group hover:border-indigo-200 transition-all">
                 <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Total Vendido</p>
-                <p className="text-2xl font-black text-slate-900">{formatCur(reportData.totalVendas)}</p>
+                <p className="text-2xl font-black text-slate-900">{formatCur(reportData.totalVendas)}</p><p className="text-xs text-slate-500">{reportData.totalUnidades} unidades</p>
               </div>
               <div className="bg-slate-50 p-6 rounded-[2rem] border border-slate-100 group hover:border-indigo-200 transition-all">
-                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Ticket Médio</p>
+                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Ticket por unidade</p>
                 <p className="text-2xl font-black text-indigo-600">{formatCur(reportData.ticketMedio)}</p>
               </div>
               <div className="bg-emerald-50 p-6 rounded-[2rem] border border-emerald-100 group hover:border-emerald-200 transition-all">
@@ -152,11 +143,12 @@ const RelatorioVendasPage: React.FC = () => {
                 <p className="text-2xl font-black text-emerald-700">{formatCur(reportData.lucroBruto)}</p>
               </div>
               <div className="bg-slate-900 p-6 rounded-[2rem] border border-slate-800 shadow-xl group transition-all">
-                <p className="text-[9px] font-black text-indigo-300 uppercase tracking-widest mb-2 font-bold">Margem Real</p>
+                <p className="text-[9px] font-black text-indigo-300 uppercase tracking-widest mb-2 font-bold">Margem bruta</p>
                 <p className="text-2xl font-black text-white">{reportData.margemMedia}%</p>
               </div>
             </div>
 
+            <p className="text-xs text-slate-500">Custos de lotes em andamento podem receber despesas posteriores.</p>
             {/* TABLE VIEW */}
             <div className="border border-slate-100 rounded-[2.5rem] overflow-hidden bg-white shadow-sm">
               <table className="w-full text-left">
@@ -180,7 +172,7 @@ const RelatorioVendasPage: React.FC = () => {
                     reportData.items.map((item: any, i: number) => (
                       <tr key={i} className="hover:bg-slate-50/50 transition-colors group">
                         <td className="px-6 py-4 text-xs font-bold text-slate-400">{item.data}</td>
-                        <td className="px-6 py-4 text-sm font-black text-slate-900 uppercase tracking-tight">{item.veiculo}</td>
+                        <td className="px-6 py-4 text-sm font-black text-slate-900 uppercase tracking-tight">{item.veiculo}<p className="font-normal text-xs text-slate-500 normal-case break-all">{item.identificacoes}</p></td>
                         <td className="px-6 py-4 text-xs font-bold text-slate-500 uppercase">{item.cliente}</td>
                         <td className="px-6 py-4 text-sm font-black text-right text-slate-900">{formatCur(item.venda)}</td>
                         <td className="px-6 py-4 text-sm font-black text-right text-emerald-600">{formatCur(item.lucro)}</td>

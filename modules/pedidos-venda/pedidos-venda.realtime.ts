@@ -14,6 +14,7 @@ export const PedidosVendaRealtime = {
         onUpdate();
       })
       .on('postgres_changes', { event: '*', schema: 'public', table: 'fin_titulos' }, onUpdate)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'venda_lote_itens' }, onUpdate)
       .subscribe();
   }
 };

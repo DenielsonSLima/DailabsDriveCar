@@ -1,4 +1,5 @@
 
+import { getVendaCost, getVendaUnits } from '../utils/venda-values';
 import React, { useMemo } from 'react';
 import { IPedidoVenda } from '../pedidos-venda.types';
 
@@ -10,13 +11,13 @@ const VendaKpis: React.FC<Props> = ({ pedidos }) => {
   const stats = useMemo(() => {
     const concluídos = pedidos.filter(p => p.status === 'CONCLUIDO');
     const vgvTotal = concluídos.reduce((acc, p) => acc + (p.valor_venda || 0), 0);
-    const lucroRealizado = concluídos.reduce((acc, p) => acc + (p.valor_lucro || 0), 0);
+    const lucroRealizado = concluídos.reduce((acc, p) => acc + (p.valor_venda - getVendaCost(p)), 0);
 
     return {
       vgv: vgvTotal,
       lucro: lucroRealizado,
-      qtd: concluídos.length,
-      ticket: concluídos.length > 0 ? vgvTotal / concluídos.length : 0
+      qtd: concluídos.reduce((sum, p) => sum + getVendaUnits(p), 0),
+      ticket: concluídos.reduce((sum, p) => sum + getVendaUnits(p), 0) > 0 ? vgvTotal / concluídos.reduce((sum, p) => sum + getVendaUnits(p), 0) : 0
     };
   }, [pedidos]);
 

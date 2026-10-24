@@ -1,4 +1,5 @@
 
+import { getVendaCost, getVendaValue } from '../../utils/venda-values';
 import React from 'react';
 import { IPedidoVenda } from '../../pedidos-venda.types';
 
@@ -11,19 +12,19 @@ const VendaKpis: React.FC<Props> = ({ pedido }) => {
   
   const v = pedido.veiculo as any;
   // Regra: Custo Total = Aquisição + Serviços
-  const aquisicao = v?.valor_custo || 0;
-  const servicos = v?.valor_custo_servicos || 0;
+  const aquisicao = pedido.lote_id ? getVendaCost(pedido) : v?.valor_custo || 0;
+  const servicos = pedido.lote_id ? 0 : v?.valor_custo_servicos || 0;
   const custoTotal = aquisicao + servicos;
   
   // O valor de venda vem do pedido ou do veículo vinculado
-  const venda = pedido.valor_venda || v?.valor_venda || 0;
+  const venda = getVendaValue(pedido);
   const lucro = venda - custoTotal;
   const margem = custoTotal > 0 ? (lucro / custoTotal) * 100 : 0;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 animate-in slide-in-from-bottom-6">
       <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
-        <p className="text-slate-400 text-[9px] font-black uppercase tracking-widest mb-1">Custo Aquisição</p>
+        <p className="text-slate-400 text-[9px] font-black uppercase tracking-widest mb-1">{pedido.lote_id ? 'Custo atualizado' : 'Custo Aquisição'}</p>
         <h3 className="text-lg font-black text-slate-900">{formatCurrency(aquisicao)}</h3>
       </div>
 

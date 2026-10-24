@@ -10,9 +10,31 @@ import {
   VendaPagamentoSchema
 } from './pedidos-venda.types';
 import { FinanceiroService } from '../financeiro/financeiro.service';
+import { withVendaTotals } from './utils/venda-values';
 
 const TABLE = 'venda_pedidos';
 const PAYMENTS_TABLE = 'venda_pedidos_pagamentos';
+
+// Custo histórico do item; o cadastro da primeira unidade permanece intacto.
+export const VENDA_LOTE_SELECT = `itens_lote:venda_lote_itens(
+  venda_id, lote_id, veiculo_id, custo_na_venda, valor_venda,
+  veiculo:est_veiculos(
+    id, placa, chassi, lote_ordem, socios, valor_custo, valor_custo_servicos,
+    montadora:cad_montadoras(nome), modelo:cad_modelos(nome), versao:cad_versoes(nome)
+  )
+)`;
+
+async function assertLegacySale(pedidoId: string): Promise<void> {
+  const { data, error } = await supabase.from(TABLE).select('lote_id').eq('id', pedidoId).single();
+  if (error) throw error;
+  if (data?.lote_id) throw new Error('Esta venda pertence a um lote. Use Gerenciar lote.');
+}
+
+async function assertLegacyPayment(paymentId: string): Promise<void> {
+  const { data, error } = await supabase.from(PAYMENTS_TABLE).select('pedido_id').eq('id', paymentId).single();
+  if (error) throw error;
+  await assertLegacySale(data.pedido_id);
+}
 
 export const PedidosVendaService = {
   async getAll(filtros: IVendaFiltros, tab: VendaTab): Promise<IPedidoVendaResponse> {
@@ -25,6 +47,7 @@ export const PedidosVendaService = {
       .from(TABLE)
       .select(`
         *,
+        ${VENDA_LOTE_SELECT},
         cliente:parceiros(nome, documento, cidade, uf),
         veiculo:est_veiculos(
           id,
@@ -71,7 +94,7 @@ export const PedidosVendaService = {
     if (error) throw error;
 
     return {
-      data: (data || []) as IPedidoVenda[],
+      data: ((data || []) as IPedidoVenda[]).map(withVendaTotals),
       count: count || 0,
       currentPage: page,
       totalPages: Math.ceil((count || 0) / limit)
@@ -84,7 +107,8 @@ export const PedidosVendaService = {
       .select(`
         id,
         valor_venda,
-        status,
+        status, lote_id, quantidade_lote, valor_custo_veiculo, valor_lucro,
+        ${VENDA_LOTE_SELECT},
         veiculo:est_veiculos(valor_custo, valor_custo_servicos, valor_venda, socios)
       `);
 
@@ -104,7 +128,7 @@ export const PedidosVendaService = {
 
     const { data, error } = await query;
     if (error) throw error;
-    return (data || []) as unknown as IPedidoVenda[];
+    return ((data || []) as unknown as IPedidoVenda[]).map(withVendaTotals);
   },
 
   async getById(id: string): Promise<IPedidoVenda> {
@@ -112,6 +136,7 @@ export const PedidosVendaService = {
       .from(TABLE)
       .select(`
         *,
+        ${VENDA_LOTE_SELECT},
         cliente:parceiros(*),
         forma_pagamento:cad_formas_pagamento(*),
         veiculo:est_veiculos(
@@ -134,10 +159,12 @@ export const PedidosVendaService = {
       .single();
 
     if (error) throw error;
-    return data as IPedidoVenda;
+    return withVendaTotals(data as IPedidoVenda);
   },
 
   async save(payload: Partial<IPedidoVenda>): Promise<IPedidoVenda> {
+    if (payload.lote_id) throw new Error('Esta venda pertence a um lote. Use Gerenciar lote.');
+    if (payload.id) await assertLegacySale(payload.id);
     const { pagamentos = [], ...pedido } = payload as any;
 
     // Validate with Zod
@@ -185,6 +212,8 @@ export const PedidosVendaService = {
   },
 
   async savePayment(payment: Partial<IVendaPagamento>): Promise<void> {
+    if (payment.pedido_id) await assertLegacySale(payment.pedido_id);
+    else if (payment.id) await assertLegacyPayment(payment.id);
     const validated = payment.id
       ? VendaPagamentoSchema.partial().parse(payment)
       : VendaPagamentoSchema.parse(payment);
@@ -195,6 +224,7 @@ export const PedidosVendaService = {
   },
 
   async deletePayment(id: string): Promise<void> {
+    await assertLegacyPayment(id);
     const { error } = await supabase
       .from(PAYMENTS_TABLE)
       .delete()
@@ -203,6 +233,7 @@ export const PedidosVendaService = {
   },
 
   async confirmSale(payload: { pedido: IPedidoVenda, condicao?: any, contaBancariaId?: string }): Promise<void> {
+    await assertLegacySale(payload.pedido.id);
     const { error } = await supabase.rpc('confirmar_venda_pedido', {
       p_pedido_id: payload.pedido.id,
       p_conta_id: payload.contaBancariaId || null
@@ -211,6 +242,7 @@ export const PedidosVendaService = {
   },
 
   async delete(id: string): Promise<void> {
+    await assertLegacySale(id);
     const { error } = await supabase.rpc('excluir_pedido_venda', { p_venda_id: id });
     if (error) throw error;
   },

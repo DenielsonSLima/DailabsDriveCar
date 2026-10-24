@@ -1,4 +1,5 @@
 
+import { getVendaPartnerResults } from '../utils/venda-values';
 import React, { useMemo } from 'react';
 import { IPedidoVenda } from '../pedidos-venda.types';
 
@@ -15,16 +16,15 @@ const VendaSocioShareCard: React.FC<Props> = ({ pedidos, socioIdFiltro }) => {
     const map = new Map<string, { nome: string, totalVendaProporcional: number, count: number }>();
 
     pedidos.forEach(p => {
-      const v = p.veiculo as any;
-      if (v?.socios && Array.isArray(v.socios)) {
-        v.socios.forEach((s: any) => {
-          const valorProporcional = (s.porcentagem / 100) * p.valor_venda;
+      {
+        getVendaPartnerResults(p).forEach(s => {
+          const valorProporcional = s.valorVenda;
           const current = map.get(s.socio_id) || { nome: s.nome, totalVendaProporcional: 0, count: 0 };
 
           map.set(s.socio_id, {
             ...current,
             totalVendaProporcional: current.totalVendaProporcional + valorProporcional,
-            count: current.count + 1
+            count: current.count + s.count
           });
         });
       }

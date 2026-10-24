@@ -93,6 +93,7 @@ const ExtratoFilters: React.FC<Props> = ({ filtros, onChange }) => {
             <option value="COMPRA">Compra de Veículo</option>
             <option value="VENDA">Venda de Veículo</option>
             <option value="DESPESA_VEICULO">Despesa de Veículo</option>
+            <option value="DESPESA_LOTE">Despesa do Lote</option>
             <option value="TRANSFERENCIA">Transferência</option>
             <option value="RETIRADA">Retirada</option>
             <option value="MANUAL">Manual / Outros</option>

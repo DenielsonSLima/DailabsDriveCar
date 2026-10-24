@@ -1,4 +1,5 @@
 
+import { getVendaUnits } from '../../utils/venda-values';
 import React, { useEffect, useMemo, useState } from 'react';
 import { IPedidoVenda } from '../../pedidos-venda.types';
 import { IVeiculo } from '../../../estoque/estoque.types';
@@ -67,6 +68,22 @@ const VeiculosVendaList: React.FC<Props> = ({ pedido, veiculosDisponiveis, onLin
   };
 
   const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
+
+  if (pedido.lote_id) return (
+    <div className="space-y-4">
+      <h3 className="font-black text-slate-800">Unidades do lote nesta venda ({getVendaUnits(pedido)})</h3>
+      <p className="text-sm text-slate-500">Referência de custo registrada na venda. Identificação e alterações são gerenciadas no lote.</p>
+      <div className="divide-y divide-slate-100">
+        {(pedido.itens_lote || []).map((item, index) => (
+          <div key={item.veiculo_id} className="py-4 grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+            <div><p className="font-bold">Unidade {item.veiculo?.lote_ordem || index + 1}</p><p>{item.veiculo?.modelo?.nome || 'Moto do lote'}</p></div>
+            <div><p>Placa: {item.veiculo?.placa || 'Sem placa'}</p><p>Chassi: {item.veiculo?.chassi || 'Não informado'}</p></div>
+            <div><p>Custo na venda: {formatCurrency(item.custo_na_venda)}</p><p>Venda: {formatCurrency(item.valor_venda)}</p></div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-700">

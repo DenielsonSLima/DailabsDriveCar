@@ -1,4 +1,5 @@
 
+import { getVendaCost, getVendaValue, getVendaPartnerResults } from '../../utils/venda-values';
 import React from 'react';
 import { IPedidoVenda } from '../../pedidos-venda.types';
 
@@ -8,14 +9,14 @@ interface Props {
 
 const VendaSocios: React.FC<Props> = ({ pedido }) => {
   const v = pedido.veiculo as any;
-  const socios = v?.socios || [];
+  const socios = getVendaPartnerResults(pedido);
   const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
   if (socios.length === 0) return null;
 
   // Regra de Lucro: Venda - (Custo Aquisição + Serviços)
-  const custoTotal = (v?.valor_custo || 0) + (v?.valor_custo_servicos || 0);
-  const vendaEfetiva = pedido.valor_venda || v?.valor_venda || 0;
+  const custoTotal = getVendaCost(pedido);
+  const vendaEfetiva = getVendaValue(pedido);
   const lucroTotal = vendaEfetiva - custoTotal;
 
   return (
@@ -32,7 +33,7 @@ const VendaSocios: React.FC<Props> = ({ pedido }) => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {socios.map((socio: any, idx: number) => {
-          const lucroSocio = (socio.porcentagem / 100) * lucroTotal;
+          const lucroSocio = socio.retorno;
           return (
             <div key={idx} className="flex items-center p-5 rounded-[1.8rem] bg-slate-50 border border-slate-100 group hover:border-indigo-200 hover:bg-white transition-all">
                <div className="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-black text-lg shadow-lg group-hover:scale-110 transition-transform shrink-0 uppercase">

@@ -50,6 +50,10 @@ const EstoqueDetalhesPage: React.FC = () => {
         CoresService.getAll()
       ]);
 
+      if (vData?.lote_id) {
+        navigate(`/lotes/${vData.lote_id}`, { replace: true });
+        return;
+      }
       setVeiculo(vData);
       setAllCaracteristicas(carData);
       setAllOpcionais(opData);

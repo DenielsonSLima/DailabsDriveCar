@@ -17,6 +17,7 @@ import { MarcaDaguaService } from '../ajustes/marca-dagua/marca-dagua.service';
 import { CaracteristicasService } from '../cadastros/caracteristicas/caracteristicas.service';
 import { OpcionaisService } from '../cadastros/opcionais/opcionais.service';
 import ConfirmModal from '../../components/ConfirmModal';
+import LotePedidoPanel from '../lotes/components/LotePedidoPanel';
 
 // Componentes Reestruturados
 import HeaderPedido from './components/details/HeaderPedido';
@@ -215,13 +216,15 @@ const PedidoCompraDetalhesPage: React.FC = () => {
       <PurchasePartnersResultKpis pedido={pedido} />
       <OrderCostKpis pedido={pedido} isConsignacao={isConsignacao} />
 
-      <section className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm p-8">
+      <LotePedidoPanel pedido={pedido} />
+
+      {(!pedido.veiculos?.length || pedido.veiculos.some(v => !v.lote_id)) && <section className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm p-8">
         <VeiculosPedidoList
-          pedido={pedido}
+          pedido={{ ...pedido, veiculos: pedido.veiculos?.filter(v => !v.lote_id) }}
           onUnlink={setUnlinkTargetId}
           isConcluido={pedido.status === 'CONCLUIDO'}
         />
-      </section>
+      </section>}
 
       {!isConsignacao && (
         <section>
@@ -230,16 +233,19 @@ const PedidoCompraDetalhesPage: React.FC = () => {
             totalAquisicaoReferencia={valorMasterPedido}
             onAddPayment={(p) => savePaymentMutation.mutate(p)}
             onDeletePayment={(pid) => deletePaymentMutation.mutate(pid)}
-            isSaving={actionLoading}
+            isSaving={actionLoading || pedido.veiculos?.some(unit => !!unit.lote_id)}
           />
         </section>
       )}
 
-      <CardAnnotations
+      {pedido.veiculos?.some(unit => unit.lote_id) ? <section className="rounded-2xl border border-slate-200 bg-white p-6">
+        <h2 className="text-sm font-bold text-slate-900">Observações da compra</h2>
+        <p className="mt-2 whitespace-pre-wrap text-sm text-slate-600">{pedido.observacoes || 'Nenhuma observação registrada.'}</p>
+      </section> : <CardAnnotations
         initialValue={pedido.observacoes}
         onSave={(v) => saveNotesMutation.mutate(v)}
         isSaving={saveNotesMutation.isPending}
-      />
+      />}
 
       {empresa && (
         <QuickPreviewModal

@@ -19,6 +19,8 @@ import EstoqueComSociosTemplate from '../relatorios/templates/estoque/EstoqueCom
 import EstoqueDashboard from './components/EstoqueDashboard';
 import EstoqueFilters, { GroupByOption } from './components/EstoqueFilters';
 import EstoqueList from './components/EstoqueList';
+import EstoqueLotes from '../lotes/EstoqueLotes';
+import { LotesService } from '../lotes/lotes.service';
 
 const EstoquePage: React.FC = () => {
   const navigate = useNavigate();
@@ -69,6 +71,13 @@ const EstoquePage: React.FC = () => {
     queryFn: () => EstoqueService.getAll(filters),
   });
 
+  const loteFilters = { search: searchTerm, statusTab: activeTab,
+    montadoraId: filterMontadora || undefined, tipoId: filterTipo || undefined };
+  const lotesQuery = useQuery({
+    queryKey: ['lotes', 'estoque', loteFilters],
+    queryFn: () => LotesService.listar(undefined, loteFilters),
+  });
+
   // Query de Estatísticas
   const { data: statsDashboard } = useQuery({
     queryKey: ['estoque_stats', filters],
@@ -79,6 +88,7 @@ const EstoquePage: React.FC = () => {
     const subscription = EstoqueService.subscribe(() => {
       queryClient.invalidateQueries({ queryKey: ['estoque_list'] });
       queryClient.invalidateQueries({ queryKey: ['estoque_stats'] });
+      queryClient.invalidateQueries({ queryKey: ['lotes'] });
     });
 
     return () => {
@@ -209,16 +219,20 @@ const EstoquePage: React.FC = () => {
         groupBy={groupBy} setGroupBy={setGroupBy}
       />
 
-      {isLoadingList ? (
+      {lotesQuery.isError && <div role="alert" className="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
+        Não foi possível carregar os lotes. <button type="button" onClick={() => lotesQuery.refetch()} className="font-bold underline">Tentar novamente</button>
+      </div>}
+      {isLoadingList || lotesQuery.isLoading ? (
         <div className="py-20 text-center"><div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto"></div></div>
       ) : (
         <>
-          <EstoqueList
+          <EstoqueLotes lots={lotesQuery.data || []} />
+          {(veiculos.length > 0 || !lotesQuery.data?.length) && <EstoqueList
             groupedData={processedData}
             isGrouped={groupBy !== 'none'}
             cores={cores}
             onDelete={() => { }}
-          />
+          />}
 
           {totalPages > 1 && (
             <div className="flex items-center justify-between mt-8 pt-6 border-t border-slate-100">

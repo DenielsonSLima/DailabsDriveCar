@@ -28,6 +28,16 @@ export interface IVendaPagamento {
   conta_bancaria?: IContaBancaria;
 }
 
+export interface IVendaLoteItem {
+  id?: string;
+  venda_id: string;
+  lote_id: string;
+  veiculo_id: string;
+  custo_na_venda: number;
+  valor_venda: number;
+  veiculo?: IVeiculo & { lote_ordem?: number };
+}
+
 export interface IPedidoVenda {
   id: string;
   user_id?: string;
@@ -35,6 +45,9 @@ export interface IPedidoVenda {
   data_venda: string;
   cliente_id: string;
   veiculo_id: string;
+  lote_id?: string | null;
+  quantidade_lote?: number | null;
+  itens_lote?: IVendaLoteItem[];
   corretor_id?: string;
   valor_venda: number;
   status: StatusPedidoVenda;

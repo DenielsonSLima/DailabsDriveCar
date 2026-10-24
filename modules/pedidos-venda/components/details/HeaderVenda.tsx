@@ -10,9 +10,10 @@ interface Props {
   onDelete: () => void;
   loadingAction: boolean;
   canConfirm?: boolean;
+  onManageLote?: () => void;
 }
 
-const HeaderVenda: React.FC<Props> = ({ pedido, onBack, onEdit, onConfirm, onDelete, loadingAction, canConfirm }) => {
+const HeaderVenda: React.FC<Props> = ({ pedido, onBack, onEdit, onConfirm, onDelete, loadingAction, canConfirm, onManageLote }) => {
   const isConcluido = pedido.status === 'CONCLUIDO';
   const isCancelado = pedido.status === 'CANCELADO';
   const isRascunho = pedido.status === 'RASCUNHO';
@@ -48,15 +49,16 @@ const HeaderVenda: React.FC<Props> = ({ pedido, onBack, onEdit, onConfirm, onDel
         </div>
 
         <div className="flex items-center gap-3 w-full lg:w-auto justify-end border-t lg:border-t-0 border-slate-50 pt-4 lg:pt-0">
-          <button
+          {pedido.lote_id && <button onClick={onManageLote} className="px-6 py-4 bg-indigo-600 text-white rounded-xl text-xs font-black">Gerenciar lote</button>}
+          {!pedido.lote_id && <button
             onClick={onDelete}
             disabled={loadingAction}
             className="px-6 py-4 text-rose-500 font-black text-xs uppercase tracking-widest rounded-xl hover:bg-rose-50 transition-all disabled:opacity-50"
           >
             Excluir
-          </button>
+          </button>}
 
-          {isRascunho && (
+          {isRascunho && !pedido.lote_id && (
             <>
               <button
                 onClick={onEdit}

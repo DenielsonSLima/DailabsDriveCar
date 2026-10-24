@@ -1,4 +1,5 @@
 
+import { getVendaCost, getVendaValue, getVendaOriginalCost } from '../../utils/venda-values';
 import React from 'react';
 import { IPedidoVenda } from '../../pedidos-venda.types';
 
@@ -16,16 +17,16 @@ const VendaAnalyticsKpis: React.FC<Props> = ({ pedido }) => {
   const v = pedido.veiculo as any;
 
   // 1. Custo de Aquisição
-  const custoAquisicao = v?.valor_custo || 0;
+  const custoAquisicao = pedido.lote_id ? getVendaCost(pedido) : v?.valor_custo || 0;
 
   // 2. Custo de Serviços
-  const custoServicos = v?.valor_custo_servicos || 0;
+  const custoServicos = pedido.lote_id ? 0 : v?.valor_custo_servicos || 0;
 
   // 3. Investimento Total
   const investimentoTotal = custoAquisicao + custoServicos;
 
   // 4. Valor da Venda (FIX: Fallback se o valor do pedido estiver zerado)
-  const valorVenda = (pedido.valor_venda > 0 ? pedido.valor_venda : v?.valor_venda) || 0;
+  const valorVenda = getVendaValue(pedido);
 
   // 5. Resultado Bruto
   const lucroBruto = valorVenda - investimentoTotal;
@@ -35,14 +36,14 @@ const VendaAnalyticsKpis: React.FC<Props> = ({ pedido }) => {
 
   const kpis = [
     {
-      label: 'Custo Aquisição',
+      label: pedido.lote_id ? 'Custo atualizado' : 'Custo Aquisição',
       value: custoAquisicao,
       icon: 'M3 3h2l.4 2M7 13h10l4-8H5.4',
       bg: 'bg-slate-50',
       text: 'text-slate-900'
     },
     {
-      label: 'Custo Serviços',
+      label: pedido.lote_id ? 'Ajustes no lote' : 'Custo Serviços',
       value: custoServicos,
       icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2',
       bg: 'bg-amber-50/50',
@@ -71,7 +72,7 @@ const VendaAnalyticsKpis: React.FC<Props> = ({ pedido }) => {
       isSpecial: true
     },
     {
-      label: 'Margem Real %',
+      label: 'Retorno sobre custo %',
       value: margem,
       icon: 'M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z',
       bg: 'bg-white',
@@ -82,7 +83,7 @@ const VendaAnalyticsKpis: React.FC<Props> = ({ pedido }) => {
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 animate-in slide-in-from-bottom-3 duration-500">
-      {kpis.map((kpi, idx) => (
+      {kpis.filter((_, index) => !pedido.lote_id || index !== 1).map((kpi, idx) => (
         <div
           key={idx}
           className={`p-3.5 rounded-[2rem] border transition-all hover:shadow-lg ${kpi.isSpecial
@@ -106,6 +107,9 @@ const VendaAnalyticsKpis: React.FC<Props> = ({ pedido }) => {
           </h3>
         </div>
       ))}
+      {pedido.lote_id && <p className="col-span-full text-xs leading-relaxed text-slate-500">
+        Custo registrado na venda: {formatCurrency(getVendaOriginalCost(pedido))}. Custos de lotes em andamento podem receber despesas posteriores.
+      </p>}
     </div>
   );
 };

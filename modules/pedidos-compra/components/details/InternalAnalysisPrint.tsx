@@ -1,4 +1,5 @@
 import React from 'react';
+import { getPurchaseLoteSummary } from '../../purchase-lote-summary';
 import { IPedidoCompra } from '../../pedidos-compra.types';
 import { IEmpresa } from '../../../ajustes/empresa/empresa.types';
 import { IMarcaDaguaConfig } from '../../../ajustes/marca-dagua/marca-dagua.types';
@@ -18,15 +19,16 @@ const InternalAnalysisPrint: React.FC<Props> = ({ pedido, empresa, watermark, al
   const dt = (d: string) => new Date(d).toLocaleDateString('pt-BR');
 
   const veiculo = pedido.veiculos?.[0] || {} as any;
+  const loteSummary = pedido.veiculos?.some(unit => unit.lote_id) ? getPurchaseLoteSummary(pedido) : null;
   const vAny = veiculo as any;
   const capaUrl = veiculo.fotos?.find((f: any) => f.is_capa)?.url || veiculo.fotos?.[0]?.url;
   
   // Cálculos Estratégicos Baseados no Ativo
-  const custoAquisicao = Number(veiculo.valor_custo) || Number(pedido.valor_negociado) || 0;
-  const custoServicos = Number(vAny.valor_custo_servicos) || 0;
+  const custoAquisicao = loteSummary?.cost ?? (Number(veiculo.valor_custo) || Number(pedido.valor_negociado) || 0);
+  const custoServicos = loteSummary?.services ?? (Number(vAny.valor_custo_servicos) || 0);
   const custoTotal = custoAquisicao + custoServicos;
-  const vgvProjetado = Number(veiculo.valor_venda) || 0;
-  const lucroEstimado = vgvProjetado - custoTotal;
+  const vgvProjetado = loteSummary?.projected ?? (Number(veiculo.valor_venda) || 0);
+  const lucroEstimado = vgvProjetado > 0 ? vgvProjetado - custoTotal : 0;
   const margemPercent = custoTotal > 0 ? (lucroEstimado / custoTotal) * 100 : 0;
 
   return (
@@ -126,7 +128,7 @@ const InternalAnalysisPrint: React.FC<Props> = ({ pedido, empresa, watermark, al
               Composição de Cotas & Capital Alocado
            </h3>
            <div className="space-y-3">
-              {veiculo.socios?.map((s: any, i: number) => (
+              {(loteSummary?.partners || veiculo.socios)?.map((s: any, i: number) => (
                  <div key={i} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-slate-100 transition-colors">
                     <div className="flex items-center gap-4">
                        <div className="w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center font-black text-sm uppercase shadow-lg shadow-indigo-100">{s.nome.charAt(0)}</div>

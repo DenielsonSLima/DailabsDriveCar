@@ -1,11 +1,25 @@
 import { supabase } from '../../../lib/supabase';
 import { ITitulo, ILancarDespesaPayload } from '../financeiro.types';
 
+const pendingLotePayments = new Map<string, string>();
+async function lotePaymentIntent(payload: unknown) {
+  const bytes = new TextEncoder().encode(JSON.stringify(payload));
+  const hash = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)))
+    .map(byte => byte.toString(16).padStart(2, '0')).join('');
+  const key = `drivecar-lote-baixa:${hash}`;
+  let requestId = pendingLotePayments.get(key);
+  try { requestId ||= sessionStorage.getItem(key) || undefined; } catch { /* Storage indisponível: manter na memória. */ }
+  requestId ||= crypto.randomUUID();
+  pendingLotePayments.set(key, requestId);
+  try { sessionStorage.setItem(key, requestId); } catch { /* Mesmo ID permanece disponível para repetir. */ }
+  return { key, requestId };
+}
+
 export const TitulosService = {
   async getTitulos(filtros: { tipo?: 'PAGAR' | 'RECEBER', status?: string }): Promise<ITitulo[]> {
     let query = supabase
       .from('fin_titulos')
-      .select('id, descricao, tipo, status, valor_total, valor_pago, data_emissao, data_vencimento, parcela_numero, parcela_total, parceiro_id, categoria_id, parceiro:parceiros(nome), categoria:fin_categorias(nome)');
+      .select('id, lote_id, descricao, tipo, status, valor_total, valor_pago, data_emissao, data_vencimento, parcela_numero, parcela_total, parceiro_id, categoria_id, parceiro:parceiros(nome), categoria:fin_categorias(nome)');
 
     if (filtros.tipo) query = query.eq('tipo', filtros.tipo);
     if (filtros.status) query = query.eq('status', filtros.status);
@@ -16,6 +30,24 @@ export const TitulosService = {
   },
 
   async baixarTitulo(titulo: ITitulo, valor: number, contaId: string, formaId: string, desconto = 0, acrescimo = 0, dataPagamento?: string): Promise<void> {
+    let loteId = titulo.lote_id;
+    if (loteId === undefined) {
+      const { data, error } = await supabase.from('fin_titulos').select('lote_id').eq('id', titulo.id).single();
+      if (error) throw error;
+      loteId = data.lote_id;
+    }
+    if (loteId) {
+      if (desconto || acrescimo) throw new Error('Ajustes de valor de um lote devem ser registrados no controle do lote.');
+      const payload = { p_titulo_id: titulo.id,
+        p_valor: valor, p_conta_id: contaId, p_forma_pagamento_id: formaId,
+        p_data_pagamento: dataPagamento || new Date().toLocaleDateString('en-CA') };
+      const intent = await lotePaymentIntent(payload);
+      const { error } = await supabase.rpc('baixar_titulo_lote', { ...payload, p_request_id: intent.requestId });
+      if (error) throw error;
+      pendingLotePayments.delete(intent.key);
+      try { sessionStorage.removeItem(intent.key); } catch { /* Sem storage. */ }
+      return;
+    }
     const { error } = await supabase.rpc('baixar_titulo', {
       p_titulo_id: titulo.id,
       p_valor: valor,

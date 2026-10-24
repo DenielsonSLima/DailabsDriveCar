@@ -1,6 +1,7 @@
 
 import React, { useMemo } from 'react';
 import { IPedidoCompra } from '../../pedidos-compra.types';
+import { getPurchaseLoteSummary } from '../../purchase-lote-summary';
 
 interface Props {
   pedido: IPedidoCompra;
@@ -16,6 +17,12 @@ const PurchasePartnersResultKpis: React.FC<Props> = ({ pedido }) => {
 
   const stats = useMemo(() => {
     const veiculos = pedido.veiculos || [];
+    if (veiculos.some(unit => unit.lote_id)) {
+      return getPurchaseLoteSummary(pedido).partners.map(partner => ({
+        nome: partner.nome, porcentagem: partner.porcentagem, investido: partner.valor,
+        retorno: partner.retorno, margem: partner.valor > 0 ? partner.retorno / partner.valor * 100 : 0,
+      }));
+    }
     const v = veiculos[0] as any;
     if (!v || !v.socios || !Array.isArray(v.socios)) return [];
 

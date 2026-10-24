@@ -60,6 +60,7 @@ const ExtratoTable: React.FC<Props> = ({ items, loading }) => {
       case 'COMPRA': return 'Compra';
       case 'VENDA': return 'Venda';
       case 'DESPESA_VEICULO': return 'Despesa Veículo';
+      case 'DESPESA_LOTE': return 'Despesa do Lote';
       case 'TRANSFERENCIA': return 'Transferência';
       case 'RETIRADA': return 'Retirada';
       case 'CREDITO': return 'Crédito';
@@ -74,6 +75,7 @@ const ExtratoTable: React.FC<Props> = ({ items, loading }) => {
       case 'COMPRA': return 'bg-indigo-50 text-indigo-600 border-indigo-100';
       case 'VENDA': return 'bg-emerald-50 text-emerald-600 border-emerald-100';
       case 'DESPESA_VEICULO': return 'bg-amber-50 text-amber-600 border-amber-100';
+      case 'DESPESA_LOTE': return 'bg-amber-50 text-amber-600 border-amber-100';
       case 'TRANSFERENCIA': return 'bg-blue-50 text-blue-600 border-blue-100';
       case 'RETIRADA': return 'bg-rose-50 text-rose-600 border-rose-100';
       case 'SALDO_INICIAL': return 'bg-slate-50 text-slate-600 border-slate-200';

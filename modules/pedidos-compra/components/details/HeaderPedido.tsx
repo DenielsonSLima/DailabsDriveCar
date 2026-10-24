@@ -20,6 +20,7 @@ const HeaderPedido: React.FC<Props> = ({
 }) => {
   const formatDate = (date: string) => new Date(date).toLocaleDateString('pt-BR');
   const isConcluido = pedido.status === 'CONCLUIDO';
+  const hasLote = pedido.veiculos?.some(unit => unit.lote_id);
 
   return (
     <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm animate-in slide-in-from-top-4 duration-500">
@@ -86,14 +87,14 @@ const HeaderPedido: React.FC<Props> = ({
 
           <button 
             onClick={onDelete}
-            disabled={loadingAction}
+            disabled={loadingAction || hasLote}
             className="p-4 text-rose-500 hover:bg-rose-50 rounded-2xl transition-all disabled:opacity-30"
             title="Excluir Pedido"
           >
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
           </button>
 
-          {isConcluido && (
+          {isConcluido && !hasLote && (
             <button 
               onClick={onReopen}
               disabled={loadingAction}
@@ -108,7 +109,7 @@ const HeaderPedido: React.FC<Props> = ({
 
           <button 
             onClick={onEdit}
-            disabled={loadingAction}
+            disabled={loadingAction || hasLote}
             className="px-6 py-4 bg-white border border-slate-200 text-slate-700 font-black text-xs uppercase tracking-widest rounded-xl hover:bg-slate-50 transition-all shadow-sm active:scale-95 flex items-center"
           >
             Editar Ficha

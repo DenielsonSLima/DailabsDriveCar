@@ -38,7 +38,7 @@ const FinancialCard: React.FC<Props> = ({ pedido, valorVendaEfetivo, onAddPaymen
           <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Detalhamento financeiro da entrada de capital</p>
         </div>
 
-        {!isSaving && pedido.status !== 'CONCLUIDO' && (
+        {!pedido.lote_id && !isSaving && pedido.status === 'RASCUNHO' && (
           <button
             onClick={() => setIsModalOpen(true)}
             className="px-6 py-3 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-lg active:scale-95 flex items-center"
@@ -106,7 +106,7 @@ const FinancialCard: React.FC<Props> = ({ pedido, valorVendaEfetivo, onAddPaymen
               <th className="px-6 py-5">Condição de Recebimento</th>
               <th className="px-6 py-5">Conta de Destino</th>
               <th className="px-6 py-5 text-right">Valor</th>
-              {pedido.status !== 'CONCLUIDO' && <th className="px-6 py-5 text-right w-20">Ações</th>}
+              {!pedido.lote_id && pedido.status === 'RASCUNHO' && <th className="px-6 py-5 text-right w-20">Ações</th>}
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-50">
@@ -145,7 +145,7 @@ const FinancialCard: React.FC<Props> = ({ pedido, valorVendaEfetivo, onAddPaymen
                   <td className="px-6 py-4 text-sm font-black text-slate-800 text-right">
                     {formatCurrency(p.valor)}
                   </td>
-                  {pedido.status !== 'CONCLUIDO' && (
+                  {!pedido.lote_id && pedido.status === 'RASCUNHO' && (
                     <td className="px-6 py-4 text-right">
                       <button
                         onClick={() => onDeletePayment(p.id)}
@@ -160,7 +160,7 @@ const FinancialCard: React.FC<Props> = ({ pedido, valorVendaEfetivo, onAddPaymen
               ))
             ) : (
               <tr>
-                <td colSpan={pedido.status !== 'CONCLUIDO' ? 6 : 5} className="px-6 py-16 text-center">
+                <td colSpan={!pedido.lote_id && pedido.status === 'RASCUNHO' ? 6 : 5} className="px-6 py-16 text-center">
                   <div className="flex flex-col items-center opacity-30">
                     <svg className="w-12 h-12 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
                     <p className="text-xs font-black uppercase tracking-widest">Nenhum recebimento estruturado.</p>

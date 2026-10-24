@@ -5,6 +5,7 @@ import ComissoesTemplate from '../templates/comissoes/ComissoesTemplate';
 import { EmpresaService } from '../../ajustes/empresa/empresa.service';
 import { MarcaDaguaService } from '../../ajustes/marca-dagua/marca-dagua.service';
 import { RelatoriosService } from '../relatorios.service';
+import { getVendaDescription } from '../../pedidos-venda/utils/venda-values';
 
 const RelatorioComissoesPage: React.FC = () => {
   const navigate = useNavigate();
@@ -54,7 +55,7 @@ const RelatorioComissoesPage: React.FC = () => {
       const items = vendasComComissao.map((v: any) => ({
         data: new Date(v.data_venda).toLocaleDateString('pt-BR'),
         numeroVenda: v.numero_venda || v.id.substring(0, 8),
-        veiculo: `${v.veiculo?.montadora?.nome || ''} ${v.veiculo?.modelo?.nome || 'Veículo'}`.trim(),
+        veiculo: getVendaDescription(v),
         corretor: v.corretor?.nome || '—',
         valorVenda: v.valor_venda || 0,
         comissao: v.comissao

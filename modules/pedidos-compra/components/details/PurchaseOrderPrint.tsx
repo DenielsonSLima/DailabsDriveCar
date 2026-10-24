@@ -109,6 +109,10 @@ const PurchaseOrderPrint: React.FC<Props> = ({ pedido, empresa, watermark, allCa
         {/* OBJETO DO CONTRATO (DADOS DO VEÍCULO) */}
         <div className="mb-12">
           <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-600 mb-6 border-b-2 border-indigo-50 pb-2">Objeto da Aquisição</h3>
+          {veiculos.some(unit => unit.lote_id) && <div className="mb-4 rounded-xl border border-indigo-100 bg-indigo-50 p-4">
+            <p className="font-black text-indigo-900">Aquisição em lote · {veiculos.length} unidades</p>
+            <p className="mt-1 text-sm text-slate-600">Valor total da compra: {fmt(pedido.valor_negociado)}. Dados abaixo representam o modelo do conjunto.</p>
+          </div>}
           
           <div className="border border-slate-200 rounded-[2rem] overflow-hidden bg-white shadow-sm">
              <div className="grid grid-cols-1 md:grid-cols-[250px_1fr]">

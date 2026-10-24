@@ -1,10 +1,12 @@
 
 import { supabase } from '../../lib/supabase';
+import { VENDA_LOTE_SELECT } from '../pedidos-venda/pedidos-venda.service';
 
 export const RelatoriosService = {
     async getVendasParaRelatorio(params: { dataInicio: string; dataFim: string; vendedorId?: string }) {
         let query = supabase.from('venda_pedidos').select(`
-      id, numero_venda, data_venda, valor_venda,
+      id, numero_venda, data_venda, valor_venda, lote_id, quantidade_lote, valor_custo_veiculo, valor_lucro,
+      ${VENDA_LOTE_SELECT},
       cliente:parceiros(nome),
       veiculo:est_veiculos(
         valor_custo, valor_custo_servicos, valor_total_investido, placa,
@@ -71,7 +73,8 @@ export const RelatoriosService = {
 
     async getComissoesParaRelatorio(params: { dataInicio: string; dataFim: string; corretorId?: string }) {
         let query = supabase.from('venda_pedidos').select(`
-      id, numero_venda, data_venda, valor_venda, corretor_id,
+      id, numero_venda, data_venda, valor_venda, lote_id, quantidade_lote, valor_custo_veiculo, valor_lucro,
+      ${VENDA_LOTE_SELECT}, corretor_id,
       cliente:parceiros(nome),
       veiculo:est_veiculos(placa, montadora:cad_montadoras(nome), modelo:cad_modelos(nome)),
       corretor:cad_corretores(nome)

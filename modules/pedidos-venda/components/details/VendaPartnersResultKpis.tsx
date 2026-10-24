@@ -1,4 +1,5 @@
 
+import { getVendaPartnerResults } from '../../utils/venda-values';
 import React, { useMemo } from 'react';
 import { IPedidoVenda } from '../../pedidos-venda.types';
 
@@ -14,29 +15,7 @@ const VendaPartnersResultKpis: React.FC<Props> = ({ pedido }) => {
     }).format(val);
 
   const stats = useMemo(() => {
-    const v = pedido.veiculo as any;
-    if (!v || !v.socios || !Array.isArray(v.socios)) return [];
-
-    const custoAquisicao = v.valor_custo || 0;
-    const custoServicos = v.valor_custo_servicos || 0;
-    const investimentoTotalLote = custoAquisicao + custoServicos;
-    const valorVenda = (pedido.valor_venda > 0 ? pedido.valor_venda : v?.valor_venda) || 0;
-    const lucroBrutoLote = valorVenda - investimentoTotalLote;
-
-    return v.socios.map((s: any) => {
-      const perc = (s.porcentagem || 0) / 100;
-      const investidoSocio = investimentoTotalLote * perc;
-      const retornoSocio = lucroBrutoLote * perc;
-      const margemSocio = investidoSocio > 0 ? (retornoSocio / investidoSocio) * 100 : 0;
-
-      return {
-        nome: s.nome,
-        porcentagem: s.porcentagem,
-        investido: investidoSocio,
-        retorno: retornoSocio,
-        margem: margemSocio
-      };
-    });
+    return getVendaPartnerResults(pedido);
   }, [pedido]);
 
   if (stats.length === 0) return null;
@@ -92,7 +71,7 @@ const VendaPartnersResultKpis: React.FC<Props> = ({ pedido }) => {
                 <p className="text-sm font-black text-slate-700">{formatCurrency(socio.investido)}</p>
               </div>
               <div className="bg-emerald-50/40 p-3 rounded-2xl border border-emerald-100 group-hover:border-emerald-200 transition-colors">
-                <p className="text-[8px] font-black text-emerald-600 uppercase mb-1">Lucro Proporcional (Bolso)</p>
+                <p className="text-[8px] font-black text-emerald-600 uppercase mb-1">Resultado bruto proporcional</p>
                 <p className="text-sm font-black text-emerald-700">{formatCurrency(socio.retorno)}</p>
               </div>
               <div className="flex items-center px-4">
@@ -101,7 +80,7 @@ const VendaPartnersResultKpis: React.FC<Props> = ({ pedido }) => {
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                     <path d={socio.margem >= 0 ? "M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" : "M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6"} />
                   </svg>
-                  <span className="text-xs font-black uppercase tracking-tighter">{socio.margem.toFixed(1)}% Margem Real</span>
+                  <span className="text-xs font-black uppercase tracking-tighter">{socio.margem.toFixed(1)}% sobre custo</span>
                 </div>
               </div>
             </div>

@@ -1,6 +1,6 @@
+import { getVendaCost, getVendaValue, getVendaUnits, getVendaPartnerResults } from '../utils/venda-values';
 import React, { useState, useMemo } from 'react';
 import { IPedidoVenda } from '../pedidos-venda.types';
-import { calculateNormalizedValue } from '../utils/profit-distribution';
 
 interface Props {
   pedido: IPedidoVenda;
@@ -19,23 +19,17 @@ const PedidoVendaCard: React.FC<Props> = ({ pedido, onClick }) => {
 
   // CÁLCULOS FINANCEIROS COM FALLBACK
   // Se o valor_venda do pedido for 0 (rascunho), usamos o valor_venda do cadastro do veículo
-  const valorVendaEfetivo = pedido.valor_venda > 0 ? pedido.valor_venda : (v?.valor_venda || 0);
+  const valorVendaEfetivo = getVendaValue(pedido);
 
-  const custoBase = v?.valor_custo || 0;
-  const custoServicos = v?.valor_custo_servicos || 0;
-  const totalInvestido = custoBase + custoServicos;
+  const totalInvestido = getVendaCost(pedido);
 
   const lucroBruto = valorVendaEfetivo - totalInvestido;
   const margemPercentual = totalInvestido > 0 ? (lucroBruto / totalInvestido) * 100 : 0;
 
   // Consolidação de Sócios (Participação no Lucro Realizado/Projetado)
   const sociosNoLucro = useMemo(() => {
-    if (!v?.socios) return [];
-    return v.socios.map((s: any) => ({
-      ...s,
-      lucroProporcional: calculateNormalizedValue(lucroBruto, s.porcentagem, v.socios)
-    }));
-  }, [v?.socios, lucroBruto]);
+    return getVendaPartnerResults(pedido).map(s => ({ ...s, lucroProporcional: s.retorno }));
+  }, [pedido]);
 
   const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
   const formatDate = (date: string) => new Date(date).toLocaleDateString('pt-BR');
@@ -69,7 +63,7 @@ const PedidoVendaCard: React.FC<Props> = ({ pedido, onClick }) => {
 
             <div className="absolute top-4 left-4">
               <div className="bg-white/95 backdrop-blur-md px-3 py-1 rounded-xl text-[10px] font-black text-slate-900 shadow-xl border border-white/50 uppercase tracking-tighter">
-                {v?.placa || 'Sem Placa'}
+                {pedido.lote_id ? `Lote · ${getVendaUnits(pedido)} unidades` : v?.placa || 'Sem Placa'}
               </div>
             </div>
 
@@ -92,7 +86,7 @@ const PedidoVendaCard: React.FC<Props> = ({ pedido, onClick }) => {
             ? 'bg-emerald-600 text-white border-emerald-500'
             : 'bg-indigo-500 text-white border-indigo-400 animate-pulse'
             }`}>
-            {pedido.status === 'CONCLUIDO' ? 'FATURADO' : 'EM ABERTO'}
+            {pedido.status === 'CONCLUIDO' ? 'FATURADO' : pedido.status === 'CANCELADO' ? 'CANCELADO' : 'EM ABERTO'}
           </span>
         </div>
       </div>
@@ -106,10 +100,10 @@ const PedidoVendaCard: React.FC<Props> = ({ pedido, onClick }) => {
           </div>
           <div className="text-right min-w-0">
             <h4 className="text-xs font-black text-slate-800 uppercase truncate max-w-[150px] leading-none">
-              {v?.modelo?.nome || 'Veículo N/D'}
+              {pedido.lote_id ? `${getVendaUnits(pedido)} unidades do lote` : v?.modelo?.nome || 'Veículo N/D'}
             </h4>
             <p className="text-[8px] font-bold text-slate-400 uppercase mt-1">
-              {v?.montadora?.nome}
+              {pedido.lote_id ? 'Venda de lote' : v?.montadora?.nome}
             </p>
           </div>
         </div>

@@ -36,7 +36,7 @@ const EstoqueFilters: React.FC<Props> = ({
         </span>
         <input
           type="text"
-          placeholder="Buscar por modelo, placa ou versão..."
+          placeholder="Buscar por montadora, modelo, placa ou versão..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full bg-white border border-slate-200 rounded-2xl py-3.5 pl-10 pr-4 text-sm font-bold focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all placeholder:font-medium text-[#111827]"
