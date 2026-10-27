@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { EstoqueService } from './estoque.service';
 import { IVeiculo } from './estoque.types';
@@ -23,7 +22,6 @@ import EstoqueLotes from '../lotes/EstoqueLotes';
 import { LotesService } from '../lotes/lotes.service';
 
 const EstoquePage: React.FC = () => {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   // Paginação e Filtros
@@ -31,6 +29,7 @@ const EstoquePage: React.FC = () => {
   const ITEMS_PER_PAGE = 12;
 
   const [activeTab, setActiveTab] = useState<'DISPONIVEL' | 'RASCUNHO' | 'TODOS'>('DISPONIVEL');
+  const [isLotesTab, setIsLotesTab] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterMontadora, setFilterMontadora] = useState('');
   const [filterTipo, setFilterTipo] = useState('');
@@ -69,19 +68,22 @@ const EstoquePage: React.FC = () => {
   const { data: response, isLoading: isLoadingList } = useQuery({
     queryKey: ['estoque_list', filters],
     queryFn: () => EstoqueService.getAll(filters),
+    enabled: !isLotesTab,
   });
 
-  const loteFilters = { search: searchTerm, statusTab: activeTab,
+  const loteFilters = { search: searchTerm, statusTab: 'TODOS',
     montadoraId: filterMontadora || undefined, tipoId: filterTipo || undefined };
   const lotesQuery = useQuery({
     queryKey: ['lotes', 'estoque', loteFilters],
     queryFn: () => LotesService.listar(undefined, loteFilters),
+    enabled: isLotesTab,
   });
 
   // Query de Estatísticas
   const { data: statsDashboard } = useQuery({
     queryKey: ['estoque_stats', filters],
     queryFn: () => EstoqueService.getDashboardStats(filters),
+    enabled: !isLotesTab,
   });
 
   useEffect(() => {
@@ -130,11 +132,11 @@ const EstoquePage: React.FC = () => {
     <div className="space-y-6 animate-in fade-in duration-500 pb-20">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 tracking-tighter">Estoque de Veículos</h1>
-          <p className="text-slate-500 text-sm mt-1">Gerencie seu inventário e analise a participação societária.</p>
+          <h1 className="text-3xl font-bold text-slate-900 tracking-tighter">{isLotesTab ? 'Lotes de Veículos' : 'Estoque de Veículos'}</h1>
+          <p className="text-slate-500 text-sm mt-1">{isLotesTab ? 'Acompanhe as unidades, despesas e vendas de cada lote.' : 'Gerencie seu inventário e analise a participação societária.'}</p>
         </div>
 
-        <div className="flex items-center gap-3">
+        {!isLotesTab && <div className="flex items-center gap-3">
           <button
             onClick={async () => {
               setIsGenerating(true);
@@ -200,15 +202,16 @@ const EstoquePage: React.FC = () => {
             )}
             <span>Emitir PDF Estoque</span>
           </button>
-        </div>
+        </div>}
       </div>
 
-      <EstoqueDashboard stats={statsDashboard} socios={socios} />
+      {!isLotesTab && <EstoqueDashboard stats={statsDashboard} socios={socios} />}
 
-      <div className="flex bg-slate-100 p-1 rounded-2xl w-fit">
-        <button onClick={() => setActiveTab('DISPONIVEL')} className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'DISPONIVEL' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Disponíveis</button>
-        <button onClick={() => setActiveTab('RASCUNHO')} className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'RASCUNHO' ? 'bg-white text-amber-500 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Em Preparação</button>
-        <button onClick={() => setActiveTab('TODOS')} className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'TODOS' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Todos</button>
+      <div role="group" aria-label="Visualização do estoque" className="flex flex-wrap bg-slate-100 p-1 rounded-2xl w-fit max-w-full gap-1">
+        <button type="button" aria-pressed={!isLotesTab && activeTab === 'DISPONIVEL'} onClick={() => { setIsLotesTab(false); setActiveTab('DISPONIVEL'); }} className={`px-4 sm:px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-600 ${!isLotesTab && activeTab === 'DISPONIVEL' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Disponíveis</button>
+        <button type="button" aria-pressed={!isLotesTab && activeTab === 'RASCUNHO'} onClick={() => { setIsLotesTab(false); setActiveTab('RASCUNHO'); }} className={`px-4 sm:px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-600 ${!isLotesTab && activeTab === 'RASCUNHO' ? 'bg-white text-amber-500 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Em Preparação</button>
+        <button type="button" aria-pressed={!isLotesTab && activeTab === 'TODOS'} onClick={() => { setIsLotesTab(false); setActiveTab('TODOS'); }} className={`px-4 sm:px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-600 ${!isLotesTab && activeTab === 'TODOS' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Todos</button>
+        <button type="button" aria-pressed={isLotesTab} onClick={() => setIsLotesTab(true)} className={`px-4 sm:px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-600 ${isLotesTab ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Lotes</button>
       </div>
 
       <EstoqueFilters
@@ -217,22 +220,30 @@ const EstoquePage: React.FC = () => {
         filterMontadora={filterMontadora} setFilterMontadora={setFilterMontadora}
         filterTipo={filterTipo} setFilterTipo={setFilterTipo}
         groupBy={groupBy} setGroupBy={setGroupBy}
+        showGrouping={!isLotesTab}
+        searchPlaceholder={isLotesTab ? 'Buscar por descrição, montadora ou modelo...' : undefined}
       />
 
-      {lotesQuery.isError && <div role="alert" className="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
-        Não foi possível carregar os lotes. <button type="button" onClick={() => lotesQuery.refetch()} className="font-bold underline">Tentar novamente</button>
-      </div>}
-      {isLoadingList || lotesQuery.isLoading ? (
-        <div className="py-20 text-center"><div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto"></div></div>
+      {isLotesTab ? (
+        lotesQuery.isError ? (
+          <div role="alert" className="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
+            Não foi possível carregar os lotes. <button type="button" onClick={() => lotesQuery.refetch()} className="font-bold underline">Tentar novamente</button>
+          </div>
+        ) : lotesQuery.isLoading ? (
+          <div role="status" aria-label="Carregando lotes" className="py-20 text-center"><div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto"></div></div>
+        ) : (
+          <EstoqueLotes lots={lotesQuery.data || []} />
+        )
+      ) : isLoadingList ? (
+        <div role="status" aria-label="Carregando veículos" className="py-20 text-center"><div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto"></div></div>
       ) : (
         <>
-          <EstoqueLotes lots={lotesQuery.data || []} />
-          {(veiculos.length > 0 || !lotesQuery.data?.length) && <EstoqueList
+          <EstoqueList
             groupedData={processedData}
             isGrouped={groupBy !== 'none'}
             cores={cores}
             onDelete={() => { }}
-          />}
+          />
 
           {totalPages > 1 && (
             <div className="flex items-center justify-between mt-8 pt-6 border-t border-slate-100">
