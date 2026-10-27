@@ -36,13 +36,26 @@ function title(data) {
     data_emissao: today(), data_vencimento: today(), parcela_numero: 1, parcela_total: 1, created_at: new Date().toISOString(), ...data };
 }
 export const details = {
+  gestao_versao: 2,
   lote: { id: 'demo-lote', organization_id: 'local', pedido_id: 'demo-pedido', descricao: 'Lote de 50 motos elétricas',
     quantidade_inicial: 50, custo_aquisicao: 304000, encerrado: false, created_at: new Date().toISOString() },
   unidades: Array.from({ length: 50 }, (_, index) => ({ id: 'unidade-' + (index + 1), lote_id: 'demo-lote', lote_ordem: index + 1,
     status: 'DISPONIVEL', valor_custo: 6080, valor_custo_servicos: 0, valor_venda: 0, is_consignado: false,
     placa: null, chassi: null, fotos: [], socios: [], ano_fabricacao: 2026, ano_modelo: 2027 })),
-  despesas: [], vendas: [], titulos: [title({ descricao: 'Compra do lote de 50 motos', pedido_id: 'demo-pedido', origem_tipo: 'PEDIDO_COMPRA', valor_total: 304000, valor_pago: 304000 })],
+  despesas: [], vendas: [], transacoes: [], historico: [], titulos: [title({ descricao: 'Compra do lote de 50 motos', pedido_id: 'demo-pedido', origem_tipo: 'PEDIDO_COMPRA', valor_total: 304000, valor_pago: 304000 })],
 };
+function movement(titulo, valor, conta = 'conta') {
+  const item = { id: id('movimento'), titulo_id: titulo.id, valor, conta_origem_id: conta, conta_nome: 'Conta de teste',
+    tipo: titulo.tipo === 'PAGAR' ? 'SAIDA' : 'ENTRADA', tipo_transacao: 'RECEBIMENTO_TITULO', data_pagamento: new Date().toISOString() };
+  details.transacoes.push(item); return item;
+}
+movement(details.titulos[0], 304000);
+function audit(acao, motivo, antes, depois) { details.historico.push({ id: id('historico'), acao, motivo, antes, depois, created_at: new Date().toISOString() }); }
+function refreshTitle(item) {
+  item.valor_pago = Math.round(details.transacoes.filter(tx => tx.titulo_id === item.id).reduce((sum, tx) => sum + (tx.tipo === (item.tipo === 'PAGAR' ? 'SAIDA' : 'ENTRADA') ? tx.valor : -tx.valor), 0) * 100) / 100;
+  item.valor_liquidado = item.valor_pago; item.valor_pendente = Math.round((item.valor_total - item.valor_pago) * 100) / 100;
+  item.status = item.valor_pendente === 0 ? 'PAGO' : item.valor_pago > 0 ? 'PARCIAL' : 'PENDENTE';
+}
 function update() { for (const callback of callbacks) callback(); }
 function once(requestId, action) {
   if (requestId && requests.has(requestId)) return requests.get(requestId);
@@ -52,7 +65,7 @@ function once(requestId, action) {
 }
 function recalculateCosts() {
   for (const unit of details.unidades) unit.valor_custo_servicos = 0;
-  for (const expense of details.despesas) {
+  for (const expense of details.despesas.filter(item => !item.cancelada)) {
     const units = expense.veiculo_id ? details.unidades.filter(unit => unit.id === expense.veiculo_id) : details.unidades;
     const cents = Math.round(expense.valor_total * 100);
     const base = Math.floor(cents / units.length);
@@ -73,11 +86,13 @@ export const LotesService = {
     const payable = title({ descricao: data.descricao, valor_total: data.valor_total, valor_pago: data.pago_agora ? data.valor_total : 0,
       origem_tipo: 'DESPESA_LOTE', origem_id: expenseId, data_vencimento: data.data_vencimento, forma_pagamento_id: data.forma_pagamento_id });
     details.despesas.push({ ...clone(data), id: expenseId, lote_id: details.lote.id, titulo_id: payable.id, created_at: new Date().toISOString() });
-    details.titulos.push(payable); recalculateCosts(); return expenseId;
+    details.titulos.push(payable);
+    if (data.pago_agora) movement(payable, data.valor_total, data.conta_bancaria_id);
+    recalculateCosts(); return expenseId;
   }),
   registrarVenda: async (_, data, requestId) => once(requestId, () => {
-    const units = details.unidades.filter(unit => unit.status === 'DISPONIVEL').slice(0, data.quantidade);
-    if (units.length !== data.quantidade || !Number.isInteger(data.quantidade) || data.quantidade < 1) throw new Error('Quantidade indisponível.');
+    const units = details.unidades.filter(unit => unit.status === 'DISPONIVEL' && data.veiculo_ids?.includes(unit.id));
+    if (units.length !== data.quantidade || new Set(data.veiculo_ids).size !== data.quantidade || !Number.isInteger(data.quantidade) || data.quantidade < 1) throw new Error('Selecione as unidades disponíveis.');
     if (Math.round(data.pagamentos.reduce((sum, item) => sum + item.valor, 0) * 100) !== Math.round(data.valor_total * 100)) throw new Error('Os recebimentos precisam totalizar a venda.');
     const saleId = id('venda');
     const sale = { id: saleId, lote_id: details.lote.id, numero_venda: 'VENDA-LOCAL-' + (details.vendas.length + 1),
@@ -88,19 +103,51 @@ export const LotesService = {
     details.vendas.push(sale); units.forEach(unit => { unit.status = 'VENDIDO'; });
     for (const payment of data.pagamentos) {
       const received = payment.conta_bancaria_id && payment.data_recebimento <= today() ? payment.valor : 0;
-      details.titulos.push(title({ descricao: 'Venda ' + sale.numero_venda, tipo: 'RECEBER', origem_tipo: 'PEDIDO_VENDA',
+      const receivable = title({ descricao: 'Venda ' + sale.numero_venda, tipo: 'RECEBER', origem_tipo: 'PEDIDO_VENDA', parceiro_id: data.cliente_id,
         venda_pedido_id: saleId, valor_total: payment.valor, valor_pago: received, data_vencimento: payment.data_recebimento,
-        forma_pagamento_id: payment.forma_pagamento_id }));
+        forma_pagamento_id: payment.forma_pagamento_id });
+      details.titulos.push(receivable);
+      if (received) movement(receivable, received, payment.conta_bancaria_id);
     }
     return saleId;
   }),
   baixarTitulo: async data => once(data.requestId, () => {
     const item = details.titulos.find(title => title.id === data.tituloId);
     if (!item || data.valor <= 0 || data.valor > item.valor_pendente) throw new Error('Valor acima do saldo em aberto.');
-    item.valor_pago = Math.round((item.valor_pago + data.valor) * 100) / 100;
-    item.valor_liquidado = item.valor_pago;
-    item.valor_pendente = Math.round((item.valor_total - item.valor_pago) * 100) / 100;
-    item.status = item.valor_pendente === 0 ? 'PAGO' : 'PARCIAL'; return item.id;
+    movement(item, data.valor, data.contaId); refreshTitle(item); return item.id;
+  }),
+  corrigirDespesa: async (expenseId, data, motivo, requestId) => once(requestId, () => {
+    const expense = details.despesas.find(item => item.id === expenseId);
+    const payable = details.titulos.find(item => item.id === expense.titulo_id);
+    if (payable.valor_pago > 0 || expense.cancelada) throw new Error('Estorne os pagamentos antes de corrigir.');
+    const before = clone(expense); Object.assign(expense, clone(data));
+    Object.assign(payable, { descricao: data.descricao, valor_total: data.valor_total, data_vencimento: data.data_vencimento });
+    refreshTitle(payable); recalculateCosts(); audit('CORRIGIR_DESPESA', motivo, { despesa: before }, { despesa: clone(expense) }); return expense.id;
+  }),
+  cancelarDespesa: async (expenseId, motivo, requestId) => once(requestId, () => {
+    const expense = details.despesas.find(item => item.id === expenseId);
+    const payable = details.titulos.find(item => item.id === expense.titulo_id);
+    if (payable.valor_pago > 0) throw new Error('Estorne os pagamentos antes de cancelar.');
+    expense.cancelada = true; payable.status = 'CANCELADO'; payable.valor_pendente = 0;
+    recalculateCosts(); audit('CANCELAR_DESPESA', motivo, { despesa: clone(expense) }, {}); return expense.id;
+  }),
+  estornarBaixa: async (txId, motivo, data, requestId) => once(requestId, () => {
+    const original = details.transacoes.find(item => item.id === txId);
+    if (!original || original.estorno_de_id || details.transacoes.some(item => item.estorno_de_id === txId)) throw new Error('Movimento já estornado.');
+    const reversal = { ...clone(original), id: id('estorno'), estorno_de_id: original.id, tipo_transacao: 'ESTORNO_LOTE',
+      tipo: original.tipo === 'ENTRADA' ? 'SAIDA' : 'ENTRADA', data_pagamento: data + 'T12:00:00' };
+    details.transacoes.push(reversal); refreshTitle(details.titulos.find(item => item.id === original.titulo_id));
+    audit('ESTORNAR_BAIXA', motivo, { transacao: clone(original) }, { transacao: reversal }); return reversal.id;
+  }),
+  devolverVenda: async (saleId, motivo, data, requestId) => once(requestId, () => {
+    const sale = details.vendas.find(item => item.id === saleId);
+    const titles = details.titulos.filter(item => item.venda_pedido_id === saleId);
+    for (const payment of details.transacoes.filter(item => titles.some(title => title.id === item.titulo_id) && !item.estorno_de_id && !details.transacoes.some(tx => tx.estorno_de_id === item.id))) {
+      details.transacoes.push({ ...clone(payment), id: id('devolucao'), estorno_de_id: payment.id, tipo_transacao: 'ESTORNO_LOTE', tipo: 'SAIDA', data_pagamento: data + 'T12:00:00' });
+    }
+    titles.forEach(item => { refreshTitle(item); item.status = 'CANCELADO'; item.valor_pendente = 0; });
+    sale.status = 'CANCELADO'; sale.itens.forEach(line => { details.unidades.find(unit => unit.id === line.veiculo_id).status = 'DISPONIVEL'; });
+    audit('DEVOLVER_VENDA', motivo, { venda: clone(sale) }, {}); return sale.id;
   }),
   identificarUnidade: async data => {
     const item = details.unidades.find(unit => unit.id === data.veiculoId);
@@ -170,6 +217,11 @@ assert.match(entradaInicial, /Identificar/);
 assert.match(entradaInicial, /304\\.000,00/);
 assert.match(renderToStaticMarkup(view('despesas')), /Nenhuma despesa registrada/);
 assert.match(renderToStaticMarkup(view('saidas')), /Nenhuma venda registrada/);
+delete details.gestao_versao; seed();
+const aguardandoBanco = renderToStaticMarkup(view('saidas'));
+assert.match(aguardandoBanco, /O controle de lotes está sendo atualizado/);
+assert.match(aguardandoBanco, /<button[^>]*disabled=""[^>]*>Registrar venda/);
+details.gestao_versao = 2; seed();
 assert.equal(getResumoLoteMedias(details, calcularIndicadoresLote(details)).venda, null);
 const semUnidades = { ...details, unidades: [] };
 assert.deepEqual(getResumoLoteMedias(semUnidades, calcularIndicadoresLote(semUnidades)), {
@@ -178,7 +230,7 @@ assert.deepEqual(getResumoLoteMedias(semUnidades, calcularIndicadoresLote(semUni
 const today = new Date().toLocaleDateString('en-CA');
 await LotesService.registrarDespesa('demo-lote', { descricao: 'Frete', valor_total: 10000, categoria_id: 'frete', data_vencimento: today, pago_agora: true }, 'despesa-1');
 await LotesService.registrarDespesa('demo-lote', { descricao: 'Mecânica', valor_total: 6000, categoria_id: 'mecanica', data_vencimento: today, pago_agora: false }, 'despesa-2');
-await LotesService.registrarVenda('demo-lote', { cliente_id: 'cliente', quantidade: 3, valor_total: 27000, data_venda: today, pagamentos: [
+await LotesService.registrarVenda('demo-lote', { cliente_id: 'cliente', veiculo_ids: ['unidade-1','unidade-2','unidade-3'], quantidade: 3, valor_total: 27000, data_venda: today, pagamentos: [
   { valor: 12000, data_recebimento: today, conta_bancaria_id: 'conta', forma_pagamento_id: 'pix' },
   { valor: 15000, data_recebimento: today, conta_bancaria_id: null, forma_pagamento_id: 'pix' },
 ] }, 'venda-1');
@@ -210,10 +262,12 @@ assert.match(saidas, /VENDA-LOCAL/);
 assert.match(saidas, /15\\.000,00/);
 assert.doesNotMatch(saidas, /Mecânica/);
 assert.ok(!saidas.includes('Cancelar venda</button>'));
-assert.match(saidas, /devolução financeira antes do cancelamento/);
-const form = renderToStaticMarkup(<LoteVendaForm catalogos={catalogos as any} disponiveis={47} onSave={async () => {}} onClose={() => {}} />);
+assert.match(saidas, /Devolver venda integral/);
+assert.match(saidas, /Cliente de teste/);
+const form = renderToStaticMarkup(<LoteVendaForm catalogos={catalogos as any} unidades={details.unidades as any} onSave={async () => {}} onClose={() => {}} />);
 assert.match(form, /role="dialog"/); assert.match(form, /aria-modal="true"/);
-assert.match(form, /max="47"/); assert.match(form, /Entrada recebida agora/);
+assert.match(form, /47 disponíveis/); assert.match(form, /Entrada recebida agora/);
+assert.match(form, /Unidades desta venda/); assert.match(form, /Custo atualizado das selecionadas/);
 assert.doesNotMatch(form, /Troca \(não deve aparecer\)/);
 const expenseForm = renderToStaticMarkup(<LoteDespesaForm catalogos={catalogos as any} unidades={details.unidades as any} onSave={async () => {}} onClose={() => {}} />);
 assert.match(expenseForm, /Todo o lote/); assert.match(expenseForm, /Despesa paga agora/);

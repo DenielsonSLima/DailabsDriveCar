@@ -30,6 +30,7 @@ export interface ILoteDespesa {
   fornecedor_id?: string | null;
   comprovante_url?: string | null;
   created_at: string;
+  cancelada?: boolean;
 }
 
 export interface ILoteVendaItem {
@@ -55,11 +56,36 @@ export interface ILoteVenda {
 }
 
 export interface ILoteDetalhes {
+  gestao_versao?: number;
   lote: ILote;
   unidades: ILoteUnidade[];
   despesas: ILoteDespesa[];
   vendas: ILoteVenda[];
   titulos: ITitulo[];
+  transacoes?: ILoteTransacao[];
+  historico?: ILoteHistorico[];
+}
+
+export interface ILoteTransacao {
+  id: string;
+  titulo_id: string;
+  conta_origem_id?: string | null;
+  conta_nome?: string | null;
+  valor: number;
+  tipo: 'ENTRADA' | 'SAIDA' | 'TRANSFERENCIA';
+  tipo_transacao?: string | null;
+  data_pagamento: string;
+  descricao?: string | null;
+  estorno_de_id?: string | null;
+}
+
+export interface ILoteHistorico {
+  id: string;
+  acao: string;
+  motivo: string;
+  created_at: string;
+  antes?: Record<string, unknown> | null;
+  depois?: Record<string, unknown> | null;
 }
 
 export interface ILoteResumo extends ILote {
@@ -76,6 +102,7 @@ export interface ILotePagamentoInput {
 
 export interface ILoteVendaInput {
   cliente_id: string;
+  veiculo_ids: string[];
   quantidade: number;
   valor_total: number;
   data_venda: string;
