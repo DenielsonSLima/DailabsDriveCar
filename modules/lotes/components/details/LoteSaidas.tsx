@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import type { ITitulo } from '../../../financeiro/financeiro.types';
-import type { ILoteCatalogos, ILoteDetalhes, ILoteIndicadores } from '../../lotes.types';
+import type { ILoteCatalogos, ILoteDetalhes, ILoteIndicadores, ILoteVenda } from '../../lotes.types';
 import { getVendaRecebimentos } from '../../lotes.utils';
 import { dateLabel, money, primaryClass } from '../LoteUi';
 import { LoteEmpty, LoteMetric, LoteSection, tableTdClass, tableThClass } from './LoteDetailUi';
@@ -15,9 +15,10 @@ interface Props {
   onReceber: (titulo: ITitulo) => void;
   onCancelar: (id: string) => void;
   onRegistrar: () => void;
+  onDevolver: (venda: ILoteVenda) => void;
 }
 
-export default function LoteSaidas({ detalhes, stats, catalogos, canCreate, onReceber, onCancelar, onRegistrar }: Props) {
+export default function LoteSaidas({ detalhes, stats, catalogos, canCreate, onReceber, onCancelar, onRegistrar, onDevolver }: Props) {
   const contas = separarContasLote(detalhes).saidas;
   return (
     <div className="space-y-6">
@@ -35,6 +36,9 @@ export default function LoteSaidas({ detalhes, stats, catalogos, canCreate, onRe
               <thead className="bg-slate-50"><tr>{['Venda / cliente', 'Data', 'Unidades', 'Vendido', 'Recebido', 'A receber', ''].map((label, index) => <th key={index} scope="col" className={tableThClass}>{label}</th>)}</tr></thead>
               <tbody className="divide-y divide-slate-100">{detalhes.vendas.map(venda => {
                 const recebimentos = getVendaRecebimentos(detalhes, venda.id);
+                const titulosVenda = new Set(detalhes.titulos.filter(item => item.venda_pedido_id === venda.id).map(item => item.id));
+                const teveMovimentos = (detalhes.transacoes || []).some(item => titulosVenda.has(item.titulo_id));
+                const precisaDevolucao = recebimentos.recebido > 0 || teveMovimentos;
                 return (
                   <tr key={venda.id} className={venda.status === 'CANCELADO' ? 'bg-slate-50 opacity-70' : ''}>
                     <td className={tableTdClass}><Link to={`/pedidos-venda/${venda.id}`} className="font-bold text-indigo-600 hover:underline">{venda.numero_venda || 'Ver venda'}</Link><p className="mt-1">{venda.cliente_nome || catalogos?.parceiros.find(parceiro => parceiro.id === venda.cliente_id)?.nome || 'Cliente cadastrado'}</p>{venda.status === 'CANCELADO' && <span className="text-xs font-bold text-rose-600">Cancelada</span>}</td>
@@ -43,7 +47,7 @@ export default function LoteSaidas({ detalhes, stats, catalogos, canCreate, onRe
                     <td className={`${tableTdClass} whitespace-nowrap font-bold tabular-nums`}>{money(venda.valor_venda)}</td>
                     <td className={`${tableTdClass} whitespace-nowrap tabular-nums`}>{money(recebimentos.recebido)}</td>
                     <td className={`${tableTdClass} whitespace-nowrap tabular-nums`}>{money(recebimentos.aReceber)}</td>
-                    <td className={tableTdClass}>{venda.status === 'CONCLUIDO' && recebimentos.recebido === 0 && <button type="button" disabled={!canCreate} className="text-xs font-bold text-rose-600 hover:underline focus-visible:outline focus-visible:outline-rose-600 disabled:opacity-50" onClick={() => onCancelar(venda.id)}>Cancelar venda</button>}{venda.status === 'CONCLUIDO' && recebimentos.recebido > 0 && <p className="max-w-48 text-xs leading-relaxed text-slate-500">Venda com recebimentos exige devolução financeira antes do cancelamento.</p>}</td>
+                    <td className={tableTdClass}>{venda.status === 'CONCLUIDO' && !precisaDevolucao && <button type="button" disabled={!canCreate} className="text-xs font-bold text-rose-600 hover:underline focus-visible:outline focus-visible:outline-rose-600 disabled:opacity-50" onClick={() => onCancelar(venda.id)}>Cancelar venda</button>}{venda.status === 'CONCLUIDO' && precisaDevolucao && <button type="button" disabled={!canCreate} className="text-xs font-bold text-rose-600 hover:underline disabled:opacity-50" onClick={() => onDevolver(venda)}>Devolver venda integral</button>}</td>
                   </tr>
                 );
               })}</tbody>
@@ -51,7 +55,7 @@ export default function LoteSaidas({ detalhes, stats, catalogos, canCreate, onRe
           </div>
         )}
       </LoteSection>
-      <LoteContas title="Contas a receber" titulos={contas} canCreate={canCreate} onBaixar={onReceber} />
+      <LoteContas title="Contas a receber" titulos={contas} vendas={detalhes.vendas} catalogos={catalogos} canCreate={canCreate} onBaixar={onReceber} />
     </div>
   );
 }

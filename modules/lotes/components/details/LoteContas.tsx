@@ -1,6 +1,6 @@
 import React from 'react';
 import type { ITitulo } from '../../../financeiro/financeiro.types';
-import type { ILoteDetalhes } from '../../lotes.types';
+import type { ILoteCatalogos, ILoteDetalhes, ILoteVenda } from '../../lotes.types';
 import { getTituloPendente } from '../../lotes.utils';
 import { dateLabel, money, secondaryClass } from '../LoteUi';
 import { LoteEmpty, LoteSection, tableTdClass, tableThClass } from './LoteDetailUi';
@@ -23,31 +23,50 @@ export function totaisContas(titulos: ITitulo[]) {
   };
 }
 
+function getPartesContextoTitulo(titulo: ITitulo, vendas: ILoteVenda[], catalogos?: ILoteCatalogos) {
+  const venda = vendas.find(item => item.id === titulo.venda_pedido_id);
+  const parceiroId = titulo.parceiro_id || venda?.cliente_id;
+  const parceiro = titulo.parceiro?.nome || catalogos?.parceiros.find(item => item.id === parceiroId)?.nome || venda?.cliente_nome;
+  const pessoa = parceiro || (parceiroId ? `${titulo.tipo === 'RECEBER' ? 'Cliente' : 'Fornecedor'} #${parceiroId.slice(0, 8)}` : 'Parceiro não informado');
+  const vendaId = venda?.id || titulo.venda_pedido_id;
+  const origem = vendaId ? `Venda ${venda?.numero_venda || `#${vendaId.slice(0, 8)}`}` : titulo.pedido_id ? `Compra #${titulo.pedido_id.slice(0, 8)}` : titulo.documento_ref || '';
+  const parcela = `Parcela ${titulo.parcela_numero || 1}/${titulo.parcela_total || 1}`;
+  return { pessoa, origem, parcela, vencimento: `Vencimento ${dateLabel(titulo.data_vencimento)}`, venda };
+}
+
+export function getContextoTituloLote(titulo: ITitulo, vendas: ILoteVenda[] = [], catalogos?: ILoteCatalogos): string {
+  const contexto = getPartesContextoTitulo(titulo, vendas, catalogos);
+  return [contexto.pessoa, contexto.origem, contexto.parcela, contexto.vencimento].filter(Boolean).join(' · ');
+}
+
 interface Props {
   title: string;
   titulos: ITitulo[];
   canCreate: boolean;
   onBaixar: (titulo: ITitulo) => void;
+  vendas?: ILoteVenda[];
+  catalogos?: ILoteCatalogos;
 }
 
 const statusLabels: Record<ITitulo['status'], string> = {
   PENDENTE: 'Pendente', PARCIAL: 'Parcial', PAGO: 'Pago', ATRASADO: 'Atrasado', CANCELADO: 'Cancelado',
 };
 
-export default function LoteContas({ title, titulos, canCreate, onBaixar }: Props) {
+export default function LoteContas({ title, titulos, canCreate, onBaixar, vendas = [], catalogos }: Props) {
   return (
     <LoteSection title={title} subtitle="Acompanhe as parcelas e faça baixas parciais mantendo o saldo restante.">
       {titulos.length === 0 ? <LoteEmpty>Nenhuma conta registrada nesta aba.</LoteEmpty> : (
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[740px]">
+          <table className="w-full min-w-[900px]">
             <caption className="sr-only">{title}</caption>
-            <thead className="bg-slate-50"><tr>{['Descrição / parcela', 'Vencimento', 'Valor', 'Liquidado', 'Em aberto', 'Situação', ''].map((label, index) => <th key={index} scope="col" className={tableThClass}>{label}</th>)}</tr></thead>
+            <thead className="bg-slate-50"><tr>{['Parceiro / origem / parcela', 'Vencimento', 'Valor', 'Liquidado', 'Em aberto', 'Situação', ''].map((label, index) => <th key={index} scope="col" className={tableThClass}>{label}</th>)}</tr></thead>
             <tbody className="divide-y divide-slate-100">
               {titulos.map(titulo => {
                 const pendente = getTituloPendente(titulo);
+                const contexto = getPartesContextoTitulo(titulo, vendas, catalogos);
                 return (
                   <tr key={titulo.id} className={titulo.status === 'CANCELADO' ? 'bg-slate-50 text-slate-400' : ''}>
-                    <td className={tableTdClass}><p className="font-bold text-slate-900">{titulo.descricao}</p><p className="mt-1 text-[10px] font-bold uppercase tracking-wide text-slate-400">Parcela {titulo.parcela_numero || 1}/{titulo.parcela_total || 1}</p></td>
+                    <td className={`${tableTdClass} min-w-[260px]`}><p className="font-bold text-slate-900">{contexto.pessoa}</p><p className="mt-1 text-xs font-bold text-indigo-600">{[contexto.origem, contexto.parcela].filter(Boolean).join(' · ')}</p><p className="mt-1 text-xs text-slate-500">{titulo.descricao}</p></td>
                     <td className={tableTdClass}>{dateLabel(titulo.data_vencimento)}</td>
                     <td className={`${tableTdClass} whitespace-nowrap tabular-nums`}>{money(titulo.valor_total)}</td>
                     <td className={`${tableTdClass} whitespace-nowrap tabular-nums`}>{money(titulo.valor_pago)}</td>

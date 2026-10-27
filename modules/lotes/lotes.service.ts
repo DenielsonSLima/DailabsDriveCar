@@ -32,6 +32,22 @@ export const LotesService = {
   registrarVenda(loteId: string, dados: ILoteVendaInput, requestId: string) {
     return rpc<string>('registrar_venda_lote', { p_lote_id: loteId, p_dados: dados, p_request_id: requestId });
   },
+  corrigirDespesa(despesaId: string, dados: ILoteDespesaInput, motivo: string, requestId: string) {
+    return rpc<string>('corrigir_despesa_lote', { p_despesa_id: despesaId, p_dados: dados,
+      p_motivo: motivo.trim(), p_request_id: requestId });
+  },
+  cancelarDespesa(despesaId: string, motivo: string, requestId: string) {
+    return rpc<string>('cancelar_despesa_lote', { p_despesa_id: despesaId,
+      p_motivo: motivo.trim(), p_request_id: requestId });
+  },
+  estornarBaixa(transacaoId: string, motivo: string, data: string, requestId: string) {
+    return rpc<string>('estornar_baixa_lote', { p_transacao_id: transacaoId,
+      p_motivo: motivo.trim(), p_data: data, p_request_id: requestId });
+  },
+  devolverVenda(vendaId: string, motivo: string, data: string, requestId: string) {
+    return rpc<string>('devolver_venda_lote', { p_venda_id: vendaId,
+      p_motivo: motivo.trim(), p_data: data, p_request_id: requestId });
+  },
   async cancelarVenda(vendaId: string): Promise<void> {
     await rpc('cancelar_venda_lote', { p_venda_id: vendaId });
   },

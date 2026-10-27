@@ -41,7 +41,7 @@ try {
   assert.equal(await LotesService.criar({ veiculoId: 'representative', quantidade: 50, descricao: '50 motos' }), 'batch-id');
   expectRpc('criar_lote', { p_veiculo_id: 'representative', p_quantidade: 50, p_descricao: '50 motos' });
 
-  const sale = { cliente_id: 'client', quantidade: 3, valor_total: 27000, data_venda: '2026-10-24',
+  const sale = { cliente_id: 'client', veiculo_ids: ['unit-17', 'unit-35', 'unit-50'], quantidade: 3, valor_total: 27000, data_venda: '2026-10-24',
     pagamentos: [{ valor: 12000, data_recebimento: '2026-10-24', forma_pagamento_id: 'pix', conta_bancaria_id: 'bank' },
       { valor: 15000, data_recebimento: '2026-11-24', forma_pagamento_id: 'term', conta_bancaria_id: null }] };
   const expense = { descricao: 'Frete', valor_total: 10000, data_vencimento: '2026-10-30', categoria_id: 'freight', pago_agora: false };
@@ -66,6 +66,17 @@ try {
   expectRpc('cancelar_venda_lote', { p_venda_id: 'sale' });
   await LotesService.encerrar('batch');
   expectRpc('encerrar_lote', { p_lote_id: 'batch' });
+
+  for (let retry = 0; retry < 2; retry++) {
+    await LotesService.corrigirDespesa('expense', expense, '  Valor corrigido  ', 'correction-intent');
+    expectRpc('corrigir_despesa_lote', { p_despesa_id: 'expense', p_dados: expense, p_motivo: 'Valor corrigido', p_request_id: 'correction-intent' });
+    await LotesService.cancelarDespesa('expense', 'Duplicidade de frete', 'cancel-intent');
+    expectRpc('cancelar_despesa_lote', { p_despesa_id: 'expense', p_motivo: 'Duplicidade de frete', p_request_id: 'cancel-intent' });
+    await LotesService.estornarBaixa('transaction', 'Conta informada errada', '2026-10-24', 'reversal-intent');
+    expectRpc('estornar_baixa_lote', { p_transacao_id: 'transaction', p_motivo: 'Conta informada errada', p_data: '2026-10-24', p_request_id: 'reversal-intent' });
+    await LotesService.devolverVenda('sale', 'Devolução integral cliente', '2026-10-24', 'refund-intent');
+    expectRpc('devolver_venda_lote', { p_venda_id: 'sale', p_motivo: 'Devolução integral cliente', p_data: '2026-10-24', p_request_id: 'refund-intent' });
+  }
 
   handler = () => ({ body: [{ id: 'mine', organization_id: 'org-a' }, { id: 'other', organization_id: 'org-b' }] });
   const listing = await LotesService.listar('purchase', { search: '  moto  ', statusTab: 'DISPONIVEL', montadoraId: 'brand', tipoId: 'motorcycle' });

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import type { ITitulo } from '../../../financeiro/financeiro.types';
-import type { ILoteDetalhes, ILoteIndicadores, ILoteUnidade } from '../../lotes.types';
+import type { ILoteCatalogos, ILoteDetalhes, ILoteIndicadores, ILoteUnidade } from '../../lotes.types';
 import { money } from '../LoteUi';
 import { LoteMetric, LoteSection } from './LoteDetailUi';
 import LoteContas, { separarContasLote, totaisContas } from './LoteContas';
@@ -11,11 +11,12 @@ interface Props {
   detalhes: ILoteDetalhes;
   stats: ILoteIndicadores;
   canCreate: boolean;
+  catalogos?: ILoteCatalogos;
   onPagar: (titulo: ITitulo) => void;
   onIdentificar: (unidade: ILoteUnidade) => void;
 }
 
-export default function LoteEntrada({ detalhes, stats, canCreate, onPagar, onIdentificar }: Props) {
+export default function LoteEntrada({ detalhes, stats, canCreate, catalogos, onPagar, onIdentificar }: Props) {
   const contas = separarContasLote(detalhes).entrada;
   const financeiro = totaisContas(contas);
   return (
@@ -33,8 +34,8 @@ export default function LoteEntrada({ detalhes, stats, canCreate, onPagar, onIde
           <div><dt className="text-[10px] font-black uppercase tracking-widest text-slate-400">Pedido de origem</dt><dd className="mt-2"><Link to={`/pedidos-compra/${detalhes.lote.pedido_id}`} className="text-sm font-bold text-indigo-600 hover:underline">Ver pedido de compra →</Link></dd></div>
         </dl>
       </LoteSection>
-      <LoteContas title="Contas da compra" titulos={contas} canCreate={canCreate} onBaixar={onPagar} />
-      <LoteUnidades unidades={detalhes.unidades} encerrado={detalhes.lote.encerrado} onIdentificar={onIdentificar} />
+      <LoteContas title="Contas da compra" titulos={contas} catalogos={catalogos} canCreate={canCreate} onBaixar={onPagar} />
+      <LoteUnidades unidades={detalhes.unidades} vendas={detalhes.vendas} encerrado={detalhes.lote.encerrado} onIdentificar={onIdentificar} />
     </div>
   );
 }

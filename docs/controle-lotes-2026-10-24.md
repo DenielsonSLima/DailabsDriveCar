@@ -17,7 +17,7 @@ Entrada mostra a aquisição, as contas da compra e a lista recolhida de unidade
 - O resultado gerencial usa custos atuais. Despesas posteriores atualizam o custo das unidades vendidas e o custo do estoque restante; os indicadores gerais também acompanham esses custos. Cada item de venda preserva o custo conhecido na confirmação, exibido como referência histórica. Enquanto o lote estiver aberto, o resultado é provisório.
 - Participação dos sócios é herdada da compra e aplicada ao investimento rateado; pagar uma conta não altera automaticamente esses percentuais.
 
-Venda sem movimentação financeira pode ser cancelada e devolve todas as unidades. Estorno, reembolso e devolução parcial de venda recebida não estão disponíveis neste fluxo; o sistema bloqueia esse cancelamento. O encerramento exige todas as unidades vendidas e todos os títulos quitados. Após encerrar, despesas e vendas ficam bloqueadas; a tela também desabilita a identificação.
+Venda sem movimentação financeira pode ser cancelada e devolve todas as unidades. A evolução da gestão adiciona seleção física na venda, correção/cancelamento de despesas, estorno por compensação e devolução integral de venda recebida; implementação, validações, limites e dependência de publicação estão em [Ajustes por etapas](gestao-lotes-etapas-2026-10-27.md). Devolução parcial não está incluída. O encerramento exige todas as unidades vendidas e todos os títulos quitados. Após encerrar, despesas e vendas ficam bloqueadas; a tela também desabilita a identificação.
 
 Os fluxos legados de edição, exclusão e faturamento de veículos ou títulos pertencentes ao lote são protegidos também no banco. As ações devem ser feitas pelo controle do lote; baixas no Financeiro são encaminhadas à RPC específica.
 
@@ -29,6 +29,7 @@ Suítes sem rede:
 node scripts/test-lotes-values.mjs
 node scripts/test-lotes-service.mjs
 node scripts/test-lotes-ui.mjs
+node scripts/test-lotes-management-ui.mjs
 node scripts/test-venda-lote-integration.mjs
 node scripts/test-receivables.mjs
 node scripts/test-estoque-search.mjs

@@ -61,6 +61,18 @@ export default function LoteResumo({ detalhes, stats, onEncerrar, canClose, onNa
 
   return (
     <div className="space-y-6">
+      <section aria-label="Investimento no lote" className="grid gap-5 rounded-[2rem] border border-indigo-100 bg-white p-5 shadow-sm sm:grid-cols-2 sm:p-6 lg:grid-cols-3">
+        <div className="min-w-0 sm:col-span-2 lg:col-span-1">
+          <p className="text-[10px] font-black uppercase tracking-widest text-indigo-600">Investimento total</p>
+          <p className="mt-1 break-words text-2xl font-black tracking-tight tabular-nums text-slate-900">{money(stats.custoTotal)}</p>
+          <p className="mt-1 text-xs text-slate-500">Compra e despesas registradas no lote</p>
+        </div>
+        <dl className="grid grid-cols-1 gap-5 sm:col-span-2 sm:grid-cols-2 lg:col-span-2 lg:border-l lg:border-slate-100 lg:pl-6">
+          <ResumoValor label="Compra do lote" value={money(stats.custoAquisicao)} />
+          <ResumoValor label="Despesas do lote" value={money(stats.despesas)} />
+        </dl>
+      </section>
+
       <section aria-label="Indicadores do lote" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <LoteMetric label="Unidades em estoque" value={String(emEstoque)} tone="indigo" hint={`${stats.disponiveis} disponíveis · ${stats.reservadas} reservadas · ${stats.preparacao} em preparação`} />
         <LoteMetric label="Unidades vendidas" value={String(stats.vendidas)} hint={`De ${stats.compradas} unidades adquiridas`} />
@@ -71,9 +83,9 @@ export default function LoteResumo({ detalhes, stats, onEncerrar, canClose, onNa
       <div className="grid items-start gap-6 xl:grid-cols-2">
         <LoteSection title="Médias por unidade" subtitle="Compra, despesas e custo consideram todas as unidades do lote.">
           <dl className="grid grid-cols-1 gap-x-6 gap-y-6 p-5 sm:grid-cols-2 sm:p-6">
-            <ResumoValor label="Compra média" value={mediaLabel(medias.compra)} hint={`Aquisição total: ${money(stats.custoAquisicao)}`} />
-            <ResumoValor label="Despesa média" value={mediaLabel(medias.despesa)} hint={`Despesas totais: ${money(stats.despesas)}`} />
-            <ResumoValor label="Custo médio atualizado" value={mediaLabel(medias.custo)} tone="indigo" hint={`Custo total: ${money(stats.custoTotal)}`} />
+            <ResumoValor label="Compra média" value={mediaLabel(medias.compra)} />
+            <ResumoValor label="Despesa média" value={mediaLabel(medias.despesa)} />
+            <ResumoValor label="Custo médio atualizado" value={mediaLabel(medias.custo)} tone="indigo" />
             <ResumoValor label="Venda média" value={mediaLabel(medias.venda)} tone="emerald" hint={medias.unidadesVendidas > 0 ? `${medias.unidadesVendidas} unidades em vendas confirmadas` : 'Sem vendas confirmadas'} />
           </dl>
           <div className="border-t border-slate-100 px-5 py-2 sm:px-6">

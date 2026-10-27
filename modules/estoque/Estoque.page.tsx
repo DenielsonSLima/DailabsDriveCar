@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { EstoqueService } from './estoque.service';
 import { IVeiculo } from './estoque.types';
@@ -29,7 +30,14 @@ const EstoquePage: React.FC = () => {
   const ITEMS_PER_PAGE = 12;
 
   const [activeTab, setActiveTab] = useState<'DISPONIVEL' | 'RASCUNHO' | 'TODOS'>('DISPONIVEL');
-  const [isLotesTab, setIsLotesTab] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const isLotesTab = searchParams.get('aba') === 'lotes';
+  const setIsLotesTab = (value: boolean) => setSearchParams(current => {
+    const next = new URLSearchParams(current);
+    if (value) next.set('aba', 'lotes');
+    else next.delete('aba');
+    return next;
+  }, { replace: true });
   const [searchTerm, setSearchTerm] = useState('');
   const [filterMontadora, setFilterMontadora] = useState('');
   const [filterTipo, setFilterTipo] = useState('');
