@@ -136,7 +136,7 @@ function seed() {
   client.setQueryData(['lotes_catalogos'], structuredClone(catalogos));
 }
 seed();
-const view = () => <QueryClientProvider client={client}><MemoryRouter initialEntries={['/lotes/demo-lote']}><Routes><Route path="/lotes/:id" element={<Page />} /></Routes></MemoryRouter></QueryClientProvider>;
+const view = (aba = 'resumo') => <QueryClientProvider client={client}><MemoryRouter initialEntries={['/lotes/demo-lote?aba=' + aba]}><Routes><Route path="/lotes/:id" element={<Page />} /></Routes></MemoryRouter></QueryClientProvider>;
 `;
 
 function offlinePlugin(ssr = false) {
@@ -155,13 +155,26 @@ try {
 import assert from 'node:assert/strict';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { LoteVendaForm, LoteDespesaForm, LoteBaixaForm } from './modules/lotes/components/LoteForms';
+import { getResumoLoteMedias } from './modules/lotes/components/details/LoteResumo';
+import { separarContasLote } from './modules/lotes/components/details/LoteContas';
+import { calcularIndicadoresLote } from './modules/lotes/lotes.utils';
 export const testResult = (async () => {
 const initial = renderToStaticMarkup(view());
 assert.match(initial, /304\\.000,00/);
 assert.match(initial, />50</);
-assert.match(initial, /Nenhuma despesa registrada/);
-assert.match(initial, /Nenhuma venda registrada/);
-assert.doesNotMatch(initial, /<details open/);
+assert.match(initial, /aria-pressed="true"[^>]*>Resumo/);
+assert.doesNotMatch(initial, /<table/);
+const entradaInicial = renderToStaticMarkup(view('entrada'));
+assert.match(entradaInicial, /Unidades do lote/);
+assert.match(entradaInicial, /Identificar/);
+assert.match(entradaInicial, /304\\.000,00/);
+assert.match(renderToStaticMarkup(view('despesas')), /Nenhuma despesa registrada/);
+assert.match(renderToStaticMarkup(view('saidas')), /Nenhuma venda registrada/);
+assert.equal(getResumoLoteMedias(details, calcularIndicadoresLote(details)).venda, null);
+const semUnidades = { ...details, unidades: [] };
+assert.deepEqual(getResumoLoteMedias(semUnidades, calcularIndicadoresLote(semUnidades)), {
+  compra: null, despesa: null, custo: null, venda: null, unidades: 0, unidadesVendidas: 0,
+});
 const today = new Date().toLocaleDateString('en-CA');
 await LotesService.registrarDespesa('demo-lote', { descricao: 'Frete', valor_total: 10000, categoria_id: 'frete', data_vencimento: today, pago_agora: true }, 'despesa-1');
 await LotesService.registrarDespesa('demo-lote', { descricao: 'Mecânica', valor_total: 6000, categoria_id: 'mecanica', data_vencimento: today, pago_agora: false }, 'despesa-2');
@@ -173,8 +186,31 @@ seed();
 const updated = renderToStaticMarkup(view());
 assert.match(updated, />47</);
 for (const amount of ['320.000,00', '27.000,00', '12.000,00', '15.000,00', '6.000,00']) assert.ok(updated.includes(amount), amount);
-assert.ok(!updated.includes('Cancelar venda</button>'));
-assert.match(updated, /devolução financeira antes do cancelamento/);
+for (const amount of ['6.080,00', '320,00', '6.400,00', '9.000,00', '7.800,00']) assert.ok(updated.includes(amount), 'média/resultado ' + amount);
+const comCanceladas = { ...details, vendas: [...details.vendas,
+  { ...details.vendas[0], id: 'cancelada', status: 'CANCELADO', quantidade_lote: 10, valor_venda: 90000 },
+  { ...details.vendas[0], id: 'rascunho', status: 'RASCUNHO', quantidade_lote: 20, valor_venda: 180000 },
+] };
+assert.deepEqual(getResumoLoteMedias(comCanceladas, calcularIndicadoresLote(comCanceladas)), {
+  compra: 6080, despesa: 320, custo: 6400, venda: 9000, unidades: 50, unidadesVendidas: 3,
+});
+const contas = separarContasLote(details);
+assert.equal(contas.entrada.length, 1);
+assert.equal(contas.despesas.length, 2);
+assert.equal(contas.saidas.length, 2);
+assert.equal(new Set([...contas.entrada, ...contas.despesas, ...contas.saidas].map(item => item.id)).size, details.titulos.length);
+const despesas = renderToStaticMarkup(view('despesas'));
+assert.match(despesas, /Frete/); assert.match(despesas, /Mecânica/);
+assert.doesNotMatch(despesas, /VENDA-LOCAL/);
+const entrada = renderToStaticMarkup(view('entrada'));
+assert.doesNotMatch(entrada, /Mecânica/);
+assert.match(entrada, /Compra do lote de 50 motos/);
+const saidas = renderToStaticMarkup(view('saidas'));
+assert.match(saidas, /VENDA-LOCAL/);
+assert.match(saidas, /15\\.000,00/);
+assert.doesNotMatch(saidas, /Mecânica/);
+assert.ok(!saidas.includes('Cancelar venda</button>'));
+assert.match(saidas, /devolução financeira antes do cancelamento/);
 const form = renderToStaticMarkup(<LoteVendaForm catalogos={catalogos as any} disponiveis={47} onSave={async () => {}} onClose={() => {}} />);
 assert.match(form, /role="dialog"/); assert.match(form, /aria-modal="true"/);
 assert.match(form, /max="47"/); assert.match(form, /Entrada recebida agora/);
@@ -185,7 +221,7 @@ const pending = details.titulos.find(item => item.valor_pendente === 15000);
 const settlementForm = renderToStaticMarkup(<LoteBaixaForm catalogos={catalogos as any} titulo={pending as any} pendente={15000} onSave={async () => {}} onClose={() => {}} />);
 assert.match(settlementForm, /max="15000"/); assert.match(settlementForm, /pagamento parcial/);
 assert.doesNotMatch(settlementForm, /Prazo de teste/);
-console.log('OK: UI real com 50 motos, compra de R$304 mil, despesas de R$16 mil, venda de 3/R$27 mil, entrada de R$12 mil, saldo de R$15 mil; formulários, limite de baixa e cancelamento com recebimentos.');
+console.log('OK: abas isoladas, contas por origem, médias sem canceladas/rascunhos e divisor zero; UI com 50 motos/R$304 mil, despesas de R$16 mil, venda de 3/R$27 mil, entrada de R$12 mil e saldo de R$15 mil; formulários e bloqueios preservados.');
 })();
 ` }, bundle: true, platform: 'node', format: 'cjs', outfile: testFile, logLevel: 'silent', metafile: true, plugins: [offlinePlugin(true)], supported: { 'top-level-await': false } });
   assert.ok(!Object.keys(ssr.metafile.inputs).some(path => /lib\/supabase/.test(path)));

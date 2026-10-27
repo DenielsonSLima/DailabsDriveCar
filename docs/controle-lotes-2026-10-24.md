@@ -4,7 +4,9 @@ O pedido de compra continua sendo a origem financeira. O usuário cadastra um re
 
 O lote gera unidades internas automaticamente. O custo total de aquisição é repartido em centavos entre elas; o registro original se torna a primeira unidade. Os títulos e pagamentos da compra são preservados. Não há nova dívida, novo desembolso nem ativo pai duplicado. O cadastro original fica registrado em um snapshot. Os preços de anúncio são zerados e as unidades ficam fora do site público.
 
-No estoque, o lote aparece agrupado. Nos detalhes estão quantidades, custos, pagamentos, vendas, recebimentos e contas em aberto. A lista de unidades fica recolhida; placa/chassi podem ser informados depois. Identificações repetidas na empresa são rejeitadas.
+No estoque, os lotes ficam em uma aba própria. Os detalhes são divididos em **Resumo**, **Entrada**, **Despesas** e **Saídas**, com a aba selecionada preservada na URL. Resumo reúne estoque por situação, vendas, lucro atualizado, médias por unidade e posição financeira; caixa e lucro permanecem separados. Compra, despesas e custo médios consideram todas as unidades; a venda média usa somente unidades em vendas confirmadas, excluindo canceladas e rascunhos. Sem vendas, a média de venda aparece como “—”.
+
+Entrada mostra a aquisição, as contas da compra e a lista recolhida de unidades. Despesas reúne lançamentos, comprovantes e pagamentos relacionados, sem repetir a mesma conta em outra tabela. Saídas reúne vendas e parcelas a receber. Placa/chassi podem ser informados depois; identificações repetidas na empresa são rejeitadas.
 
 ## Despesas, vendas e recebimentos
 
@@ -15,7 +17,7 @@ No estoque, o lote aparece agrupado. Nos detalhes estão quantidades, custos, pa
 - O resultado gerencial usa custos atuais. Despesas posteriores atualizam o custo das unidades vendidas e o custo do estoque restante; os indicadores gerais também acompanham esses custos. Cada item de venda preserva o custo conhecido na confirmação, exibido como referência histórica. Enquanto o lote estiver aberto, o resultado é provisório.
 - Participação dos sócios é herdada da compra e aplicada ao investimento rateado; pagar uma conta não altera automaticamente esses percentuais.
 
-Venda sem movimentação financeira pode ser cancelada e devolve todas as unidades. Estorno, reembolso e devolução parcial de venda recebida não estão disponíveis neste fluxo; o sistema bloqueia esse cancelamento. O encerramento exige todas as unidades vendidas e todos os títulos quitados. Após encerrar, despesas e vendas ficam bloqueadas; identificação permanece permitida.
+Venda sem movimentação financeira pode ser cancelada e devolve todas as unidades. Estorno, reembolso e devolução parcial de venda recebida não estão disponíveis neste fluxo; o sistema bloqueia esse cancelamento. O encerramento exige todas as unidades vendidas e todos os títulos quitados. Após encerrar, despesas e vendas ficam bloqueadas; a tela também desabilita a identificação.
 
 Os fluxos legados de edição, exclusão e faturamento de veículos ou títulos pertencentes ao lote são protegidos também no banco. As ações devem ser feitas pelo controle do lote; baixas no Financeiro são encaminhadas à RPC específica.
 

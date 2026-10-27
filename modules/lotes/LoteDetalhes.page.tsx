@@ -1,24 +1,37 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { ITitulo } from '../financeiro/financeiro.types';
 import { LotesService, invalidarLotes } from './lotes.service';
-import { calcularIndicadoresLote, getTituloPendente, getVendaRecebimentos } from './lotes.utils';
+import { calcularIndicadoresLote, getTituloPendente } from './lotes.utils';
 import type { ILoteUnidade } from './lotes.types';
 import { LoteBaixaForm, LoteDespesaForm, LoteVendaForm, LoteIdentificacaoForm } from './components/LoteForms';
-import { dateLabel, ErrorMessage, LoteModal, money, primaryClass, secondaryClass } from './components/LoteUi';
+import { ErrorMessage, LoteModal, primaryClass, secondaryClass } from './components/LoteUi';
+import LoteResumo from './components/details/LoteResumo';
+import LoteEntrada from './components/details/LoteEntrada';
+import LoteDespesas from './components/details/LoteDespesas';
+import LoteSaidas from './components/details/LoteSaidas';
+import type { LoteDetalhesTab } from './components/details/LoteDetailUi';
 
-const thClass = 'px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500';
-const tdClass = 'px-4 py-4 text-sm text-slate-700';
-function Metric({ label, value, hint, strong = false }: { label: string; value: string; hint?: string; strong?: boolean }) {
-  return <div className={`min-w-0 rounded-2xl border p-5 ${strong ? 'border-slate-800 bg-slate-900 text-white' : 'border-slate-200 bg-white text-slate-900'}`}><p className={`text-xs font-bold ${strong ? 'text-slate-300' : 'text-slate-500'}`}>{label}</p><p className="mt-2 break-words text-2xl font-black tracking-tight tabular-nums">{value}</p>{hint && <p className={`mt-2 text-xs leading-relaxed ${strong ? 'text-slate-300' : 'text-slate-500'}`}>{hint}</p>}</div>;
-}
-function Section({ title, subtitle, action, children }: { title: string; subtitle?: string; action?: React.ReactNode; children: React.ReactNode }) {
-  return <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm"><div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 p-5 sm:p-6"><div><h2 className="text-lg font-black tracking-tight text-slate-900">{title}</h2>{subtitle && <p className="mt-1 text-sm leading-relaxed text-slate-500">{subtitle}</p>}</div>{action}</div>{children}</section>;
-}
+const tabs: Array<{ id: LoteDetalhesTab; label: string }> = [
+  { id: 'resumo', label: 'Resumo' },
+  { id: 'entrada', label: 'Entrada' },
+  { id: 'despesas', label: 'Despesas' },
+  { id: 'saidas', label: 'Saídas' },
+];
 
 export default function LoteDetalhesPage() {
   const { id } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab: LoteDetalhesTab = tabs.find(tab => tab.id === searchParams.get('aba'))?.id || 'resumo';
+  const navigateTab = (tab: LoteDetalhesTab) => {
+    setSearchParams(current => {
+      const next = new URLSearchParams(current);
+      if (tab === 'resumo') next.delete('aba');
+      else next.set('aba', tab);
+      return next;
+    }, { replace: true });
+  };
   const queryClient = useQueryClient();
   const query = useQuery({ queryKey: ['lote_detalhes', id], queryFn: () => LotesService.getById(id!), enabled: !!id });
   const catalogos = useQuery({ queryKey: ['lotes_catalogos'], queryFn: () => LotesService.getCatalogos() });
@@ -41,34 +54,63 @@ export default function LoteDetalhesPage() {
   const canCreate = !lote.encerrado && !!catalogos.data && !catalogos.isError;
   const pendencias = detalhes.titulos.filter(item => item.status !== 'CANCELADO' && getTituloPendente(item) > 0.005);
   const canClose = !lote.encerrado && stats.disponiveis + stats.reservadas + stats.preparacao === 0 && pendencias.length === 0;
-  const paidForExpense = (tituloId: string) => { const item = detalhes.titulos.find(t => t.id === tituloId); return { paid: item?.valor_pago || 0, pending: item ? getTituloPendente(item) : undefined, titulo: item }; };
   return <div className="mx-auto max-w-screen-2xl space-y-6 px-1 pb-24 sm:px-4">
-    <header className="flex flex-wrap items-start justify-between gap-5"><div><Link to={`/pedidos-compra/${lote.pedido_id}`} className="text-sm font-bold text-indigo-600 hover:underline">← Voltar ao pedido de compra</Link><div className="mt-4 flex flex-wrap items-center gap-3"><h1 className="text-3xl font-black tracking-tight text-slate-900">{lote.descricao}</h1><span className={`rounded-full px-3 py-1 text-xs font-bold ${lote.encerrado ? 'bg-slate-200 text-slate-600' : 'bg-indigo-50 text-indigo-700'}`}>{lote.encerrado ? 'Encerrado' : 'Lote em andamento'}</span></div><p className="mt-2 text-sm text-slate-500">Compra em conjunto · controle de unidades, despesas e recebimentos</p></div><div className="flex flex-wrap gap-2"><button className={secondaryClass} disabled={!canCreate} onClick={() => setForm('despesa')}>Adicionar despesa</button><button className={primaryClass} disabled={!canCreate || stats.disponiveis === 0} onClick={() => setForm('venda')}>Registrar venda</button></div></header>
+    <header className="space-y-3">
+      <Link to={`/pedidos-compra/${lote.pedido_id}`} className="inline-flex text-xs font-bold text-indigo-600 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-600">← Voltar ao pedido de compra</Link>
+      <div className="flex flex-wrap items-center gap-3">
+        <h1 className="min-w-0 break-words text-2xl font-bold tracking-tighter text-slate-900 sm:text-3xl">{lote.descricao}</h1>
+        <span className={`shrink-0 rounded-lg px-3 py-1.5 text-[9px] font-black uppercase tracking-widest ${lote.encerrado ? 'bg-slate-100 text-slate-500' : 'bg-indigo-50 text-indigo-600'}`}>{lote.encerrado ? 'Encerrado' : 'Em andamento'}</span>
+      </div>
+      <p className="text-sm text-slate-500">Acompanhe a entrada, as despesas e as saídas do lote.</p>
+    </header>
     {notice && <div role="status" className="flex items-start justify-between gap-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800"><p>{notice}</p><button aria-label="Dispensar mensagem" onClick={() => setNotice('')}>×</button></div>}
     {query.isRefetchError && <ErrorMessage error={query.error} />}
     {catalogos.isError && <div className="space-y-2"><ErrorMessage error={catalogos.error} /><button className={secondaryClass} onClick={() => catalogos.refetch()}>Recarregar opções dos formulários</button></div>}
     {catalogos.isPending && <p role="status" className="text-sm text-slate-500">Carregando opções para os lançamentos…</p>}
 
-    <section aria-label="Saldo de unidades" className="grid gap-4 rounded-3xl border border-indigo-100 bg-indigo-50/60 p-5 sm:grid-cols-3 sm:p-6"><div><p className="text-sm font-semibold text-slate-500">Unidades adquiridas</p><p className="mt-2 text-4xl font-black tracking-tight text-slate-900">{stats.compradas}</p></div><div><p className="text-sm font-semibold text-slate-500">Vendidas</p><p className="mt-2 text-4xl font-black tracking-tight text-slate-900">{stats.vendidas}</p></div><div><p className="text-sm font-semibold text-indigo-600">Disponíveis para venda</p><p className="mt-2 text-4xl font-black tracking-tight text-indigo-700">{stats.disponiveis}</p>{(stats.reservadas > 0 || stats.preparacao > 0) && <p className="mt-2 text-xs text-slate-500">{stats.reservadas} reservadas · {stats.preparacao} em preparação</p>}</div></section>
-    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"><Metric label="Compra do lote" value={money(stats.custoAquisicao)} /><Metric label="Despesas registradas" value={money(stats.despesas)} hint="Fretes, mecânica e demais custos vinculados" /><Metric label="Custo total" value={money(stats.custoTotal)} strong /><Metric label="Custo médio por unidade" value={money(stats.custoMedio)} hint="Referência do lote; despesas específicas podem alterar o custo de uma moto" /></div>
-    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"><Metric label="Vendas confirmadas" value={money(stats.vendido)} /><Metric label="Recebido dos clientes" value={money(stats.recebido)} /><Metric label="A receber" value={money(stats.aReceber)} /><Metric label="Resultado das unidades vendidas" value={money(stats.resultado)} strong hint="Vendas menos custo atualizado das unidades vendidas" /></div>
-    <div className="grid gap-4 sm:grid-cols-3"><Metric label="Pagamentos efetuados" value={money(stats.pago)} hint="Compra e despesas do lote" /><Metric label="A pagar" value={money(stats.aPagar)} /><Metric label="Saldo de caixa do lote" value={money(stats.saldoCaixa)} hint="Recebimentos menos pagamentos efetuados" /></div>
+    <div role="group" aria-label="Seções do lote" className="grid w-full max-w-full grid-cols-2 gap-1 rounded-2xl bg-slate-100 p-1 sm:flex sm:w-fit sm:flex-wrap">
+      {tabs.map(tab => <button
+        key={tab.id}
+        type="button"
+        aria-pressed={activeTab === tab.id}
+        aria-controls="lote-section"
+        onClick={() => navigateTab(tab.id)}
+        className={`rounded-xl px-4 py-2.5 text-xs font-black uppercase tracking-widest transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-600 sm:px-6 ${activeTab === tab.id ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+      >{tab.label}</button>)}
+    </div>
 
-    <Section title="Despesas do lote" subtitle="Cada despesa mantém sua origem, vencimento e pagamentos.">
-      {detalhes.despesas.length === 0 ? <p className="p-6 text-sm text-slate-500">Nenhuma despesa registrada. Adicione frete, mecânica ou outros custos para acompanhar o investimento completo.</p> : <div className="overflow-x-auto"><table className="w-full min-w-[700px]"><caption className="sr-only">Despesas e situação de pagamento</caption><thead className="bg-slate-50"><tr>{['Descrição', 'Aplicação', 'Vencimento', 'Valor', 'Pago', 'Em aberto', ''].map((label, i) => <th className={thClass} key={i} scope="col">{label}</th>)}</tr></thead><tbody className="divide-y divide-slate-100">{detalhes.despesas.map(item => { const settlement = paidForExpense(item.titulo_id); const unidade = detalhes.unidades.find(u => u.id === item.veiculo_id); return <tr key={item.id}><td className={tdClass}><p className="font-bold text-slate-900">{item.descricao}</p>{item.comprovante_url && /^https?:\/\//i.test(item.comprovante_url) && <a className="mt-1 inline-block text-xs font-bold text-indigo-600 hover:underline" href={item.comprovante_url} target="_blank" rel="noreferrer">Ver comprovante ↗</a>}</td><td className={tdClass}>{item.veiculo_id ? `Unidade ${unidade?.lote_ordem || 'identificada'}` : 'Todo o lote'}</td><td className={tdClass}>{dateLabel(item.data_vencimento)}</td><td className={`${tdClass} whitespace-nowrap font-bold tabular-nums`}>{money(item.valor_total)}</td><td className={`${tdClass} whitespace-nowrap tabular-nums`}>{settlement.titulo ? money(settlement.paid) : '—'}</td><td className={`${tdClass} whitespace-nowrap tabular-nums`}>{settlement.pending === undefined ? 'Título indisponível' : money(settlement.pending)}</td><td className={tdClass}>{settlement.titulo && (settlement.pending || 0) > 0.005 && <button className={secondaryClass} disabled={!canCreate} onClick={() => setTitulo(settlement.titulo!)}>Pagar</button>}</td></tr>; })}</tbody></table></div>}
-    </Section>
-
-    <Section title="Vendas e recebimentos" subtitle="Venda confirmada reduz a quantidade disponível; o saldo a receber acompanha as baixas financeiras.">
-      {detalhes.vendas.length === 0 ? <p className="p-6 text-sm text-slate-500">Nenhuma venda registrada para este lote.</p> : <div className="overflow-x-auto"><table className="w-full min-w-[780px]"><caption className="sr-only">Vendas do lote</caption><thead className="bg-slate-50"><tr>{['Venda / cliente', 'Data', 'Unidades', 'Vendido', 'Recebido', 'A receber', ''].map((label, i) => <th className={thClass} key={i} scope="col">{label}</th>)}</tr></thead><tbody className="divide-y divide-slate-100">{detalhes.vendas.map(venda => { const recebimentos = getVendaRecebimentos(detalhes, venda.id); return <tr key={venda.id} className={venda.status === 'CANCELADO' ? 'bg-slate-50 opacity-70' : ''}><td className={tdClass}><Link to={`/pedidos-venda/${venda.id}`} className="font-bold text-indigo-600 hover:underline">{venda.numero_venda || 'Ver venda'}</Link><p className="mt-1">{venda.cliente_nome || catalogos.data?.parceiros.find(p => p.id === venda.cliente_id)?.nome || 'Cliente cadastrado'}</p>{venda.status === 'CANCELADO' && <span className="text-xs font-bold text-rose-600">Cancelada</span>}</td><td className={tdClass}>{dateLabel(venda.data_venda)}</td><td className={tdClass}>{venda.quantidade_lote}</td><td className={`${tdClass} whitespace-nowrap font-bold tabular-nums`}>{money(venda.valor_venda)}</td><td className={`${tdClass} whitespace-nowrap tabular-nums`}>{money(recebimentos.recebido)}</td><td className={`${tdClass} whitespace-nowrap tabular-nums`}>{money(recebimentos.aReceber)}</td><td className={tdClass}>{venda.status === 'CONCLUIDO' && recebimentos.recebido === 0 && <button disabled={!canCreate} className="text-xs font-bold text-rose-600 hover:underline disabled:opacity-50" onClick={() => { confirmMutation.reset(); setConfirm({ type: 'cancelar', id: venda.id }); }}>Cancelar venda</button>}{venda.status === 'CONCLUIDO' && recebimentos.recebido > 0 && <p className="max-w-48 text-xs leading-relaxed text-slate-500">Venda com recebimentos exige devolução financeira antes do cancelamento.</p>}</td></tr>; })}</tbody></table></div>}
-    </Section>
-
-    <Section title="Contas em aberto" subtitle="Receba ou pague parcialmente sem perder o saldo restante.">
-      {pendencias.length === 0 ? <p className="p-6 text-sm text-slate-500">Nenhuma conta em aberto para este lote.</p> : <div className="overflow-x-auto"><table className="w-full min-w-[650px]"><caption className="sr-only">Contas a pagar e a receber</caption><thead className="bg-slate-50"><tr>{['Descrição', 'Tipo', 'Vencimento', 'Em aberto', ''].map((label, i) => <th className={thClass} key={i} scope="col">{label}</th>)}</tr></thead><tbody className="divide-y divide-slate-100">{pendencias.map(item => <tr key={item.id}><td className={tdClass}>{item.descricao}</td><td className={tdClass}><span className={`rounded-full px-2.5 py-1 text-xs font-bold ${item.tipo === 'RECEBER' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}`}>{item.tipo === 'RECEBER' ? 'A receber' : 'A pagar'}</span></td><td className={tdClass}>{dateLabel(item.data_vencimento)}</td><td className={`${tdClass} whitespace-nowrap font-bold tabular-nums`}>{money(getTituloPendente(item))}</td><td className={tdClass}><button disabled={!canCreate} className={secondaryClass} onClick={() => setTitulo(item)}>{item.tipo === 'RECEBER' ? 'Receber' : 'Pagar'}</button></td></tr>)}</tbody></table></div>}
-    </Section>
-
-    <details className="overflow-hidden rounded-3xl border border-slate-200 bg-white"><summary className="cursor-pointer p-6 text-lg font-black tracking-tight text-slate-900 focus-visible:outline focus-visible:outline-indigo-600">Unidades do lote <span className="ml-2 text-sm font-normal text-slate-500">{detalhes.unidades.length} unidades · identificar quando necessário</span></summary><div className="overflow-x-auto"><table className="w-full min-w-[650px]"><caption className="sr-only">Unidades geradas pelo lote</caption><thead className="bg-slate-50"><tr>{['Unidade', 'Identificação', 'Situação', 'Custo atualizado', ''].map((label, i) => <th className={thClass} key={i} scope="col">{label}</th>)}</tr></thead><tbody className="divide-y divide-slate-100">{detalhes.unidades.map(unidade => <tr key={unidade.id}><td className={`${tdClass} font-bold`}>#{String(unidade.lote_ordem).padStart(2, '0')}</td><td className={tdClass}>{unidade.placa || unidade.chassi || 'Ainda não informada'}</td><td className={tdClass}>{{ DISPONIVEL: 'Disponível', VENDIDO: 'Vendida', RESERVADO: 'Reservada', PREPARACAO: 'Em preparação' }[unidade.status]}</td><td className={`${tdClass} whitespace-nowrap tabular-nums`}>{money(Number(unidade.valor_custo) + Number(unidade.valor_custo_servicos || 0))}</td><td className={tdClass}><button disabled={lote.encerrado} className="text-sm font-bold text-indigo-600 hover:underline disabled:opacity-50" onClick={() => setIdentificacao(unidade)}>Identificar</button></td></tr>)}</tbody></table></div></details>
-
-    <section className="rounded-3xl border border-slate-200 bg-slate-50 p-5 sm:p-6"><h2 className="text-lg font-black tracking-tight text-slate-900">Evolução dos custos</h2><p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">Os custos permanecem sujeitos a ajustes enquanto novas despesas são registradas. A referência da venda é preservada; o resultado atualizado considera as despesas posteriores atribuídas às unidades vendidas.</p><dl className="mt-5 grid gap-4 sm:grid-cols-3"><div><dt className="text-xs text-slate-500">Custo registrado nas vendas</dt><dd className="mt-1 font-bold tabular-nums text-slate-900">{money(stats.custoVendidoOriginal)}</dd></div><div><dt className="text-xs text-slate-500">Custo atualizado das vendidas</dt><dd className="mt-1 font-bold tabular-nums text-slate-900">{money(stats.custoVendido)}</dd></div><div><dt className="text-xs text-slate-500">Custo das unidades em estoque</dt><dd className="mt-1 font-bold tabular-nums text-slate-900">{money(stats.custoEstoque)}</dd></div></dl><div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-slate-200 pt-5"><p className="max-w-2xl text-sm text-slate-500">{lote.encerrado ? 'Este lote foi encerrado.' : canClose ? 'Todas as unidades foram vendidas e as contas estão quitadas. O lote pode ser encerrado.' : 'O encerramento fica disponível após a saída de todas as unidades e a quitação das contas.'}</p>{!lote.encerrado && <button disabled={!canClose} className={secondaryClass} onClick={() => { confirmMutation.reset(); setConfirm({ type: 'encerrar' }); }}>Encerrar lote</button>}</div></section>
+    <section id="lote-section" className="space-y-6" aria-label={`${tabs.find(tab => tab.id === activeTab)?.label} do lote`}>
+      {activeTab === 'resumo' && <LoteResumo
+        detalhes={detalhes}
+        stats={stats}
+        canClose={canClose}
+        onNavigate={navigateTab}
+        onEncerrar={() => { confirmMutation.reset(); setConfirm({ type: 'encerrar' }); }}
+      />}
+      {activeTab === 'entrada' && <LoteEntrada
+        detalhes={detalhes}
+        stats={stats}
+        canCreate={canCreate}
+        onPagar={setTitulo}
+        onIdentificar={setIdentificacao}
+      />}
+      {activeTab === 'despesas' && <LoteDespesas
+        detalhes={detalhes}
+        stats={stats}
+        canCreate={canCreate}
+        onPagar={setTitulo}
+        onAdicionar={() => setForm('despesa')}
+      />}
+      {activeTab === 'saidas' && <LoteSaidas
+        detalhes={detalhes}
+        stats={stats}
+        catalogos={catalogos.data}
+        canCreate={canCreate}
+        onReceber={setTitulo}
+        onCancelar={vendaId => { confirmMutation.reset(); setConfirm({ type: 'cancelar', id: vendaId }); }}
+        onRegistrar={() => setForm('venda')}
+      />}
+    </section>
 
     {form === 'despesa' && catalogos.data && <LoteDespesaForm catalogos={catalogos.data} unidades={detalhes.unidades} onClose={() => setForm(null)} onSave={async (data, requestId) => { await LotesService.registrarDespesa(id!, data, requestId); await refresh(); setNotice('Despesa registrada. Custos e contas atualizados.'); }} />}
     {form === 'venda' && catalogos.data && <LoteVendaForm catalogos={catalogos.data} disponiveis={stats.disponiveis} onClose={() => setForm(null)} onSave={async (data, requestId) => { await LotesService.registrarVenda(id!, data, requestId); await refresh(); setNotice('Venda registrada. Quantidade e recebimentos atualizados.'); }} />}
