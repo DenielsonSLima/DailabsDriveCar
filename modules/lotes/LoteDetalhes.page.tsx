@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { ITitulo } from '../financeiro/financeiro.types';
 import { LotesService, invalidarLotes } from './lotes.service';
 import { calcularIndicadoresLote, getTituloPendente } from './lotes.utils';
-import type { ILoteUnidade } from './lotes.types';
+import type { ILoteCatalogos, ILoteUnidade } from './lotes.types';
 import { LoteBaixaForm, LoteDespesaForm, LoteVendaForm, LoteIdentificacaoForm } from './components/LoteForms';
 import { ErrorMessage, LoteModal, primaryClass, secondaryClass } from './components/LoteUi';
 import LoteQuantidadeForm from './components/LoteQuantidadeForm';
@@ -121,7 +121,12 @@ export default function LoteDetalhesPage() {
 
     {form === 'quantidade' && <LoteQuantidadeForm key={lote.id} detalhes={detalhes} onClose={() => setForm(null)} onSave={async (data, requestId) => { await LotesService.ajustarQuantidade(id!, data, requestId); await refresh(); setNotice('Quantidade e rateio atualizados. Total da compra e pagamentos preservados.'); }} />}
     {form === 'despesa' && catalogos.data && <LoteDespesaForm catalogos={catalogos.data} unidades={detalhes.unidades} onClose={() => setForm(null)} onSave={async (data, requestId) => { await LotesService.registrarDespesa(id!, data, requestId); await refresh(); setNotice('Despesa registrada. Custos e contas atualizados.'); }} />}
-    {form === 'venda' && catalogos.data && <LoteVendaForm catalogos={catalogos.data} disponiveis={stats.disponiveis} onClose={() => setForm(null)} onSave={async (data, requestId) => { await LotesService.registrarVenda(id!, data, requestId); await refresh(); setNotice('Venda registrada. Quantidade e recebimentos atualizados.'); }} />}
+    {form === 'venda' && catalogos.data && <LoteVendaForm onCreateCliente={async data => {
+      const saved = await LotesService.criarCliente(data);
+      queryClient.setQueryData<ILoteCatalogos>(['lotes_catalogos'], current => current ? { ...current, parceiros: [...current.parceiros.filter(item => item.id !== saved.id), { id: saved.id!, nome: saved.nome, tipo: saved.tipo, documento: saved.documento }].sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR')) } : current);
+      void queryClient.invalidateQueries({ predicate: query => /parceiros/.test(String(query.queryKey[0])) });
+      return saved;
+    }} catalogos={catalogos.data} disponiveis={stats.disponiveis} onClose={() => setForm(null)} onSave={async (data, requestId) => { await LotesService.registrarVenda(id!, data, requestId); await refresh(); setNotice('Venda registrada. Quantidade e recebimentos atualizados.'); }} />}
     {titulo && catalogos.data && <LoteBaixaForm titulo={titulo} catalogos={catalogos.data} pendente={getTituloPendente(titulo)} onClose={() => setTitulo(null)} onSave={async data => { await LotesService.baixarTitulo(data); await refresh(); setNotice('Baixa financeira registrada.'); }} />}
     {identificacao && <LoteIdentificacaoForm unidade={identificacao} onClose={() => setIdentificacao(null)} onSave={async data => { await LotesService.identificarUnidade(data); await refresh(); setNotice('Identificação da unidade atualizada.'); }} />}
     {confirm && <LoteModal title={confirm.type === 'cancelar' ? 'Cancelar esta venda?' : 'Encerrar o lote?'} busy={confirmMutation.isPending} onClose={() => setConfirm(null)}><div className="space-y-5"><p className="text-sm leading-relaxed text-slate-600">{confirm.type === 'cancelar' ? 'As unidades voltarão ao saldo do lote e as contas pendentes desta venda serão canceladas. Uma venda com recebimentos precisa ser tratada pelo financeiro.' : 'Confira o resultado e os pagamentos. O encerramento exige todas as unidades vendidas e nenhuma conta em aberto.'}</p><ErrorMessage error={confirmMutation.error} /><div className="flex justify-end gap-3"><button className={secondaryClass} disabled={confirmMutation.isPending} onClick={() => setConfirm(null)}>Voltar</button><button className={primaryClass} disabled={confirmMutation.isPending} onClick={() => confirmMutation.mutate()}>{confirmMutation.isPending ? 'Processando…' : 'Confirmar'}</button></div></div></LoteModal>}

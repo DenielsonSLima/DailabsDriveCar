@@ -61,6 +61,13 @@ function recalculateCosts() {
   }
 }
 export const LotesService = {
+  criarCliente: async data => {
+    const test = globalThis.__lotesClienteTest;
+    if (test) { test.calls.push(clone(data)); if (test.delay) await new Promise(resolve => setTimeout(resolve, test.delay)); if (test.error) throw new Error(test.error); }
+    const saved = { ...clone(data), tipo: 'CLIENTE', ativo: true };
+    if (!catalogos.parceiros.some(item => item.id === saved.id)) catalogos.parceiros.push(saved);
+    return saved;
+  },
   listar: async () => [{ ...clone(details.lote), quantidade_disponivel: details.unidades.filter(unit => unit.status === 'DISPONIVEL').length,
     quantidade_vendida: details.unidades.filter(unit => unit.status === 'VENDIDO').length }],
   getById: async () => clone(details),
@@ -228,7 +235,7 @@ assert.match(saidas, /15\\.000,00/);
 assert.doesNotMatch(saidas, /Mecânica/);
 assert.ok(!saidas.includes('Cancelar venda</button>'));
 assert.match(saidas, /devolução financeira antes do cancelamento/);
-const form = renderToStaticMarkup(<LoteVendaForm catalogos={catalogos as any} disponiveis={47} onSave={async () => {}} onClose={() => {}} />);
+const form = renderToStaticMarkup(<LoteVendaForm onCreateCliente={LotesService.criarCliente as any} catalogos={catalogos as any} disponiveis={47} onSave={async () => {}} onClose={() => {}} />);
 assert.match(form, /role="dialog"/); assert.match(form, /aria-modal="true"/);
 assert.match(form, /max="47"/); assert.match(form, /Entrada recebida agora/);
 assert.doesNotMatch(form, /Troca \(não deve aparecer\)/);

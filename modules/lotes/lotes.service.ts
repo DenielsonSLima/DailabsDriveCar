@@ -1,6 +1,8 @@
 import type { QueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 import { EmpresaService } from '../ajustes/empresa/empresa.service';
+import { ParceirosService } from '../parceiros/parceiros.service';
+import { TipoParceiro, type IParceiro } from '../parceiros/parceiros.types';
 import type { ILoteCatalogos, ILoteQuantidadeInput, ILoteDespesaInput, ILoteDetalhes, ILoteResumo, ILoteVendaInput } from './lotes.types';
 
 async function rpc<T>(name: string, parameters: Record<string, unknown>): Promise<T> {
@@ -10,6 +12,19 @@ async function rpc<T>(name: string, parameters: Record<string, unknown>): Promis
 }
 
 export const LotesService = {
+  async criarCliente(payload: Partial<IParceiro>): Promise<IParceiro> {
+    const organization_id = await EmpresaService.getCurrentOrganizationId();
+    if (!organization_id) throw new Error('Selecione uma empresa para continuar.');
+    const documento = payload.documento?.replace(/\D/g, '');
+    if (documento) {
+      let query = supabase.from('parceiros').select('id').eq('organization_id', organization_id).eq('documento', documento);
+      if (payload.id) query = query.neq('id', payload.id);
+      const { data, error } = await query.limit(1);
+      if (error) throw new Error('Não foi possível verificar o CPF/CNPJ. Tente novamente.');
+      if (data?.length) throw new Error('Já existe um parceiro com este CPF/CNPJ. Volte à venda e busque o cadastro existente.');
+    }
+    return ParceirosService.save({ ...payload, organization_id, tipo: TipoParceiro.CLIENTE, ativo: true });
+  },
   async listar(pedidoId?: string, filters?: { search?: string; statusTab?: string; montadoraId?: string; tipoId?: string }): Promise<ILoteResumo[]> {
     const orgId = await EmpresaService.getCurrentOrganizationId();
     if (!orgId) return [];
@@ -56,7 +71,7 @@ export const LotesService = {
     const orgId = await EmpresaService.getCurrentOrganizationId();
     if (!orgId) throw new Error('Selecione uma empresa para continuar.');
     const results = await Promise.allSettled([
-      supabase.from('parceiros').select('id,nome,tipo').eq('organization_id', orgId).eq('ativo', true).order('nome'),
+      supabase.from('parceiros').select('id,nome,tipo,documento').eq('organization_id', orgId).eq('ativo', true).order('nome'),
       supabase.from('fin_categorias').select('id,nome').eq('organization_id', orgId).eq('natureza', 'SAIDA').eq('tipo', 'VARIAVEL').order('nome'),
       supabase.from('fin_contas_bancarias').select('id,banco_nome,conta,titular,saldo_atual').eq('organization_id', orgId).eq('ativo', true).order('banco_nome'),
       supabase.from('cad_formas_pagamento').select('id,nome,tipo_movimentacao,destino_lancamento')

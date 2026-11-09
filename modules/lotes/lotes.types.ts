@@ -99,7 +99,7 @@ export interface ILoteDespesaInput {
 }
 
 export interface ILoteCatalogos {
-  parceiros: Array<{ id: string; nome: string; tipo: string }>;
+  parceiros: Array<{ id: string; nome: string; tipo: string; documento?: string | null }>;
   categorias: Array<{ id: string; nome: string }>;
   contas: Array<Pick<IContaBancaria, 'id' | 'banco_nome' | 'conta' | 'titular' | 'saldo_atual'>>;
   formas: Array<{ id: string; nome: string; tipo_movimentacao: string; destino_lancamento: string }>;

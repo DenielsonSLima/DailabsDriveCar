@@ -94,11 +94,37 @@ try {
     assert.equal(byTable[table].get('organization_id'), 'eq.org-a', table + ' deve restringir organização');
   }
   for (const table of ['parceiros', 'fin_contas_bancarias', 'cad_formas_pagamento']) assert.equal(byTable[table].get('ativo'), 'eq.true');
+  assert.equal(byTable.parceiros.get('select'), 'id,nome,tipo,documento');
   assert.equal(byTable.fin_contas_bancarias.get('select'), 'id,banco_nome,conta,titular,saldo_atual');
   assert.equal(byTable.fin_categorias.get('natureza'), 'eq.SAIDA');
   assert.equal(byTable.fin_categorias.get('tipo'), 'eq.VARIAVEL');
   assert.equal(byTable.cad_formas_pagamento.get('or'), '(organization_id.eq.org-a,organization_id.is.null)');
   assert.deepEqual(Object.keys(catalogs), ['parceiros', 'categorias', 'contas', 'formas']);
+
+  const clientInput = { id: 'a329e75a-bcc1-4e60-a2e3-f8c7f1b7b200', pessoa_tipo: 'FISICA', nome: 'CLIENTE LOCAL', tipo: 'FORNECEDOR', ativo: false,
+    organization_id: 'b1111111-1111-4111-8111-111111111111', documento: '123.456.789-01', cep: '49000-000', logradouro: 'Rua', numero: '1', bairro: 'Centro', cidade: 'Aracaju', uf: 'SE' };
+  globalThis.__lotesOrg = 'a1111111-1111-4111-8111-111111111111';
+  requests = [];
+  handler = request => ({ body: request.method === 'GET' ? [] : request.body });
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const saved = await LotesService.criarCliente(clientInput);
+    assert.equal(saved.id, clientInput.id); assert.equal(saved.tipo, 'CLIENTE'); assert.equal(saved.ativo, true);
+    assert.equal(saved.organization_id, globalThis.__lotesOrg); assert.equal(saved.documento, '12345678901');
+    const duplicateCheck = requests.at(-2);
+    assert.equal(duplicateCheck.url.searchParams.get('organization_id'), 'eq.' + globalThis.__lotesOrg);
+    assert.equal(duplicateCheck.url.searchParams.get('id'), 'neq.' + clientInput.id);
+    assert.equal(duplicateCheck.url.searchParams.get('documento'), 'eq.12345678901');
+    assert.match(requests.at(-1).method, /POST/);
+  }
+  requests = []; handler = () => ({ body: [{ id: 'duplicate' }] });
+  await assert.rejects(() => LotesService.criarCliente(clientInput), /Já existe um parceiro/);
+  assert.equal(requests.length, 1); assert.equal(requests[0].method, 'GET');
+  requests = []; handler = () => ({ status: 403, body: { message: 'No access' } });
+  await assert.rejects(() => LotesService.criarCliente(clientInput), /Não foi possível verificar/);
+  assert.equal(requests.length, 1);
+  globalThis.__lotesOrg = null; requests = [];
+  await assert.rejects(() => LotesService.criarCliente(clientInput), /Selecione uma empresa/); assert.equal(requests.length, 0);
+  globalThis.__lotesOrg = 'org-a';
 
   // Não apresentar falha de acesso/rede como lote sem saldo ou catálogo vazio.
   handler = () => ({ status: 403, body: { code: '42501', message: 'Acesso recusado', details: null, hint: null } });
