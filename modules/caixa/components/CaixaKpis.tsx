@@ -48,7 +48,7 @@ const CaixaKpis: React.FC<Props> = ({ data }) => {
           </h4>
           {k.sub && (
             <div className="mt-1.5 space-y-1 text-[9px] font-bold uppercase leading-snug text-slate-500" aria-label="Composição do estoque">
-              {k.sub.map((line: string) => <p key={line}>{line}</p>)}
+              {k.sub.join(' | ')}
             </div>
           )}
         </div>

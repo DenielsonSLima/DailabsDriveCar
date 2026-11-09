@@ -24,7 +24,7 @@ const id = prefix => prefix + '-' + (++sequence);
 export const catalogos = {
   parceiros: [{ id: 'cliente', nome: 'Cliente de teste', tipo: 'CLIENTE' }, { id: 'fornecedor', nome: 'Fornecedor de teste', tipo: 'FORNECEDOR' }],
   categorias: [{ id: 'frete', nome: 'Frete' }, { id: 'mecanica', nome: 'Mecânica' }],
-  contas: [{ id: 'conta', banco_nome: 'Conta de teste', conta: '0001', titular: 'Ambiente local' }],
+  contas: [{ id: 'conta', banco_nome: 'Conta de teste', conta: '0001', titular: 'Ambiente local', saldo_atual: 1234.56 }, { id: 'conta-zero', banco_nome: 'Caixa', conta: '0002', titular: 'Outro titular', saldo_atual: 0 }, { id: 'conta-negativa', banco_nome: 'Caixa', conta: '0003', titular: 'Teste negativo', saldo_atual: -25.5 }],
   formas: [{ id: 'pix', nome: 'PIX de teste', tipo_movimentacao: 'AMBOS', destino_lancamento: 'CAIXA' },
     { id: 'prazo', nome: 'Prazo de teste', tipo_movimentacao: 'RECEBIMENTO', destino_lancamento: 'CONTAS_RECEBER' },
     { id: 'troca', nome: 'Troca (não deve aparecer)', tipo_movimentacao: 'RECEBIMENTO', destino_lancamento: 'ATIVO' }],
@@ -236,6 +236,10 @@ const expenseForm = renderToStaticMarkup(<LoteDespesaForm catalogos={catalogos a
 assert.match(expenseForm, /Todo o lote/); assert.match(expenseForm, /Despesa paga agora/);
 const pending = details.titulos.find(item => item.valor_pendente === 15000);
 const settlementForm = renderToStaticMarkup(<LoteBaixaForm catalogos={catalogos as any} titulo={pending as any} pendente={15000} onSave={async () => {}} onClose={() => {}} />);
+assert.match(settlementForm, /Conta de teste - Ambiente local \\| Saldo: R\\$[^0-9]*1\\.234,56/);
+assert.match(settlementForm, /Caixa - Outro titular \\| Saldo: R\\$[^0-9]*0,00/);
+assert.match(settlementForm, /Caixa - Teste negativo \\| Saldo: -R\\$[^0-9]*25,50/);
+assert.doesNotMatch(settlementForm, /Conta de teste · 0001/);
 assert.match(settlementForm, /max="15000"/); assert.match(settlementForm, /pagamento parcial/);
 assert.doesNotMatch(settlementForm, /Prazo de teste/);
 console.log('OK: abas isoladas, contas por origem, médias sem canceladas/rascunhos e divisor zero; UI com 50 motos/R$304 mil, despesas de R$16 mil, venda de 3/R$27 mil, entrada de R$12 mil e saldo de R$15 mil; formulários e bloqueios preservados.');

@@ -105,7 +105,7 @@ const CaixaPrint: React.FC<Props> = ({ data, empresa, watermark, periodo, foreca
                                 <p className="text-[7px] font-black text-slate-400 uppercase tracking-widest mb-1">{k.label}</p>
                                 <p className={`text-sm font-[900] tracking-tight ${k.text}`}>{fmt(k.val)}</p>
                                 {k.sub && <div className="mt-1 space-y-0.5 text-[7px] font-bold uppercase leading-snug text-slate-500">
-                                    {k.sub.map(line => <p key={line}>{line}</p>)}
+                                    {k.sub.join(' | ')}
                                 </div>}
                             </div>
                         ))}

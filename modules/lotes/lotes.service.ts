@@ -58,7 +58,7 @@ export const LotesService = {
     const results = await Promise.allSettled([
       supabase.from('parceiros').select('id,nome,tipo').eq('organization_id', orgId).eq('ativo', true).order('nome'),
       supabase.from('fin_categorias').select('id,nome').eq('organization_id', orgId).eq('natureza', 'SAIDA').eq('tipo', 'VARIAVEL').order('nome'),
-      supabase.from('fin_contas_bancarias').select('id,banco_nome,conta,titular').eq('organization_id', orgId).eq('ativo', true).order('banco_nome'),
+      supabase.from('fin_contas_bancarias').select('id,banco_nome,conta,titular,saldo_atual').eq('organization_id', orgId).eq('ativo', true).order('banco_nome'),
       supabase.from('cad_formas_pagamento').select('id,nome,tipo_movimentacao,destino_lancamento')
         .or(`organization_id.eq.${orgId},organization_id.is.null`).eq('ativo', true).order('nome'),
     ]);
@@ -74,6 +74,7 @@ export const LotesService = {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'est_lotes', filter: `id=eq.${loteId}` }, onChange)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'est_veiculos', filter: `lote_id=eq.${loteId}` }, onChange)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'fin_titulos' }, onChange)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'fin_contas_bancarias' }, onChange)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'venda_pedidos', filter: `lote_id=eq.${loteId}` }, onChange)
       .subscribe();
     return () => { void supabase.removeChannel(channel); };

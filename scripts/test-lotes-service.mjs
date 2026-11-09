@@ -94,6 +94,7 @@ try {
     assert.equal(byTable[table].get('organization_id'), 'eq.org-a', table + ' deve restringir organização');
   }
   for (const table of ['parceiros', 'fin_contas_bancarias', 'cad_formas_pagamento']) assert.equal(byTable[table].get('ativo'), 'eq.true');
+  assert.equal(byTable.fin_contas_bancarias.get('select'), 'id,banco_nome,conta,titular,saldo_atual');
   assert.equal(byTable.fin_categorias.get('natureza'), 'eq.SAIDA');
   assert.equal(byTable.fin_categorias.get('tipo'), 'eq.VARIAVEL');
   assert.equal(byTable.cad_formas_pagamento.get('or'), '(organization_id.eq.org-a,organization_id.is.null)');

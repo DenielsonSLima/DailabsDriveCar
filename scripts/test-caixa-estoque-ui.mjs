@@ -30,20 +30,21 @@ try {
   const { CaixaDashboardSchema, getEstoqueResumo, kpis, print, report } = await import(pathToFileURL(entry));
   const sample = CaixaDashboardSchema.parse({ qtd_veiculos_estoque: 58, qtd_veiculos_individuais: 18,
     qtd_unidades_lotes: 40, qtd_motos_lotes: 40, total_ativos_estoque: 1648840 });
-  assert.deepEqual(getEstoqueResumo(sample), ['18 veículos no estoque individual', '40 motos em lotes']);
+  assert.deepEqual(getEstoqueResumo(sample), ['18 veículos', '40 motos em lote']);
   for (const render of [kpis, print, report]) {
     const html = render(sample);
-    assert.match(html, /18 veículos no estoque individual/);
-    assert.match(html, /40 motos em lotes/);
+    assert.match(html, /18 veículos \| 40 motos em lote/);
+    assert.doesNotMatch(html, /estoque individual/);
+    assert.match(html, /40 motos em lote/);
     assert.match(html, /1\.648\.840,00/);
     assert.doesNotMatch(html, /58 veículos/);
   }
   const mixed = { ...sample, qtd_motos_lotes: 39 };
-  assert.deepEqual(getEstoqueResumo(mixed), ['18 veículos no estoque individual', '40 unidades em lotes']);
+  assert.deepEqual(getEstoqueResumo(mixed), ['18 veículos', '40 unidades em lote']);
   assert.deepEqual(getEstoqueResumo({ ...sample, qtd_veiculos_estoque: 2, qtd_veiculos_individuais: 1,
-    qtd_unidades_lotes: 1, qtd_motos_lotes: 1 }), ['1 veículo no estoque individual', '1 moto em lotes']);
+    qtd_unidades_lotes: 1, qtd_motos_lotes: 1 }), ['1 veículo', '1 moto em lote']);
   assert.deepEqual(getEstoqueResumo({ ...sample, qtd_veiculos_estoque: 0, qtd_veiculos_individuais: 0,
-    qtd_unidades_lotes: 0, qtd_motos_lotes: 0 }), ['0 veículos no estoque individual', '0 unidades em lotes']);
+    qtd_unidades_lotes: 0, qtd_motos_lotes: 0 }), ['0 veículos', '0 unidades em lote']);
   assert.deepEqual(getEstoqueResumo(CaixaDashboardSchema.parse({ qtd_veiculos_estoque: 58 })),
     ['58 veículos no total', 'Separação indisponível']);
   assert.deepEqual(getEstoqueResumo({ ...sample, qtd_unidades_lotes: 39 }),

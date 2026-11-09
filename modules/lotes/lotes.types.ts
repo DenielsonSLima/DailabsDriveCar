@@ -1,3 +1,4 @@
+import type { IContaBancaria } from '../ajustes/contas-bancarias/contas.types';
 import type { ITitulo } from '../financeiro/financeiro.types';
 import type { IVeiculo } from '../estoque/estoque.types';
 
@@ -100,7 +101,7 @@ export interface ILoteDespesaInput {
 export interface ILoteCatalogos {
   parceiros: Array<{ id: string; nome: string; tipo: string }>;
   categorias: Array<{ id: string; nome: string }>;
-  contas: Array<{ id: string; banco_nome: string; conta: string; titular: string }>;
+  contas: Array<Pick<IContaBancaria, 'id' | 'banco_nome' | 'conta' | 'titular' | 'saldo_atual'>>;
   formas: Array<{ id: string; nome: string; tipo_movimentacao: string; destino_lancamento: string }>;
 }
 

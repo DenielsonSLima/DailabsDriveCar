@@ -1,18 +1,19 @@
 import React, { useMemo, useRef, useState } from 'react';
 import type { ILoteCatalogos, ILoteDespesaInput, ILoteUnidade, ILoteVendaInput } from '../lotes.types';
+import { formatContaBancaria } from '../../ajustes/contas-bancarias/contas.utils';
 import type { ITitulo } from '../../financeiro/financeiro.types';
 import { buildPaymentSchedule } from '../../pedidos-venda/utils/payment-schedule';
 import { ErrorMessage, Field, fieldClass, LoteModal, money, primaryClass, secondaryClass, today } from './LoteUi';
 
-function Options({ items, label = 'Selecione' }: { items: Array<{ id: string; nome?: string; banco_nome?: string; conta?: string }>; label?: string }) {
-  return <><option value="">{label}</option>{items.map(item => <option key={item.id} value={item.id}>{item.nome || `${item.banco_nome} · ${item.conta}`}</option>)}</>;
+function Options({ items, label = 'Selecione' }: { items: Array<{ id: string; nome: string }>; label?: string }) {
+  return <><option value="">{label}</option>{items.map(item => <option key={item.id} value={item.id}>{item.nome}</option>)}</>;
 }
 function compatibleForms(catalogos: ILoteCatalogos, operation: 'PAGAMENTO' | 'RECEBIMENTO', immediate = false) {
   const futureDestination = operation === 'PAGAMENTO' ? 'CONTAS_PAGAR' : 'CONTAS_RECEBER';
   return catalogos.formas.filter(item => (item.tipo_movimentacao === operation || item.tipo_movimentacao === 'AMBOS') && (item.destino_lancamento === 'CAIXA' || (!immediate && item.destino_lancamento === futureDestination)));
 }
 function SettlementFields({ catalogos, conta, forma, setConta, setForma, operation }: { catalogos: ILoteCatalogos; conta: string; forma: string; setConta: (value: string) => void; setForma: (value: string) => void; operation: 'PAGAMENTO' | 'RECEBIMENTO' }) {
-  return <div className="grid gap-4 sm:grid-cols-2"><Field label="Conta bancária"><select required className={fieldClass} value={conta} onChange={event => setConta(event.target.value)}><Options items={catalogos.contas} /></select></Field><Field label={operation === 'PAGAMENTO' ? 'Forma de pagamento' : 'Forma de recebimento'}><select required className={fieldClass} value={forma} onChange={event => setForma(event.target.value)}><Options items={compatibleForms(catalogos, operation, true)} /></select></Field></div>;
+  return <div className="grid gap-4"><Field label="Conta bancária / Caixa"><select required className={fieldClass} value={conta} onChange={event => setConta(event.target.value)}><option value="">Selecione a conta...</option>{catalogos.contas.map(item => <option key={item.id} value={item.id}>{formatContaBancaria(item)}</option>)}</select></Field><Field label={operation === 'PAGAMENTO' ? 'Forma de pagamento' : 'Forma de recebimento'}><select required className={fieldClass} value={forma} onChange={event => setForma(event.target.value)}><Options items={compatibleForms(catalogos, operation, true)} /></select></Field></div>;
 }
 function Footer({ busy, onClose, label }: { busy: boolean; onClose: () => void; label: string }) {
   return <div className="flex flex-wrap justify-end gap-3 border-t border-slate-100 pt-5"><button type="button" disabled={busy} onClick={onClose} className={secondaryClass}>Voltar</button><button disabled={busy} type="submit" className={primaryClass}>{busy ? 'Salvando…' : label}</button></div>;

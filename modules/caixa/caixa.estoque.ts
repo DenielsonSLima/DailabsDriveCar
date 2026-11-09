@@ -17,7 +17,7 @@ export function getEstoqueResumo(data: ComposicaoEstoque): string[] {
     ? (lotes === 1 ? 'moto' : 'motos')
     : (lotes === 1 ? 'unidade' : 'unidades');
   return [
-    `${individuais} ${individuais === 1 ? 'veículo' : 'veículos'} no estoque individual`,
-    `${lotes} ${tipoLote} em lotes`,
+    `${individuais} ${individuais === 1 ? 'veículo' : 'veículos'}`,
+    `${lotes} ${tipoLote} em lote`,
   ];
 }

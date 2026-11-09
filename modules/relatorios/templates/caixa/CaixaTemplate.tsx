@@ -109,7 +109,7 @@ const CaixaTemplate: React.FC<Props> = ({ data, empresa, watermark, periodo, ano
                                 <div style={{ minWidth: 0, flex: 1 }}>
                                     <p style={{ fontSize: '7px', fontWeight: 'black', textTransform: 'uppercase', color: i < 2 ? 'rgba(255,255,255,0.8)' : '#94a3b8', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{k.label}</p>
                                     <h4 style={{ fontSize: '11px', fontWeight: 'black', margin: 0 }}>{fmt(k.val)}</h4>
-                                    {k.sub && k.sub.map(line => <span key={line} style={{ fontSize: '6px', fontWeight: 'bold', color: '#64748b', textTransform: 'uppercase', display: 'block', marginTop: '2px', lineHeight: 1.4 }}>{line}</span>)}
+                                    {k.sub && <span style={{ fontSize: '6px', fontWeight: 'bold', color: '#64748b', textTransform: 'uppercase', display: 'block', marginTop: '2px', lineHeight: 1.4 }}>{k.sub.join(' | ')}</span>}
                                 </div>
                             </div>
                         ))}

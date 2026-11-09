@@ -1,3 +1,4 @@
+import { formatContaBancaria } from '../../../../ajustes/contas-bancarias/contas.utils';
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { DespesasVariaveisService } from '../despesas-variaveis.service';
@@ -401,7 +402,7 @@ const DespesaVariavelForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditan
                     className="w-full bg-white border border-emerald-200 rounded-xl px-4 py-3 text-sm font-bold text-emerald-900 outline-none focus:ring-2 focus:ring-emerald-500 appearance-none cursor-pointer"
                   >
                     <option value="">Selecione a conta...</option>
-                    {contas.map(c => <option key={c.id} value={c.id}>{c.banco_nome} - {c.titular} | Saldo: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(c.saldo_atual || 0)}</option>)}
+                    {contas.map(c => <option key={c.id} value={c.id}>{formatContaBancaria(c)}</option>)}
                   </select>
                 </div>
               </div>
