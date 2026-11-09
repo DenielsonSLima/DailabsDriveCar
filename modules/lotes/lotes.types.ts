@@ -123,6 +123,8 @@ export interface ILoteIndicadores {
   custoVendido: number;
   custoVendidoOriginal: number;
   custoEstoque: number;
+  custoAquisicaoEstoque: number;
+  resultadoComEstoque: number;
   resultado: number;
   resultadoOriginal: number;
   saldoCaixa: number;

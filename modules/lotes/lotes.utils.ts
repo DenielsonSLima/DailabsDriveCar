@@ -41,6 +41,12 @@ export function calcularIndicadoresLote(details: ILoteDetalhes): ILoteIndicadore
   const pago = sumMoney(payments, title => title.valor_pago);
   const custoVendido = sumMoney(sold, unitCost);
   const custoVendidoOriginal = sumMoney(sales.flatMap(sale => sale.itens || []), item => item.custo_na_venda);
+  const custoAquisicaoEstoque = sumMoney(remaining, unit => unit.is_consignado ? 0 : unit.valor_custo);
+  // Visão gerencial: mantém a compra não vendida como estoque e reconhece todas
+  // as despesas lançadas. Não usar custoEstoque aqui: ele já inclui despesas,
+  // que seriam neutralizadas indevidamente. Caixa e lucro das vendidas seguem separados.
+  const resultadoComEstoque = (cents(vendido) + cents(custoAquisicaoEstoque)
+    - cents(custoAquisicao) - cents(despesas)) / 100;
   return {
     compradas: Number(lote.quantidade_inicial),
     disponiveis: unidades.filter(unit => unit.status === 'DISPONIVEL').length,
@@ -53,6 +59,7 @@ export function calcularIndicadoresLote(details: ILoteDetalhes): ILoteIndicadore
     vendido, recebido, aReceber: sumMoney(receipts, getTituloPendente),
     custoVendido, custoVendidoOriginal,
     custoEstoque: sumMoney(remaining, unitCost),
+    custoAquisicaoEstoque, resultadoComEstoque,
     resultado: (cents(vendido) - cents(custoVendido)) / 100,
     resultadoOriginal: (cents(vendido) - cents(custoVendidoOriginal)) / 100,
     saldoCaixa: (cents(recebido) - cents(pago)) / 100,

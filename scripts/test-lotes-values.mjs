@@ -40,6 +40,7 @@ try {
     custoAquisicao: 304000, despesas: 16000, custoTotal: 320000, custoMedio: 6400,
     pago: 314000, aPagar: 6000, vendido: 27000, recebido: 12000, aReceber: 15000,
     custoVendido: 19200, custoVendidoOriginal: 18840, custoEstoque: 300800,
+    custoAquisicaoEstoque: 285760, resultadoComEstoque: -7240,
     resultado: 7800, resultadoOriginal: 8160, saldoCaixa: -302000,
   });
   assert.deepEqual(getVendaRecebimentos(details, 'sale'), { recebido: 12000, aReceber: 15000 });

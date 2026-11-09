@@ -65,7 +65,7 @@ export default function LoteResumo({ detalhes, stats, onEncerrar, canClose, onNa
         <LoteMetric label="Unidades em estoque" value={String(emEstoque)} tone="indigo" hint={`${stats.disponiveis} disponíveis · ${stats.reservadas} reservadas · ${stats.preparacao} em preparação`} />
         <LoteMetric label="Unidades vendidas" value={String(stats.vendidas)} hint={`De ${stats.compradas} unidades adquiridas`} />
         <LoteMetric label="Total vendido" value={money(stats.vendido)} tone="emerald" hint="Valor das vendas confirmadas" />
-        <LoteMetric label="Lucro das vendidas" value={money(stats.resultado)} tone={stats.resultado < 0 ? 'rose' : 'emerald'} hint="Vendas menos o custo atualizado das unidades vendidas" />
+        <LoteMetric label="Resultado com estoque" value={money(stats.resultadoComEstoque)} tone={stats.resultadoComEstoque < 0 ? 'rose' : 'emerald'} hint="Preserva o custo de compra em estoque e desconta todas as despesas" />
       </section>
 
       <div className="grid items-start gap-6 xl:grid-cols-2">
@@ -85,29 +85,45 @@ export default function LoteResumo({ detalhes, stats, onEncerrar, canClose, onNa
           </div>
         </LoteSection>
 
-        <LoteSection title="Financeiro do lote" subtitle="Acompanhe os pagamentos e recebimentos efetivados.">
+        <LoteSection title="Resultado do lote" subtitle="O estoque mantém o valor de compra. As despesas lançadas reduzem o resultado, mesmo antes das vendas.">
           <dl className="grid grid-cols-1 gap-x-6 gap-y-5 p-5 sm:grid-cols-2 sm:p-6">
-            <ResumoValor label="Recebido dos clientes" value={money(stats.recebido)} />
-            <ResumoValor label="Pagamentos efetuados" value={money(stats.pago)} />
-            <ResumoValor label="A receber" value={money(stats.aReceber)} tone="emerald" />
-            <ResumoValor label="A pagar" value={money(stats.aPagar)} />
-            <ResumoValor label="Saldo de caixa" value={money(stats.saldoCaixa)} tone={stats.saldoCaixa < 0 ? 'rose' : 'indigo'} hint="Recebido menos pagamentos efetuados" />
-            <ResumoValor label="Custo em estoque" value={money(stats.custoEstoque)} hint="Investimento nas unidades ainda não vendidas" />
+            <ResumoValor label="Vendas confirmadas (+)" value={money(stats.vendido)} hint="Inclui valores recebidos e a receber das vendas" />
+            <ResumoValor label="Estoque a custo de compra (+)" value={money(stats.custoAquisicaoEstoque)} hint="Unidades ainda não vendidas, sem somar despesas" />
+            <ResumoValor label="Compra total do lote (−)" value={money(stats.custoAquisicao)} />
+            <ResumoValor label="Despesas lançadas (−)" value={money(stats.despesas)} hint="Pagas e a pagar, descontadas uma única vez" />
+            <ResumoValor label="Resultado com estoque" value={money(stats.resultadoComEstoque)} tone={stats.resultadoComEstoque < 0 ? 'rose' : 'emerald'} hint="Vendas + estoque a custo de compra − compra total − despesas" />
           </dl>
           <div className="border-t border-slate-100 px-5 py-2 sm:px-6">
+            <p className="pt-2 text-xs leading-relaxed text-slate-500">Resultado gerencial do lote, não saldo bancário. Sem vendas, a compra permanece em estoque e somente as despesas reduzem este resultado.</p>
             <Atalho onClick={() => onNavigate('saidas')}>Ver saídas e recebimentos</Atalho>
           </div>
         </LoteSection>
       </div>
 
       <details className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm">
+        <summary className="cursor-pointer p-5 text-sm font-black text-slate-900 focus-visible:outline focus-visible:outline-indigo-600 sm:px-6">Caixa e contas do lote</summary>
+        <div className="border-t border-slate-100 p-5 sm:p-6">
+          <p className="text-xs leading-relaxed text-slate-500">O fluxo de caixa mostra somente o dinheiro recebido e pago. A saída para comprar estoque não representa, por si só, prejuízo.</p>
+          <dl className="mt-4 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+            <ResumoValor label="Recebido dos clientes" value={money(stats.recebido)} />
+            <ResumoValor label="Pagamentos efetuados" value={money(stats.pago)} />
+            <ResumoValor label="Fluxo de caixa do lote" value={money(stats.saldoCaixa)} hint="Recebido menos pagamentos; não inclui estoque nem contas em aberto" />
+            <ResumoValor label="A receber" value={money(stats.aReceber)} tone="emerald" />
+            <ResumoValor label="A pagar" value={money(stats.aPagar)} />
+            <ResumoValor label="Custo atualizado em estoque" value={money(stats.custoEstoque)} hint="Compra e despesas alocadas nas unidades ainda não vendidas" />
+          </dl>
+        </div>
+      </details>
+
+      <details className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm">
         <summary className="cursor-pointer p-5 text-sm font-black text-slate-900 focus-visible:outline focus-visible:outline-indigo-600 sm:px-6">Evolução dos custos das vendas</summary>
         <div className="border-t border-slate-100 p-5 sm:p-6">
           <p className="text-xs leading-relaxed text-slate-500">A referência da venda é preservada. Novas despesas podem alterar o custo e o lucro atualizado enquanto o lote estiver aberto.</p>
-          <dl className="mt-4 grid gap-5 sm:grid-cols-3">
+          <dl className="mt-4 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
             <ResumoValor label="Custo na confirmação" value={money(stats.custoVendidoOriginal)} />
             <ResumoValor label="Custo atualizado das vendidas" value={money(stats.custoVendido)} />
             <ResumoValor label="Resultado na confirmação" value={money(stats.resultadoOriginal)} />
+            <ResumoValor label="Lucro atualizado das vendidas" value={money(stats.resultado)} hint="Vendas menos o custo atualizado apenas das unidades vendidas" />
           </dl>
         </div>
       </details>
