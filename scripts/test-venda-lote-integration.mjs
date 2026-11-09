@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { build } from 'esbuild';
-import { mkdtemp, rm } from 'node:fs/promises';
+import { mkdtemp, rm, readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -96,14 +96,15 @@ try {
         });` }));
     } }],
   });
-  const { PedidosVendaService } = (await import(pathToFileURL(join(serviceTemp, 'service.cjs')).href)).default;
+  const { PedidosVendaService, PedidoVendaPersistidoError } = (await import(pathToFileURL(join(serviceTemp, 'service.cjs')).href)).default;
   let responses = [];
   let requests = [];
   globalThis.__salesFetch = async (input, options) => {
     const url = new URL(input);
     requests.push({ url, method: options?.method || 'GET' });
     assert.ok(responses.length, 'Consulta inesperada');
-    return new Response(JSON.stringify(responses.shift()), { status: 200,
+    const response = responses.shift();
+    return new Response(JSON.stringify(response), { status: response?.code ? 400 : 200,
       headers: { 'Content-Type': 'application/json', 'Content-Range': '0-0/1' } });
   };
   const filters = { busca: '', dataInicio: '', dataFim: '', corretorId: '', socioId: '' };
@@ -122,6 +123,8 @@ try {
     const select = requests.at(-1).url.searchParams.get('select');
     assert.ok(select.includes('itens_lote:venda_lote_itens('));
     assert.ok(select.includes('custo_na_venda'));
+    assert.equal((select.match(/veiculo:est_veiculos!veiculo_id\(/g) || []).length, 2, 'Join direto e item de lote devem informar a FK');
+    assert.ok(!select.includes('veiculo:est_veiculos('), 'Join ambíguo não pode voltar');
     assert.ok(!select.includes('venda_lote_itens(id,'), 'A tabela possui chave composta, sem coluna id');
   }
   const mutations = [
@@ -140,6 +143,39 @@ try {
   responses = [{ pedido_id: 'sale' }, { lote_id: 'batch' }];
   await assert.rejects(() => PedidosVendaService.deletePayment('payment'), /Gerenciar lote/);
   assert.ok(requests.every(r => r.method === 'GET'));
+  const saleId = '11111111-1111-4111-8111-111111111111';
+  const input = { cliente_id: '22222222-2222-4222-8222-222222222222',
+    data_venda: '2026-11-09', status: 'RASCUNHO', valor_venda: 0 };
+  const saved = { ...input, id: saleId };
+  requests = [];
+  responses = [saved, { code: 'PGRST201', message: 'ambiguous embed' }];
+  await assert.rejects(() => PedidosVendaService.save(input), error => {
+    assert.ok(error instanceof PedidoVendaPersistidoError);
+    assert.equal(error.pedidoId, saleId);
+    assert.equal(error.originalError.code, 'PGRST201');
+    return true;
+  });
+  assert.deepEqual(requests.map(r => r.method), ['POST', 'GET']);
+  // Se repetir usando o ID preservado, atualiza em vez de inserir outro pedido.
+  requests = [];
+  responses = [{ lote_id: null }, null, saved];
+  assert.equal((await PedidosVendaService.save({ ...input, id: saleId })).id, saleId);
+  assert.deepEqual(requests.map(r => r.method), ['GET', 'PATCH', 'GET']);
+  requests = [];
+  responses = [{ code: '23505', message: 'insert failed' }];
+  await assert.rejects(() => PedidosVendaService.save(input), error => {
+    assert.ok(!(error instanceof PedidoVendaPersistidoError), 'Não afirmar salvo se INSERT falhou');
+    return true;
+  });
+  assert.deepEqual(requests.map(r => r.method), ['POST']);
+  requests = [];
+  responses = [saved, saved];
+  assert.equal((await PedidosVendaService.save(input)).id, saleId);
+  const form = await readFile('modules/pedidos-venda/VendaForm.page.tsx', 'utf8');
+  assert.match(form, /retry: false/);
+  assert.match(form, /isLocked \|\| submitting.current/);
+  assert.match(form, /id: err.pedidoId/);
+  assert.match(form, /navigate\(`\/pedidos-venda\/\$\{err.pedidoId\}`, \{ replace: true \}\)/);
   console.log('OK: joins multiunidades, totais agregados sem alterar veículo e guardas legacy sem escritas.');
 } finally {
   await rm(serviceTemp, { recursive: true, force: true });

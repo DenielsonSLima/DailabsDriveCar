@@ -1,7 +1,7 @@
 import type { QueryClient } from '@tanstack/react-query';
 import { supabase } from '../../lib/supabase';
 import { EmpresaService } from '../ajustes/empresa/empresa.service';
-import type { ILoteCatalogos, ILoteDespesaInput, ILoteDetalhes, ILoteResumo, ILoteVendaInput } from './lotes.types';
+import type { ILoteCatalogos, ILoteQuantidadeInput, ILoteDespesaInput, ILoteDetalhes, ILoteResumo, ILoteVendaInput } from './lotes.types';
 
 async function rpc<T>(name: string, parameters: Record<string, unknown>): Promise<T> {
   const { data, error } = await supabase.rpc(name, parameters);
@@ -25,6 +25,10 @@ export const LotesService = {
   },
   criar({ veiculoId, quantidade, descricao }: { veiculoId: string; quantidade: number; descricao: string }) {
     return rpc<string>('criar_lote', { p_veiculo_id: veiculoId, p_quantidade: quantidade, p_descricao: descricao });
+  },
+  async ajustarQuantidade(loteId: string, dados: ILoteQuantidadeInput, requestId: string): Promise<void> {
+    await rpc('ajustar_quantidade_lote', { p_lote_id: loteId, p_quantidade: dados.quantidade,
+      p_descricao: dados.descricao.trim(), p_quantidade_atual: dados.quantidade_atual, p_request_id: requestId });
   },
   registrarDespesa(loteId: string, dados: ILoteDespesaInput, requestId: string) {
     return rpc<string>('registrar_despesa_lote', { p_lote_id: loteId, p_dados: dados, p_request_id: requestId });
@@ -67,6 +71,7 @@ export const LotesService = {
   },
   subscribe(loteId: string, onChange: () => void): () => void {
     const channel = supabase.channel(`lote-${loteId}`)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'est_lotes', filter: `id=eq.${loteId}` }, onChange)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'est_veiculos', filter: `lote_id=eq.${loteId}` }, onChange)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'fin_titulos' }, onChange)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'venda_pedidos', filter: `lote_id=eq.${loteId}` }, onChange)

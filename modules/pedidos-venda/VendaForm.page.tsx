@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { PedidosVendaService } from './pedidos-venda.service';
+import { PedidosVendaService, PedidoVendaPersistidoError } from './pedidos-venda.service';
 import { invalidatePedidoVendaDetails, invalidatePedidosVendaOverview } from './pedidos-venda.query-invalidation';
 import { IPedidoVenda } from './pedidos-venda.types';
 import { CorretoresService } from '../cadastros/corretores/corretores.service';
@@ -70,9 +70,12 @@ const VendaFormPage: React.FC = () => {
 
   const isLocked = !!id && (formData.status !== 'RASCUNHO' || !!pedidoOriginal?.lote_id);
 
+  const submitting = useRef(false);
+
   // Mutation de Salvamento
   const saveMutation = useMutation({
     mutationFn: (data: Partial<IPedidoVenda>) => PedidosVendaService.save(data),
+    retry: false,
     onSuccess: (result) => {
       invalidatePedidosVendaOverview(queryClient);
       invalidatePedidoVendaDetails(queryClient, result.id);
@@ -82,7 +85,16 @@ const VendaFormPage: React.FC = () => {
       }
       navigate(`/pedidos-venda/${result.id}`);
     },
+    onSettled: () => { submitting.current = false; },
     onError: (err: any) => {
+      if (err instanceof PedidoVendaPersistidoError) {
+        setFormData(prev => ({ ...prev, id: err.pedidoId }));
+        invalidatePedidosVendaOverview(queryClient);
+        invalidatePedidoVendaDetails(queryClient, err.pedidoId);
+        alert(err.message);
+        navigate(`/pedidos-venda/${err.pedidoId}`, { replace: true });
+        return;
+      }
       alert("Erro ao salvar: " + err.message);
     }
   });
@@ -126,13 +138,14 @@ const VendaFormPage: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    if (isLocked) return;
+    if (isLocked || submitting.current) return;
     if (!formData.cliente_id) {
       alert("Por favor, selecione o comprador.");
       return;
     }
 
 
+    submitting.current = true;
     saveMutation.mutate(formData);
   };
 

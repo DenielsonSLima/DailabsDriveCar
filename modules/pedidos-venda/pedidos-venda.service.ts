@@ -15,10 +15,18 @@ import { withVendaTotals } from './utils/venda-values';
 const TABLE = 'venda_pedidos';
 const PAYMENTS_TABLE = 'venda_pedidos_pagamentos';
 
+// A escrita terminou; falhar ao carregar os relacionamentos não desfaz o pedido.
+export class PedidoVendaPersistidoError extends Error {
+  constructor(public readonly pedidoId: string, public readonly originalError: unknown) {
+    super('O pedido foi salvo, mas não foi possível carregar os detalhes. Abra o pedido existente; não crie outro.');
+    this.name = 'PedidoVendaPersistidoError';
+  }
+}
+
 // Custo histórico do item; o cadastro da primeira unidade permanece intacto.
 export const VENDA_LOTE_SELECT = `itens_lote:venda_lote_itens(
   venda_id, lote_id, veiculo_id, custo_na_venda, valor_venda,
-  veiculo:est_veiculos(
+  veiculo:est_veiculos!veiculo_id(
     id, placa, chassi, lote_ordem, socios, valor_custo, valor_custo_servicos,
     montadora:cad_montadoras(nome), modelo:cad_modelos(nome), versao:cad_versoes(nome)
   )
@@ -49,7 +57,7 @@ export const PedidosVendaService = {
         *,
         ${VENDA_LOTE_SELECT},
         cliente:parceiros(nome, documento, cidade, uf),
-        veiculo:est_veiculos(
+        veiculo:est_veiculos!veiculo_id(
           id,
           valor_custo,
           valor_custo_servicos,
@@ -109,7 +117,7 @@ export const PedidosVendaService = {
         valor_venda,
         status, lote_id, quantidade_lote, valor_custo_veiculo, valor_lucro,
         ${VENDA_LOTE_SELECT},
-        veiculo:est_veiculos(valor_custo, valor_custo_servicos, valor_venda, socios)
+        veiculo:est_veiculos!veiculo_id(valor_custo, valor_custo_servicos, valor_venda, socios)
       `);
 
     if (tab === 'RASCUNHO') {
@@ -139,7 +147,7 @@ export const PedidosVendaService = {
         ${VENDA_LOTE_SELECT},
         cliente:parceiros(*),
         forma_pagamento:cad_formas_pagamento(*),
-        veiculo:est_veiculos(
+        veiculo:est_veiculos!veiculo_id(
           *,
           montadora:cad_montadoras(*),
           modelo:cad_modelos(*),
@@ -208,7 +216,11 @@ export const PedidosVendaService = {
       if (pError) throw pError;
     }
 
-    return this.getById(pedidoId);
+    try {
+      return await this.getById(pedidoId);
+    } catch (error) {
+      throw new PedidoVendaPersistidoError(pedidoId, error);
+    }
   },
 
   async savePayment(payment: Partial<IVendaPagamento>): Promise<void> {

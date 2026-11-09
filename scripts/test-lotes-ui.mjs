@@ -67,6 +67,20 @@ export const LotesService = {
   getCatalogos: async () => clone(catalogos),
   subscribe: (_, callback) => { callbacks.add(callback); return () => callbacks.delete(callback); },
   criar: async () => { throw new Error('O lote demonstrativo já foi criado; nenhuma conexão de banco está presente.'); },
+  ajustarQuantidade: async (_, data, requestId) => once(requestId, () => {
+    if (details.lote.encerrado || details.vendas.length) throw new Error('Lote com histórico de venda ou encerrado.');
+    if (data.quantidade_atual !== details.lote.quantidade_inicial) throw new Error('Quantidade alterada. Reabra o formulário.');
+    if (!Number.isInteger(data.quantidade) || data.quantidade < 2 || data.quantidade > 10000) throw new Error('Quantidade inválida.');
+    const removed = details.unidades.filter(unit => unit.lote_ordem > data.quantidade);
+    if (removed.some(unit => unit.placa || unit.chassi || details.despesas.some(expense => expense.veiculo_id === unit.id))) throw new Error('Unidade com identificação ou despesa específica.');
+    const cents = Math.round(details.lote.custo_aquisicao * 100);
+    details.unidades = Array.from({ length: data.quantidade }, (_, index) => ({
+      ...(details.unidades[index] || details.unidades[0]), id: 'unidade-' + (index + 1), lote_ordem: index + 1,
+      valor_custo: (Math.floor(cents / data.quantidade) + (index < cents % data.quantidade ? 1 : 0)) / 100,
+    }));
+    details.lote.quantidade_inicial = data.quantidade; details.lote.descricao = data.descricao;
+    recalculateCosts();
+  }),
   registrarDespesa: async (_, data, requestId) => once(requestId, () => {
     if (!(data.valor_total > 0)) throw new Error('Informe um valor positivo.');
     const expenseId = id('despesa');
@@ -164,6 +178,7 @@ assert.match(initial, /304\\.000,00/);
 assert.match(initial, />50</);
 assert.match(initial, /aria-pressed="true"[^>]*>Resumo/);
 assert.doesNotMatch(initial, /<table/);
+assert.match(initial, /Editar quantidade/);
 const entradaInicial = renderToStaticMarkup(view('entrada'));
 assert.match(entradaInicial, /Unidades do lote/);
 assert.match(entradaInicial, /Identificar/);
@@ -184,6 +199,8 @@ await LotesService.registrarVenda('demo-lote', { cliente_id: 'cliente', quantida
 ] }, 'venda-1');
 seed();
 const updated = renderToStaticMarkup(view());
+assert.match(updated, /disabled=""[^>]*>Editar quantidade/);
+assert.match(updated, /mesmo cancelada/);
 assert.match(updated, />47</);
 for (const amount of ['320.000,00', '27.000,00', '12.000,00', '15.000,00', '6.000,00']) assert.ok(updated.includes(amount), amount);
 for (const amount of ['6.080,00', '320,00', '6.400,00', '9.000,00', '7.800,00']) assert.ok(updated.includes(amount), 'média/resultado ' + amount);

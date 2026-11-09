@@ -41,6 +41,13 @@ try {
   assert.equal(await LotesService.criar({ veiculoId: 'representative', quantidade: 50, descricao: '50 motos' }), 'batch-id');
   expectRpc('criar_lote', { p_veiculo_id: 'representative', p_quantidade: 50, p_descricao: '50 motos' });
 
+  const quantity = { quantidade: 40, descricao: ' Lote de 40 motos elétricas ', quantidade_atual: 50 };
+  for (let retry = 0; retry < 2; retry++) {
+    await LotesService.ajustarQuantidade('batch-id', quantity, 'quantity-intent');
+    expectRpc('ajustar_quantidade_lote', { p_lote_id: 'batch-id', p_quantidade: 40,
+      p_descricao: 'Lote de 40 motos elétricas', p_quantidade_atual: 50, p_request_id: 'quantity-intent' });
+  }
+
   const sale = { cliente_id: 'client', quantidade: 3, valor_total: 27000, data_venda: '2026-10-24',
     pagamentos: [{ valor: 12000, data_recebimento: '2026-10-24', forma_pagamento_id: 'pix', conta_bancaria_id: 'bank' },
       { valor: 15000, data_recebimento: '2026-11-24', forma_pagamento_id: 'term', conta_bancaria_id: null }] };

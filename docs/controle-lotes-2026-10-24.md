@@ -23,6 +23,16 @@ Os fluxos legados de edição, exclusão e faturamento de veículos ou títulos 
 
 ## Validação
 
+### Ajuste de quantidade (09/11/2026)
+
+O botão **Editar quantidade** permite corrigir a quantidade e a descrição antes de qualquer histórico de venda. Mantém o custo total de aquisição e todos os títulos, baixas, saldos e dados do pedido. O custo é redistribuído em centavos, assim como despesas gerais. Exemplo: 50 para 40 unidades com R$304.000 resulta em R$7.600 por unidade.
+
+A RPC `ajustar_quantidade_lote` usa lock do lote, conferência da quantidade anterior e identificador idempotente. Reduções arquivam snapshots das últimas unidades antes de retirá-las do estoque ativo; aumentos restauram os mesmos IDs quando houver arquivo e criam apenas unidades adicionais. Identificações, preços próprios, fotos, publicação, despesas específicas e referências de outros cadastros impedem a retirada. Lotes encerrados, com vendas (mesmo canceladas), reservas ou unidades inconsistentes são bloqueados.
+
+A migration `20261109181558_ajustar_quantidade_lote.sql` foi aplicada e verificada no projeto Hidrocar após autorização, sem alterar a quantidade de lotes automaticamente. A interface depende da publicação deste código. O ajuste de um lote é uma operação separada, com conferência antes e depois. O teste local não comprova concorrência entre conexões reais.
+
+Regressão nova: `PGLITE_MODULE_PATH=/tmp/drivecar-motos-runtime/node_modules/@electric-sql/pglite/dist/index.js node scripts/test-lotes-quantidade-sql.mjs`. Cobre 50→40, restauração parcial e integral, centavos, sócios, despesas, vínculo com cascade, tenant, retry, tela desatualizada e preservação de título pago, transação e saldo. `node scripts/test-lotes-quantidade.mjs` cobre prévia e formulário.
+
 Suítes sem rede:
 
 ```sh

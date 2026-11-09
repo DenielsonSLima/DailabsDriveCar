@@ -7,6 +7,8 @@ import { calcularIndicadoresLote, getTituloPendente } from './lotes.utils';
 import type { ILoteUnidade } from './lotes.types';
 import { LoteBaixaForm, LoteDespesaForm, LoteVendaForm, LoteIdentificacaoForm } from './components/LoteForms';
 import { ErrorMessage, LoteModal, primaryClass, secondaryClass } from './components/LoteUi';
+import LoteQuantidadeForm from './components/LoteQuantidadeForm';
+import { bloqueioAjusteQuantidade } from './lotes.quantidade';
 import LoteResumo from './components/details/LoteResumo';
 import LoteEntrada from './components/details/LoteEntrada';
 import LoteDespesas from './components/details/LoteDespesas';
@@ -35,7 +37,7 @@ export default function LoteDetalhesPage() {
   const queryClient = useQueryClient();
   const query = useQuery({ queryKey: ['lote_detalhes', id], queryFn: () => LotesService.getById(id!), enabled: !!id });
   const catalogos = useQuery({ queryKey: ['lotes_catalogos'], queryFn: () => LotesService.getCatalogos() });
-  const [form, setForm] = useState<'despesa' | 'venda' | null>(null);
+  const [form, setForm] = useState<'despesa' | 'venda' | 'quantidade' | null>(null);
   const [titulo, setTitulo] = useState<ITitulo | null>(null);
   const [identificacao, setIdentificacao] = useState<ILoteUnidade | null>(null);
   const [confirm, setConfirm] = useState<{ type: 'cancelar'; id: string } | { type: 'encerrar' } | null>(null);
@@ -51,6 +53,7 @@ export default function LoteDetalhesPage() {
   if (!detalhes) return <div className="mx-auto max-w-xl space-y-4 p-6"><h1 className="text-xl font-black text-slate-900">Não foi possível abrir o lote</h1><ErrorMessage error={query.error || new Error('Lote não encontrado.')} /><button className={secondaryClass} onClick={() => query.refetch()}>Tentar novamente</button><Link className="ml-4 text-sm font-bold text-indigo-600" to="/pedidos-compra">Voltar às compras</Link></div>;
   const stats = calcularIndicadoresLote(detalhes);
   const lote = detalhes.lote;
+  const bloqueioQuantidade = bloqueioAjusteQuantidade(detalhes);
   const canCreate = !lote.encerrado && !!catalogos.data && !catalogos.isError;
   const pendencias = detalhes.titulos.filter(item => item.status !== 'CANCELADO' && getTituloPendente(item) > 0.005);
   const canClose = !lote.encerrado && stats.disponiveis + stats.reservadas + stats.preparacao === 0 && pendencias.length === 0;
@@ -62,6 +65,10 @@ export default function LoteDetalhesPage() {
         <span className={`shrink-0 rounded-lg px-3 py-1.5 text-[9px] font-black uppercase tracking-widest ${lote.encerrado ? 'bg-slate-100 text-slate-500' : 'bg-indigo-50 text-indigo-600'}`}>{lote.encerrado ? 'Encerrado' : 'Em andamento'}</span>
       </div>
       <p className="text-sm text-slate-500">Acompanhe a entrada, as despesas e as saídas do lote.</p>
+      <div className="space-y-2">
+        <button type="button" className={secondaryClass} disabled={!!bloqueioQuantidade} onClick={() => setForm('quantidade')}>Editar quantidade</button>
+        {bloqueioQuantidade && <p className="text-xs text-slate-500">{bloqueioQuantidade}</p>}
+      </div>
     </header>
     {notice && <div role="status" className="flex items-start justify-between gap-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800"><p>{notice}</p><button aria-label="Dispensar mensagem" onClick={() => setNotice('')}>×</button></div>}
     {query.isRefetchError && <ErrorMessage error={query.error} />}
@@ -112,6 +119,7 @@ export default function LoteDetalhesPage() {
       />}
     </section>
 
+    {form === 'quantidade' && <LoteQuantidadeForm key={lote.id} detalhes={detalhes} onClose={() => setForm(null)} onSave={async (data, requestId) => { await LotesService.ajustarQuantidade(id!, data, requestId); await refresh(); setNotice('Quantidade e rateio atualizados. Total da compra e pagamentos preservados.'); }} />}
     {form === 'despesa' && catalogos.data && <LoteDespesaForm catalogos={catalogos.data} unidades={detalhes.unidades} onClose={() => setForm(null)} onSave={async (data, requestId) => { await LotesService.registrarDespesa(id!, data, requestId); await refresh(); setNotice('Despesa registrada. Custos e contas atualizados.'); }} />}
     {form === 'venda' && catalogos.data && <LoteVendaForm catalogos={catalogos.data} disponiveis={stats.disponiveis} onClose={() => setForm(null)} onSave={async (data, requestId) => { await LotesService.registrarVenda(id!, data, requestId); await refresh(); setNotice('Venda registrada. Quantidade e recebimentos atualizados.'); }} />}
     {titulo && catalogos.data && <LoteBaixaForm titulo={titulo} catalogos={catalogos.data} pendente={getTituloPendente(titulo)} onClose={() => setTitulo(null)} onSave={async data => { await LotesService.baixarTitulo(data); await refresh(); setNotice('Baixa financeira registrada.'); }} />}

@@ -28,7 +28,7 @@ const PedidoVendaPage: React.FC = () => {
   });
 
   // Queries
-  const { data: listData, isLoading: isLoadingList } = useQuery({
+  const { data: listData, isLoading: isLoadingList, isError: isListError, isFetching: isFetchingList, refetch: refetchList } = useQuery({
     queryKey: ['pedidos_venda_list', activeTab, filtros, currentPage],
     queryFn: () => PedidosVendaService.getAll({ ...filtros, page: currentPage, limit: ITEMS_PER_PAGE }, activeTab),
   });
@@ -118,10 +118,24 @@ const PedidoVendaPage: React.FC = () => {
         onChange={setFiltros}
       />
 
-      <PedidosVendaList pedidos={pedidos} loading={isLoadingList} onEdit={(p) => navigate(`/pedidos-venda/${p.id}`)} />
+      {isListError ? (
+        <div role="alert" className="text-center py-16 space-y-4 text-slate-600">
+          <p className="text-sm font-medium">Não foi possível carregar os pedidos. Tente novamente para atualizar a lista.</p>
+          <button
+            type="button"
+            onClick={() => { void refetchList(); }}
+            disabled={isFetchingList}
+            className="px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-bold disabled:opacity-50"
+          >
+            {isFetchingList ? 'Carregando...' : 'Tentar novamente'}
+          </button>
+        </div>
+      ) : (
+        <PedidosVendaList pedidos={pedidos} loading={isLoadingList} onEdit={(p) => navigate(`/pedidos-venda/${p.id}`)} />
+      )}
 
       {/* Pagination */}
-      {!isLoadingList && totalPages > 1 && (
+      {!isListError && !isLoadingList && totalPages > 1 && (
         <div className="flex items-center justify-between mt-8 pt-6 border-t border-slate-100">
           <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">
             Página <span className="text-slate-900">{currentPage}</span> de <span className="text-slate-900">{totalPages}</span>

@@ -126,3 +126,9 @@ export interface ILoteIndicadores {
   resultadoOriginal: number;
   saldoCaixa: number;
 }
+
+export interface ILoteQuantidadeInput {
+  quantidade: number;
+  descricao: string;
+  quantidade_atual: number;
+}
