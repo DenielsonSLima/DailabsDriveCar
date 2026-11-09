@@ -14,8 +14,10 @@ try {
       import { renderToStaticMarkup } from 'react-dom/server';
       import CaixaKpis from './modules/caixa/components/CaixaKpis';
       import CaixaPrint from './modules/caixa/components/CaixaPrint';
+      import CaixaTemplate from './modules/relatorios/templates/caixa/CaixaTemplate';
       export { CaixaDashboardSchema } from './modules/caixa/caixa.types';
       export { getEstoqueResumo } from './modules/caixa/caixa.estoque';
+      export const report = data => renderToStaticMarkup(React.createElement(CaixaTemplate, { data, empresa: {}, watermark: {} }));
       export const kpis = data => renderToStaticMarkup(React.createElement(CaixaKpis, { data }));
       export const print = data => renderToStaticMarkup(React.createElement(CaixaPrint, {
         data: { ...data, contas: [], investimento_socios: [], transacoes: [] },
@@ -25,11 +27,11 @@ try {
     outfile: entry, bundle: true, platform: 'node', format: 'esm',
     banner: { js: "import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);" },
   });
-  const { CaixaDashboardSchema, getEstoqueResumo, kpis, print } = await import(pathToFileURL(entry));
+  const { CaixaDashboardSchema, getEstoqueResumo, kpis, print, report } = await import(pathToFileURL(entry));
   const sample = CaixaDashboardSchema.parse({ qtd_veiculos_estoque: 58, qtd_veiculos_individuais: 18,
     qtd_unidades_lotes: 40, qtd_motos_lotes: 40, total_ativos_estoque: 1648840 });
   assert.deepEqual(getEstoqueResumo(sample), ['18 veículos no estoque individual', '40 motos em lotes']);
-  for (const render of [kpis, print]) {
+  for (const render of [kpis, print, report]) {
     const html = render(sample);
     assert.match(html, /18 veículos no estoque individual/);
     assert.match(html, /40 motos em lotes/);

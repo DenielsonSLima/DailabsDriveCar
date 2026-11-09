@@ -1,4 +1,5 @@
 import React from 'react';
+import { getEstoqueResumo } from '../../../caixa/caixa.estoque';
 import BaseReportLayout from '../BaseReportLayout';
 import { IEmpresa } from '../../../ajustes/empresa/empresa.types';
 import { IAnotacao } from '../../../financeiro/submodules/anotacoes/anotacoes.types';
@@ -22,7 +23,7 @@ const CaixaTemplate: React.FC<Props> = ({ data, empresa, watermark, periodo, ano
     const kpis = [
         { label: 'Patrimônio Líquido', val: data.patrimonio_liquido, color: '#4f46e5', icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z' },
         { label: 'Saldo Disponível', val: data.saldo_disponivel, color: '#10b981', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
-        { label: 'Ativos (Estoque)', val: data.total_ativos_estoque, color: '#3b82f6', icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10', sub: `${data.qtd_veiculos_estoque ?? 0} veículos` },
+        { label: 'Ativos (Estoque)', val: data.total_ativos_estoque, color: '#3b82f6', icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10', sub: getEstoqueResumo(data) },
         { label: 'Contas a Receber', val: data.total_recebiveis, color: '#f59e0b', icon: 'M9 14l6-6m-5.5 .5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z' },
         { label: 'Contas a Pagar', val: data.total_passivo_circulante, color: '#f43f5e', icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6' },
         { label: 'Lucro do Mês', val: data.lucro_mensal, color: '#6366f1', icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6' },
@@ -108,7 +109,7 @@ const CaixaTemplate: React.FC<Props> = ({ data, empresa, watermark, periodo, ano
                                 <div style={{ minWidth: 0, flex: 1 }}>
                                     <p style={{ fontSize: '7px', fontWeight: 'black', textTransform: 'uppercase', color: i < 2 ? 'rgba(255,255,255,0.8)' : '#94a3b8', margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{k.label}</p>
                                     <h4 style={{ fontSize: '11px', fontWeight: 'black', margin: 0 }}>{fmt(k.val)}</h4>
-                                    {k.sub && <span style={{ fontSize: '6px', fontWeight: 'bold', color: i < 2 ? 'rgba(255,255,255,0.7)' : '#94a3b8', textTransform: 'uppercase', display: 'block', marginTop: '1px' }}>{k.sub}</span>}
+                                    {k.sub && k.sub.map(line => <span key={line} style={{ fontSize: '6px', fontWeight: 'bold', color: '#64748b', textTransform: 'uppercase', display: 'block', marginTop: '2px', lineHeight: 1.4 }}>{line}</span>)}
                                 </div>
                             </div>
                         ))}
