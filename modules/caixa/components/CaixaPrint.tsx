@@ -1,4 +1,5 @@
 import React from 'react';
+import { getEstoqueResumo } from '../caixa.estoque';
 import { ICaixaDashboardData, IForecastMes } from '../caixa.types';
 
 interface Props {
@@ -96,13 +97,16 @@ const CaixaPrint: React.FC<Props> = ({ data, empresa, watermark, periodo, foreca
                         {[
                             { label: 'Patrimônio Líquido', val: data.patrimonio_liquido, bg: 'bg-slate-50', border: 'border-slate-100', text: 'text-slate-900' },
                             { label: 'Disponível (Caixa)', val: data.saldo_disponivel, bg: 'bg-emerald-50', border: 'border-emerald-100', text: 'text-emerald-700' },
-                            { label: 'Ativos (Estoque)', val: data.total_ativos_estoque, bg: 'bg-indigo-50', border: 'border-indigo-100', text: 'text-indigo-700' },
+                            { label: 'Ativos (Estoque)', val: data.total_ativos_estoque, sub: getEstoqueResumo(data), bg: 'bg-indigo-50', border: 'border-indigo-100', text: 'text-indigo-700' },
                             { label: 'Contas a Receber', val: data.total_recebiveis, bg: 'bg-amber-50', border: 'border-amber-100', text: 'text-amber-700' },
                             { label: 'Passivo (À Pagar)', val: data.total_passivo_circulante, bg: 'bg-rose-50', border: 'border-rose-100', text: 'text-rose-600' },
                         ].map((k, i) => (
                             <div key={i} className={`p-3 rounded-xl border ${k.border} ${k.bg}`} style={{ WebkitPrintColorAdjust: 'exact', printColorAdjust: 'exact' as any }}>
                                 <p className="text-[7px] font-black text-slate-400 uppercase tracking-widest mb-1">{k.label}</p>
                                 <p className={`text-sm font-[900] tracking-tight ${k.text}`}>{fmt(k.val)}</p>
+                                {k.sub && <div className="mt-1 space-y-0.5 text-[7px] font-bold uppercase leading-snug text-slate-500">
+                                    {k.sub.map(line => <p key={line}>{line}</p>)}
+                                </div>}
                             </div>
                         ))}
                     </div>

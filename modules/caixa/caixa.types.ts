@@ -69,6 +69,9 @@ export interface ICaixaDashboardData {
   saldo_disponivel: number;
   total_ativos_estoque: number;
   qtd_veiculos_estoque: number;
+  qtd_veiculos_individuais?: number | null;
+  qtd_unidades_lotes?: number | null;
+  qtd_motos_lotes?: number | null;
   total_recebiveis: number;
   total_passivo_circulante: number;
   total_despesas_fixas: number;
@@ -98,6 +101,10 @@ export const CaixaDashboardSchema = z.object({
   saldo_disponivel: z.number().nullish().transform(v => v ?? 0),
   total_ativos_estoque: z.number().nullish().transform(v => v ?? 0),
   qtd_veiculos_estoque: z.number().nullish().transform(v => v ?? 0),
+  // Ausência indica backend antigo; não apresentar uma separação fictícia zerada.
+  qtd_veiculos_individuais: z.number().int().nonnegative().nullish(),
+  qtd_unidades_lotes: z.number().int().nonnegative().nullish(),
+  qtd_motos_lotes: z.number().int().nonnegative().nullish(),
   total_recebiveis: z.number().nullish().transform(v => v ?? 0),
   total_passivo_circulante: z.number().nullish().transform(v => v ?? 0),
   total_despesas_fixas: z.number().nullish().transform(v => v ?? 0),
