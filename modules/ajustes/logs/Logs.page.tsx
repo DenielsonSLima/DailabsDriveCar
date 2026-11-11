@@ -38,7 +38,7 @@ const LogsPage: React.FC = () => {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-6">
           <div className="flex items-center justify-between h-20">
             <div className="flex items-center gap-4">
               <button 
@@ -48,7 +48,7 @@ const LogsPage: React.FC = () => {
                 <ChevronLeft className="w-6 h-6" />
               </button>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Logs de Sistema</h1>
+                <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">Logs de Sistema</h1>
                 <p className="text-sm text-gray-500 font-medium">Trilha de auditoria e histórico de alterações</p>
               </div>
             </div>
@@ -63,7 +63,7 @@ const LogsPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-6">
+      <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-6 py-6 w-full space-y-6">
         {/* Filters */}
         <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 flex flex-col md:flex-row gap-4">
           <div className="relative flex-1">
@@ -86,12 +86,12 @@ const LogsPage: React.FC = () => {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest">Data/Hora</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest">Usuário</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest">O que mudou?</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest">Módulo</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-widest">Tipo</th>
-                  <th className="px-6 py-4 text-right text-xs font-bold text-gray-500 uppercase tracking-widest">Detalhes</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 normal-case tracking-normal">Data/Hora</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 normal-case tracking-normal">Usuário</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 normal-case tracking-normal">O que mudou?</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 normal-case tracking-normal">Módulo</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 normal-case tracking-normal">Tipo</th>
+                  <th className="px-6 py-4 text-right text-xs font-medium text-gray-500 normal-case tracking-normal">Detalhes</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 bg-white">
@@ -116,7 +116,7 @@ const LogsPage: React.FC = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex flex-col">
-                          <span className="text-sm font-bold text-gray-900">
+                          <span className="text-sm font-semibold text-gray-900">
                             {log.user_display_name}
                           </span>
                           <span className="text-xs text-gray-500">{log.profiles?.email || '-'}</span>
@@ -128,12 +128,12 @@ const LogsPage: React.FC = () => {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="bg-gray-100 px-2 py-1 rounded text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+                        <span className="bg-gray-100 px-2 py-1 rounded text-xs font-medium text-gray-500 normal-case tracking-normal">
                           {log.translated_table}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex px-2 py-1 rounded-lg text-xs font-bold uppercase ${
+                        <span className={`inline-flex px-2 py-1 rounded-lg text-xs font-medium normal-case ${
                           log.action === 'INSERT' ? 'bg-green-100 text-green-700' :
                           log.action === 'UPDATE' ? 'bg-blue-100 text-blue-700' :
                           'bg-red-100 text-red-700'

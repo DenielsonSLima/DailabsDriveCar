@@ -50,49 +50,49 @@ const RelatoriosPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-10 pb-20 animate-in fade-in duration-500">
+    <div className="space-y-6 pb-8 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">Central de Relatórios</h1>
-          <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mt-1">Extração de dados inteligentes para gestão estratégica</p>
+          <h1 className="text-3xl font-semibold text-slate-900 normal-case tracking-tight">Central de Relatórios</h1>
+          <p className="text-slate-500 text-xs font-bold normal-case tracking-normal mt-1">Extração de dados inteligentes para gestão estratégica</p>
         </div>
         <div className="bg-white px-4 py-2 rounded-2xl border border-slate-200 shadow-sm flex items-center space-x-2">
           <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-          <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Base de Dados Conectada</span>
+          <span className="text-xs font-semibold text-slate-500 normal-case tracking-normal">Base de Dados Conectada</span>
         </div>
       </div>
 
-      <div className="space-y-12">
+      <div className="space-y-6">
         {categorias.map((cat, idx) => (
           <div key={idx} className="space-y-6">
             <div className="flex items-center space-x-4">
-              <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.3em] whitespace-nowrap">{cat.nome}</h3>
+              <h3 className="text-xs font-semibold text-slate-500 normal-case tracking-normal whitespace-nowrap">{cat.nome}</h3>
               <div className="h-px w-full bg-slate-100"></div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {cat.items.map((item) => (
                 <div
                   key={item.id}
                   onClick={() => navigate(item.path)}
-                  className="group bg-white rounded-[2.5rem] border border-slate-200 p-8 shadow-sm hover:shadow-2xl hover:border-indigo-300 transition-all duration-300 cursor-pointer relative overflow-hidden"
+                  className="group bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-sm hover:border-indigo-300 transition-all duration-300 cursor-pointer relative overflow-hidden"
                 >
-                  <div className={`w-14 h-14 rounded-2xl ${colorMap[item.color]?.bg || 'bg-slate-50'} ${colorMap[item.color]?.text || 'text-slate-600'} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
-                    <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <div className={`w-10 h-10 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center mb-4`}>
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d={item.icon} />
                     </svg>
                   </div>
 
-                  <h4 className="text-lg font-black text-slate-900 uppercase tracking-tighter mb-2 group-hover:text-indigo-600 transition-colors">{item.titulo}</h4>
+                  <h4 className="text-lg font-semibold text-slate-900 normal-case tracking-tight mb-2 group-hover:text-indigo-600 transition-colors">{item.titulo}</h4>
                   <p className="text-xs text-slate-500 leading-relaxed font-medium">{item.descricao}</p>
 
-                  <div className="mt-8 flex items-center text-indigo-600 text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
+                  <div className="mt-4 flex items-center text-indigo-600 text-xs font-semibold normal-case tracking-normal">
                     Visualizar Relatório
                     <svg className="w-3.5 h-3.5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                   </div>
 
                   {/* Efeito Visual */}
-                  <div className={`absolute -bottom-12 -right-12 w-24 h-24 ${colorMap[item.color]?.accent || 'bg-slate-500/5'} rounded-full blur-3xl`}></div>
+                  <div className={`hidden ${colorMap[item.color]?.accent || 'bg-slate-500/5'} rounded-full`}></div>
                 </div>
               ))}
             </div>

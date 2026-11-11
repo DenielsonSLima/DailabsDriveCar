@@ -12,14 +12,14 @@ const RecebimentoList: React.FC<Props> = ({ items, onEdit, onDelete }) => {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {items.map(item => (
-        <div key={item.id} className="group relative bg-slate-50 p-3 sm:p-4 rounded-[1.5rem] border border-slate-100 flex items-center justify-between hover:bg-white hover:border-emerald-200 hover:shadow-lg transition-all duration-300">
+        <div key={item.id} className="group relative bg-slate-50 p-3 sm:p-4 rounded-2xl border border-slate-100 flex items-center justify-between hover:bg-white hover:border-emerald-200 hover:shadow-sm transition-all duration-200">
           <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 pr-12 w-full">
             <div className="w-7 h-7 sm:w-8 sm:h-8 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-500 shrink-0">
                <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                </svg>
             </div>
-            <span className="font-bold text-slate-700 uppercase text-[10px] sm:text-xs truncate tracking-tighter leading-tight">
+            <span className="font-medium text-slate-700 normal-case text-xs sm:text-xs truncate tracking-tight leading-tight">
               {item.nome}
             </span>
           </div>

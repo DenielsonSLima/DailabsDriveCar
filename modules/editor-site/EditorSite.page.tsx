@@ -6,7 +6,7 @@ import { ISiteConteudo, IHeroSlide, ISobreCard } from './editor-site.types';
 const Toast: React.FC<{ message: string; type: 'success' | 'error'; onClose: () => void }> = ({ message, type, onClose }) => {
   useEffect(() => { const t = setTimeout(onClose, 3500); return () => clearTimeout(t); }, [onClose]);
   return (
-    <div className={`fixed bottom-6 right-6 z-[200] flex items-center space-x-3 px-5 py-3.5 rounded-2xl shadow-2xl border backdrop-blur-xl animate-in slide-in-from-bottom-4 duration-400 ${type === 'success' ? 'bg-emerald-900/90 border-emerald-700/50 text-emerald-100' : 'bg-red-900/90 border-red-700/50 text-red-100'}`}>
+    <div className={`fixed bottom-6 right-6 z-[200] flex items-center space-x-3 px-5 py-3.5 rounded-2xl shadow-sm border backdrop-blur-sm animate-in slide-in-from-bottom-4 duration-400 ${type === 'success' ? 'bg-emerald-900/90 border-emerald-700/50 text-emerald-100' : 'bg-red-900/90 border-red-700/50 text-red-100'}`}>
       {type === 'success' ? (
         <svg className="w-5 h-5 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
       ) : (
@@ -20,10 +20,10 @@ const Toast: React.FC<{ message: string; type: 'success' | 'error'; onClose: () 
 // ─── Section Header ───
 const SectionHeader: React.FC<{ icon: React.ReactNode; label: string; title: string }> = ({ icon, label, title }) => (
   <div className="flex items-center space-x-4 mb-8">
-    <div className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-blue-700 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-600/20">{icon}</div>
+    <div className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-blue-700 rounded-2xl flex items-center justify-center shadow-sm shadow-indigo-600/20">{icon}</div>
     <div>
-      <p className="text-[9px] font-black text-indigo-500 uppercase tracking-[0.3em]">{label}</p>
-      <h2 className="text-2xl font-black text-slate-900 tracking-tight">{title}</h2>
+      <p className="text-xs font-semibold text-indigo-500 normal-case tracking-normal">{label}</p>
+      <h2 className="text-2xl font-semibold text-slate-900 tracking-tight">{title}</h2>
     </div>
   </div>
 );
@@ -31,7 +31,7 @@ const SectionHeader: React.FC<{ icon: React.ReactNode; label: string; title: str
 // ─── Input Field ───
 const Field: React.FC<{ label: string; value: string; onChange: (v: string) => void; placeholder?: string; multiline?: boolean; rows?: number }> = ({ label, value, onChange, placeholder, multiline, rows }) => (
   <div className="space-y-1.5">
-    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{label}</label>
+    <label className="text-xs font-semibold text-slate-500 normal-case tracking-normal">{label}</label>
     {multiline ? (
       <textarea value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} rows={rows || 3} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all resize-none" />
     ) : (
@@ -168,14 +168,14 @@ const EditorSitePage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <p className="text-[9px] font-black text-indigo-500 uppercase tracking-[0.3em] mb-1">Gerenciador de Conteúdo</p>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tighter">Editor do Site</h1>
+          <p className="text-xs font-semibold text-indigo-500 normal-case tracking-normal mb-1">Gerenciador de Conteúdo</p>
+          <h1 className="text-3xl font-semibold text-slate-900 tracking-tight">Editor do Site</h1>
           <p className="text-slate-500 text-sm mt-1">Edite os textos, imagens e frases do site público.</p>
         </div>
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:from-indigo-700 hover:to-blue-700 transition-all shadow-lg shadow-indigo-600/20 disabled:opacity-50 active:scale-95"
+          className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-2xl font-semibold text-xs normal-case tracking-normal hover:from-indigo-700 hover:to-blue-700 transition-all shadow-sm shadow-indigo-600/20 disabled:opacity-50 "
         >
           {saving ? (
             <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /><span>Salvando...</span></>
@@ -191,7 +191,7 @@ const EditorSitePage: React.FC = () => {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center space-x-2 px-5 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all flex-1 justify-center ${activeTab === tab.id ? 'bg-white text-indigo-700 shadow-lg' : 'text-slate-500 hover:text-slate-700'}`}
+            className={`flex items-center space-x-2 px-5 py-3 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all flex-1 justify-center ${activeTab === tab.id ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
           >
             {tab.icon}
             <span>{tab.label}</span>
@@ -201,31 +201,31 @@ const EditorSitePage: React.FC = () => {
 
       {/* ═══════════ TAB: HERO / BANNER ═══════════ */}
       {activeTab === 'hero' && (
-        <div className="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-sm">
+        <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
           <SectionHeader
             icon={<svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>}
             label="Seção Principal"
             title="Banner / Slides do Hero"
           />
 
-          <div className="mb-8 rounded-3xl border border-slate-200 bg-slate-50 p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+          <div className="mb-8 rounded-2xl border border-slate-200 bg-slate-50 p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
             <div>
-              <p className="text-[9px] font-black text-indigo-500 uppercase tracking-[0.3em] mb-1">Origem do destaque</p>
-              <h3 className="text-lg font-black text-slate-900 uppercase tracking-tighter">Primeira dobra do site</h3>
+              <p className="text-xs font-semibold text-indigo-500 normal-case tracking-normal mb-1">Origem do destaque</p>
+              <h3 className="text-lg font-semibold text-slate-900 normal-case tracking-tight">Primeira dobra do site</h3>
               <p className="text-xs font-bold text-slate-500 mt-1">Use os slides cadastrados ou troque automaticamente pelas fotos principais dos veículos publicados no estoque.</p>
             </div>
             <div className="grid grid-cols-2 gap-1.5 bg-white border border-slate-200 rounded-2xl p-1.5 shadow-sm min-w-[280px]">
               <button
                 type="button"
                 onClick={() => update('hero_source', 'slides')}
-                className={`px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${conteudo.hero_source !== 'estoque' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-700'}`}
+                className={`px-4 py-3 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all ${conteudo.hero_source !== 'estoque' ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-400 hover:text-slate-700'}`}
               >
                 Slides
               </button>
               <button
                 type="button"
                 onClick={() => update('hero_source', 'estoque')}
-                className={`px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${conteudo.hero_source === 'estoque' ? 'bg-orange-600 text-white shadow-lg' : 'text-slate-400 hover:text-slate-700'}`}
+                className={`px-4 py-3 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all ${conteudo.hero_source === 'estoque' ? 'bg-orange-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-700'}`}
               >
                 Estoque
               </button>
@@ -239,9 +239,9 @@ const EditorSitePage: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
-                      <span className="text-xs font-black text-indigo-700">{index + 1}</span>
+                      <span className="text-xs font-semibold text-indigo-700">{index + 1}</span>
                     </div>
-                    <span className="text-xs font-black text-slate-500 uppercase tracking-widest">Slide {index + 1}</span>
+                    <span className="text-xs font-semibold text-slate-500 normal-case tracking-normal">Slide {index + 1}</span>
                   </div>
                   {conteudo.hero_slides.length > 1 && (
                     <button onClick={() => removeSlide(index)} className="opacity-0 group-hover:opacity-100 transition-opacity p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg">
@@ -265,7 +265,7 @@ const EditorSitePage: React.FC = () => {
               </div>
             ))}
 
-            <button onClick={addSlide} className="w-full py-4 border-2 border-dashed border-slate-300 rounded-2xl text-sm font-black text-slate-400 uppercase tracking-widest hover:border-indigo-400 hover:text-indigo-500 transition-all flex items-center justify-center space-x-2">
+            <button onClick={addSlide} className="w-full py-4 border-2 border-dashed border-slate-300 rounded-2xl text-sm font-semibold text-slate-400 normal-case tracking-normal hover:border-indigo-400 hover:text-indigo-500 transition-all flex items-center justify-center space-x-2">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
               <span>Adicionar Slide</span>
             </button>
@@ -277,7 +277,7 @@ const EditorSitePage: React.FC = () => {
       {activeTab === 'sobre' && (
         <div className="space-y-6">
           {/* Títulos */}
-          <div className="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-sm">
+          <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
             <SectionHeader
               icon={<svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>}
               label="Institucional"
@@ -299,10 +299,10 @@ const EditorSitePage: React.FC = () => {
           </div>
 
           {/* Parágrafos */}
-          <div className="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-sm">
+          <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
             <div className="flex items-center justify-between mb-6">
-              <p className="text-xs font-black text-slate-600 uppercase tracking-widest">Parágrafos Descritivos</p>
-              <button onClick={addParagrafo} className="flex items-center space-x-1 text-[10px] font-black text-indigo-600 uppercase tracking-widest hover:text-indigo-800 transition-colors">
+              <p className="text-xs font-semibold text-slate-600 normal-case tracking-normal">Parágrafos Descritivos</p>
+              <button onClick={addParagrafo} className="flex items-center space-x-1 text-xs font-semibold text-indigo-600 normal-case tracking-normal hover:text-indigo-800 transition-colors">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
                 <span>Adicionar</span>
               </button>
@@ -322,16 +322,16 @@ const EditorSitePage: React.FC = () => {
           </div>
 
           {/* Cards */}
-          <div className="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-sm">
-            <p className="text-xs font-black text-slate-600 uppercase tracking-widest mb-6">Cards de Destaque</p>
+          <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
+            <p className="text-xs font-semibold text-slate-600 normal-case tracking-normal mb-6">Cards de Destaque</p>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {conteudo.sobre_cards.map((card, i) => (
                 <div key={i} className="bg-gradient-to-br from-slate-50 to-slate-100 border border-slate-200 rounded-2xl p-5 space-y-3">
                   <div className="flex items-center space-x-2 mb-2">
                     <div className="w-6 h-6 bg-indigo-100 rounded-lg flex items-center justify-center">
-                      <span className="text-[10px] font-black text-indigo-700">{i + 1}</span>
+                      <span className="text-xs font-semibold text-indigo-700">{i + 1}</span>
                     </div>
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Card {i + 1}</span>
+                    <span className="text-xs font-semibold text-slate-400 normal-case tracking-normal">Card {i + 1}</span>
                   </div>
                   <Field label="Título" value={card.titulo} onChange={v => updateCard(i, 'titulo', v)} />
                   <Field label="Descrição" value={card.descricao} onChange={v => updateCard(i, 'descricao', v)} multiline rows={2} />
@@ -344,7 +344,7 @@ const EditorSitePage: React.FC = () => {
 
       {/* ═══════════ TAB: CONTATO ═══════════ */}
       {activeTab === 'contato' && (
-        <div className="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-sm">
+        <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
           <SectionHeader
             icon={<svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>}
             label="Comunicação"
@@ -359,7 +359,7 @@ const EditorSitePage: React.FC = () => {
             <Field label="Descrição / Texto de Apoio" value={conteudo.contato_descricao} onChange={v => update('contato_descricao', v)} multiline rows={4} />
 
             <div className="border-t border-slate-100 pt-6">
-              <p className="text-xs font-black text-slate-600 uppercase tracking-widest mb-4">Horários de Atendimento</p>
+              <p className="text-xs font-semibold text-slate-600 normal-case tracking-normal mb-4">Horários de Atendimento</p>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <Field label="Segunda a Sexta" value={conteudo.contato_horario_semana} onChange={v => update('contato_horario_semana', v)} placeholder="08h às 17h" />
                 <Field label="Sábado" value={conteudo.contato_horario_sabado} onChange={v => update('contato_horario_sabado', v)} placeholder="08h às 12h" />

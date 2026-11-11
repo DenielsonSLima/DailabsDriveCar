@@ -36,11 +36,11 @@ const PerformanceContent: React.FC<Props> = ({ data, periodoLabel, isFetching = 
         <svg className="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
         </svg>
-        <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{periodoLabel}</span>
+        <span className="text-xs font-semibold text-slate-500 normal-case tracking-normal">{periodoLabel}</span>
       </div>
 
       {/* ================== KPIs GRID ================== */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         <KpiCard
           label="Vendas"
           valor={r.total_vendas_valor}
@@ -103,19 +103,19 @@ const PerformanceContent: React.FC<Props> = ({ data, periodoLabel, isFetching = 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-slate-900 rounded-2xl p-6 text-white relative overflow-hidden">
           <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500 rounded-full blur-[60px] opacity-20"></div>
-          <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-3">Saldo Total Contas</p>
-          <h3 className="text-2xl font-black tracking-tight">{formatCurrency(r.saldo_contas_bancarias)}</h3>
-          <p className="text-[9px] text-slate-500 font-bold uppercase mt-2">{data.contas_bancarias.length} conta{data.contas_bancarias.length !== 1 ? 's' : ''} ativa{data.contas_bancarias.length !== 1 ? 's' : ''}</p>
+          <p className="text-xs font-semibold text-indigo-400 normal-case tracking-normal mb-3">Saldo Total Contas</p>
+          <h3 className="text-2xl font-semibold tracking-tight">{formatCurrency(r.saldo_contas_bancarias)}</h3>
+          <p className="text-xs text-slate-500 font-bold normal-case mt-2">{data.contas_bancarias.length} conta{data.contas_bancarias.length !== 1 ? 's' : ''} ativa{data.contas_bancarias.length !== 1 ? 's' : ''}</p>
         </div>
         <div className="bg-white rounded-2xl p-6 border border-slate-200/80">
-          <p className="text-[10px] font-black text-rose-500 uppercase tracking-widest mb-3">Despesas Veículos</p>
-          <h3 className="text-2xl font-black text-slate-900 tracking-tight">{formatCurrency(r.despesas_veiculos)}</h3>
-          <p className="text-[9px] text-slate-400 font-bold uppercase mt-2">{data.despesas_veiculos.length} lançamento{data.despesas_veiculos.length !== 1 ? 's' : ''}</p>
+          <p className="text-xs font-semibold text-rose-500 normal-case tracking-normal mb-3">Despesas Veículos</p>
+          <h3 className="text-2xl font-semibold text-slate-900 tracking-tight">{formatCurrency(r.despesas_veiculos)}</h3>
+          <p className="text-xs text-slate-400 font-bold normal-case mt-2">{data.despesas_veiculos.length} lançamento{data.despesas_veiculos.length !== 1 ? 's' : ''}</p>
         </div>
         <div className="bg-white rounded-2xl p-6 border border-slate-200/80">
-          <p className="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-3">Retiradas Sócios</p>
-          <h3 className="text-2xl font-black text-slate-900 tracking-tight">{formatCurrency(r.retiradas_socios)}</h3>
-          <p className="text-[9px] text-slate-400 font-bold uppercase mt-2">{data.retiradas.length} retirada{data.retiradas.length !== 1 ? 's' : ''}</p>
+          <p className="text-xs font-semibold text-amber-500 normal-case tracking-normal mb-3">Retiradas Sócios</p>
+          <h3 className="text-2xl font-semibold text-slate-900 tracking-tight">{formatCurrency(r.retiradas_socios)}</h3>
+          <p className="text-xs text-slate-400 font-bold normal-case mt-2">{data.retiradas.length} retirada{data.retiradas.length !== 1 ? 's' : ''}</p>
         </div>
       </div>
 
@@ -240,10 +240,10 @@ const PerformanceContent: React.FC<Props> = ({ data, periodoLabel, isFetching = 
                 {data.contas_bancarias.map(c => (
                   <div key={c.id} className="bg-slate-50 rounded-xl p-5 border border-slate-100">
                     <div className="flex items-center justify-between mb-3">
-                      <p className="text-xs font-black text-slate-800 uppercase tracking-tight">{c.banco_nome}</p>
-                      <span className="text-[9px] font-bold text-slate-400 uppercase px-2 py-0.5 bg-white rounded border border-slate-200">{c.tipo}</span>
+                      <p className="text-xs font-semibold text-slate-800 normal-case tracking-tight">{c.banco_nome}</p>
+                      <span className="text-xs font-bold text-slate-400 normal-case px-2 py-0.5 bg-white rounded border border-slate-200">{c.tipo}</span>
                     </div>
-                    <h4 className={`text-lg font-black tracking-tight ${c.saldo_atual >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                    <h4 className={`text-lg font-semibold tracking-tight ${c.saldo_atual >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
                       {formatCurrency(c.saldo_atual)}
                     </h4>
                   </div>

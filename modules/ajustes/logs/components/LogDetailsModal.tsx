@@ -82,13 +82,13 @@ const LogDetailsModal: React.FC<LogDetailsModalProps> = ({ log, onClose }) => {
   const diffItems = calculateDiff();
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md transition-all animate-in fade-in duration-300" onClick={onClose}>
+    <div data-drivecar-ui className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md transition-all animate-in fade-in duration-200" onClick={onClose}>
       <div 
-        className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-5xl max-h-[95vh] overflow-hidden flex flex-col border border-white/20 animate-in zoom-in-95 duration-300"
+        className="bg-white rounded-2xl shadow-sm w-full max-w-5xl max-h-[95vh] overflow-hidden flex flex-col border border-white/20 animate-in zoom-in-95 duration-200"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-8 border-b border-gray-100 flex items-center justify-between bg-white">
+        <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-white">
           <div className="flex items-center gap-4">
             <div className={`p-3 rounded-2xl ${
               log.action === 'INSERT' ? 'bg-green-50 text-green-600' :
@@ -98,7 +98,7 @@ const LogDetailsModal: React.FC<LogDetailsModalProps> = ({ log, onClose }) => {
               <History className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-2xl font-black text-gray-900 tracking-tight">Detalhes do Evento</h3>
+              <h3 className="text-2xl font-semibold text-gray-900 tracking-tight">Detalhes do Evento</h3>
               <p className="text-sm text-gray-500 font-medium">Visualizando trilha de auditoria completa</p>
             </div>
           </div>
@@ -106,7 +106,7 @@ const LogDetailsModal: React.FC<LogDetailsModalProps> = ({ log, onClose }) => {
           <div className="flex items-center gap-2 bg-gray-100 p-1.5 rounded-2xl">
             <button 
               onClick={() => setViewMode('pretty')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
                 viewMode === 'pretty' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'
               }`}
             >
@@ -114,7 +114,7 @@ const LogDetailsModal: React.FC<LogDetailsModalProps> = ({ log, onClose }) => {
             </button>
             <button 
               onClick={() => setViewMode('raw')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
                 viewMode === 'raw' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'
               }`}
             >
@@ -131,12 +131,12 @@ const LogDetailsModal: React.FC<LogDetailsModalProps> = ({ log, onClose }) => {
         </div>
 
         {/* Content */}
-        <div className="p-8 overflow-y-auto space-y-10 custom-scrollbar bg-white">
+        <div className="p-6 overflow-y-auto space-y-6 custom-scrollbar bg-white">
           {/* Info Grid */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="bg-gray-50 p-5 rounded-2xl border border-gray-100">
-              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Ação Realizada</p>
-              <span className={`inline-flex px-3 py-1 rounded-full text-xs font-black uppercase tracking-tighter ${
+              <p className="text-xs font-medium text-gray-400 normal-case tracking-normal mb-2">Ação Realizada</p>
+              <span className={`inline-flex px-3 py-1 rounded-full text-xs font-medium normal-case tracking-tight ${
                 log.action === 'INSERT' ? 'bg-green-100 text-green-700' :
                 log.action === 'UPDATE' ? 'bg-blue-100 text-blue-700' :
                 'bg-red-100 text-red-700'
@@ -146,31 +146,31 @@ const LogDetailsModal: React.FC<LogDetailsModalProps> = ({ log, onClose }) => {
             </div>
             
             <div className="bg-gray-50 p-5 rounded-2xl border border-gray-100">
-              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Módulo Afetado</p>
-              <p className="text-sm font-bold text-gray-900 truncate">{log.translated_table}</p>
+              <p className="text-xs font-medium text-gray-400 normal-case tracking-normal mb-2">Módulo Afetado</p>
+              <p className="text-sm font-semibold text-gray-900 truncate">{log.translated_table}</p>
             </div>
 
             <div className="bg-gray-50 p-5 rounded-2xl border border-gray-100">
-              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Executado por</p>
-              <p className="text-sm font-bold text-gray-900 truncate">{log.user_display_name}</p>
+              <p className="text-xs font-medium text-gray-400 normal-case tracking-normal mb-2">Executado por</p>
+              <p className="text-sm font-semibold text-gray-900 truncate">{log.user_display_name}</p>
             </div>
 
             <div className="bg-gray-50 p-5 rounded-2xl border border-gray-100">
-              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Data e Hora</p>
-              <p className="text-sm font-bold text-gray-900">
+              <p className="text-xs font-medium text-gray-400 normal-case tracking-normal mb-2">Data e Hora</p>
+              <p className="text-sm font-semibold text-gray-900">
                 {new Date(log.created_at).toLocaleString('pt-BR')}
               </p>
             </div>
           </div>
 
           {/* User Feedback Summary */}
-          <div className="bg-indigo-50 border border-indigo-100 p-6 rounded-3xl flex items-start gap-4">
-            <div className="p-2 bg-indigo-600 rounded-xl text-white">
+          <div className="bg-indigo-50 border border-indigo-100 p-6 rounded-2xl flex items-start gap-4">
+            <div className="p-2 bg-slate-100 rounded-xl text-slate-600">
               <FileText className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-xs font-black text-indigo-400 uppercase tracking-widest mb-1">Resumo da Alteração</p>
-              <p className="text-lg font-bold text-indigo-900 leading-tight">
+              <p className="text-xs font-medium text-indigo-400 normal-case tracking-normal mb-1">Resumo da Alteração</p>
+              <p className="text-lg font-semibold text-indigo-900 leading-tight">
                 {log.summary}
               </p>
             </div>
@@ -179,29 +179,29 @@ const LogDetailsModal: React.FC<LogDetailsModalProps> = ({ log, onClose }) => {
           {/* View Selection */}
           <div className="space-y-6">
             <div className="flex items-center gap-3">
-              <h4 className="text-lg font-black text-gray-900">Comparação de Dados</h4>
+              <h4 className="text-lg font-semibold text-gray-900">Comparação de Dados</h4>
               <div className="h-px flex-1 bg-gray-100" />
             </div>
             
             {viewMode === 'pretty' ? (
               <div className="space-y-3">
                 {diffItems.length === 0 ? (
-                  <div className="flex items-center gap-3 p-8 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
+                  <div className="flex items-center gap-3 p-6 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
                     <AlertCircle className="w-6 h-6 text-gray-400" />
                     <p className="text-gray-500 font-medium">Nenhuma alteração de valor detectada nos campos principais.</p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 gap-3">
                     {diffItems.map((item, idx) => (
-                      <div key={idx} className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm flex items-center gap-6 group hover:border-indigo-100 hover:bg-gray-50/30 transition-all">
+                      <div key={idx} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-6 group hover:border-indigo-100 hover:bg-gray-50/30 transition-all">
                         <div className="w-32 lg:w-48 flex-shrink-0">
-                          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Campo</p>
-                          <p className="text-sm font-bold text-gray-800">{item.label}</p>
+                          <p className="text-xs font-medium text-gray-400 normal-case tracking-normal mb-1">Campo</p>
+                          <p className="text-sm font-semibold text-gray-800">{item.label}</p>
                         </div>
                         
                         <div className="flex-1 flex items-center justify-between gap-6 overflow-hidden">
                           <div className="flex-1 bg-red-50 p-3 rounded-2xl border border-red-100/50">
-                            <p className="text-[8px] font-black text-red-300 uppercase tracking-widest mb-1">De</p>
+                            <p className="text-xs font-medium text-red-300 normal-case tracking-normal mb-1">De</p>
                             <p className="text-sm font-medium text-red-700 truncate">{formatValue(item.oldValue)}</p>
                           </div>
                           
@@ -210,8 +210,8 @@ const LogDetailsModal: React.FC<LogDetailsModalProps> = ({ log, onClose }) => {
                           </div>
 
                           <div className="flex-1 bg-green-50 p-3 rounded-2xl border border-green-100/50">
-                            <p className="text-[8px] font-black text-green-300 uppercase tracking-widest mb-1">Para</p>
-                            <p className="text-sm font-bold text-green-700 truncate">{formatValue(item.newValue)}</p>
+                            <p className="text-xs font-medium text-green-300 normal-case tracking-normal mb-1">Para</p>
+                            <p className="text-sm font-semibold text-green-700 truncate">{formatValue(item.newValue)}</p>
                           </div>
                         </div>
                       </div>
@@ -223,7 +223,7 @@ const LogDetailsModal: React.FC<LogDetailsModalProps> = ({ log, onClose }) => {
               <div className="grid grid-cols-1 lg:grid-cols-[1fr,40px,1fr] items-center gap-4">
                 <div className="space-y-1">
                   <div className="relative group">
-                    <div className="absolute -top-3 left-4 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest z-10 bg-red-100 text-red-600">
+                    <div className="absolute -top-3 left-4 px-2 py-0.5 rounded text-xs font-semibold normal-case tracking-normal z-10 bg-red-100 text-red-600">
                       Antes (Código)
                     </div>
                     <pre className="bg-gray-900 text-gray-300 p-5 rounded-2xl text-xs overflow-auto max-h-[400px] border border-gray-800 shadow-inner font-mono leading-relaxed">
@@ -240,7 +240,7 @@ const LogDetailsModal: React.FC<LogDetailsModalProps> = ({ log, onClose }) => {
 
                 <div className="space-y-1">
                   <div className="relative group">
-                    <div className="absolute -top-3 left-4 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest z-10 bg-green-100 text-green-600">
+                    <div className="absolute -top-3 left-4 px-2 py-0.5 rounded text-xs font-semibold normal-case tracking-normal z-10 bg-green-100 text-green-600">
                       Depois (Código)
                     </div>
                     <pre className="bg-gray-900 text-gray-300 p-5 rounded-2xl text-xs overflow-auto max-h-[400px] border border-gray-800 shadow-inner font-mono leading-relaxed">
@@ -254,10 +254,10 @@ const LogDetailsModal: React.FC<LogDetailsModalProps> = ({ log, onClose }) => {
         </div>
 
         {/* Footer */}
-        <div className="p-8 border-t border-gray-100 bg-gray-50 flex justify-end">
+        <div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end">
           <button
             onClick={onClose}
-            className="px-8 py-3 bg-indigo-600 text-white font-black rounded-2xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 active:scale-95"
+            className="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-2xl hover:bg-indigo-700 transition-all shadow-sm shadow-none active:scale-100"
           >
             Entendido
           </button>

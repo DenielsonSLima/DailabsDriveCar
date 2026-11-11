@@ -16,27 +16,27 @@ const VendaCard: React.FC<Props> = ({ pedido, onClick }) => {
   return (
     <div 
       onClick={onClick}
-      className="group bg-white border border-slate-200 rounded-[2.5rem] overflow-hidden hover:shadow-2xl transition-all cursor-pointer flex flex-col h-full"
+      className="group bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-sm transition-all cursor-pointer flex flex-col h-full"
     >
       <div className="aspect-video bg-slate-900 relative">
         {capaUrl ? (
-          <img src={capaUrl} className="w-full h-full object-cover transition-transform group-hover:scale-110" alt="Veículo" />
+          <img src={capaUrl} className="w-full h-full object-cover transition-transform group-hover:scale-105" alt="Veículo" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-slate-700 font-black text-xs uppercase tracking-widest">Sem Foto</div>
+          <div className="w-full h-full flex items-center justify-center text-slate-700 font-semibold text-xs normal-case tracking-normal">Sem Foto</div>
         )}
-        <div className="absolute top-4 right-4 bg-white/95 backdrop-blur px-3 py-1 rounded-xl text-[10px] font-black uppercase shadow-lg">
+        <div className="absolute top-4 right-4 bg-white/95 backdrop-blur px-3 py-1 rounded-xl text-xs font-semibold normal-case shadow-sm">
           {pedido.status}
         </div>
       </div>
       <div className="p-6">
-        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Pedido #{pedido.numero_venda}</p>
-        <h3 className="text-lg font-black text-slate-900 uppercase truncate">{pedido.lote_id ? `${getVendaUnits(pedido)} unidades do lote` : `${v?.modelo?.nome || ''} ${v?.versao?.nome || ''}`}</h3>
+        <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-1">Pedido #{pedido.numero_venda}</p>
+        <h3 className="text-lg font-semibold text-slate-900 normal-case truncate">{pedido.lote_id ? `${getVendaUnits(pedido)} unidades do lote` : `${v?.modelo?.nome || ''} ${v?.versao?.nome || ''}`}</h3>
         <p className="text-xs font-bold text-slate-500 mt-1">{pedido.cliente?.nome}</p>
         
         <div className="mt-6 pt-4 border-t border-slate-100 flex justify-between items-end">
           <div>
-            <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Preço de Venda</p>
-            <p className="text-xl font-black text-emerald-600">{fmt(pedido.valor_venda)}</p>
+            <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal">Preço de Venda</p>
+            <p className="text-xl font-semibold text-emerald-600">{fmt(pedido.valor_venda)}</p>
           </div>
           <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center"><svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M9 5l7 7-7 7" /></svg></div>
         </div>

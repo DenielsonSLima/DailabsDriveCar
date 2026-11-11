@@ -33,16 +33,16 @@ const FixasKpis: React.FC<Props> = ({ kpis }) => {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in slide-in-from-top-4 duration-700">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in slide-in-from-top-4 duration-200">
       {stats.map((s, idx) => (
-        <div key={idx} className="bg-white p-6 rounded-[2.5rem] border border-slate-200 shadow-sm flex items-center justify-between">
+        <div key={idx} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
           <div>
-            <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest">{s.label}</p>
-            <h3 className={`text-2xl font-black mt-1 ${s.color === 'rose' ? 'text-rose-600' : s.color === 'emerald' ? 'text-emerald-600' : s.color === 'indigo' ? 'text-indigo-600' : 'text-slate-900'}`}>
+            <p className="text-slate-500 text-xs font-medium normal-case tracking-normal">{s.label}</p>
+            <h3 className={`text-2xl font-semibold mt-1 ${s.color === 'rose' ? 'text-rose-600' : s.color === 'emerald' ? 'text-emerald-600' : s.color === 'indigo' ? 'text-indigo-600' : 'text-slate-900'}`}>
               {formatCurrency(s.value)}
             </h3>
           </div>
-          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center bg-${s.color}-50 text-${s.color}-600`}>
+          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${s.color === 'indigo' ? 'bg-slate-100 text-slate-600' : `bg-${s.color}-50 text-${s.color}-600`}`}>
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={s.icon} />
             </svg>

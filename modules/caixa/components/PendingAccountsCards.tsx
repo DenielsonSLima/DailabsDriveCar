@@ -25,15 +25,15 @@ const PendingAccountsCards: React.FC<Props> = ({ startDate, endDate }) => {
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 animate-pulse">
-        <div className="bg-white rounded-[2.5rem] border border-slate-200 p-7 shadow-sm h-64"></div>
-        <div className="bg-white rounded-[2.5rem] border border-slate-200 p-7 shadow-sm h-64"></div>
+        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm h-64"></div>
+        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm h-64"></div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="bg-rose-50 rounded-[2.5rem] border border-rose-100 p-7 text-center">
+      <div className="bg-rose-50 rounded-2xl border border-rose-100 p-6 text-center">
         <p className="text-rose-600 font-bold text-xs">Erro ao carregar contas pendentes</p>
       </div>
     );
@@ -51,10 +51,10 @@ const PendingAccountsCards: React.FC<Props> = ({ startDate, endDate }) => {
           <table className="w-full text-left border-separate border-spacing-y-2">
             <thead>
               <tr>
-                <th className="pb-3 px-4 font-black text-[10px] text-slate-400 uppercase tracking-widest whitespace-nowrap">Data</th>
-                <th className="pb-3 px-4 font-black text-[10px] text-slate-400 uppercase tracking-widest">Descrição</th>
-                <th className="pb-3 px-4 font-black text-[10px] text-slate-400 uppercase tracking-widest whitespace-nowrap hidden sm:table-cell">Veículo</th>
-                <th className="pb-3 px-4 font-black text-[10px] text-slate-400 uppercase tracking-widest text-right whitespace-nowrap">Aberto</th>
+                <th className="pb-3 px-4 font-semibold text-xs text-slate-500 normal-case tracking-normal whitespace-nowrap">Data</th>
+                <th className="pb-3 px-4 font-semibold text-xs text-slate-500 normal-case tracking-normal">Descrição</th>
+                <th className="pb-3 px-4 font-semibold text-xs text-slate-500 normal-case tracking-normal whitespace-nowrap hidden sm:table-cell">Veículo</th>
+                <th className="pb-3 px-4 font-semibold text-xs text-slate-500 normal-case tracking-normal text-right whitespace-nowrap">Aberto</th>
               </tr>
             </thead>
             <tbody>
@@ -68,29 +68,29 @@ const PendingAccountsCards: React.FC<Props> = ({ startDate, endDate }) => {
                     <td className="px-4 py-3 bg-slate-50 border-y border-l border-slate-100 rounded-l-2xl group-hover:bg-white transition-colors">
                       <div className="flex items-center gap-2">
                          <div className={`w-1.5 h-1.5 rounded-full ${isAtrasado ? 'bg-rose-500' : 'bg-slate-300'}`}></div>
-                         <span className={`text-[10px] font-bold tracking-wider whitespace-nowrap ${isAtrasado ? 'text-rose-600' : 'text-slate-600'}`}>{fmtDate(item.data_vencimento)}</span>
+                         <span className={`text-xs font-bold tracking-normal whitespace-nowrap ${isAtrasado ? 'text-rose-600' : 'text-slate-600'}`}>{fmtDate(item.data_vencimento)}</span>
                       </div>
                     </td>
                     <td className="px-4 py-3 bg-slate-50 border-y border-slate-100 group-hover:bg-white transition-colors">
-                      <p className="text-xs font-black text-slate-900 line-clamp-1" title={item.descricao}>{item.descricao}</p>
+                      <p className="text-xs font-semibold text-slate-900 line-clamp-1" title={item.descricao}>{item.descricao}</p>
                     </td>
                     <td className="px-4 py-3 bg-slate-50 border-y border-slate-100 group-hover:bg-white transition-colors hidden sm:table-cell">
                       {item.veiculo ? (
                         <div className="flex flex-col">
-                          <span className="text-[10px] font-black text-slate-700 leading-tight uppercase tracking-widest truncate max-w-[120px]" title={item.veiculo.modelo}>{item.veiculo.modelo}</span>
-                          <span className="text-[8px] font-bold text-slate-400 uppercase">{item.veiculo.placa}</span>
+                          <span className="text-xs font-semibold text-slate-700 leading-tight normal-case tracking-normal truncate max-w-[120px]" title={item.veiculo.modelo}>{item.veiculo.modelo}</span>
+                          <span className="text-xs font-bold text-slate-400 normal-case">{item.veiculo.placa}</span>
                         </div>
                       ) : (
-                        <span className="text-[10px] text-slate-300 font-bold uppercase">—</span>
+                        <span className="text-xs text-slate-300 font-bold normal-case">—</span>
                       )}
                     </td>
                     <td className="px-4 py-3 bg-slate-50 border-y border-r border-slate-100 rounded-r-2xl group-hover:bg-white transition-colors text-right whitespace-nowrap">
                       <div className="flex flex-col items-end">
-                         <span className={`text-xs font-black ${isDebito ? 'text-rose-600' : 'text-emerald-600'}`}>
+                         <span className={`text-xs font-semibold ${isDebito ? 'text-rose-600' : 'text-emerald-600'}`}>
                            {fmt(pendente)}
                          </span>
                          {item.valor_pago > 0 && (
-                            <span className="text-[8px] font-bold text-slate-400 uppercase mt-0.5">Pago: {fmt(item.valor_pago)}</span>
+                            <span className="text-xs font-bold text-slate-400 normal-case mt-0.5">Pago: {fmt(item.valor_pago)}</span>
                          )}
                       </div>
                     </td>
@@ -99,7 +99,7 @@ const PendingAccountsCards: React.FC<Props> = ({ startDate, endDate }) => {
               })}
               {items.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="py-8 text-center text-slate-400 text-xs font-bold uppercase tracking-widest bg-slate-50 rounded-2xl border border-slate-100">
+                  <td colSpan={4} className="py-8 text-center text-slate-400 text-xs font-bold normal-case tracking-normal bg-slate-50 rounded-2xl border border-slate-100">
                     {emptyMsg}
                   </td>
                 </tr>
@@ -109,8 +109,8 @@ const PendingAccountsCards: React.FC<Props> = ({ startDate, endDate }) => {
         </div>
         
         <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between">
-          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Aberto</span>
-          <p className={`text-lg font-black tracking-tighter ${isDebito ? 'text-rose-600' : 'text-emerald-600'}`}>
+          <span className="text-xs font-semibold text-slate-400 normal-case tracking-normal">Total Aberto</span>
+          <p className={`text-lg font-semibold tracking-normal ${isDebito ? 'text-rose-600' : 'text-emerald-600'}`}>
             {fmt(totalPendente)}
           </p>
         </div>
@@ -121,19 +121,19 @@ const PendingAccountsCards: React.FC<Props> = ({ startDate, endDate }) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       {/* Contas a Pagar (Débitos) */}
-      <div className="bg-white rounded-[2.5rem] border border-slate-200 p-7 shadow-sm flex flex-col h-full overflow-hidden">
+      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col h-full overflow-hidden">
         <div className="mb-6 flex items-center justify-between">
             <div>
-                <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
+                <h3 className="text-sm font-semibold text-slate-900 normal-case tracking-normal flex items-center gap-2">
                     <div className="w-8 h-8 rounded-full bg-rose-50 flex items-center justify-center text-rose-500">
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
                     </div>
                     Contas a Pagar
                 </h3>
-                <p className="text-[9px] text-slate-400 font-bold uppercase mt-1.5 tracking-wider">Débitos pendentes do período</p>
+                <p className="text-xs text-slate-400 font-bold normal-case mt-1.5 tracking-normal">Débitos pendentes do período</p>
             </div>
             {contasPagar.length > 0 && (
-              <div className="bg-rose-50 text-rose-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">
+              <div className="bg-rose-50 text-rose-600 px-3 py-1 rounded-full text-xs font-semibold normal-case tracking-normal">
                   {contasPagar.length} {contasPagar.length === 1 ? 'Pendente' : 'Pendentes'}
               </div>
             )}
@@ -144,19 +144,19 @@ const PendingAccountsCards: React.FC<Props> = ({ startDate, endDate }) => {
       </div>
 
       {/* Contas a Receber (Créditos) */}
-      <div className="bg-white rounded-[2.5rem] border border-slate-200 p-7 shadow-sm flex flex-col h-full overflow-hidden">
+      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col h-full overflow-hidden">
         <div className="mb-6 flex items-center justify-between">
             <div>
-                <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
+                <h3 className="text-sm font-semibold text-slate-900 normal-case tracking-normal flex items-center gap-2">
                     <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500">
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
                     </div>
                     Contas a Receber
                 </h3>
-                <p className="text-[9px] text-slate-400 font-bold uppercase mt-1.5 tracking-wider">Créditos pendentes do período</p>
+                <p className="text-xs text-slate-400 font-bold normal-case mt-1.5 tracking-normal">Créditos pendentes do período</p>
             </div>
             {contasReceber.length > 0 && (
-              <div className="bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">
+              <div className="bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-xs font-semibold normal-case tracking-normal">
                   {contasReceber.length} a Receber
               </div>
             )}

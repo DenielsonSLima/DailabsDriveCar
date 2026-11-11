@@ -108,12 +108,12 @@ const FinanceiroPage: React.FC = () => {
     <button
       key={item.id}
       onClick={() => setActiveSub(item.id)}
-      className={`flex items-center px-5 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${activeSub === item.id
-        ? 'bg-slate-900 text-white shadow-2xl scale-105 z-10'
-        : 'bg-white text-slate-400 hover:text-slate-600 hover:bg-slate-50 border border-slate-200'
+      className={`flex shrink-0 items-center whitespace-nowrap px-5 py-3.5 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all duration-200 ${activeSub === item.id
+        ? 'bg-indigo-600 text-white shadow-sm scale-100 z-10'
+        : 'bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-50 border border-slate-200'
         }`}
     >
-      <svg className={`w-4 h-4 mr-2 ${activeSub === item.id ? 'text-white' : `text-${item.color}-500`}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg className={`w-4 h-4 mr-2 ${activeSub === item.id ? 'text-white' : 'text-slate-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
       </svg>
       {item.label}
@@ -121,98 +121,98 @@ const FinanceiroPage: React.FC = () => {
   );
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 pb-20">
+    <div className="space-y-6 animate-in fade-in duration-200 pb-8">
 
       {/* Dashboard de KPIs – 2 linhas x 3 colunas */}
       <div className="space-y-3">
         {/* Linha 1 */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
           {/* Saldo Disponível */}
-          <div className="bg-slate-900 rounded-2xl px-5 py-4 text-white shadow-lg relative overflow-hidden">
+          <div className="bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 shadow-sm relative overflow-hidden">
             <div className="absolute top-0 right-0 w-20 h-20 bg-indigo-500 rounded-full blur-[60px] opacity-20"></div>
-            <p className="text-[9px] font-black text-indigo-400 uppercase tracking-widest mb-0.5 relative z-10">Saldo Disponível</p>
+            <p className="text-xs font-medium text-indigo-600 normal-case tracking-normal mb-0.5 relative z-10">Saldo Disponível</p>
             {loading ? (
-              <div className="h-7 bg-slate-800 rounded animate-pulse w-32 relative z-10"></div>
+              <div className="h-7 bg-slate-200 rounded animate-pulse w-32 relative z-10"></div>
             ) : (
-              <h3 className="text-xl font-black tracking-tight relative z-10">{formatCurrency(kpis?.saldo_disponivel || 0)}</h3>
+              <h3 className="text-xl font-semibold tracking-tight break-words relative z-10">{formatCurrency(kpis?.saldo_disponivel || 0)}</h3>
             )}
           </div>
           {/* Compra de Veículos */}
           <div className="bg-white rounded-2xl px-5 py-4 border border-slate-200 shadow-sm">
-            <p className="text-[9px] font-black text-rose-500 uppercase tracking-widest mb-0.5">Compra de Veículos</p>
+            <p className="text-xs font-medium text-rose-600 normal-case tracking-normal mb-0.5">Compra de Veículos</p>
             {loading ? (
               <div className="h-7 bg-slate-200 rounded animate-pulse w-32"></div>
             ) : (
-              <h3 className="text-xl font-black text-slate-900 tracking-tight">{formatCurrency(kpis?.compra_veiculos || 0)}</h3>
+              <h3 className="text-xl font-semibold text-slate-900 tracking-tight break-words">{formatCurrency(kpis?.compra_veiculos || 0)}</h3>
             )}
           </div>
           {/* Despesas Fixas do Mês */}
           <div className="bg-white rounded-2xl px-5 py-4 border border-slate-200 shadow-sm">
-            <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-0.5">{modoDespesaUnica ? 'Despesas' : 'Despesas Fixas'}</p>
+            <p className="text-xs font-medium text-slate-500 normal-case tracking-normal mb-0.5">{modoDespesaUnica ? 'Despesas' : 'Despesas Fixas'}</p>
             {loading ? (
               <div className="h-7 bg-slate-200 rounded animate-pulse w-32"></div>
             ) : (
-              <h3 className="text-xl font-black text-slate-900 tracking-tight">{formatCurrency(modoDespesaUnica ? totalDespesas : (kpis?.despesas_fixas || 0))}</h3>
+              <h3 className="text-xl font-semibold text-slate-900 tracking-tight break-words">{formatCurrency(modoDespesaUnica ? totalDespesas : (kpis?.despesas_fixas || 0))}</h3>
             )}
           </div>
         </div>
         {/* Linha 2 */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
           {/* Despesas Variáveis do Mês */}
           {!modoDespesaUnica && (
             <div className="bg-white rounded-2xl px-5 py-4 border border-slate-200 shadow-sm">
-              <p className="text-[9px] font-black text-orange-500 uppercase tracking-widest mb-0.5">Despesas Variáveis</p>
+              <p className="text-xs font-medium text-orange-700 normal-case tracking-normal mb-0.5">Despesas Variáveis</p>
               {loading ? (
                 <div className="h-7 bg-slate-200 rounded animate-pulse w-32"></div>
               ) : (
-                <h3 className="text-xl font-black text-slate-900 tracking-tight">{formatCurrency(kpis?.despesas_variaveis || 0)}</h3>
+                <h3 className="text-xl font-semibold text-slate-900 tracking-tight break-words">{formatCurrency(kpis?.despesas_variaveis || 0)}</h3>
               )}
             </div>
           )}
           {/* Outras Receitas */}
           <div className="bg-white rounded-2xl px-5 py-4 border border-slate-200 shadow-sm">
-            <p className="text-[9px] font-black text-teal-500 uppercase tracking-widest mb-0.5">Outras Receitas</p>
+            <p className="text-xs font-medium text-teal-700 normal-case tracking-normal mb-0.5">Outras Receitas</p>
             {loading ? (
               <div className="h-7 bg-slate-200 rounded animate-pulse w-32"></div>
             ) : (
-              <h3 className="text-xl font-black text-slate-900 tracking-tight">{formatCurrency(kpis?.outras_receitas || 0)}</h3>
+              <h3 className="text-xl font-semibold text-slate-900 tracking-tight break-words">{formatCurrency(kpis?.outras_receitas || 0)}</h3>
             )}
           </div>
           {/* Outros Débitos */}
           <div className="bg-white rounded-2xl px-5 py-4 border border-slate-200 shadow-sm">
-            <p className="text-[9px] font-black text-rose-500 uppercase tracking-widest mb-0.5">Outros Débitos</p>
+            <p className="text-xs font-medium text-rose-600 normal-case tracking-normal mb-0.5">Outros Débitos</p>
             {loading ? (
               <div className="h-7 bg-slate-200 rounded animate-pulse w-32"></div>
             ) : (
-              <h3 className="text-xl font-black text-slate-900 tracking-tight">{formatCurrency(kpis?.outros_debitos || 0)}</h3>
+              <h3 className="text-xl font-semibold text-slate-900 tracking-tight break-words">{formatCurrency(kpis?.outros_debitos || 0)}</h3>
             )}
           </div>
           {/* Retiradas */}
           <div className="bg-white rounded-2xl px-5 py-4 border border-slate-200 shadow-sm">
-            <p className="text-[9px] font-black text-amber-500 uppercase tracking-widest mb-0.5">Retiradas</p>
+            <p className="text-xs font-medium text-amber-700 normal-case tracking-normal mb-0.5">Retiradas</p>
             {loading ? (
               <div className="h-7 bg-slate-200 rounded animate-pulse w-32"></div>
             ) : (
-              <h3 className="text-xl font-black text-slate-900 tracking-tight">{formatCurrency(kpis?.retiradas || 0)}</h3>
+              <h3 className="text-xl font-semibold text-slate-900 tracking-tight break-words">{formatCurrency(kpis?.retiradas || 0)}</h3>
             )}
           </div>
         </div>
       </div>
 
       {/* Menu de Navegação em Duas Linhas */}
-      <div className="space-y-4">
+      <div className="min-w-0 space-y-2 md:space-y-4">
         {/* Linha 1 */}
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-nowrap overflow-x-auto gap-2 pb-2 md:flex-wrap md:overflow-visible md:gap-3">
           {line1.map(renderMenuItem)}
         </div>
         {/* Linha 2 */}
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-nowrap overflow-x-auto gap-2 pb-2 md:flex-wrap md:overflow-visible md:gap-3">
           {line2.map(renderMenuItem)}
         </div>
       </div>
 
       {/* Área Dinâmica de Submódulos */}
-      <div className="min-h-[600px] animate-in slide-in-from-bottom-4 duration-500">
+      <div className="min-h-[600px] animate-in slide-in-from-bottom-4 duration-200">
         {activeSub === 'GERAL' && <VisaoGeralPage />}
         {activeSub === 'PAGAR' && <ContasPagarPage />}
         {activeSub === 'RECEBER' && <ContasReceberPage />}

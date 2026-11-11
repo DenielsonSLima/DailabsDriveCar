@@ -44,16 +44,16 @@ const VendaSocioShareCard: React.FC<Props> = ({ pedidos, socioIdFiltro }) => {
   if (socioAnalytics.length === 0) return null;
 
   return (
-    <div className="bg-white rounded-[2.5rem] border border-slate-200 p-8 shadow-sm animate-in slide-in-from-bottom-2">
+    <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm animate-in slide-in-from-bottom-2">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h3 className="text-lg font-black text-slate-900 uppercase tracking-tighter flex items-center">
-            <svg className="w-5 h-5 mr-3 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <h3 className="text-lg font-semibold text-slate-900 normal-case tracking-normal flex items-center">
+            <svg className="w-5 h-5 mr-3 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
             Participação Societária nas Vendas
           </h3>
-          <p className="text-[10px] text-slate-400 font-bold uppercase mt-1">Divisão proporcional do VGV baseado nas cotas dos ativos</p>
+          <p className="text-xs text-slate-400 font-bold normal-case mt-1">Divisão proporcional do VGV baseado nas cotas dos ativos</p>
         </div>
       </div>
 
@@ -64,21 +64,21 @@ const VendaSocioShareCard: React.FC<Props> = ({ pedidos, socioIdFiltro }) => {
           return (
             <div
               key={idx}
-              className={`p-5 rounded-3xl border transition-all duration-300 ${socioIdFiltro && socio.nome.includes(socioIdFiltro) // Logica de destaque se filtrado
-                  ? 'bg-indigo-600 border-indigo-600 text-white shadow-xl shadow-indigo-200 scale-105 z-10'
+              className={`p-5 rounded-2xl border transition-all duration-300 ${socioIdFiltro && socio.nome.includes(socioIdFiltro) // Logica de destaque se filtrado
+                  ? 'bg-indigo-600 border-indigo-600 text-white shadow-sm shadow-indigo-200 scale-105 z-10'
                   : 'bg-slate-50 border-slate-100 hover:bg-white hover:border-indigo-200'
                 }`}
             >
               <div className="flex items-center space-x-3 mb-4">
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm shadow-sm ${socioIdFiltro && socio.nome.includes(socioIdFiltro) ? 'bg-white/20 text-white' : 'bg-indigo-600 text-white'
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-semibold text-sm shadow-sm ${socioIdFiltro && socio.nome.includes(socioIdFiltro) ? 'bg-white/20 text-white' : 'bg-indigo-600 text-white'
                   }`}>
                   {socio.nome.charAt(0)}
                 </div>
                 <div className="min-w-0">
-                  <h4 className={`text-xs font-black uppercase truncate ${socioIdFiltro && socio.nome.includes(socioIdFiltro) ? 'text-white' : 'text-slate-900'}`}>
+                  <h4 className={`text-xs font-semibold normal-case truncate ${socioIdFiltro && socio.nome.includes(socioIdFiltro) ? 'text-white' : 'text-slate-900'}`}>
                     {socio.nome}
                   </h4>
-                  <p className={`text-[9px] font-bold uppercase ${socioIdFiltro && socio.nome.includes(socioIdFiltro) ? 'text-indigo-200' : 'text-slate-400'}`}>
+                  <p className={`text-xs font-bold normal-case ${socioIdFiltro && socio.nome.includes(socioIdFiltro) ? 'text-indigo-200' : 'text-slate-400'}`}>
                     {socio.count} {socio.count === 1 ? 'Veículo' : 'Veículos'}
                   </p>
                 </div>
@@ -86,12 +86,12 @@ const VendaSocioShareCard: React.FC<Props> = ({ pedidos, socioIdFiltro }) => {
 
               <div className="space-y-1">
                 <div className="flex justify-between items-end">
-                  <p className={`text-[8px] font-black uppercase ${socioIdFiltro && socio.nome.includes(socioIdFiltro) ? 'text-indigo-200' : 'text-slate-400'}`}>VGV Proporcional</p>
-                  <span className={`text-[10px] font-black ${socioIdFiltro && socio.nome.includes(socioIdFiltro) ? 'text-white' : 'text-indigo-600'}`}>
+                  <p className={`text-xs font-semibold normal-case ${socioIdFiltro && socio.nome.includes(socioIdFiltro) ? 'text-indigo-200' : 'text-slate-400'}`}>VGV Proporcional</p>
+                  <span className={`text-xs font-semibold ${socioIdFiltro && socio.nome.includes(socioIdFiltro) ? 'text-white' : 'text-indigo-600'}`}>
                     {socio.percentualDoTotalVendido.toFixed(1)}%
                   </span>
                 </div>
-                <p className={`text-lg font-black tracking-tight ${socioIdFiltro && socio.nome.includes(socioIdFiltro) ? 'text-white' : 'text-slate-900'}`}>
+                <p className={`text-lg font-semibold tracking-tight ${socioIdFiltro && socio.nome.includes(socioIdFiltro) ? 'text-white' : 'text-slate-900'}`}>
                   {formatCurrency(socio.totalVendaProporcional)}
                 </p>
               </div>

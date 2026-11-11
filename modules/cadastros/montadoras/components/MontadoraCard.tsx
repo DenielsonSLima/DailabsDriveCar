@@ -13,9 +13,9 @@ const MontadoraCard: React.FC<CardProps> = ({ montadora, onEdit, onDelete, onRea
   const isInactive = montadora.ativo === false;
 
   return (
-    <div className={`group relative bg-white border border-slate-100 rounded-[2rem] p-6 shadow-sm hover:shadow-2xl hover:border-indigo-200 transition-all duration-500 flex flex-col items-center ${isInactive ? 'opacity-75 grayscale-[0.5]' : ''}`}>
+    <div className={`group relative bg-white border border-slate-100 rounded-2xl p-6 shadow-sm hover:shadow-sm hover:border-indigo-200 transition-all duration-200 flex flex-col items-center ${isInactive ? 'opacity-75 grayscale-[0.5]' : ''}`}>
       {/* Ações flutuantes - Adicionado z-30 para nunca ficar atrás da logo */}
-      <div className="absolute top-4 right-4 flex space-x-1 opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:translate-y-0 -translate-y-2 z-30">
+      <div className="absolute top-4 right-4 flex space-x-1 opacity-0 group-hover:opacity-100 transition-all duration-200 transform group-hover:translate-y-0 translate-y-0 z-30">
         {!isInactive ? (
           <>
             <button 
@@ -51,7 +51,7 @@ const MontadoraCard: React.FC<CardProps> = ({ montadora, onEdit, onDelete, onRea
       </div>
 
       {/* Logo Display - Adicionado z-10 para ficar abaixo das ações */}
-      <div className="w-32 h-32 bg-slate-50 rounded-[2.5rem] flex items-center justify-center mb-6 p-4 group-hover:scale-105 transition-transform duration-500 overflow-hidden relative z-10">
+      <div className="w-32 h-32 bg-slate-50 rounded-2xl flex items-center justify-center mb-6 p-4 group-hover:scale-100 transition-transform duration-200 overflow-hidden relative z-10">
         {montadora.logo_url ? (
           <img src={montadora.logo_url} alt={montadora.nome} className="max-h-full max-w-full object-contain" />
         ) : (
@@ -66,16 +66,16 @@ const MontadoraCard: React.FC<CardProps> = ({ montadora, onEdit, onDelete, onRea
 
       {/* Info */}
       <div className="text-center w-full z-10">
-        <h3 className="text-lg font-black text-slate-900 uppercase tracking-tighter group-hover:text-indigo-600 transition-colors">
+        <h3 className="text-lg font-semibold text-slate-900 normal-case tracking-tight group-hover:text-indigo-600 transition-colors">
           {montadora.nome}
         </h3>
-        <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mt-2 bg-slate-50 inline-block px-3 py-1 rounded-full group-hover:bg-indigo-50 group-hover:text-indigo-400 transition-colors">
+        <p className="text-xs font-medium text-slate-500 normal-case tracking-normal mt-2 bg-slate-50 inline-block px-3 py-1 rounded-full group-hover:bg-indigo-50 group-hover:text-indigo-400 transition-colors">
           Fabricante
         </p>
       </div>
 
       {/* Background Accent Animation */}
-      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-12 h-1 bg-indigo-600 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 group-hover:w-3/4 z-0"></div>
+      <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-12 h-1 bg-indigo-600 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200 group-hover:w-3/4 z-0"></div>
     </div>
   );
 };

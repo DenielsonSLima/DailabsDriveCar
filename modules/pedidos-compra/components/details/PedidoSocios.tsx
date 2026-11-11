@@ -14,8 +14,8 @@ const PedidoSocios: React.FC<Props> = ({ pedido }) => {
   if (socios.length === 0) return null;
 
   return (
-    <div className="bg-white rounded-[2.5rem] p-8 border border-slate-200 shadow-sm animate-in slide-in-from-bottom-8 duration-700">
-      <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-6 flex items-center">
+    <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm animate-in slide-in-from-bottom-8 duration-700">
+      <h3 className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-6 flex items-center">
         <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
         Composição Societária (Investidores)
       </h3>
@@ -23,14 +23,14 @@ const PedidoSocios: React.FC<Props> = ({ pedido }) => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {socios.map((socio, idx) => (
           <div key={idx} className="flex items-center p-4 rounded-2xl bg-slate-50 border border-slate-100">
-             <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-black text-sm shadow-md mr-4">
+             <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-semibold text-sm shadow-md mr-4">
                 {socio.nome.charAt(0)}
              </div>
              <div className="flex-1">
-                <p className="text-xs font-bold text-slate-800 uppercase tracking-tight">{socio.nome}</p>
+                <p className="text-xs font-bold text-slate-800 normal-case tracking-tight">{socio.nome}</p>
                 <div className="flex justify-between items-center mt-1">
-                   <span className="text-[10px] font-mono text-slate-500">{socio.porcentagem.toFixed(1)}%</span>
-                   <span className="text-xs font-black text-emerald-600">{formatCurrency(socio.valor)}</span>
+                   <span className="text-xs font-mono text-slate-500">{socio.porcentagem.toFixed(1)}%</span>
+                   <span className="text-xs font-semibold text-emerald-600">{formatCurrency(socio.valor)}</span>
                 </div>
                 {/* Mini Progress Bar */}
                 <div className="h-1 w-full bg-slate-200 rounded-full mt-2 overflow-hidden">

@@ -120,7 +120,7 @@ const RelatoriosQuickPreview: React.FC<Props> = ({ isOpen, onClose, title, child
 
   const modalContent = (
     <div
-      className="fixed inset-0 z-[10000] bg-slate-950/95 flex flex-col no-print animate-in fade-in duration-300 print:bg-white print:static print:block print:inset-auto print:h-auto"
+      className="fixed inset-0 z-[10000] bg-slate-100 flex flex-col no-print animate-in fade-in duration-300 print:bg-white print:static print:block print:inset-auto print:h-auto"
       style={{ width: '100vw', height: '100dvh', minHeight: '100dvh' }}
     >
       <style>{`
@@ -130,7 +130,7 @@ const RelatoriosQuickPreview: React.FC<Props> = ({ isOpen, onClose, title, child
             right: -100px;
             width: 80px;
             font-size: 8px;
-            font-weight: 900;
+            font-weight: 600;
             color: #64748b;
             text-align: left;
             letter-spacing: 0.1em;
@@ -148,7 +148,7 @@ const RelatoriosQuickPreview: React.FC<Props> = ({ isOpen, onClose, title, child
           }
           .page-divide {
             height: 20px;
-            background-color: #020617; /* Dark gap to match backdrop */
+            background-color: #f1f5f9; /* Match the preview surface */
             width: calc(100% + 40px);
             position: absolute;
             left: -20px;
@@ -162,10 +162,10 @@ const RelatoriosQuickPreview: React.FC<Props> = ({ isOpen, onClose, title, child
           .page-divide::after {
             content: 'QUEBRA DE PÁGINA (A4)';
             font-size: 7px;
-            font-weight: 900;
+            font-weight: 600;
             color: #334155;
-            letter-spacing: 0.4em;
-            background: #020617;
+            letter-spacing: 0.05em;
+            background: #f1f5f9;
             padding: 2px 10px;
             border-radius: 99px;
             border: 1px solid rgba(255,255,255,0.1);
@@ -226,18 +226,18 @@ const RelatoriosQuickPreview: React.FC<Props> = ({ isOpen, onClose, title, child
       `}</style>
 
       {/* Header - Fixed */}
-      <div id="modal-header" className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-slate-900/50 backdrop-blur-md sticky top-0 z-[100] no-print">
+      <div data-drivecar-ui id="modal-header" className="flex flex-wrap items-center justify-between gap-4 px-4 sm:px-6 py-4 border-b border-slate-200 bg-white sticky top-0 z-[100] no-print">
         <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+          <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center shadow-sm shadow-indigo-500/20">
             <span className="text-white">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>
             </span>
           </div>
           <div>
-            <h2 className="text-white font-black text-sm uppercase tracking-widest">{title}</h2>
+            <h2 className="text-slate-900 font-semibold text-sm normal-case tracking-normal">{title}</h2>
             <div className="flex items-center gap-2 mt-0.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tight">Visualização de Pré-Impressão • <span className="text-indigo-400">Use "Salvar como PDF" no próximo passo</span></p>
+              <p className="text-xs text-slate-500 font-medium normal-case tracking-tight">Visualização de Pré-Impressão • <span className="text-indigo-600">Use "Salvar como PDF" no próximo passo</span></p>
             </div>
           </div>
         </div>
@@ -246,7 +246,7 @@ const RelatoriosQuickPreview: React.FC<Props> = ({ isOpen, onClose, title, child
           <button
             onClick={handleDownload}
             disabled={isDownloading}
-            className={`flex flex-col items-center justify-center gap-0.5 px-6 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest transition-all shadow-lg ${isDownloading ? 'bg-slate-700 text-slate-400 cursor-wait' : 'bg-indigo-600 text-white hover:bg-indigo-500 hover:scale-105 active:scale-95 shadow-indigo-600/20'}`}
+            className={`flex flex-col items-center justify-center gap-0.5 px-6 py-2.5 rounded-xl font-semibold text-xs normal-case tracking-normal transition-all shadow-sm ${isDownloading ? 'bg-slate-700 text-slate-400 cursor-wait' : 'bg-indigo-600 text-white hover:bg-indigo-500   shadow-indigo-600/20'}`}
           >
             <div className="flex items-center gap-2">
               {isDownloading ? (
@@ -263,12 +263,12 @@ const RelatoriosQuickPreview: React.FC<Props> = ({ isOpen, onClose, title, child
               )}
               <span>{isDownloading ? 'GERANDO PDF...' : 'BAIXAR PDF'}</span>
             </div>
-            <span className="text-[8px] opacity-70 font-bold">GERAR DOCUMENTO DIGITAL</span>
+            <span className="text-xs opacity-70 font-bold">GERAR DOCUMENTO DIGITAL</span>
           </button>
 
           <button
             onClick={onClose}
-            className="p-2.5 bg-white/5 hover:bg-white/10 text-white rounded-lg transition-all"
+            className="p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg transition-all"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
@@ -276,10 +276,10 @@ const RelatoriosQuickPreview: React.FC<Props> = ({ isOpen, onClose, title, child
       </div>
 
       {/* Document Area */}
-      <div className="flex-1 overflow-y-auto p-4 md:p-12 flex justify-center bg-slate-950/60 print:bg-white print:p-0 print:overflow-visible custom-scrollbar">
+      <div className="flex-1 overflow-y-auto p-4 md:p-12 flex justify-center bg-slate-100 print:bg-white print:p-0 print:overflow-visible custom-scrollbar">
         <div
           id="print-content-wrapper"
-          className="relative bg-white shadow-[0_0_80px_rgba(0,0,0,0.8)] w-full max-w-[210mm] min-h-[297mm] transform origin-top scale-90 md:scale-100 transition-transform print:shadow-none print:scale-100 print:max-w-none print:w-full print:rounded-none"
+          className="relative bg-white shadow-md w-full max-w-[210mm] min-h-[297mm] transform origin-top scale-90 md:scale-100 transition-transform print:shadow-none print:scale-100 print:max-w-none print:w-full print:rounded-none"
         >
           {/* Physical Page Divide Markers (Visible only on screen) */}
           <div data-html2canvas-ignore className="page-divide no-print" style={{ top: '297mm' }} />
@@ -300,8 +300,8 @@ const RelatoriosQuickPreview: React.FC<Props> = ({ isOpen, onClose, title, child
       </div>
 
       {/* Footer Info */}
-      <div className="h-8 bg-slate-900 border-t border-white/5 flex items-center justify-center print:hidden">
-        <p className="text-[8px] font-bold text-slate-600 uppercase tracking-[0.3em]">HCV Operating System - Report Generator v4.0</p>
+      <div data-drivecar-ui className="h-8 shrink-0 bg-white border-t border-slate-200 flex items-center justify-center print:hidden">
+        <p className="text-xs font-bold text-slate-600 normal-case tracking-normal">HCV Operating System - Report Generator v4.0</p>
       </div>
     </div>
   );

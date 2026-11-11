@@ -137,13 +137,13 @@ const CaixaPage: React.FC = () => {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center h-full py-20 space-y-4">
-        <div className="bg-rose-50 text-rose-600 p-6 rounded-[2rem] border border-rose-100 max-w-md text-center">
-          <h2 className="text-lg font-black uppercase tracking-tighter mb-2">Erro ao carregar Caixa</h2>
+        <div className="bg-rose-50 text-rose-600 p-6 rounded-2xl border border-rose-100 max-w-md text-center">
+          <h2 className="text-lg font-semibold normal-case tracking-normal mb-2">Erro ao carregar Caixa</h2>
           <p className="text-xs font-bold leading-relaxed">{(error as any).message || 'Ocorreu um erro inesperado ao processar os dados financeiros.'}</p>
         </div>
         <button
           onClick={() => refetch()}
-          className="px-8 py-3 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all"
+          className="px-8 py-3 bg-slate-900 text-white rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-slate-800 transition-all"
         >
           Tentar Novamente
         </button>
@@ -156,8 +156,8 @@ const CaixaPage: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex items-center gap-4">
           <div>
-            <h1 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">Fluxo de Caixa & Patrimônio</h1>
-            <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mt-1">Consolidação de ativos, passivos e lucros</p>
+            <h1 className="text-3xl font-semibold text-slate-900 normal-case tracking-normal">Fluxo de Caixa & Patrimônio</h1>
+            <p className="text-slate-500 text-xs font-bold normal-case tracking-normal mt-1">Consolidação de ativos, passivos e lucros</p>
           </div>
           {isFetching && !isLoadingData && (
             <div className="w-5 h-5 border-2 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
@@ -167,7 +167,7 @@ const CaixaPage: React.FC = () => {
           <button
             onClick={() => setShowPreview(true)}
             disabled={isLoadingData || !data}
-            className="flex items-center space-x-2 px-6 py-2.5 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center space-x-2 px-6 py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-indigo-700 transition-all shadow-sm active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
             <span>Relatório PDF</span>
@@ -177,7 +177,7 @@ const CaixaPage: React.FC = () => {
             <select
               value={selectedMonth}
               onChange={(e) => setSelectedMonth(e.target.value)}
-              className="bg-slate-50 border-none text-[11px] font-bold text-slate-900 rounded-xl px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none transition-all cursor-pointer appearance-none min-w-[160px]"
+              className="bg-slate-50 border-none text-[11px] font-medium text-slate-900 rounded-xl px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none transition-all cursor-pointer appearance-none min-w-[160px]"
             >
               {allMonths.length === 0 ? (
                 <option value={selectedMonth}>{formatMonthOption(selectedMonth)}</option>
@@ -208,8 +208,8 @@ const CaixaPage: React.FC = () => {
 
           <div className="pt-4">
             <div className="mb-6">
-              <h2 className="text-lg font-black text-slate-900 uppercase tracking-tighter">Resumo de Sócios</h2>
-              <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-0.5">Visão consolidada de exposição e lucro por investidor</p>
+              <h2 className="text-lg font-semibold text-slate-900 normal-case tracking-normal">Resumo de Sócios</h2>
+              <p className="text-slate-500 text-xs font-bold normal-case tracking-normal mt-0.5">Visão consolidada de exposição e lucro por investidor</p>
             </div>
             <SocioSummary socios={data.investimento_socios || []} />
           </div>
@@ -220,8 +220,8 @@ const CaixaPage: React.FC = () => {
 
           <div className="pt-4">
             <div className="mb-6">
-              <h2 className="text-lg font-black text-slate-900 uppercase tracking-tighter">Detalhamento do Estoque</h2>
-              <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-0.5">Participação individual e exposição de capital por veículo</p>
+              <h2 className="text-lg font-semibold text-slate-900 normal-case tracking-normal">Detalhamento do Estoque</h2>
+              <p className="text-slate-500 text-xs font-bold normal-case tracking-normal mt-0.5">Participação individual e exposição de capital por veículo</p>
             </div>
             <SocioStockTable socios={data.investimento_socios || []} />
           </div>

@@ -13,8 +13,8 @@ interface Props {
 
 const FormCardSupplier: React.FC<Props> = ({ formData, parceiros, onChange, disabled }) => {
   return (
-    <div className="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm">
-      <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-6">02. Origem do Veículo</h3>
+    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+      <h3 className="text-sm font-semibold text-slate-400 normal-case tracking-normal mb-6">02. Origem do Veículo</h3>
       <PartnerSelect
         parceiros={parceiros}
         selectedId={formData.fornecedor_id}

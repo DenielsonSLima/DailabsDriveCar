@@ -67,20 +67,20 @@ const VersionForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSubmit
   }, []);
 
   const content = (
-    <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 border border-slate-200">
-        <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+    <div data-drivecar-ui className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-white w-full max-w-2xl rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 duration-200 border border-slate-200">
+        <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
           <div className="flex items-center space-x-4">
-            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-200">
+            <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-600 shadow-sm shadow-none">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
             </div>
             <div>
-              <h2 className="text-xl font-black text-slate-900 uppercase tracking-tighter leading-none">
+              <h2 className="text-xl font-semibold text-slate-900 normal-case tracking-tight leading-none">
                 {initialData ? 'Editar Variante' : 'Nova Versão'}
               </h2>
-              <p className="text-slate-500 text-[9px] font-bold uppercase tracking-widest mt-1">Configuração técnica oficial</p>
+              <p className="text-slate-500 text-xs font-medium normal-case tracking-normal mt-1">Configuração técnica oficial</p>
             </div>
           </div>
           <button onClick={onClose} disabled={isSaving} className="p-2 hover:bg-white rounded-full transition-all text-slate-400 hover:text-rose-500">
@@ -90,10 +90,10 @@ const VersionForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSubmit
           </button>
         </div>
 
-        <form onSubmit={(e) => { e.preventDefault(); onSubmit(formData); }} className="p-8 space-y-6">
+        <form onSubmit={(e) => { e.preventDefault(); onSubmit(formData); }} className="p-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
-              <label className="block text-[9px] font-black text-slate-400 uppercase mb-1.5 ml-1 tracking-widest">Nome da Versão Comercial *</label>
+              <label className="block text-xs font-medium text-slate-500 normal-case mb-1.5 ml-1 tracking-normal">Nome da Versão Comercial *</label>
               <input
                 type="text"
                 name="nome"
@@ -101,21 +101,21 @@ const VersionForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSubmit
                 onChange={handleChange}
                 required
                 disabled={isSaving}
-                className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 text-sm focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all font-black text-[#111827] uppercase disabled:opacity-50"
+                className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 text-sm focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all font-medium text-[#111827] normal-case disabled:opacity-50"
                 placeholder="Ex: LTZ, PREMIERE, HIGHLINE..."
               />
             </div>
 
             {/* Motorização Dinâmica */}
             <div>
-              <label className="block text-[9px] font-black text-slate-400 uppercase mb-1.5 ml-1 tracking-widest">Motorização</label>
+              <label className="block text-xs font-medium text-slate-500 normal-case mb-1.5 ml-1 tracking-normal">Motorização</label>
               <div className="relative">
                 <select
                   name="motorizacao"
                   value={formData.motorizacao}
                   onChange={handleChange}
                   disabled={isSaving || loadingOptions}
-                  className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 text-sm font-bold text-[#111827] appearance-none outline-none disabled:opacity-50 cursor-pointer focus:ring-2 focus:ring-indigo-500 transition-all"
+                  className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 text-sm font-medium text-[#111827] appearance-none outline-none disabled:opacity-50 cursor-pointer focus:ring-2 focus:ring-indigo-500 transition-all"
                 >
                   <option value="">Selecione o Motor...</option>
                   {motores.map(m => (
@@ -130,14 +130,14 @@ const VersionForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSubmit
 
             {/* Combustível Dinâmico */}
             <div>
-              <label className="block text-[9px] font-black text-slate-400 uppercase mb-1.5 ml-1 tracking-widest">Combustível</label>
+              <label className="block text-xs font-medium text-slate-500 normal-case mb-1.5 ml-1 tracking-normal">Combustível</label>
               <div className="relative">
                 <select
                   name="combustivel"
                   value={formData.combustivel}
                   onChange={handleChange}
                   disabled={isSaving || loadingOptions}
-                  className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 text-sm font-bold text-[#111827] appearance-none outline-none disabled:opacity-50 cursor-pointer focus:ring-2 focus:ring-indigo-500 transition-all"
+                  className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 text-sm font-medium text-[#111827] appearance-none outline-none disabled:opacity-50 cursor-pointer focus:ring-2 focus:ring-indigo-500 transition-all"
                 >
                   <option value="">Selecione...</option>
                   {combustiveis.map(c => (
@@ -152,14 +152,14 @@ const VersionForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSubmit
 
             {/* Transmissão Dinâmica */}
             <div>
-              <label className="block text-[9px] font-black text-slate-400 uppercase mb-1.5 ml-1 tracking-widest">Transmissão</label>
+              <label className="block text-xs font-medium text-slate-500 normal-case mb-1.5 ml-1 tracking-normal">Transmissão</label>
               <div className="relative">
                 <select
                   name="transmissao"
                   value={formData.transmissao}
                   onChange={handleChange}
                   disabled={isSaving || loadingOptions}
-                  className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 text-sm font-bold text-[#111827] appearance-none outline-none disabled:opacity-50 cursor-pointer focus:ring-2 focus:ring-indigo-500 transition-all"
+                  className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 text-sm font-medium text-[#111827] appearance-none outline-none disabled:opacity-50 cursor-pointer focus:ring-2 focus:ring-indigo-500 transition-all"
                 >
                   <option value="">Selecione...</option>
                   {transmissoes.map(t => (
@@ -172,14 +172,14 @@ const VersionForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSubmit
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-[9px] font-black text-slate-400 uppercase mb-1.5 ml-1 tracking-widest">Ano Fabr.</label>
-                <input type="number" name="ano_fabricacao" value={formData.ano_fabricacao} onChange={handleChange} required disabled={isSaving} className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 text-sm font-bold text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all" />
+                <label className="block text-xs font-medium text-slate-500 normal-case mb-1.5 ml-1 tracking-normal">Ano Fabr.</label>
+                <input type="number" name="ano_fabricacao" value={formData.ano_fabricacao} onChange={handleChange} required disabled={isSaving} className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 text-sm font-medium text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all" />
               </div>
               <div>
-                <label className="block text-[9px] font-black text-slate-400 uppercase mb-1.5 ml-1 tracking-widest">Ano Mod.</label>
-                <input type="number" name="ano_modelo" value={formData.ano_modelo} onChange={handleChange} required disabled={isSaving} className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 text-sm font-bold text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all" />
+                <label className="block text-xs font-medium text-slate-500 normal-case mb-1.5 ml-1 tracking-normal">Ano Mod.</label>
+                <input type="number" name="ano_modelo" value={formData.ano_modelo} onChange={handleChange} required disabled={isSaving} className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 text-sm font-medium text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all" />
               </div>
             </div>
           </div>
@@ -189,14 +189,14 @@ const VersionForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSubmit
               type="button"
               onClick={onClose}
               disabled={isSaving}
-              className="w-full sm:w-auto px-8 py-3.5 text-slate-400 text-[10px] font-black uppercase tracking-widest hover:text-slate-600 transition-all"
+              className="w-full sm:w-auto px-6 py-3.5 text-slate-400 text-xs font-semibold normal-case tracking-normal hover:text-slate-600 transition-all"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={isSaving}
-              className="w-full sm:w-auto px-10 py-3.5 bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-indigo-700 shadow-xl shadow-indigo-100 transition-all flex items-center justify-center min-w-[180px] disabled:opacity-50 active:scale-95"
+              className="w-full sm:w-auto px-6 py-3.5 bg-indigo-600 text-white text-xs font-semibold normal-case tracking-normal rounded-2xl hover:bg-indigo-700 shadow-sm shadow-none transition-all flex items-center justify-center min-w-[180px] disabled:opacity-50 active:scale-100"
             >
               {isSaving ? (
                 <div className="flex items-center">

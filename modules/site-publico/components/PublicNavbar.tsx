@@ -34,7 +34,7 @@ const PublicNavbar: React.FC<Props> = ({ empresa }) => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-[120] bg-[#050a14] shadow-2xl transition-colors duration-500">
+    <nav className="fixed top-0 left-0 w-full z-[120] bg-[#050a14] shadow-sm transition-colors duration-500">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-20 lg:h-24 flex items-center justify-between">
         {/* Logo à Esquerda */}
         <button
@@ -122,7 +122,7 @@ const PublicNavbar: React.FC<Props> = ({ empresa }) => {
 
       {/* Painel Mobile */}
       <div
-        className={`fixed top-20 left-0 right-0 z-[121] lg:hidden bg-[#050a14]/98 backdrop-blur-2xl border-t border-slate-800 shadow-2xl transition-all duration-400 ${mobileOpen ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-4 pointer-events-none'}`}
+        className={`fixed top-20 left-0 right-0 z-[121] lg:hidden bg-[#050a14]/98 backdrop-blur-2xl border-t border-slate-800 shadow-sm transition-all duration-400 ${mobileOpen ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-4 pointer-events-none'}`}
       >
         <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col space-y-1">
           <button

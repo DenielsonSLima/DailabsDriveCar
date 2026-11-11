@@ -48,10 +48,10 @@ const WatermarkForm: React.FC<FormProps> = ({ config, onSave, onChange, isSaving
   };
 
   return (
-    <div className="bg-white rounded-[2.5rem] border border-slate-200 p-8 shadow-sm space-y-10 h-full">
+    <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-6 h-full">
       <section className="space-y-6">
         <div>
-          <label className="block text-[10px] font-black text-slate-400 uppercase mb-4 tracking-widest ml-1">Arquivo da Logomarca</label>
+          <label className="block text-xs font-medium text-slate-500 normal-case mb-4 tracking-normal ml-1">Arquivo da Logomarca</label>
           <input 
             type="file" 
             ref={fileInputRef} 
@@ -61,7 +61,7 @@ const WatermarkForm: React.FC<FormProps> = ({ config, onSave, onChange, isSaving
           />
           <div 
             onClick={() => fileInputRef.current?.click()}
-            className={`group relative border-2 border-dashed rounded-3xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all h-48 ${
+            className={`group relative border-2 border-dashed rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer transition-all h-48 ${
               localConfig.logo_url ? 'border-indigo-200 bg-indigo-50/5' : 'border-slate-200 bg-slate-50 hover:bg-slate-100 hover:border-indigo-300'
             }`}
           >
@@ -70,10 +70,10 @@ const WatermarkForm: React.FC<FormProps> = ({ config, onSave, onChange, isSaving
                 <img src={localConfig.logo_url} className="max-h-full max-w-full object-contain p-2" alt="Watermark" />
                 <div className="absolute inset-0 bg-indigo-600/10 opacity-0 group-hover:opacity-100 rounded-2xl flex items-center justify-center transition-all">
                   <div className="flex space-x-2">
-                    <span className="bg-white px-4 py-2 rounded-xl text-[10px] font-black uppercase text-indigo-600 shadow-sm">Trocar</span>
+                    <span className="bg-white px-4 py-2 rounded-xl text-xs font-medium normal-case text-indigo-600 shadow-sm">Trocar</span>
                     <button 
                       onClick={handleRemoveLogo}
-                      className="bg-rose-500 px-4 py-2 rounded-xl text-[10px] font-black uppercase text-white shadow-sm hover:bg-rose-600 transition-colors"
+                      className="bg-rose-500 px-4 py-2 rounded-xl text-xs font-semibold normal-case text-white shadow-sm hover:bg-rose-600 transition-colors"
                     >
                       Remover
                     </button>
@@ -87,18 +87,18 @@ const WatermarkForm: React.FC<FormProps> = ({ config, onSave, onChange, isSaving
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                   </svg>
                 </div>
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">Clique para Upload</p>
-                <p className="text-[8px] text-slate-300 mt-1 uppercase font-bold tracking-widest">PNG ou JPG</p>
+                <p className="text-xs font-medium text-slate-500 normal-case tracking-tight">Clique para Upload</p>
+                <p className="text-xs text-slate-300 mt-1 normal-case font-medium tracking-normal">PNG ou JPG</p>
               </>
             )}
           </div>
         </div>
 
-        <div className="space-y-8 pt-4">
+        <div className="space-y-6 pt-4">
           <div>
             <div className="flex justify-between items-center mb-3 px-1">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Opacidade</label>
-              <span className="text-[10px] font-black text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md">{localConfig.opacidade}%</span>
+              <label className="text-xs font-medium text-slate-500 normal-case tracking-normal">Opacidade</label>
+              <span className="text-xs font-medium text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md">{localConfig.opacidade}%</span>
             </div>
             <input 
               type="range" 
@@ -113,8 +113,8 @@ const WatermarkForm: React.FC<FormProps> = ({ config, onSave, onChange, isSaving
 
           <div>
             <div className="flex justify-between items-center mb-3 px-1">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Escala da Logo</label>
-              <span className="text-[10px] font-black text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md">{localConfig.tamanho}%</span>
+              <label className="text-xs font-medium text-slate-500 normal-case tracking-normal">Escala da Logo</label>
+              <span className="text-xs font-medium text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md">{localConfig.tamanho}%</span>
             </div>
             <input 
               type="range" 
@@ -136,7 +136,7 @@ const WatermarkForm: React.FC<FormProps> = ({ config, onSave, onChange, isSaving
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <p className="text-[10px] text-amber-700 leading-relaxed font-medium uppercase tracking-tighter">
+          <p className="text-xs text-amber-700 leading-relaxed font-medium normal-case tracking-tight">
             As alterações acima são refletidas no preview ao lado, mas só serão aplicadas aos documentos reais após salvar.
           </p>
         </div>
@@ -144,7 +144,7 @@ const WatermarkForm: React.FC<FormProps> = ({ config, onSave, onChange, isSaving
         <button
           onClick={() => onSave(localConfig)}
           disabled={isSaving}
-          className="w-full py-4 bg-indigo-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-indigo-700 shadow-xl shadow-indigo-100 transition-all disabled:opacity-50 disabled:shadow-none active:scale-95 flex items-center justify-center space-x-3"
+          className="w-full py-4 bg-indigo-600 text-white rounded-2xl text-xs font-semibold normal-case tracking-normal hover:bg-indigo-700 shadow-sm shadow-none transition-all disabled:opacity-50 disabled:shadow-none active:scale-100 flex items-center justify-center space-x-3"
         >
           {isSaving ? (
             <>

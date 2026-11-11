@@ -107,17 +107,17 @@ const FormUsuario: React.FC<FormUsuarioProps> = ({ initialData, onSubmit, onCanc
   };
 
   return (
-    <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-xl animate-in slide-in-from-bottom-4 duration-500">
+    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm animate-in slide-in-from-bottom-4 duration-200">
       <div className="flex justify-between items-start mb-8">
         <div>
-          <h3 className="text-xl font-black text-slate-900 uppercase tracking-widest">
+          <h3 className="text-xl font-semibold text-slate-900 normal-case tracking-normal">
             {initialData ? 'Editar Acesso' : 'Novo Usuário do Sistema'}
           </h3>
           <p className="text-slate-500 text-sm">Defina as credenciais e permissões do colaborador.</p>
         </div>
 
         <div className="flex items-center space-x-3 bg-slate-50 p-2 rounded-2xl border border-slate-100">
-          <span className={`text-[10px] font-black uppercase tracking-wider ${formData.ativo ? 'text-emerald-600' : 'text-slate-400'}`}>
+          <span className={`text-xs font-medium normal-case tracking-normal ${formData.ativo ? 'text-emerald-600' : 'text-slate-500'}`}>
             {formData.ativo ? 'Acesso Ativo' : 'Acesso Inativo'}
           </span>
           <label className="relative inline-flex items-center cursor-pointer">
@@ -136,42 +136,42 @@ const FormUsuario: React.FC<FormUsuarioProps> = ({ initialData, onSubmit, onCanc
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1 tracking-widest">Nome *</label>
+            <label className="block text-xs font-medium text-slate-500 normal-case mb-1 ml-1 tracking-normal">Nome *</label>
             <input
               type="text"
               name="nome"
               value={formData.nome}
               onChange={handleChange}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-bold"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium"
               required
             />
           </div>
           <div>
-            <label className="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1 tracking-widest">Sobrenome</label>
+            <label className="block text-xs font-medium text-slate-500 normal-case mb-1 ml-1 tracking-normal">Sobrenome</label>
             <input
               type="text"
               name="sobrenome"
               value={formData.sobrenome}
               onChange={handleChange}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-bold"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium"
             />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1 tracking-widest">E-mail (Login) *</label>
+            <label className="block text-xs font-medium text-slate-500 normal-case mb-1 ml-1 tracking-normal">E-mail (Login) *</label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-bold"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium"
               required
             />
           </div>
           <div>
-            <label className="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1 tracking-widest">CPF</label>
+            <label className="block text-xs font-medium text-slate-500 normal-case mb-1 ml-1 tracking-normal">CPF</label>
             <input
               type="text"
               name="cpf"
@@ -186,7 +186,7 @@ const FormUsuario: React.FC<FormUsuarioProps> = ({ initialData, onSubmit, onCanc
         {initialData ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1 tracking-widest">Nova Senha (Opcional)</label>
+              <label className="block text-xs font-medium text-slate-500 normal-case mb-1 ml-1 tracking-normal">Nova Senha (Opcional)</label>
               <div className="relative">
                 <input
                   type={showSenha ? "text" : "password"}
@@ -210,21 +210,21 @@ const FormUsuario: React.FC<FormUsuarioProps> = ({ initialData, onSubmit, onCanc
 
               <div className="mt-2 px-1">
                 <div className="flex justify-between items-center mb-1">
-                  <span className="text-[9px] font-black uppercase text-slate-400">Força da Senha</span>
-                  <span className={`text-[9px] font-black uppercase ${strength.color.replace('bg-', 'text-')}`}>{strength.label}</span>
+                  <span className="text-xs font-medium normal-case text-slate-500">Força da Senha</span>
+                  <span className={`text-xs font-medium normal-case ${strength.color.replace('bg-', 'text-')}`}>{strength.label}</span>
                 </div>
                 <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden flex gap-0.5">
                   {[1, 2, 3, 4].map((i) => (
                     <div
                       key={i}
-                      className={`h-full flex-1 transition-all duration-500 ${i <= strength.score ? strength.color : 'bg-slate-200'}`}
+                      className={`h-full flex-1 transition-all duration-200 ${i <= strength.score ? strength.color : 'bg-slate-200'}`}
                     />
                   ))}
                 </div>
               </div>
             </div>
             <div>
-              <label className="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1 tracking-widest">Confirmar Nova Senha</label>
+              <label className="block text-xs font-medium text-slate-500 normal-case mb-1 ml-1 tracking-normal">Confirmar Nova Senha</label>
               <div className="relative">
                 <input
                   type={showConfirmSenha ? "text" : "password"}
@@ -254,7 +254,7 @@ const FormUsuario: React.FC<FormUsuarioProps> = ({ initialData, onSubmit, onCanc
               </svg>
             </div>
             <div>
-              <h4 className="text-xs font-black text-indigo-900 uppercase tracking-widest">Confirmação por E-mail</h4>
+              <h4 className="text-xs font-semibold text-indigo-900 normal-case tracking-normal">Confirmação por E-mail</h4>
               <p className="text-sm text-indigo-700 mt-1 leading-relaxed">
                 Ao criar o acesso, o sistema enviará um convite para o e-mail informado. O usuário confirmará o acesso pelo link e definirá a senha no primeiro acesso.
               </p>
@@ -264,12 +264,12 @@ const FormUsuario: React.FC<FormUsuarioProps> = ({ initialData, onSubmit, onCanc
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1 tracking-widest">Nível de Acesso</label>
+            <label className="block text-xs font-medium text-slate-500 normal-case mb-1 ml-1 tracking-normal">Nível de Acesso</label>
             <select
               name="role"
               value={formData.role}
               onChange={handleChange}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-bold appearance-none"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium appearance-none"
             >
               <option value="ADMIN">Administrador Full</option>
               <option value="GESTOR">Gestor de Módulo</option>
@@ -278,7 +278,7 @@ const FormUsuario: React.FC<FormUsuarioProps> = ({ initialData, onSubmit, onCanc
             </select>
           </div>
           <div>
-            <label className="block text-[10px] font-black text-slate-400 uppercase mb-1 ml-1 tracking-widest">Telefone</label>
+            <label className="block text-xs font-medium text-slate-500 normal-case mb-1 ml-1 tracking-normal">Telefone</label>
             <input
               type="text"
               name="telefone"
@@ -294,13 +294,13 @@ const FormUsuario: React.FC<FormUsuarioProps> = ({ initialData, onSubmit, onCanc
           <button
             type="button"
             onClick={onCancel}
-            className="px-8 py-3 text-slate-500 text-xs font-black uppercase tracking-widest hover:bg-slate-50 rounded-2xl transition-all"
+            className="px-6 py-3 text-slate-500 text-xs font-semibold normal-case tracking-normal hover:bg-slate-50 rounded-2xl transition-all"
           >
             Cancelar
           </button>
           <button
             type="submit"
-            className="px-10 py-3 bg-indigo-600 text-white text-xs font-black uppercase tracking-widest rounded-2xl hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-100"
+            className="px-6 py-3 bg-indigo-600 text-white text-xs font-semibold normal-case tracking-normal rounded-2xl hover:bg-indigo-700 transition-all shadow-sm shadow-none"
           >
             {initialData ? 'Salvar Alterações' : 'Criar Acesso'}
           </button>

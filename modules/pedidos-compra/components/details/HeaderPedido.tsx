@@ -23,13 +23,13 @@ const HeaderPedido: React.FC<Props> = ({
   const hasLote = pedido.veiculos?.some(unit => unit.lote_id);
 
   return (
-    <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm animate-in slide-in-from-top-4 duration-500">
+    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm animate-in slide-in-from-top-4 duration-500">
       <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
         
         <div className="flex items-center space-x-6 w-full lg:w-auto">
           <button 
             onClick={onBack} 
-            className="group p-4 bg-slate-100 border border-slate-200 rounded-2xl hover:bg-white hover:border-indigo-600 text-slate-500 hover:text-indigo-600 transition-all shrink-0 shadow-sm"
+            className="group p-4 bg-slate-100 border border-slate-200 rounded-xl hover:bg-white hover:border-indigo-600 text-slate-500 hover:text-indigo-600 transition-all shrink-0 shadow-sm"
           >
             <svg className="w-6 h-6 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -38,10 +38,10 @@ const HeaderPedido: React.FC<Props> = ({
 
           <div className="min-w-0">
             <div className="flex items-center space-x-3 mb-2">
-              <span className="px-3 py-1 rounded-lg bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest shadow-lg">
+              <span className="px-3 py-1 rounded-lg bg-slate-900 text-white text-xs font-semibold normal-case tracking-normal shadow-sm">
                 PEDIDO #{pedido.numero_pedido || pedido.id.substring(0,6).toUpperCase()}
               </span>
-              <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest flex items-center gap-2 border ${
+              <span className={`px-3 py-1 rounded-lg text-xs font-semibold normal-case tracking-normal flex items-center gap-2 border ${
                 isConcluido ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
                 'bg-amber-50 text-amber-600 border-amber-100'
               }`}>
@@ -49,7 +49,7 @@ const HeaderPedido: React.FC<Props> = ({
                 {isConcluido ? 'EFETIVADO' : 'RASCUNHO'}
               </span>
             </div>
-            <h1 className="text-4xl font-[900] text-slate-900 uppercase tracking-tighter leading-none truncate">
+            <h1 className="text-2xl sm:text-3xl font-semibold text-slate-900 normal-case tracking-normal leading-none truncate">
               Dossiê de Aquisição
             </h1>
             <p className="text-xs font-bold text-slate-400 mt-2 flex items-center">
@@ -71,7 +71,7 @@ const HeaderPedido: React.FC<Props> = ({
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                 </svg>
-                <span className="text-[10px] font-black uppercase tracking-widest">Pedido (PDF)</span>
+                <span className="text-xs font-semibold normal-case tracking-normal">Pedido (PDF)</span>
              </button>
              <button 
                onClick={onPrintInternal}
@@ -81,14 +81,14 @@ const HeaderPedido: React.FC<Props> = ({
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
-                <span className="text-[10px] font-black uppercase tracking-widest">Análise de Ativo</span>
+                <span className="text-xs font-semibold normal-case tracking-normal">Análise de Ativo</span>
              </button>
           </div>
 
           <button 
             onClick={onDelete}
             disabled={loadingAction || hasLote}
-            className="p-4 text-rose-500 hover:bg-rose-50 rounded-2xl transition-all disabled:opacity-30"
+            className="p-4 text-rose-500 hover:bg-rose-50 rounded-xl transition-all disabled:opacity-30"
             title="Excluir Pedido"
           >
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
@@ -98,7 +98,7 @@ const HeaderPedido: React.FC<Props> = ({
             <button 
               onClick={onReopen}
               disabled={loadingAction}
-              className="px-6 py-4 bg-amber-50 text-amber-600 font-black text-xs uppercase tracking-widest rounded-2xl hover:bg-amber-100 transition-all shadow-sm flex items-center border border-amber-200"
+              className="px-6 py-4 bg-amber-50 text-amber-600 font-semibold text-xs normal-case tracking-normal rounded-xl hover:bg-amber-100 transition-all shadow-sm flex items-center border border-amber-200"
             >
               <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
@@ -110,7 +110,7 @@ const HeaderPedido: React.FC<Props> = ({
           <button 
             onClick={onEdit}
             disabled={loadingAction || hasLote}
-            className="px-6 py-4 bg-white border border-slate-200 text-slate-700 font-black text-xs uppercase tracking-widest rounded-xl hover:bg-slate-50 transition-all shadow-sm active:scale-95 flex items-center"
+            className="px-6 py-4 bg-white border border-slate-200 text-slate-700 font-semibold text-xs normal-case tracking-normal rounded-xl hover:bg-slate-50 transition-all shadow-sm active:scale-95 flex items-center"
           >
             Editar Ficha
           </button>
@@ -120,7 +120,7 @@ const HeaderPedido: React.FC<Props> = ({
               <button 
                 onClick={onConfirm}
                 disabled={loadingAction || !canConfirm}
-                className={`px-8 py-4 text-white font-black text-xs uppercase tracking-[0.15em] rounded-xl shadow-2xl transition-all flex items-center active:scale-95 disabled:opacity-50 disabled:grayscale ${
+                className={`px-8 py-4 text-white font-semibold text-xs normal-case tracking-normal rounded-xl shadow-sm transition-all flex items-center active:scale-95 disabled:opacity-50 disabled:grayscale ${
                   canConfirm ? 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200' : 'bg-slate-400 shadow-none cursor-not-allowed'
                 }`}
               >
@@ -137,7 +137,7 @@ const HeaderPedido: React.FC<Props> = ({
           )}
 
           {isConcluido && (
-            <div className="px-8 py-4 bg-emerald-600 text-white font-black text-xs uppercase tracking-[0.15em] rounded-xl flex items-center border-2 border-emerald-500 shadow-xl shadow-emerald-100">
+            <div className="px-8 py-4 bg-emerald-600 text-white font-semibold text-xs normal-case tracking-normal rounded-xl flex items-center border-2 border-emerald-500 shadow-sm shadow-emerald-100">
               <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>

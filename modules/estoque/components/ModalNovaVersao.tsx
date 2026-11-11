@@ -112,26 +112,26 @@ const ModalNovaVersao: React.FC<Props> = ({ modeloId, modeloNome, onClose, onSuc
         mutation.mutate();
     };
 
-    const inputCls = "w-full border border-slate-200 rounded-2xl px-4 py-3 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition-all";
-    const labelCls = "block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1";
+    const inputCls = "w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition-all";
+    const labelCls = "block text-xs font-semibold text-slate-400 normal-case tracking-normal mb-2 ml-1";
 
     const isFromAPI = prefillData?.fromAPI;
 
     return createPortal(
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-0 bg-slate-900/70 backdrop-blur-md animate-in fade-in duration-200">
-            <div className="bg-white w-full max-w-lg rounded-[2rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+        <div data-drivecar-ui className="fixed inset-0 z-[200] flex items-center justify-center p-3 sm:p-4 bg-slate-900/70 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="bg-white w-full max-w-lg rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 duration-200">
                 {/* Header */}
-                <div className="px-8 pt-6 pb-5 flex items-center justify-between border-b border-slate-100">
+                <div className="px-5 sm:px-6 pt-6 pb-5 flex items-center justify-between border-b border-slate-100">
                     <div>
                         {isFromAPI && (
-                            <span className="inline-flex items-center gap-1 text-[9px] font-black text-emerald-600 uppercase tracking-widest bg-emerald-50 px-2 py-0.5 rounded-lg mb-1">
+                            <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 normal-case tracking-normal bg-emerald-50 px-2 py-0.5 rounded-lg mb-1">
                                 ⚡ Dados da API Brasil
                             </span>
                         )}
-                        <span className="block text-[9px] font-black text-indigo-500 uppercase tracking-widest">Cadastro {isFromAPI ? 'Automático' : 'Rápido'}</span>
-                        <h2 className="text-xl font-black text-slate-900 uppercase tracking-tighter">Nova Versão</h2>
+                        <span className="block text-xs font-semibold text-indigo-500 normal-case tracking-normal">Cadastro {isFromAPI ? 'Automático' : 'Rápido'}</span>
+                        <h2 className="text-xl font-semibold text-slate-900 normal-case tracking-normal">Nova Versão</h2>
                         {modeloNome && (
-                            <p className="text-xs text-slate-500 font-medium mt-0.5">Modelo: <span className="font-black text-indigo-600">{modeloNome}</span></p>
+                            <p className="text-xs text-slate-500 font-medium mt-0.5">Modelo: <span className="font-semibold text-indigo-600">{modeloNome}</span></p>
                         )}
                     </div>
                     <button onClick={onClose} disabled={mutation.isPending} className="p-2 hover:bg-slate-100 rounded-full transition-all text-slate-400">
@@ -141,7 +141,7 @@ const ModalNovaVersao: React.FC<Props> = ({ modeloId, modeloNome, onClose, onSuc
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="px-8 py-6 space-y-4 overflow-y-auto max-h-[70vh]">
+                <form onSubmit={handleSubmit} className="px-5 sm:px-6 py-6 space-y-4 overflow-y-auto max-h-[70vh]">
                     {/* Selecionar Existente */}
                     {versoesExistentes.length > 0 && (
                         <div>
@@ -164,14 +164,14 @@ const ModalNovaVersao: React.FC<Props> = ({ modeloId, modeloNome, onClose, onSuc
                     {selectedVersaoId && (
                         <div className="bg-indigo-50 border border-indigo-100 rounded-2xl p-6 mt-4 animate-in fade-in slide-in-from-top-2">
                             <div className="flex items-center gap-3 mb-4">
-                                <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white shrink-0 shadow-lg shadow-indigo-200">
+                                <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white shrink-0 shadow-sm shadow-indigo-200">
                                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                     </svg>
                                 </div>
                                 <div>
-                                    <h3 className="text-sm font-black text-indigo-950 uppercase tracking-tighter">Versão Selecionada</h3>
-                                    <p className="text-[10px] font-bold text-indigo-600/70 uppercase tracking-widest mt-0.5">Pronta para uso interligado</p>
+                                    <h3 className="text-sm font-semibold text-indigo-950 normal-case tracking-normal">Versão Selecionada</h3>
+                                    <p className="text-xs font-bold text-indigo-600/70 normal-case tracking-normal mt-0.5">Pronta para uso interligado</p>
                                 </div>
                             </div>
                             
@@ -181,19 +181,19 @@ const ModalNovaVersao: React.FC<Props> = ({ modeloId, modeloNome, onClose, onSuc
                                 return (
                                     <div className="space-y-3 bg-white/60 p-4 rounded-xl">
                                         <div className="flex justify-between items-center border-b border-indigo-100/50 pb-2">
-                                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Nome</span>
+                                            <span className="text-xs font-semibold text-slate-400 normal-case tracking-normal">Nome</span>
                                             <span className="text-xs font-bold text-slate-900">{v.nome}</span>
                                         </div>
                                         <div className="flex justify-between items-center border-b border-indigo-100/50 pb-2">
-                                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Motorização</span>
+                                            <span className="text-xs font-semibold text-slate-400 normal-case tracking-normal">Motorização</span>
                                             <span className="text-xs font-bold text-slate-900">{v.motorizacao} • {v.combustivel}</span>
                                         </div>
                                         <div className="flex justify-between items-center border-b border-indigo-100/50 pb-2">
-                                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Transmissão</span>
+                                            <span className="text-xs font-semibold text-slate-400 normal-case tracking-normal">Transmissão</span>
                                             <span className="text-xs font-bold text-slate-900">{v.transmissao}</span>
                                         </div>
                                         <div className="flex justify-between items-center">
-                                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Ano</span>
+                                            <span className="text-xs font-semibold text-slate-400 normal-case tracking-normal">Ano</span>
                                             <span className="text-xs font-bold text-slate-900">{v.ano_fabricacao} / {v.ano_modelo}</span>
                                         </div>
                                     </div>
@@ -244,7 +244,7 @@ const ModalNovaVersao: React.FC<Props> = ({ modeloId, modeloNome, onClose, onSuc
                                     <button
                                         type="button"
                                         onClick={() => setShowModalMotor(true)}
-                                        className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center hover:bg-indigo-100 transition-all border border-indigo-100 shrink-0"
+                                        className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center hover:bg-indigo-100 transition-all border border-indigo-100 shrink-0"
                                         title="Nova Motorização"
                                     >
                                         <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -253,7 +253,7 @@ const ModalNovaVersao: React.FC<Props> = ({ modeloId, modeloNome, onClose, onSuc
                                     </button>
                                 </div>
                                 {isFromAPI && prefillData?.motorizacao && !form.motorizacao && (
-                                    <p className="text-[10px] text-amber-600 font-bold mt-1 ml-1">
+                                    <p className="text-xs text-amber-600 font-bold mt-1 ml-1">
                                         💡 API sugere motor: {prefillData.motorizacao} — selecione da lista ou cadastre novo
                                     </p>
                                 )}
@@ -326,7 +326,7 @@ const ModalNovaVersao: React.FC<Props> = ({ modeloId, modeloNome, onClose, onSuc
                             {/* FIPE Info (se veio da API) */}
                             {isFromAPI && (
                                 <div className="bg-emerald-50 rounded-2xl p-4 border border-emerald-100 mt-2">
-                                    <p className="text-[9px] font-black text-emerald-500 uppercase tracking-widest mb-1">Preenchido automaticamente pela API</p>
+                                    <p className="text-xs font-semibold text-emerald-500 normal-case tracking-normal mb-1">Preenchido automaticamente pela API</p>
                                     <p className="text-xs text-emerald-700 font-medium">
                                         Confira os dados acima e preencha apenas a <strong>Transmissão</strong> para concluir.
                                     </p>
@@ -353,14 +353,14 @@ const ModalNovaVersao: React.FC<Props> = ({ modeloId, modeloNome, onClose, onSuc
                             type="button"
                             onClick={onClose}
                             disabled={mutation.isPending}
-                            className="px-6 py-3 text-slate-500 text-xs font-black uppercase tracking-widest hover:bg-slate-50 rounded-xl transition-all"
+                            className="px-6 py-3 text-slate-500 text-xs font-semibold normal-case tracking-normal hover:bg-slate-50 rounded-xl transition-all"
                         >
                             Cancelar
                         </button>
                         <button
                             type="submit"
                             disabled={mutation.isPending || (!selectedVersaoId && (!form.nome.trim() || !form.motorizacao.trim() || !form.transmissao))}
-                            className="px-8 py-3 bg-indigo-600 text-white text-xs font-black uppercase tracking-widest rounded-xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all disabled:opacity-50 flex items-center gap-2"
+                            className="px-8 py-3 bg-indigo-600 text-white text-xs font-semibold normal-case tracking-normal rounded-xl shadow-sm shadow-indigo-200 hover:bg-indigo-700 transition-all disabled:opacity-50 flex items-center gap-2"
                         >
                             {mutation.isPending ? (
                                 <><div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" /> Salvando...</>

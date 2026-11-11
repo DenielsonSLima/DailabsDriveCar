@@ -8,7 +8,7 @@ interface PreviewProps {
 
 const WatermarkPreview: React.FC<PreviewProps> = ({ config }) => {
   return (
-    <div className="bg-slate-800 rounded-[2.5rem] p-12 flex items-center justify-center overflow-hidden min-h-[500px] h-full shadow-inner border-4 border-slate-700/50">
+    <div className="bg-slate-100 rounded-2xl p-6 flex items-center justify-center overflow-hidden min-h-[500px] h-full border border-slate-200">
       <div className="relative bg-white w-[350px] aspect-[1/1.414] shadow-2xl rounded-sm flex flex-col p-8 select-none pointer-events-none">
         {/* Simulação de cabeçalho de documento */}
         <div className="h-4 w-2/3 bg-slate-100 rounded-full mb-3"></div>

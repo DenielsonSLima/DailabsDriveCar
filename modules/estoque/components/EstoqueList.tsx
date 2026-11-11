@@ -19,8 +19,8 @@ const EstoqueList: React.FC<Props> = ({ groupedData, isGrouped, cores }) => {
   if (!isGrouped) {
     const list = groupedData as IVeiculo[];
     if (list.length === 0) return (
-      <div className="text-center py-20 bg-white rounded-[2.5rem] border border-slate-200 border-dashed">
-        <p className="text-slate-400 font-bold uppercase text-xs tracking-widest">Nenhum veículo encontrado para os filtros atuais.</p>
+      <div className="text-center py-20 bg-white rounded-2xl border border-slate-200 border-dashed">
+        <p className="text-slate-400 font-bold normal-case text-xs tracking-normal">Nenhum veículo encontrado para os filtros atuais.</p>
       </div>
     );
 
@@ -47,7 +47,7 @@ const EstoqueList: React.FC<Props> = ({ groupedData, isGrouped, cores }) => {
         <div key={groupName} className="animate-in slide-in-from-bottom-4 duration-500">
           <div className="flex items-center space-x-4 mb-6 sticky top-20 bg-slate-50/90 backdrop-blur-sm py-3 z-10 rounded-xl px-2">
             <div className="h-8 w-1 bg-indigo-500 rounded-full"></div>
-            <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter">
+            <h3 className="text-xl font-semibold text-slate-900 normal-case tracking-normal">
               {groupName} <span className="text-sm font-medium text-slate-400 ml-2">({groups[groupName].length})</span>
             </h3>
             <div className="flex-1 h-px bg-slate-200"></div>

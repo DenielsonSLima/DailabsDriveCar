@@ -11,26 +11,26 @@ const ExtratoKpis: React.FC<Props> = ({ totals }) => {
   const { entradas_realizadas, saidas_realizadas, a_pagar_pendente, a_receber_pendente, saldo_periodo } = totals;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-5 gap-4 animate-in fade-in duration-700">
-      <div className="bg-emerald-50 border border-emerald-100 p-5 rounded-[2rem] shadow-sm">
-        <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-1">Entradas Realizadas</p>
-        <h3 className="text-xl font-black text-emerald-700">{formatCurrency(entradas_realizadas)}</h3>
+    <div className="grid grid-cols-1 md:grid-cols-5 gap-4 animate-in fade-in duration-200">
+      <div className="bg-emerald-50 border border-emerald-100 p-5 rounded-2xl shadow-sm">
+        <p className="text-xs font-medium text-emerald-600 normal-case tracking-normal mb-1">Entradas Realizadas</p>
+        <h3 className="text-xl font-semibold text-emerald-700">{formatCurrency(entradas_realizadas)}</h3>
       </div>
-      <div className="bg-rose-50 border border-rose-100 p-5 rounded-[2rem] shadow-sm">
-        <p className="text-[9px] font-black text-rose-600 uppercase tracking-widest mb-1">Saídas Realizadas</p>
-        <h3 className="text-xl font-black text-rose-700">{formatCurrency(saidas_realizadas)}</h3>
+      <div className="bg-rose-50 border border-rose-100 p-5 rounded-2xl shadow-sm">
+        <p className="text-xs font-medium text-rose-600 normal-case tracking-normal mb-1">Saídas Realizadas</p>
+        <h3 className="text-xl font-semibold text-rose-700">{formatCurrency(saidas_realizadas)}</h3>
       </div>
-      <div className="bg-orange-50 border border-orange-100 p-5 rounded-[2rem] shadow-sm">
-        <p className="text-[9px] font-black text-orange-600 uppercase tracking-widest mb-1">A Pagar (Pendente)</p>
-        <h3 className="text-xl font-black text-orange-700">{formatCurrency(a_pagar_pendente)}</h3>
+      <div className="bg-orange-50 border border-orange-100 p-5 rounded-2xl shadow-sm">
+        <p className="text-xs font-medium text-orange-600 normal-case tracking-normal mb-1">A Pagar (Pendente)</p>
+        <h3 className="text-xl font-semibold text-orange-700">{formatCurrency(a_pagar_pendente)}</h3>
       </div>
-      <div className="bg-teal-50 border border-teal-100 p-5 rounded-[2rem] shadow-sm">
-        <p className="text-[9px] font-black text-teal-600 uppercase tracking-widest mb-1">A Receber (Pendente)</p>
-        <h3 className="text-xl font-black text-teal-700">{formatCurrency(a_receber_pendente)}</h3>
+      <div className="bg-teal-50 border border-teal-100 p-5 rounded-2xl shadow-sm">
+        <p className="text-xs font-medium text-teal-600 normal-case tracking-normal mb-1">A Receber (Pendente)</p>
+        <h3 className="text-xl font-semibold text-teal-700">{formatCurrency(a_receber_pendente)}</h3>
       </div>
-      <div className={`p-5 rounded-[2rem] border shadow-sm ${saldo_periodo >= 0 ? 'bg-indigo-50 border-indigo-100' : 'bg-amber-50 border-amber-100'}`}>
-        <p className={`text-[9px] font-black uppercase tracking-widest mb-1 ${saldo_periodo >= 0 ? 'text-indigo-600' : 'text-amber-600'}`}>Saldo Período</p>
-        <h3 className={`text-xl font-black ${saldo_periodo >= 0 ? 'text-indigo-700' : 'text-amber-700'}`}>{formatCurrency(saldo_periodo)}</h3>
+      <div className={`p-5 rounded-2xl border shadow-sm ${saldo_periodo >= 0 ? 'bg-indigo-50 border-indigo-100' : 'bg-amber-50 border-amber-100'}`}>
+        <p className={`text-xs font-medium normal-case tracking-normal mb-1 ${saldo_periodo >= 0 ? 'text-indigo-600' : 'text-amber-600'}`}>Saldo Período</p>
+        <h3 className={`text-xl font-semibold ${saldo_periodo >= 0 ? 'text-indigo-700' : 'text-amber-700'}`}>{formatCurrency(saldo_periodo)}</h3>
       </div>
     </div>
   );

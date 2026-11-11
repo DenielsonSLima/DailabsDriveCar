@@ -168,32 +168,32 @@ const ModalVendaPaymentForm: React.FC<Props> = ({ pedido, onClose, onSubmit, isS
   const repasseEstimado = Math.max(0, valorVendaPedido - valorComissao);
 
   const content = (
-    <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 border border-slate-100 flex flex-col max-h-[95vh]">
+    <div data-drivecar-ui className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
+      <div className="bg-white w-full max-w-2xl rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 border border-slate-100 flex flex-col max-h-[95vh]">
 
-        <div className="p-8 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
+        <div className="p-6 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
           <div>
-            <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter">{isConsignado ? 'Comissão da Consignação' : 'Estruturar Recebimento'}</h3>
-            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">{isConsignado ? 'Registrar lucro/comissão da loja' : 'Configurar cronograma de entrada financeira'}</p>
+            <h3 className="text-xl font-semibold text-slate-900 normal-case tracking-normal">{isConsignado ? 'Comissão da Consignação' : 'Estruturar Recebimento'}</h3>
+            <p className="text-xs text-slate-400 font-bold normal-case tracking-normal mt-1">{isConsignado ? 'Registrar lucro/comissão da loja' : 'Configurar cronograma de entrada financeira'}</p>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-white rounded-full text-slate-400 hover:text-rose-500 transition-colors">
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar">
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
 
           {isConsignado && (
-            <div className="rounded-3xl border border-violet-100 bg-violet-50 p-5 space-y-4">
+            <div className="rounded-2xl border border-violet-100 bg-violet-50 p-5 space-y-4">
               <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                 <div>
-                  <p className="text-[9px] font-black text-violet-400 uppercase tracking-widest mb-1">Venda consignada</p>
-                  <p className="text-sm font-black text-violet-950">Valor de venda: {formatCurrency(valorVendaPedido)}</p>
+                  <p className="text-xs font-semibold text-violet-400 normal-case tracking-normal mb-1">Venda consignada</p>
+                  <p className="text-sm font-semibold text-violet-950">Valor de venda: {formatCurrency(valorVendaPedido)}</p>
                 </div>
                 <button
                   type="button"
                   onClick={() => setDeduzirComissao(prev => !prev)}
-                  className={`px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${deduzirComissao ? 'bg-violet-700 text-white' : 'bg-white text-violet-700 border border-violet-200'}`}
+                  className={`px-4 py-2 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all ${deduzirComissao ? 'bg-violet-700 text-white' : 'bg-white text-violet-700 border border-violet-200'}`}
                 >
                   {deduzirComissao ? 'Deduz da venda' : 'Não deduz'}
                 </button>
@@ -203,14 +203,14 @@ const ModalVendaPaymentForm: React.FC<Props> = ({ pedido, onClose, onSubmit, isS
                 <button
                   type="button"
                   onClick={() => setCommissionMode('VALOR')}
-                  className={`py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${commissionMode === 'VALOR' ? 'bg-violet-700 text-white shadow-md' : 'text-violet-400 hover:text-violet-700'}`}
+                  className={`py-2 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all ${commissionMode === 'VALOR' ? 'bg-violet-700 text-white shadow-md' : 'text-violet-400 hover:text-violet-700'}`}
                 >
                   Valor
                 </button>
                 <button
                   type="button"
                   onClick={() => setCommissionMode('PERCENTUAL')}
-                  className={`py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${commissionMode === 'PERCENTUAL' ? 'bg-violet-700 text-white shadow-md' : 'text-violet-400 hover:text-violet-700'}`}
+                  className={`py-2 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all ${commissionMode === 'PERCENTUAL' ? 'bg-violet-700 text-white shadow-md' : 'text-violet-400 hover:text-violet-700'}`}
                 >
                   Porcentagem
                 </button>
@@ -218,7 +218,7 @@ const ModalVendaPaymentForm: React.FC<Props> = ({ pedido, onClose, onSubmit, isS
 
               {commissionMode === 'PERCENTUAL' && (
                 <div>
-                  <label className="block text-[10px] font-black text-violet-400 uppercase mb-2 ml-1 tracking-widest">Percentual de comissão</label>
+                  <label className="block text-xs font-semibold text-violet-400 normal-case mb-2 ml-1 tracking-normal">Percentual de comissão</label>
                   <div className="relative">
                     <input
                       type="number"
@@ -227,15 +227,15 @@ const ModalVendaPaymentForm: React.FC<Props> = ({ pedido, onClose, onSubmit, isS
                       step="0.01"
                       value={commissionPercent}
                       onChange={e => handleCommissionPercentChange(e.target.value)}
-                      className="w-full bg-white border-2 border-violet-100 rounded-2xl px-4 py-3 pr-10 text-xl font-black text-violet-900 outline-none focus:border-violet-500 transition-all text-center shadow-sm"
+                      className="w-full bg-white border-2 border-violet-100 rounded-xl px-4 py-3 pr-10 text-xl font-semibold text-violet-900 outline-none focus:border-violet-500 transition-all text-center shadow-sm"
                       placeholder="0"
                     />
-                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-violet-400 font-black">%</span>
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-violet-400 font-semibold">%</span>
                   </div>
                 </div>
               )}
 
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 text-[10px] font-black uppercase tracking-widest text-violet-500">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs font-semibold normal-case tracking-normal text-violet-500">
                 <span>Comissão: {formatCurrency(valorComissao)}</span>
                 {deduzirComissao && <span>Repasse estimado: {formatCurrency(repasseEstimado)}</span>}
               </div>
@@ -244,22 +244,22 @@ const ModalVendaPaymentForm: React.FC<Props> = ({ pedido, onClose, onSubmit, isS
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
             <div className="md:col-span-4">
-              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1 tracking-widest">{isConsignado ? 'Lucro / Comissão' : 'Valor do Lote'}</label>
+              <label className="block text-xs font-semibold text-slate-500 normal-case mb-2 ml-1 tracking-normal">{isConsignado ? 'Lucro / Comissão' : 'Valor do Lote'}</label>
               <input
                 type="text"
                 value={valorTotalACompor}
                 onChange={handleCurrencyChange}
-                className="w-full bg-white border-2 border-emerald-100 rounded-2xl px-4 py-3 text-xl font-black text-emerald-600 outline-none focus:border-emerald-500 transition-all text-center shadow-sm hover:shadow-md"
+                className="w-full bg-white border-2 border-emerald-100 rounded-xl px-4 py-3 text-xl font-semibold text-emerald-600 outline-none focus:border-emerald-500 transition-all text-center shadow-sm hover:shadow-md"
               />
             </div>
 
             <div className="md:col-span-4">
-              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1 tracking-widest">Modalidade</label>
+              <label className="block text-xs font-semibold text-slate-500 normal-case mb-2 ml-1 tracking-normal">Modalidade</label>
               <select
                 required
                 value={formaId}
                 onChange={e => setFormaId(e.target.value)}
-                className="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3.5 text-xs font-bold text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 appearance-none shadow-sm hover:shadow-md transition-all"
+                className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-xs font-medium text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 appearance-none shadow-sm hover:shadow-md transition-all"
               >
                 <option value="">Selecione...</option>
                 {formas.map(f => <option key={f.id} value={f.id}>{f.nome}</option>)}
@@ -267,7 +267,7 @@ const ModalVendaPaymentForm: React.FC<Props> = ({ pedido, onClose, onSubmit, isS
             </div>
 
             <div className="md:col-span-4">
-              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1 tracking-widest flex justify-between">
+              <label className="block text-xs font-semibold text-slate-500 normal-case mb-2 ml-1 tracking-normal flex justify-between">
                 Regra / Prazo
                 {loadingCondicoes && <div className="w-3 h-3 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>}
               </label>
@@ -276,7 +276,7 @@ const ModalVendaPaymentForm: React.FC<Props> = ({ pedido, onClose, onSubmit, isS
                 disabled={!formaId}
                 value={condicaoId}
                 onChange={e => setCondicaoId(e.target.value)}
-                className="w-full bg-white border border-indigo-100 rounded-2xl px-4 py-3.5 text-xs font-bold text-indigo-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 appearance-none shadow-sm hover:shadow-md transition-all disabled:opacity-30"
+                className="w-full bg-white border border-indigo-100 rounded-xl px-4 py-3.5 text-xs font-medium text-indigo-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 appearance-none shadow-sm hover:shadow-md transition-all disabled:opacity-30"
               >
                 <option value="">{loadingCondicoes ? 'Buscando...' : 'Escolha a regra...'}</option>
                 {condicoes.map(c => <option key={c.id} value={c.id}>{c.nome} — {c.qtd_parcelas}x, primeira em {c.dias_primeira_parcela} dias</option>)}
@@ -287,28 +287,28 @@ const ModalVendaPaymentForm: React.FC<Props> = ({ pedido, onClose, onSubmit, isS
           {parcelas.length > 0 && (
             <div className="space-y-4 animate-in slide-in-from-bottom-4 duration-500">
               <div className="flex items-center justify-between px-1">
-                <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Cronograma de Entradas</h4>
-                <span className="text-[8px] font-black bg-emerald-500 text-white px-2 py-0.5 rounded uppercase shadow-sm">Estrutura de {parcelas.length}x</span>
+                <h4 className="text-xs font-semibold text-slate-400 normal-case tracking-normal">Cronograma de Entradas</h4>
+                <span className="text-xs font-semibold bg-emerald-500 text-white px-2 py-0.5 rounded normal-case shadow-sm">Estrutura de {parcelas.length}x</span>
               </div>
 
               <div className="grid grid-cols-1 gap-3">
                 {parcelas.map((p) => (
-                  <div key={p.id_temporario} className="flex items-center gap-4 bg-white border border-slate-100 p-4 rounded-3xl hover:border-emerald-200 transition-all group shadow-sm hover:shadow-md">
-                    <div className="w-10 h-10 rounded-2xl bg-white border border-slate-100 flex items-center justify-center font-black text-slate-400 text-xs shadow-sm">
+                  <div key={p.id_temporario} className="flex items-center gap-4 bg-white border border-slate-100 p-4 rounded-2xl hover:border-emerald-200 transition-all group shadow-sm hover:shadow-md">
+                    <div className="w-10 h-10 rounded-2xl bg-white border border-slate-100 flex items-center justify-center font-semibold text-slate-400 text-xs shadow-sm">
                       {p.numero}º
                     </div>
                     <div className="flex-1">
-                      <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Previsão de Crédito</p>
+                      <p className="text-xs font-semibold text-slate-400 normal-case mb-1">Previsão de Crédito</p>
                       <input
                         type="date"
                         value={p.data_vencimento}
                         onChange={(e) => updateParcelaDate(p.id_temporario, e.target.value)}
-                        className="bg-transparent font-black text-slate-800 outline-none cursor-pointer focus:text-emerald-600"
+                        className="bg-transparent font-semibold text-slate-800 outline-none cursor-pointer focus:text-emerald-600"
                       />
                     </div>
                     <div className="text-right">
-                      <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Valor</p>
-                      <p className="text-sm font-black text-slate-900">
+                      <p className="text-xs font-semibold text-slate-400 normal-case mb-1">Valor</p>
+                      <p className="text-sm font-semibold text-slate-900">
                         {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(p.valor)}
                       </p>
                     </div>
@@ -319,24 +319,24 @@ const ModalVendaPaymentForm: React.FC<Props> = ({ pedido, onClose, onSubmit, isS
           )}
 
           {hasRecebimentoHoje && (
-            <div className="bg-emerald-50 border border-emerald-100 p-6 rounded-3xl space-y-4 animate-in slide-in-from-left duration-500">
+            <div className="bg-emerald-50 border border-emerald-100 p-6 rounded-2xl space-y-4 animate-in slide-in-from-left duration-500">
               <div className="flex items-start space-x-3">
-                <div className="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center shadow-lg shadow-emerald-200 shrink-0">
+                <div className="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center shadow-sm shadow-emerald-200 shrink-0">
                   {/* Fixed malformed SVG tag on line 231 */}
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
                 <div>
-                  <h4 className="text-xs font-black text-emerald-800 uppercase tracking-widest leading-none mb-1">Crédito Imediato</h4>
-                  <p className="text-[10px] text-emerald-600 font-medium">Lançamentos à vista ou com data retroativa alimentarão o saldo da conta selecionada abaixo.</p>
+                  <h4 className="text-xs font-semibold text-emerald-800 normal-case tracking-normal leading-none mb-1">Crédito Imediato</h4>
+                  <p className="text-xs text-emerald-600 font-medium">Lançamentos à vista ou com data retroativa alimentarão o saldo da conta selecionada abaixo.</p>
                 </div>
               </div>
               <select
                 required
                 value={contaBancariaId}
                 onChange={e => setContaBancariaId(e.target.value)}
-                className="w-full bg-white border-2 border-emerald-200 rounded-2xl px-5 py-4 text-xs font-black text-emerald-700 outline-none focus:ring-2 focus:ring-emerald-500 appearance-none cursor-pointer shadow-sm"
+                className="w-full bg-white border-2 border-emerald-200 rounded-xl px-5 py-3 text-xs font-semibold text-emerald-700 outline-none focus:ring-2 focus:ring-emerald-500 appearance-none cursor-pointer shadow-sm"
               >
                 <option value="">Onde o dinheiro cairá?</option>
                 {contas.map(c => <option key={c.id} value={c.id}>{c.banco_nome} - {c.titular} | Saldo: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(c.saldo_atual || 0)}</option>)}
@@ -345,23 +345,23 @@ const ModalVendaPaymentForm: React.FC<Props> = ({ pedido, onClose, onSubmit, isS
           )}
 
           <div>
-            <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1 tracking-widest">Observações do Recebimento</label>
+            <label className="block text-xs font-semibold text-slate-500 normal-case mb-2 ml-1 tracking-normal">Observações do Recebimento</label>
             <textarea
               value={observacao}
               onChange={e => setObservacao(e.target.value)}
               placeholder="Ex: Entrada via PIX efetuada no ato da assinatura..."
               rows={2}
-              className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 text-xs font-medium text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none shadow-sm hover:shadow-md transition-all"
+              className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 text-xs font-medium text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none shadow-sm hover:shadow-md transition-all"
             />
           </div>
         </form>
 
-        <div className="p-8 border-t border-slate-100 bg-slate-50">
+        <div className="p-6 border-t border-slate-100 bg-slate-50">
           <button
             type="button"
             onClick={handleSubmit}
             disabled={isSaving || parcelas.length === 0}
-            className="w-full py-5 bg-emerald-600 text-white rounded-2xl text-xs font-black uppercase tracking-[0.2em] hover:bg-emerald-700 shadow-2xl shadow-emerald-100 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center space-x-3"
+            className="w-full py-5 bg-emerald-600 text-white rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-emerald-700 shadow-sm shadow-emerald-100 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center space-x-3"
           >
             {isSaving ? (
               <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>

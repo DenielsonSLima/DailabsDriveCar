@@ -49,9 +49,9 @@ const CondicoesPagamentoPage: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
+    <div className="space-y-6 animate-in fade-in duration-200">
       <div>
-        <h1 className="text-3xl font-bold text-slate-900 tracking-tighter">Condições de Pagamento (Saídas)</h1>
+        <h1 className="text-3xl font-semibold text-slate-900 tracking-tight">Condições de Pagamento (Saídas)</h1>
         <p className="text-slate-500 mt-1">Configure regras para **Pagar Fornecedores** e acertar **Consignações**.</p>
       </div>
 
@@ -63,28 +63,28 @@ const CondicoesPagamentoPage: React.FC = () => {
             <div 
               key={forma.id} 
               onClick={() => setSelectedForma(forma)}
-              className="group bg-white border border-slate-200 rounded-[2rem] p-6 cursor-pointer hover:border-indigo-400 hover:shadow-xl transition-all duration-300 relative overflow-hidden"
+              className="group bg-white border border-slate-200 rounded-2xl p-6 cursor-pointer hover:border-indigo-400 hover:shadow-sm transition-all duration-200 relative overflow-hidden"
             >
-              <div className={`absolute top-0 right-0 p-3 rounded-bl-2xl text-[9px] font-black uppercase tracking-widest ${
+              <div className={`absolute top-0 right-0 p-3 rounded-bl-2xl text-xs font-semibold normal-case tracking-normal ${
                 forma.ativo ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-400'
               }`}>
                 {forma.ativo ? 'Ativo' : 'Inativo'}
               </div>
 
-              <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center mb-4 text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-colors duration-300">
+              <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center mb-4 text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-colors duration-200">
                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={getIcon(forma.tipo_movimentacao)} />
                  </svg>
               </div>
 
-              <h3 className="text-lg font-black text-slate-900 leading-tight">{forma.nome}</h3>
-              <p className="text-[10px] text-slate-400 mt-1 font-bold uppercase tracking-wide">
+              <h3 className="text-lg font-semibold text-slate-900 leading-tight">{forma.nome}</h3>
+              <p className="text-xs text-slate-500 mt-1 font-medium normal-case tracking-wide">
                 {forma.destino_lancamento === 'CONSIGNACAO' 
                   ? 'Acerto com Proprietário' 
                   : (forma.tipo_movimentacao === 'AMBOS' ? 'Entrada & Saída' : 'Saída de Caixa')}
               </p>
 
-              <div className="mt-6 flex items-center text-indigo-600 text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0">
+              <div className="mt-6 flex items-center text-indigo-600 text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0">
                 <span>Configurar Prazos</span>
                 <svg className="w-4 h-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
               </div>

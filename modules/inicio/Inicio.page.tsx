@@ -88,12 +88,12 @@ const InicioPage: React.FC = () => {
         <div className="absolute inset-0 border-4 border-indigo-50/50 rounded-full"></div>
         <div className="absolute inset-0 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
       </div>
-      <p className="mt-8 text-slate-400 font-black uppercase text-[10px] tracking-[0.4em] animate-pulse">Orquestrando Dashboard...</p>
+      <p className="mt-8 text-slate-500 font-semibold normal-case text-xs tracking-normal animate-pulse">Orquestrando Dashboard...</p>
     </div>
   );
 
   return (
-    <div className="space-y-12 pb-20 max-w-[1600px] mx-auto animate-in fade-in slide-in-from-bottom-8 duration-1000">
+    <div className="space-y-6 pb-8 max-w-[1600px] mx-auto animate-in fade-in slide-in-from-bottom-8 duration-300">
       {/* 1. Welcome Header (Premium) */}
       <WelcomeHeader />
 
@@ -101,35 +101,35 @@ const InicioPage: React.FC = () => {
       {stats && <GeneralKpis stats={stats} />}
 
       {/* 3. Main Dashboard Grid */}
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 pt-4">
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
         {/* Left Column: Chart & Recent Arrivals */}
-        <div className="xl:col-span-8 space-y-8">
+        <div className="xl:col-span-8 space-y-6">
           <HistoryChart data={history} />
           <RecentStockMini veiculos={recent} />
         </div>
 
         {/* Right Column: Tools & Shortcuts */}
-        <div className="xl:col-span-4 space-y-8 h-fit">
+        <div className="xl:col-span-4 space-y-6 h-fit">
           <FipeUsageCard />
           <QuickShortcuts />
 
           {/* Marketing Story Generator */}
           <div
             onClick={() => navigate('/marketing/stories')}
-            className="bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-[2.5rem] p-9 text-white shadow-2xl relative overflow-hidden group hover:shadow-indigo-500/20 transition-all duration-500 cursor-pointer border border-white/10"
+            className="bg-indigo-50 rounded-xl p-5 text-indigo-950 shadow-sm relative overflow-hidden group hover:shadow-indigo-500/20 transition-all duration-500 cursor-pointer border border-slate-200"
           >
-            <div className="absolute top-0 right-0 p-8 opacity-10 transform translate-x-4 -translate-y-4 group-hover:rotate-12 group-hover:scale-110 transition-all duration-700">
+            <div className="hidden">
               <svg className="w-44 h-44" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
               </svg>
             </div>
             <div className="relative">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 mb-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-slate-200 mb-3">
                 <div className="w-1.5 h-1.5 bg-indigo-300 rounded-full animate-pulse" />
-                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-indigo-100">Marketing</span>
+                <span className="text-xs font-semibold normal-case tracking-normal text-indigo-600">Marketing</span>
               </div>
-              <h4 className="text-2xl font-black tracking-tight leading-tight">Gerador de Stories</h4>
-              <p className="mt-4 text-white/70 text-sm font-medium leading-relaxed">
+              <h4 className="text-xl font-semibold tracking-tight leading-tight">Gerador de Stories</h4>
+              <p className="mt-2 text-slate-500 text-sm font-medium leading-relaxed">
                 Posts automáticos para Instagram com as fotos do seu estoque.
               </p>
             </div>
@@ -138,20 +138,20 @@ const InicioPage: React.FC = () => {
           {/* Marketing Feed Generator */}
           <div
             onClick={() => navigate('/marketing/feed')}
-            className="bg-gradient-to-br from-fuchsia-600 to-fuchsia-800 rounded-[2.5rem] p-9 text-white shadow-2xl relative overflow-hidden group hover:shadow-fuchsia-500/20 transition-all duration-500 cursor-pointer border border-white/10"
+            className="bg-white rounded-xl p-5 text-slate-900 shadow-sm relative overflow-hidden group hover:shadow-fuchsia-500/20 transition-all duration-500 cursor-pointer border border-slate-200"
           >
-            <div className="absolute top-0 right-0 p-8 opacity-10 transform translate-x-4 -translate-y-4 group-hover:-rotate-12 group-hover:scale-110 transition-all duration-700">
+            <div className="hidden">
               <svg className="w-44 h-44" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-6 13h-2v-2h2v2zm0-4h-2V7h2v5z" />
               </svg>
             </div>
             <div className="relative">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 mb-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-slate-200 mb-3">
                 <div className="w-1.5 h-1.5 bg-fuchsia-300 rounded-full animate-pulse" />
-                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-fuchsia-100">Social Media</span>
+                <span className="text-xs font-semibold normal-case tracking-normal text-indigo-600">Social Media</span>
               </div>
-              <h4 className="text-2xl font-black tracking-tight leading-tight">Gerador de Feed</h4>
-              <p className="mt-4 text-white/70 text-sm font-medium leading-relaxed">
+              <h4 className="text-xl font-semibold tracking-tight leading-tight">Gerador de Feed</h4>
+              <p className="mt-2 text-slate-500 text-sm font-medium leading-relaxed">
                 Gere posts quadrados (1:1) ou verticais (4:5) personalizados.
               </p>
             </div>

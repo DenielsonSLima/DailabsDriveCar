@@ -30,24 +30,24 @@ const CaixaKpis: React.FC<Props> = ({ data }) => {
         key={i}
         className={`relative p-4 rounded-2xl border transition-all flex items-center gap-3 group 
           ${isMain
-            ? `bg-${k.color}-600 border-${k.color}-700 shadow-lg`
-            : 'bg-white/60 backdrop-blur-md border-slate-200 shadow-sm hover:bg-white hover:border-slate-300'
-          } hover:shadow-xl hover:-translate-y-0.5`}
+            ? `bg-${k.color}-600 border-${k.color}-700 shadow-sm`
+            : 'bg-white/60 backdrop-blur-sm border-slate-200 shadow-sm hover:bg-white hover:border-slate-300'
+          } hover:shadow-sm hover:-translate-y-0.5`}
       >
-        <div className={`${isMain ? 'w-11 h-11 bg-white/20 text-white' : `w-9 h-9 bg-${k.color}-500/10 text-${k.color}-600`} rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-110`}>
+        <div className={`${isMain ? 'w-11 h-11 bg-white/20 text-white' : `w-9 h-9 ${k.color === 'rose' || k.color === 'amber' || k.color === 'emerald' ? `bg-${k.color}-500/10 text-${k.color}-600` : 'bg-slate-100 text-slate-600'}`} rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-105`}>
           <svg className={`${isMain ? 'w-6 h-6' : 'w-5 h-5'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d={k.icon} />
           </svg>
         </div>
         <div className="min-w-0 flex-1">
-          <p className={`text-[10px] font-black uppercase tracking-wider truncate ${isMain ? 'text-white/80' : 'text-slate-400'}`}>
+          <p className={`text-xs font-semibold normal-case tracking-normal truncate ${isMain ? 'text-white/80' : 'text-slate-400'}`}>
             {k.label}
           </p>
-          <h4 className={`text-[15px] font-black tracking-tighter truncate leading-tight ${isMain ? 'text-white' : (k.color === 'rose' || k.label.includes('Despesa') ? 'text-rose-600' : 'text-slate-900')}`}>
+          <h4 className={`text-[15px] font-semibold tracking-normal truncate leading-tight ${isMain ? 'text-white' : (k.color === 'rose' || k.label.includes('Despesa') ? 'text-rose-600' : 'text-slate-900')}`}>
             {fmt(k.val)}
           </h4>
           {k.sub && (
-            <div className="mt-1.5 space-y-1 text-[9px] font-bold uppercase leading-snug text-slate-500" aria-label="Composição do estoque">
+            <div className="mt-1.5 space-y-1 text-xs font-bold normal-case leading-snug text-slate-500" aria-label="Composição do estoque">
               {k.sub.join(' | ')}
             </div>
           )}

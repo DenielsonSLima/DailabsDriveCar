@@ -95,17 +95,17 @@ const CampanhaCard: React.FC<CampanhaCardProps> = ({
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest border ${statusColors[campanha.status]}`}>
+                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold normal-case tracking-normal border ${statusColors[campanha.status]}`}>
                   <span className={`w-1.5 h-1.5 rounded-full ${statusDot[campanha.status]}`} />
                   {MarketingAdsService.getStatusLabel(campanha.status)}
                 </span>
               </div>
-              <h3 className="text-sm font-black text-slate-900 mt-1 truncate">{campanha.nome}</h3>
+              <h3 className="text-sm font-semibold text-slate-900 mt-1 truncate">{campanha.nome}</h3>
               {vNome && (
                 <p className="text-[11px] text-slate-500 truncate">{vNome} {campanha.veiculo?.ano_modelo}</p>
               )}
               {(resultado || publico) && (
-                <p className="text-[10px] text-slate-400 truncate mt-0.5">
+                <p className="text-xs text-slate-400 truncate mt-0.5">
                   {[resultado, publico].filter(Boolean).join(' · ')}
                 </p>
               )}
@@ -114,10 +114,10 @@ const CampanhaCard: React.FC<CampanhaCardProps> = ({
             {/* Orçamento */}
             {campanha.orcamento_diario && (
               <div className="text-right flex-shrink-0">
-                <p className="text-xs font-black text-emerald-600">
+                <p className="text-xs font-semibold text-emerald-600">
                   {MarketingAdsService.formatarMoeda(campanha.orcamento_diario)}
                 </p>
-                <p className="text-[10px] text-slate-400">por dia</p>
+                <p className="text-xs text-slate-400">por dia</p>
               </div>
             )}
           </div>
@@ -126,7 +126,7 @@ const CampanhaCard: React.FC<CampanhaCardProps> = ({
           <div className="flex items-center justify-between mt-2">
             <div className="flex items-center gap-3">
               {diasRestantes !== null && campanha.status === 'ATIVO' && (
-                <span className="text-[10px] text-slate-500 flex items-center gap-1">
+                <span className="text-xs text-slate-500 flex items-center gap-1">
                   <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>

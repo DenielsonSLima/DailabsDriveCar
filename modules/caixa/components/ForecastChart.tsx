@@ -59,25 +59,25 @@ const ForecastChart: React.FC<Props> = ({ forecast }) => {
   const totalLucro = forecast.reduce((a, f) => a + f.lucro_projetado, 0);
 
   return (
-    <div className="bg-white rounded-[2.5rem] border border-slate-200 p-8 shadow-sm">
+    <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-8">
         <div>
-          <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.2em]">Previsão Financeira</h3>
-          <p className="text-[9px] text-slate-400 font-bold uppercase mt-1 tracking-widest">Contas a pagar & receber • Próximos 4 meses</p>
+          <h3 className="text-sm font-semibold text-slate-400 normal-case tracking-normal">Previsão Financeira</h3>
+          <p className="text-xs text-slate-400 font-bold normal-case mt-1 tracking-normal">Contas a pagar & receber • Próximos 4 meses</p>
         </div>
         <div className="flex items-center gap-5">
           <div className="flex items-center gap-1.5">
             <div className="w-3 h-3 rounded-sm bg-emerald-500"></div>
-            <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">A Receber</span>
+            <span className="text-xs font-bold text-slate-500 normal-case tracking-normal">A Receber</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-3 h-3 rounded-sm bg-rose-500"></div>
-            <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">A Pagar</span>
+            <span className="text-xs font-bold text-slate-500 normal-case tracking-normal">A Pagar</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-3 h-2 rounded-full bg-indigo-500"></div>
-            <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">Lucro Projetado</span>
+            <span className="text-xs font-bold text-slate-500 normal-case tracking-normal">Lucro Projetado</span>
           </div>
         </div>
       </div>
@@ -85,16 +85,16 @@ const ForecastChart: React.FC<Props> = ({ forecast }) => {
       {/* Resumo dos totais */}
       <div className="grid grid-cols-3 gap-4 mb-8">
         <div className="bg-emerald-50 rounded-2xl p-4 border border-emerald-100">
-          <p className="text-[8px] font-black text-emerald-500 uppercase tracking-widest mb-1">Total a Receber</p>
-          <p className="text-lg font-black text-emerald-700">{fmt(totalReceber)}</p>
+          <p className="text-xs font-semibold text-emerald-500 normal-case tracking-normal mb-1">Total a Receber</p>
+          <p className="text-lg font-semibold text-emerald-700">{fmt(totalReceber)}</p>
         </div>
         <div className="bg-rose-50 rounded-2xl p-4 border border-rose-100">
-          <p className="text-[8px] font-black text-rose-500 uppercase tracking-widest mb-1">Total a Pagar</p>
-          <p className="text-lg font-black text-rose-700">{fmt(totalPagar)}</p>
+          <p className="text-xs font-semibold text-rose-500 normal-case tracking-normal mb-1">Total a Pagar</p>
+          <p className="text-lg font-semibold text-rose-700">{fmt(totalPagar)}</p>
         </div>
         <div className={`rounded-2xl p-4 border ${totalLucro >= 0 ? 'bg-indigo-50 border-indigo-100' : 'bg-rose-50 border-rose-100'}`}>
-          <p className={`text-[8px] font-black uppercase tracking-widest mb-1 ${totalLucro >= 0 ? 'text-indigo-500' : 'text-rose-500'}`}>Resultado Projetado</p>
-          <p className={`text-lg font-black ${totalLucro >= 0 ? 'text-indigo-700' : 'text-rose-700'}`}>
+          <p className={`text-xs font-semibold normal-case tracking-normal mb-1 ${totalLucro >= 0 ? 'text-indigo-500' : 'text-rose-500'}`}>Resultado Projetado</p>
+          <p className={`text-lg font-semibold ${totalLucro >= 0 ? 'text-indigo-700' : 'text-rose-700'}`}>
             {totalLucro > 0 ? '+' : ''}{fmt(totalLucro)}
           </p>
         </div>
@@ -109,7 +109,7 @@ const ForecastChart: React.FC<Props> = ({ forecast }) => {
             const val = maxValue - (i * stepValue);
             return (
               <div key={i} className="absolute left-0 right-0 flex items-center" style={{ top: yPos }}>
-                <span className="text-[8px] font-bold text-slate-300 w-14 text-right pr-3 shrink-0">
+                <span className="text-xs font-bold text-slate-300 w-14 text-right pr-3 shrink-0">
                   {fmtK(val)}
                 </span>
                 <div className="flex-1 border-t border-dashed border-slate-100"></div>
@@ -134,19 +134,19 @@ const ForecastChart: React.FC<Props> = ({ forecast }) => {
               >
                 {/* Tooltip */}
                 {isHovered && (
-                  <div className="absolute -top-2 left-1/2 -translate-x-1/2 z-30 bg-slate-900 text-white rounded-2xl px-4 py-3 shadow-xl min-w-[180px] animate-in fade-in zoom-in-95 duration-200">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">{f.mes}</p>
+                  <div className="absolute -top-2 left-1/2 -translate-x-1/2 z-30 bg-slate-900 text-white rounded-2xl px-4 py-3 shadow-sm min-w-[180px] animate-in fade-in zoom-in-95 duration-200">
+                    <p className="text-xs font-semibold normal-case tracking-normal text-slate-400 mb-2">{f.mes}</p>
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-[9px] text-emerald-400 font-bold">A Receber</span>
-                      <span className="text-[10px] font-black text-emerald-400">{fmt(f.contas_receber)}</span>
+                      <span className="text-xs text-emerald-400 font-bold">A Receber</span>
+                      <span className="text-xs font-semibold text-emerald-400">{fmt(f.contas_receber)}</span>
                     </div>
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-[9px] text-rose-400 font-bold">A Pagar</span>
-                      <span className="text-[10px] font-black text-rose-400">{fmt(f.contas_pagar)}</span>
+                      <span className="text-xs text-rose-400 font-bold">A Pagar</span>
+                      <span className="text-xs font-semibold text-rose-400">{fmt(f.contas_pagar)}</span>
                     </div>
                     <div className="border-t border-white/10 mt-1 pt-1 flex items-center justify-between">
-                      <span className="text-[9px] text-indigo-400 font-bold">Lucro</span>
-                      <span className={`text-[10px] font-black ${f.lucro_projetado >= 0 ? 'text-indigo-400' : 'text-rose-400'}`}>
+                      <span className="text-xs text-indigo-400 font-bold">Lucro</span>
+                      <span className={`text-xs font-semibold ${f.lucro_projetado >= 0 ? 'text-indigo-400' : 'text-rose-400'}`}>
                         {f.lucro_projetado > 0 ? '+' : ''}{fmt(f.lucro_projetado)}
                       </span>
                     </div>
@@ -156,7 +156,7 @@ const ForecastChart: React.FC<Props> = ({ forecast }) => {
 
                 {/* Barra Receber (verde) */}
                 <div
-                  className={`rounded-t-xl transition-all duration-500 ${isHovered ? 'bg-emerald-400 shadow-lg shadow-emerald-500/20' : 'bg-emerald-500'}`}
+                  className={`rounded-t-xl transition-all duration-500 ${isHovered ? 'bg-emerald-400 shadow-sm shadow-emerald-500/20' : 'bg-emerald-500'}`}
                   style={{
                     height: Math.max(receberH, 2),
                     width: `${barWidth}%`,
@@ -167,7 +167,7 @@ const ForecastChart: React.FC<Props> = ({ forecast }) => {
 
                 {/* Barra Pagar (vermelha) */}
                 <div
-                  className={`rounded-t-xl transition-all duration-500 ${isHovered ? 'bg-rose-400 shadow-lg shadow-rose-500/20' : 'bg-rose-500'}`}
+                  className={`rounded-t-xl transition-all duration-500 ${isHovered ? 'bg-rose-400 shadow-sm shadow-rose-500/20' : 'bg-rose-500'}`}
                   style={{
                     height: Math.max(pagarH, 2),
                     width: `${barWidth}%`,
@@ -228,8 +228,8 @@ const ForecastChart: React.FC<Props> = ({ forecast }) => {
         <div className="absolute left-14 right-0 flex" style={{ top: barAreaHeight + 12 }}>
           {forecast.map((f, i) => (
             <div key={i} className="flex-1 text-center">
-              <p className="text-[10px] font-black text-slate-600 uppercase tracking-wider">{f.mes.split('/')[0]}</p>
-              <p className="text-[8px] font-bold text-slate-300">{f.mes.split('/')[1]}</p>
+              <p className="text-xs font-semibold text-slate-600 normal-case tracking-normal">{f.mes.split('/')[0]}</p>
+              <p className="text-xs font-bold text-slate-300">{f.mes.split('/')[1]}</p>
             </div>
           ))}
         </div>
@@ -238,7 +238,7 @@ const ForecastChart: React.FC<Props> = ({ forecast }) => {
         <div className="absolute left-14 right-0 flex" style={{ top: barAreaHeight + 40 }}>
           {forecast.map((f, i) => (
             <div key={i} className="flex-1 text-center">
-              <p className={`text-[9px] font-black ${f.lucro_projetado >= 0 ? 'text-indigo-500' : 'text-rose-500'}`}>
+              <p className={`text-xs font-semibold ${f.lucro_projetado >= 0 ? 'text-indigo-500' : 'text-rose-500'}`}>
                 {f.lucro_projetado > 0 ? '+' : ''}{fmt(f.lucro_projetado)}
               </p>
             </div>
@@ -259,25 +259,25 @@ const ForecastChart: React.FC<Props> = ({ forecast }) => {
             onMouseEnter={() => setHoveredIdx(i)}
             onMouseLeave={() => setHoveredIdx(null)}
           >
-            <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-3">{f.mes}</p>
+            <p className="text-xs font-semibold text-slate-500 normal-case tracking-normal mb-3">{f.mes}</p>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1">
                   <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-                  <span className="text-[8px] font-bold text-slate-400 uppercase">Receber</span>
+                  <span className="text-xs font-bold text-slate-400 normal-case">Receber</span>
                 </div>
-                <span className="text-[10px] font-black text-emerald-600">{fmt(f.contas_receber)}</span>
+                <span className="text-xs font-semibold text-emerald-600">{fmt(f.contas_receber)}</span>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1">
                   <div className="w-1.5 h-1.5 rounded-full bg-rose-500"></div>
-                  <span className="text-[8px] font-bold text-slate-400 uppercase">Pagar</span>
+                  <span className="text-xs font-bold text-slate-400 normal-case">Pagar</span>
                 </div>
-                <span className="text-[10px] font-black text-rose-600">{fmt(f.contas_pagar)}</span>
+                <span className="text-xs font-semibold text-rose-600">{fmt(f.contas_pagar)}</span>
               </div>
               <div className="border-t border-slate-200 pt-2 flex items-center justify-between">
-                <span className="text-[8px] font-bold text-slate-400 uppercase">Resultado</span>
-                <span className={`text-[10px] font-black ${f.lucro_projetado >= 0 ? 'text-indigo-600' : 'text-rose-600'}`}>
+                <span className="text-xs font-bold text-slate-400 normal-case">Resultado</span>
+                <span className={`text-xs font-semibold ${f.lucro_projetado >= 0 ? 'text-indigo-600' : 'text-rose-600'}`}>
                   {f.lucro_projetado > 0 ? '+' : ''}{fmt(f.lucro_projetado)}
                 </span>
               </div>

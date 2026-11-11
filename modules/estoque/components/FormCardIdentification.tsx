@@ -163,19 +163,19 @@ const FormCardIdentification: React.FC<Props> = ({ formData, onChange, onConsult
   const placaValida = placaLength >= 6 && placaLength <= 7;
 
   // Selects precisam de padding-right extra para não sobrepor o botão "+"
-  const selectCls = "w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 pr-14 text-sm font-bold text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 appearance-none transition-all disabled:bg-slate-50 disabled:opacity-50";
+  const selectCls = "w-full bg-white border border-slate-200 rounded-xl px-5 py-3 pr-14 text-sm font-bold text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 appearance-none transition-all disabled:bg-slate-50 disabled:opacity-50";
 
   return (
     <>
-      <div className="bg-white rounded-[2.5rem] p-8 border border-slate-200 shadow-sm animate-in slide-in-from-bottom-2">
-        <h3 className="text-lg font-black text-slate-900 uppercase tracking-tighter mb-8 flex items-center">
+      <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm animate-in slide-in-from-bottom-2">
+        <h3 className="text-lg font-semibold text-slate-900 normal-case tracking-normal mb-8 flex items-center">
           <span className="w-8 h-8 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center mr-3 text-sm">01</span>
           Identificação do Veículo
         </h3>
 
         <div className="mb-8 grid grid-cols-1 lg:grid-cols-[minmax(240px,320px)_1fr] gap-6 items-stretch">
-          <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100">
-            <label className="block text-[10px] font-black text-slate-400 uppercase mb-4 ml-1 tracking-widest">Placa do Veículo</label>
+          <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+            <label className="block text-xs font-semibold text-slate-500 normal-case mb-4 ml-1 tracking-normal">Placa do Veículo</label>
             <div className="relative max-w-[280px] mx-auto">
               <div className="absolute top-0 left-0 w-full h-4 bg-blue-700 rounded-t-lg flex items-center justify-between px-2">
                 <span className="text-[6px] font-bold text-white">BRASIL</span>
@@ -186,10 +186,10 @@ const FormCardIdentification: React.FC<Props> = ({ formData, onChange, onConsult
                 value={formData.placa || ''}
                 onChange={handlePlacaChange}
                 maxLength={7}
-                className="w-full bg-white border-2 border-slate-800 rounded-lg pt-6 pb-2 text-center text-4xl font-black uppercase tracking-widest text-slate-800 outline-none font-mono"
+                className="w-full bg-white border-2 border-slate-800 rounded-lg pt-6 pb-2 text-center text-4xl font-semibold uppercase tracking-normal text-slate-800 outline-none font-mono"
                 placeholder="ABC1D23"
               />
-              <p className="text-[9px] text-center mt-2 text-slate-400 font-bold uppercase tracking-widest">
+              <p className="text-xs text-center mt-2 text-slate-400 font-bold normal-case tracking-normal">
                 Consulta por placa antiga ou Mercosul
               </p>
             </div>
@@ -199,7 +199,7 @@ const FormCardIdentification: React.FC<Props> = ({ formData, onChange, onConsult
                 type="button"
                 onClick={handleConsultarPlaca}
                 disabled={!placaValida || isConsultando}
-                className="px-6 py-3 bg-emerald-600 text-white text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-emerald-700 shadow-lg shadow-emerald-200 transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 flex items-center gap-2"
+                className="px-6 py-3 bg-emerald-600 text-white text-xs font-semibold normal-case tracking-normal rounded-xl hover:bg-emerald-700 shadow-sm shadow-emerald-200 transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 flex items-center gap-2"
               >
                 {isConsultando ? (
                   <>
@@ -226,13 +226,13 @@ const FormCardIdentification: React.FC<Props> = ({ formData, onChange, onConsult
             )}
           </div>
 
-          <div className="bg-indigo-50/50 rounded-3xl p-6 border border-indigo-100 flex flex-col justify-center">
-            <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-2">Cadastro guiado pela placa</p>
+          <div className="bg-indigo-50/50 rounded-2xl p-6 border border-indigo-100 flex flex-col justify-center">
+            <p className="text-xs font-semibold text-indigo-500 normal-case tracking-normal mb-2">Cadastro guiado pela placa</p>
             <p className="text-sm font-bold text-slate-700 leading-relaxed">
               Ao consultar, o sistema já preenche chassi, cor e anos quando a API retornar esses dados, além de conduzir o cadastro de montadora, tipo, modelo e versão.
             </p>
             {formData.chassi && (
-              <p className="mt-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              <p className="mt-4 text-xs font-semibold text-slate-400 normal-case tracking-normal">
                 Chassi identificado: <span className="text-slate-700 font-mono">{formData.chassi}</span>
               </p>
             )}
@@ -242,7 +242,7 @@ const FormCardIdentification: React.FC<Props> = ({ formData, onChange, onConsult
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           {/* Montadora */}
           <div className="relative">
-            <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Montadora</label>
+            <label className="block text-xs font-semibold text-slate-500 normal-case mb-2 tracking-normal ml-1">Montadora</label>
             <select
               value={formData.montadora_id || ''}
               onChange={e => {
@@ -264,7 +264,7 @@ const FormCardIdentification: React.FC<Props> = ({ formData, onChange, onConsult
 
           {/* Categoria */}
           <div className="relative">
-            <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Categoria (Tipo)</label>
+            <label className="block text-xs font-semibold text-slate-500 normal-case mb-2 tracking-normal ml-1">Categoria (Tipo)</label>
             <select
               value={formData.tipo_veiculo_id || ''}
               onChange={e => {
@@ -286,9 +286,9 @@ const FormCardIdentification: React.FC<Props> = ({ formData, onChange, onConsult
 
           {/* Modelo */}
           <div className="relative">
-            <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">
+            <label className="block text-xs font-semibold text-slate-500 normal-case mb-2 tracking-normal ml-1">
               Modelo
-              <span className="ml-2 text-indigo-500 normal-case font-medium text-[9px]">— clique + para cadastrar novo</span>
+              <span className="ml-2 text-indigo-500 normal-case font-medium text-xs">— clique + para cadastrar novo</span>
             </label>
             <select
               value={formData.modelo_id || ''}
@@ -315,9 +315,9 @@ const FormCardIdentification: React.FC<Props> = ({ formData, onChange, onConsult
 
           {/* Versão */}
           <div className="relative">
-            <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">
+            <label className="block text-xs font-semibold text-slate-500 normal-case mb-2 tracking-normal ml-1">
               Versão / Acabamento
-              <span className="ml-2 text-indigo-500 normal-case font-medium text-[9px]">— clique + para cadastrar nova</span>
+              <span className="ml-2 text-indigo-500 normal-case font-medium text-xs">— clique + para cadastrar nova</span>
             </label>
             <select
               value={formData.versao_id || ''}
@@ -343,33 +343,33 @@ const FormCardIdentification: React.FC<Props> = ({ formData, onChange, onConsult
         </div>
 
         {selectedVersao ? (
-          <div className="bg-indigo-50/50 rounded-3xl p-6 border border-indigo-100 animate-in fade-in zoom-in-95 duration-500">
+          <div className="bg-indigo-50/50 rounded-2xl p-6 border border-indigo-100 animate-in fade-in zoom-in-95 duration-500">
             <div className="flex items-center justify-between mb-4 px-1">
-              <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Ficha Técnica Automática (Somente Leitura)</p>
-              <span className="text-[9px] font-black bg-indigo-600 text-white px-2 py-0.5 rounded-lg uppercase">Vinculado</span>
+              <p className="text-xs font-semibold text-indigo-400 normal-case tracking-normal">Ficha Técnica Automática (Somente Leitura)</p>
+              <span className="text-xs font-semibold bg-indigo-600 text-white px-2 py-0.5 rounded-lg normal-case">Vinculado</span>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="bg-white p-3 rounded-xl shadow-sm border border-indigo-100/50">
-                <p className="text-[8px] font-bold text-slate-400 uppercase mb-0.5">Motorização</p>
-                <p className="text-xs font-black text-indigo-600">{selectedVersao.motorizacao}</p>
+                <p className="text-xs font-bold text-slate-400 normal-case mb-0.5">Motorização</p>
+                <p className="text-xs font-semibold text-indigo-600">{selectedVersao.motorizacao}</p>
               </div>
               <div className="bg-white p-3 rounded-xl shadow-sm border border-indigo-100/50">
-                <p className="text-[8px] font-bold text-slate-400 uppercase mb-0.5">Combustível</p>
-                <p className="text-xs font-black text-indigo-600">{selectedVersao.combustivel}</p>
+                <p className="text-xs font-bold text-slate-400 normal-case mb-0.5">Combustível</p>
+                <p className="text-xs font-semibold text-indigo-600">{selectedVersao.combustivel}</p>
               </div>
               <div className="bg-white p-3 rounded-xl shadow-sm border border-indigo-100/50">
-                <p className="text-[8px] font-bold text-slate-400 uppercase mb-0.5">Transmissão</p>
-                <p className="text-xs font-black text-indigo-600">{selectedVersao.transmissao}</p>
+                <p className="text-xs font-bold text-slate-400 normal-case mb-0.5">Transmissão</p>
+                <p className="text-xs font-semibold text-indigo-600">{selectedVersao.transmissao}</p>
               </div>
               <div className="bg-white p-3 rounded-xl shadow-sm border border-indigo-100/50">
-                <p className="text-[8px] font-bold text-slate-400 uppercase mb-0.5">Anos Oficiais</p>
-                <p className="text-xs font-black text-indigo-600">{selectedVersao.ano_fabricacao}/{selectedVersao.ano_modelo}</p>
+                <p className="text-xs font-bold text-slate-400 normal-case mb-0.5">Anos Oficiais</p>
+                <p className="text-xs font-semibold text-indigo-600">{selectedVersao.ano_fabricacao}/{selectedVersao.ano_modelo}</p>
               </div>
             </div>
           </div>
         ) : (
-          <div className="bg-slate-50 rounded-3xl p-6 border border-slate-100 border-dashed text-center">
-            <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">
+          <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 border-dashed text-center">
+            <p className="text-xs font-semibold text-slate-300 normal-case tracking-normal">
               {isLoadingModelos || isLoadingVersoes ? 'Aguarde um momento...' : 'Selecione uma versão para carregar os dados técnicos'}
             </p>
           </div>

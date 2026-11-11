@@ -63,11 +63,11 @@ const FormMontadora: React.FC<FormProps> = ({ initialData, isSaving, onClose, on
   }, []);
 
   const content = (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden">
-        <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+    <div data-drivecar-ui className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-white w-full max-w-lg rounded-2xl shadow-sm overflow-hidden">
+        <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50">
           <div>
-            <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">
+            <h2 className="text-2xl font-semibold text-slate-900 normal-case tracking-tight">
               {initialData ? 'Editar Marca' : 'Nova Montadora'}
             </h2>
             <p className="text-slate-500 text-xs">A logo será exibida em todo o sistema e site.</p>
@@ -79,14 +79,14 @@ const FormMontadora: React.FC<FormProps> = ({ initialData, isSaving, onClose, on
           </button>
         </div>
 
-        <form onSubmit={handleFormSubmit} className="p-8 space-y-8">
+        <form onSubmit={handleFormSubmit} className="p-6 space-y-6">
           {/* Logo Section */}
           <div className="flex flex-col items-center">
-            <label className="block text-[10px] font-black text-slate-400 uppercase mb-4 tracking-widest self-start ml-1">Logo da Montadora</label>
+            <label className="block text-xs font-medium text-slate-500 normal-case mb-4 tracking-normal self-start ml-1">Logo da Montadora</label>
             <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" className="hidden" />
             <div
               onClick={() => !isSaving && fileInputRef.current?.click()}
-              className={`w-40 h-40 border-2 border-dashed rounded-[2.5rem] flex items-center justify-center transition-all ${isSaving ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+              className={`w-40 h-40 border-2 border-dashed rounded-2xl flex items-center justify-center transition-all ${isSaving ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
                 } ${formData.logo_url ? 'border-indigo-200 bg-white' : 'border-slate-200 bg-slate-50 hover:bg-slate-100 hover:border-indigo-300'
                 }`}
             >
@@ -97,14 +97,14 @@ const FormMontadora: React.FC<FormProps> = ({ initialData, isSaving, onClose, on
                   <svg className="w-10 h-10 mx-auto text-slate-300 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                   </svg>
-                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Upload Logo</p>
+                  <p className="text-xs font-medium text-slate-500 normal-case tracking-normal">Upload Logo</p>
                 </div>
               )}
             </div>
           </div>
 
           <div>
-            <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Nome da Montadora</label>
+            <label className="block text-xs font-medium text-slate-500 normal-case mb-2 tracking-normal ml-1">Nome da Montadora</label>
             <input
               type="text"
               name="nome"
@@ -113,7 +113,7 @@ const FormMontadora: React.FC<FormProps> = ({ initialData, isSaving, onClose, on
               required
               disabled={isSaving}
               autoFocus
-              className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 text-sm font-bold text-[#111827] focus:ring-2 focus:ring-indigo-500 outline-none transition-all disabled:opacity-50"
+              className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 text-sm font-medium text-[#111827] focus:ring-2 focus:ring-indigo-500 outline-none transition-all disabled:opacity-50"
               placeholder="Ex: Toyota, BMW, Chevrolet..."
             />
           </div>
@@ -123,14 +123,14 @@ const FormMontadora: React.FC<FormProps> = ({ initialData, isSaving, onClose, on
               type="button"
               onClick={onClose}
               disabled={isSaving}
-              className="px-8 py-4 text-slate-500 text-xs font-black uppercase tracking-widest hover:bg-slate-50 rounded-2xl disabled:opacity-30"
+              className="px-6 py-4 text-slate-500 text-xs font-semibold normal-case tracking-normal hover:bg-slate-50 rounded-2xl disabled:opacity-30"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={isSaving}
-              className="px-10 py-4 bg-indigo-600 text-white text-xs font-black uppercase tracking-widest rounded-2xl hover:bg-indigo-700 shadow-xl shadow-indigo-100 transition-all flex items-center justify-center min-w-[180px] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-4 bg-indigo-600 text-white text-xs font-semibold normal-case tracking-normal rounded-2xl hover:bg-indigo-700 shadow-sm shadow-none transition-all flex items-center justify-center min-w-[180px] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSaving ? (
                 <>

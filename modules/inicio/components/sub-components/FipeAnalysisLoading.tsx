@@ -20,19 +20,19 @@ const FipeAnalysisLoading: React.FC<FipeAnalysisLoadingProps> = ({
   return (
     <div className="max-w-md mx-auto py-10 space-y-6 animate-in fade-in zoom-in-95 duration-500">
       <div className="text-center space-y-1">
-        <h2 className="text-2xl font-black text-slate-900 tracking-tighter uppercase">Análise em Curso</h2>
-        <p className="text-xs text-slate-400 font-medium">Aguarde enquanto processamos os dados.</p>
+        <h2 className="text-2xl font-semibold text-slate-900 tracking-tight normal-case">Análise em Curso</h2>
+        <p className="text-xs text-slate-500 font-medium">Aguarde enquanto processamos os dados.</p>
       </div>
 
       <div className="relative pt-1">
         <div className="flex mb-2 items-center justify-between">
           <div>
-            <span className="text-[10px] font-black inline-block py-1 px-2 uppercase rounded-full text-indigo-600 bg-indigo-200/30 tracking-tighter">
+            <span className="text-xs font-semibold inline-block py-1 px-2 normal-case rounded-full text-indigo-600 bg-indigo-200/30 tracking-tight">
               Status da Operação
             </span>
           </div>
           <div className="text-right">
-            <span className="text-xs font-black inline-block text-indigo-600">
+            <span className="text-xs font-semibold inline-block text-indigo-600">
               {Math.round(progress)}%
             </span>
           </div>
@@ -61,9 +61,9 @@ const FipeAnalysisLoading: React.FC<FipeAnalysisLoadingProps> = ({
               }`}
             >
               <div className={`p-2 rounded-xl ${isCurrent ? 'bg-indigo-600' : 'bg-slate-200'} transition-colors`}>
-                {isCurrent ? <Loader2 className="w-4 h-4 text-white animate-spin" /> : <Icon className="w-4 h-4 text-slate-400" />}
+                {isCurrent ? <Loader2 className="w-4 h-4 text-white animate-spin" /> : <Icon className="w-4 h-4 text-slate-500" />}
               </div>
-              <span className={`text-xs font-bold tracking-tight ${isCurrent ? 'text-indigo-900' : 'text-slate-400'}`}>
+              <span className={`text-xs font-bold tracking-tight ${isCurrent ? 'text-indigo-900' : 'text-slate-500'}`}>
                 {step.label}
               </span>
               {isDone && <CheckCircle2 className="w-4 h-4 text-emerald-500 ml-auto animate-in zoom-in duration-300" />}

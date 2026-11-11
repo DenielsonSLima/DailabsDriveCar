@@ -232,22 +232,22 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
     const content = (
         <>
             <div 
-                className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[150] transition-opacity animate-in fade-in duration-300" 
+                data-drivecar-ui className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[150] transition-opacity animate-in fade-in duration-200"
                 onClick={onClose}
             ></div>
 
             {toast && (
-                <div className={`fixed top-6 right-6 z-[300] px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 animate-in slide-in-from-right duration-300 border backdrop-blur-md ${toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' : 'bg-rose-600 text-white border-rose-400/50'} `}>
-                    <span className="font-bold text-sm tracking-tight">{toast.message}</span>
+                <div data-drivecar-ui className={`fixed top-6 right-6 z-[300] px-6 py-4 rounded-2xl shadow-sm flex items-center space-x-3 animate-in slide-in-from-right duration-200 border backdrop-blur-md ${toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' : 'bg-rose-600 text-white border-rose-400/50'} `}>
+                    <span className="font-semibold text-sm tracking-tight">{toast.message}</span>
                 </div>
             )}
 
-            <div className={`fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl z-[151] transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'} flex flex-col`}>
+            <div data-drivecar-ui className={`fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-sm z-[151] transform transition-transform duration-200 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'} flex flex-col`}>
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-slate-100 bg-slate-50/50">
                     <div>
-                        <h3 className="text-lg font-black text-slate-900 uppercase tracking-tight">Detalhes do Recebimento</h3>
-                        <p className="text-[10px] font-bold text-slate-400 tracking-widest uppercase mt-1">
+                        <h3 className="text-lg font-semibold text-slate-900 normal-case tracking-tight">Detalhes do Recebimento</h3>
+                        <p className="text-xs font-medium text-slate-500 tracking-normal normal-case mt-1">
                             Ref: {titulo.documento_ref || 'N/D'}
                         </p>
                     </div>
@@ -262,22 +262,22 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-8">
+                <div className="flex-1 overflow-y-auto p-6 space-y-6">
 
                     {/* Valor Principal e Resumo */}
                     <div className="space-y-4">
-                        <div className="px-6 py-8 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-3xl text-center shadow-lg shadow-emerald-200">
-                            <p className="text-xs font-black text-emerald-100 uppercase tracking-widest mb-2">Valor Total Consolidado</p>
-                            <h2 className="text-4xl font-black text-white tracking-tighter">
+                        <div className="px-6 py-6 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl text-center shadow-sm shadow-none">
+                            <p className="text-xs font-medium text-emerald-100 normal-case tracking-normal mb-2">Valor Total Consolidado</p>
+                            <h2 className="text-3xl font-semibold text-white tracking-tight">
                                 {formatCurrency(titulo.valor_total)}
                             </h2>
                             {(titulo as any).sub_titulos && (titulo as any).sub_titulos.length > 0 && (
-                                <p className="mt-2 text-[10px] font-bold text-emerald-100 uppercase tracking-widest opacity-90">
+                                <p className="mt-2 text-xs font-medium text-emerald-100 normal-case tracking-normal opacity-90">
                                     Original do Veículo: {formatCurrency((titulo as any).valor_base_carro)}
                                 </p>
                             )}
                             <div className="mt-4 flex justify-center">
-                                <span className={`px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-full border ${titulo.status === 'PAGO' ? 'bg-emerald-400/20 border-white/30 text-white' :
+                                <span className={`px-3 py-1 text-xs font-medium normal-case tracking-normal rounded-full border ${titulo.status === 'PAGO' ? 'bg-emerald-400/20 border-white/30 text-white' :
                                     'bg-white/20 border-white/30 text-white'
                                     }`}>
                                     {titulo.status}
@@ -285,29 +285,29 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div className="bg-emerald-50 p-4 rounded-2xl border border-emerald-100">
-                                <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-1">Total Já Recebido</p>
-                                <p className="text-lg font-black text-emerald-700">{formatCurrency(valorPagoTotal)}</p>
+                                <p className="text-xs font-medium text-emerald-600 normal-case tracking-normal mb-1">Total Já Recebido</p>
+                                <p className="text-lg font-semibold text-emerald-700">{formatCurrency(valorPagoTotal)}</p>
                             </div>
                             <div className="bg-rose-50 p-4 rounded-2xl border border-rose-100">
-                                <p className="text-[9px] font-black text-rose-600 uppercase tracking-widest mb-1">Saldo em Aberto</p>
-                                <p className="text-lg font-black text-rose-700">{formatCurrency(valorSaldoAberto)}</p>
+                                <p className="text-xs font-medium text-rose-600 normal-case tracking-normal mb-1">Saldo em Aberto</p>
+                                <p className="text-lg font-semibold text-rose-700">{formatCurrency(valorSaldoAberto)}</p>
                             </div>
                         </div>
 
                         {(titulo.valor_desconto > 0 || titulo.valor_acrescimo > 0) && (
-                            <div className="grid grid-cols-2 gap-3">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 {titulo.valor_desconto > 0 && (
                                     <div className="bg-slate-50 p-3 rounded-2xl border border-slate-100">
-                                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Descontos Aplicados</p>
-                                        <p className="text-sm font-black text-emerald-600">-{formatCurrency(titulo.valor_desconto)}</p>
+                                        <p className="text-xs font-medium text-slate-500 normal-case tracking-normal mb-1">Descontos Aplicados</p>
+                                        <p className="text-sm font-semibold text-emerald-600">-{formatCurrency(titulo.valor_desconto)}</p>
                                     </div>
                                 )}
                                 {titulo.valor_acrescimo > 0 && (
                                     <div className="bg-slate-50 p-3 rounded-2xl border border-slate-100">
-                                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Acréscimos (Juros)</p>
-                                        <p className="text-sm font-black text-rose-600">+{formatCurrency(titulo.valor_acrescimo)}</p>
+                                        <p className="text-xs font-medium text-slate-500 normal-case tracking-normal mb-1">Acréscimos (Juros)</p>
+                                        <p className="text-sm font-semibold text-rose-600">+{formatCurrency(titulo.valor_acrescimo)}</p>
                                     </div>
                                 )}
                             </div>
@@ -317,7 +317,7 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                     {titulo.origem_tipo === 'MANUAL' && titulo.venda_pedido_id && (
                         <button
                             onClick={() => handleEditLoan(titulo)}
-                            className="w-full px-4 py-3 rounded-xl text-xs font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition-colors"
+                            className="w-full px-4 py-3 rounded-xl text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition-colors"
                         >
                             Editar cobrança adicional
                         </button>
@@ -325,39 +325,39 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
 
                     {/* Dados do Cliente */}
                     <div>
-                        <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Dados do Cliente</h4>
+                        <h4 className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-3">Dados do Cliente</h4>
                         <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-3">
                             <div>
-                                <p className="text-[10px] font-bold text-slate-400 uppercase">Nome/Razão Social</p>
-                                <p className="text-sm font-black text-slate-900 uppercase">{titulo.parceiro?.nome || 'Não Informado'}</p>
+                                <p className="text-xs font-medium text-slate-500 normal-case">Nome/Razão Social</p>
+                                <p className="text-sm font-semibold text-slate-900 normal-case">{titulo.parceiro?.nome || 'Não Informado'}</p>
                             </div>
                             <div>
-                                <p className="text-[10px] font-bold text-slate-400 uppercase">Documento</p>
-                                <p className="text-sm font-bold text-slate-700">{titulo.parceiro?.documento || 'N/D'}</p>
+                                <p className="text-xs font-medium text-slate-500 normal-case">Documento</p>
+                                <p className="text-sm font-semibold text-slate-700">{titulo.parceiro?.documento || 'N/D'}</p>
                             </div>
                         </div>
                     </div>
 
                     {/* Dados do Veículo */}
                     {titulo.veiculo ? (
-                        <div className="animate-in fade-in slide-in-from-right duration-500">
-                            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Veículo Vinculado</h4>
-                            <div className="bg-slate-900 p-5 rounded-3xl shadow-xl relative overflow-hidden group">
+                        <div className="animate-in fade-in slide-in-from-right duration-200">
+                            <h4 className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-3">Veículo Vinculado</h4>
+                            <div className="bg-slate-50 p-5 rounded-2xl shadow-sm relative overflow-hidden group">
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500 rounded-full blur-[80px] opacity-20"></div>
                                 <div className="relative z-10 flex justify-between items-start">
                                     <div>
-                                        <p className="text-[10px] text-indigo-400 font-black uppercase tracking-widest mb-1">
+                                        <p className="text-xs text-indigo-600 font-medium normal-case tracking-normal mb-1">
                                             {titulo.veiculo.montadora?.nome || 'Marca N/D'}
                                         </p>
-                                        <h3 className="text-xl font-black text-white uppercase tracking-tight leading-none mb-2">
+                                        <h3 className="text-xl font-semibold text-slate-900 normal-case tracking-tight leading-none mb-2">
                                             {titulo.veiculo.modelo?.nome || 'Modelo N/D'}
                                         </h3>
-                                        <div className="flex bg-white/10 w-fit px-3 py-1.5 rounded-xl border border-white/20">
-                                            <p className="text-white font-black text-sm tracking-[0.2em] uppercase">{titulo.veiculo.placa}</p>
+                                        <div className="flex bg-white w-fit px-3 py-1.5 rounded-xl border border-slate-200">
+                                            <p className="text-slate-900 font-semibold text-sm tracking-normal normal-case">{titulo.veiculo.placa}</p>
                                         </div>
                                     </div>
-                                    <div className="bg-indigo-500/20 p-3 rounded-2xl border border-indigo-500/30">
-                                        <svg className="w-6 h-6 text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <div className="bg-slate-100/20 p-3 rounded-2xl border border-slate-200/30">
+                                        <svg className="w-6 h-6 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0" />
                                         </svg>
@@ -366,13 +366,13 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                             </div>
                         </div>
                     ) : titulo.origem_tipo === 'OUTRO_CREDITO' ? (
-                        <div className="animate-in fade-in slide-in-from-right duration-500">
-                            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Referência do Veículo</h4>
-                            <div className="bg-slate-100 p-5 rounded-3xl border border-slate-200">
+                        <div className="animate-in fade-in slide-in-from-right duration-200">
+                            <h4 className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-3">Referência do Veículo</h4>
+                            <div className="bg-slate-100 p-5 rounded-2xl border border-slate-200">
                                 <div className="flex justify-between items-center">
                                     <div>
-                                        <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-1">Identificado pela Descrição</p>
-                                        <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight">
+                                        <p className="text-xs text-slate-500 font-medium normal-case tracking-normal mb-1">Identificado pela Descrição</p>
+                                        <h3 className="text-xl font-semibold text-slate-900 normal-case tracking-tight">
                                             {titulo.descricao}
                                         </h3>
                                     </div>
@@ -391,20 +391,20 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                         <div className="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100/50">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <h4 className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-0.5">Cobrança Adicional</h4>
+                                    <h4 className="text-xs font-semibold text-indigo-500 normal-case tracking-normal mb-0.5">Cobrança Adicional</h4>
                                     <p className="text-xs text-slate-500 font-medium">Lançar empréstimo ou acréscimo para este cliente vinculado à venda</p>
                                 </div>
                                 {!isAdicionandoEmprestimo ? (
                                     <button 
                                         onClick={() => setIsAdicionandoEmprestimo(true)}
-                                        className="px-3 py-1.5 bg-indigo-100 text-indigo-700 text-xs font-bold rounded-lg hover:bg-indigo-200 transition-colors shrink-0"
+                                        className="px-3 py-1.5 bg-indigo-100 text-indigo-700 text-xs font-semibold rounded-lg hover:bg-indigo-200 transition-colors shrink-0"
                                     >
                                         + Adicionar
                                     </button>
                                 ) : (
                                     <button 
                                         onClick={() => setIsAdicionandoEmprestimo(false)}
-                                        className="px-3 py-1.5 bg-slate-200 text-slate-600 text-xs font-bold rounded-lg hover:bg-slate-300 transition-colors shrink-0"
+                                        className="px-3 py-1.5 bg-slate-200 text-slate-600 text-xs font-semibold rounded-lg hover:bg-slate-300 transition-colors shrink-0"
                                     >
                                         Cancelar
                                     </button>
@@ -414,7 +414,7 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                             {isAdicionandoEmprestimo && (
                                 <div className="mt-4 p-4 bg-white rounded-xl border border-indigo-100 shadow-sm space-y-3 animate-in fade-in slide-in-from-top-2">
                                     <div>
-                                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Descrição</label>
+                                        <label className="block text-xs font-medium text-slate-500 normal-case tracking-normal mb-1">Descrição</label>
                                         <input 
                                             type="text" 
                                             value={emprestimoDescricao}
@@ -424,9 +424,9 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                                         />
                                     </div>
                                     
-                                    <div className="grid grid-cols-2 gap-3">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                         <div>
-                                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Data (Vencimento)</label>
+                                            <label className="block text-xs font-medium text-slate-500 normal-case tracking-normal mb-1">Data (Vencimento)</label>
                                             <input 
                                                 type="date" 
                                                 value={emprestimoData}
@@ -435,12 +435,12 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Valor Emprestado (R$)</label>
+                                            <label className="block text-xs font-medium text-slate-500 normal-case tracking-normal mb-1">Valor Emprestado (R$)</label>
                                             <input 
                                                 type="text" 
                                                 value={valorSaida === 0 ? '' : valorSaida.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                                 onChange={handleValorSaidaChange}
-                                                className="w-full text-sm bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                                className="w-full text-sm bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                                 placeholder="0,00"
                                             />
                                         </div>
@@ -454,17 +454,17 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                                                 onChange={(e) => setVaiDebitarConta(e.target.checked)}
                                                 className="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500"
                                             />
-                                            <span className="text-xs font-bold text-slate-700">Houve saída de dinheiro? (Debitar Conta)</span>
+                                            <span className="text-xs font-medium text-slate-700">Houve saída de dinheiro? (Debitar Conta)</span>
                                         </label>
                                     </div>
                                     
                                     {vaiDebitarConta && (
                                         <div className="animate-in fade-in slide-in-from-top-1 bg-slate-50 p-3 rounded-lg border border-slate-200">
-                                            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Conta de Origem</label>
+                                            <label className="block text-xs font-medium text-slate-500 normal-case tracking-normal mb-1">Conta de Origem</label>
                                             <select 
                                                 value={contaSaidaId}
                                                 onChange={(e) => setContaSaidaId(e.target.value)}
-                                                className="w-full text-sm bg-white border border-slate-200 rounded-lg px-3 py-2 font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                                className="w-full text-sm bg-white border border-slate-200 rounded-lg px-3 py-2 font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                             >
                                                 <option value="">Selecione a Conta...</option>
                                                 {contasBancarias.map(c => (
@@ -477,12 +477,12 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                                     )}
 
                                     <div className="pt-2">
-                                        <label className="block text-[10px] font-black text-indigo-600 uppercase tracking-widest mb-1">Valor a Receber (R$)</label>
+                                        <label className="block text-xs font-medium text-indigo-600 normal-case tracking-normal mb-1">Valor a Receber (R$)</label>
                                         <input 
                                             type="text" 
                                             value={emprestimoValor === 0 ? '' : emprestimoValor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                             onChange={handleValorChange}
-                                            className="w-full text-sm bg-indigo-50 border border-indigo-200 rounded-lg px-3 py-2 font-black text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                            className="w-full text-sm bg-indigo-50 border border-indigo-200 rounded-lg px-3 py-2 font-medium text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                             placeholder="0,00"
                                         />
                                     </div>
@@ -490,7 +490,7 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                                     <button 
                                         onClick={handleAddEmprestimo}
                                         disabled={isSubmittingEmprestimo || emprestimoValor <= 0 || (vaiDebitarConta && (!contaSaidaId || valorSaida <= 0))}
-                                        className="w-full py-2.5 mt-2 bg-indigo-600 text-white rounded-lg text-xs font-black uppercase tracking-widest hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                        className="w-full py-2.5 mt-2 bg-indigo-600 text-white rounded-lg text-xs font-semibold normal-case tracking-normal hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                                     >
                                         {isSubmittingEmprestimo ? 'Salvando...' : 'Confirmar Lançamento'}
                                     </button>
@@ -502,7 +502,7 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                     {/* Histórico de Empréstimos/Acréscimos (Sub-títulos) */}
                     {(titulo as any).sub_titulos && (titulo as any).sub_titulos.length > 0 && (
                         <div>
-                            <h4 className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-3 flex items-center">
+                            <h4 className="text-xs font-semibold text-indigo-500 normal-case tracking-normal mb-3 flex items-center">
                                 <svg className="w-3 h-3 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                                 </svg>
@@ -523,29 +523,29 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                                         <div key={sub.id} className="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100/50 group hover:border-indigo-200 transition-all flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
                                             <div className="flex-1">
                                                 <div className="flex items-center space-x-2 mb-1">
-                                                    <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest bg-white/60 px-2 py-0.5 rounded-md border border-indigo-100/50">Venc: {formatDate(sub.data_vencimento)}</p>
+                                                    <p className="text-xs font-medium text-indigo-400 normal-case tracking-normal bg-white/60 px-2 py-0.5 rounded-md border border-indigo-100/50">Venc: {formatDate(sub.data_vencimento)}</p>
                                                 </div>
-                                                <p className="text-sm font-bold text-slate-700">{sub.descricao}</p>
+                                                <p className="text-sm font-semibold text-slate-700">{sub.descricao}</p>
                                             </div>
                                             
                                             <div className="flex flex-wrap gap-2 w-full sm:w-auto mb-3 sm:mb-0">
                                                 {valorEmprestado > 0 && (
                                                     <div className="text-center bg-white/60 p-2 rounded-xl border border-indigo-100/50 flex-1 min-w-[70px]">
-                                                        <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Emprestado</p>
-                                                        <p className="text-xs font-black text-rose-500">{formatCurrency(valorEmprestado)}</p>
+                                                        <p className="text-xs font-medium text-slate-500 normal-case tracking-normal mb-0.5">Emprestado</p>
+                                                        <p className="text-xs font-medium text-rose-500">{formatCurrency(valorEmprestado)}</p>
                                                     </div>
                                                 )}
                                                 
                                                 {valorEmprestado > 0 && (
                                                     <div className="text-center bg-white/60 p-2 rounded-xl border border-indigo-100/50 flex-1 min-w-[70px]">
-                                                        <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Lucro</p>
-                                                        <p className="text-xs font-black text-emerald-500">+{formatCurrency(margemLucro)}</p>
+                                                        <p className="text-xs font-medium text-slate-500 normal-case tracking-normal mb-0.5">Lucro</p>
+                                                        <p className="text-xs font-medium text-emerald-500">+{formatCurrency(margemLucro)}</p>
                                                     </div>
                                                 )}
 
                                                 <div className="text-center bg-indigo-100/50 p-2 rounded-xl border border-indigo-200/50 flex-1 min-w-[70px]">
-                                                    <p className="text-[8px] font-black text-indigo-600 uppercase tracking-widest mb-0.5">A Receber</p>
-                                                    <p className="text-xs font-black text-indigo-700">{formatCurrency(valorReceber)}</p>
+                                                    <p className="text-xs font-medium text-indigo-600 normal-case tracking-normal mb-0.5">A Receber</p>
+                                                    <p className="text-xs font-medium text-indigo-700">{formatCurrency(valorReceber)}</p>
                                                 </div>
                                             </div>
 
@@ -578,7 +578,7 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
 
                     {/* Histórico de Liquidações */}
                     <div>
-                        <h4 className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-3 flex items-center">
+                        <h4 className="text-xs font-semibold text-emerald-500 normal-case tracking-normal mb-3 flex items-center">
                             <svg className="w-3 h-3 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                             </svg>
@@ -587,7 +587,7 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
 
                         <div className="space-y-3">
                             {transacoes.length === 0 ? (
-                                <p className="text-xs text-slate-400 italic">Nenhum recebimento registrado.</p>
+                                <p className="text-xs text-slate-500 italic">Nenhum recebimento registrado.</p>
                             ) : (
                                 transacoes.map((t) => (
                                     <div key={t.id} className="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100/50 group hover:border-emerald-200 transition-all">
@@ -598,14 +598,14 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                                                         type="date"
                                                         value={novaData}
                                                         onChange={(e) => setNovaData(e.target.value)}
-                                                        className="text-[10px] bg-white border border-emerald-200 rounded px-2 py-1 font-bold text-emerald-700"
+                                                        className="text-xs bg-white border border-emerald-200 rounded px-2 py-1 font-medium text-emerald-700"
                                                     />
                                                     <div className="flex items-center space-x-2">
                                                         <input
                                                             type="number"
                                                             value={novoValor}
                                                             onChange={(e) => setNovoValor(Number(e.target.value))}
-                                                            className="w-24 text-right bg-white border border-emerald-200 rounded px-2 py-1 text-sm font-black text-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                                                            className="w-24 text-right bg-white border border-emerald-200 rounded px-2 py-1 text-sm font-medium text-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                                                         />
                                                         <button onClick={handleSaveEdit} className="p-1.5 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors">
                                                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
@@ -617,7 +617,7 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                                                 </div>
                                             ) : (
                                                 <div className="flex items-center gap-3">
-                                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-black ${t.tipo_transacao === 'DESCONTO_TITULO'
+                                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold ${t.tipo_transacao === 'DESCONTO_TITULO'
                                                         ? 'bg-emerald-100 text-emerald-600'
                                                         : t.tipo_transacao === 'ACRESCIMO_TITULO'
                                                             ? 'bg-amber-100 text-amber-600'
@@ -627,7 +627,7 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                                                     </div>
                                                     <div>
                                                         <div className="flex items-center gap-1.5">
-                                                            <p className="text-[10px] font-bold text-slate-500 uppercase">
+                                                            <p className="text-xs font-medium text-slate-500 normal-case">
                                                                 {t.tipo_transacao === 'DESCONTO_TITULO'
                                                                     ? 'Desconto'
                                                                     : t.tipo_transacao === 'ACRESCIMO_TITULO'
@@ -635,12 +635,12 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                                                                         : new Date(t.data_pagamento).toLocaleDateString('pt-BR')}
                                                             </p>
                                                             {(t.tipo_transacao === 'DESCONTO_TITULO' || t.tipo_transacao === 'ACRESCIMO_TITULO') && (
-                                                                <span className="text-[8px] font-black underline uppercase tracking-tighter text-slate-400">
+                                                                <span className="text-xs font-medium underline normal-case tracking-tight text-slate-500">
                                                                     {new Date(t.data_pagamento).toLocaleDateString('pt-BR')}
                                                                 </span>
                                                             )}
                                                         </div>
-                                                        <p className={`text-sm font-black ${t.tipo_transacao === 'DESCONTO_TITULO'
+                                                        <p className={`text-sm font-semibold ${t.tipo_transacao === 'DESCONTO_TITULO'
                                                             ? 'text-emerald-700'
                                                             : t.tipo_transacao === 'ACRESCIMO_TITULO'
                                                                 ? 'text-amber-700'
@@ -676,10 +676,10 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                                         </div>
                                         {t.conta && (
                                             <div className="flex items-center mt-2 pt-2 border-t border-emerald-100/30">
-                                                <div className="w-6 h-6 rounded bg-emerald-100 text-emerald-600 flex items-center justify-center font-black text-[8px] mr-2 shrink-0 uppercase">
+                                                <div className="w-6 h-6 rounded bg-emerald-100 text-emerald-600 flex items-center justify-center font-semibold text-xs mr-2 shrink-0 normal-case">
                                                     MB
                                                 </div>
-                                                <p className="text-[9px] font-bold text-slate-500 truncate uppercase">
+                                                <p className="text-xs font-medium text-slate-500 truncate normal-case">
                                                     {t.conta.banco_nome || t.conta.titular} | Ag: {t.conta.agencia || '-'} CC: {t.conta.conta || '-'}
                                                 </p>
                                             </div>
@@ -695,7 +695,7 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                 <div className="p-6 border-t border-slate-100 bg-slate-50">
                     <button
                         onClick={onClose}
-                        className="w-full py-4 bg-slate-900 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg active:scale-[0.98]"
+                        className="w-full py-4 bg-indigo-600 text-white rounded-2xl text-xs font-semibold normal-case tracking-normal hover:bg-indigo-700 transition-all shadow-sm active:scale-[0.98]"
                     >
                         Fechar Visualização
                     </button>

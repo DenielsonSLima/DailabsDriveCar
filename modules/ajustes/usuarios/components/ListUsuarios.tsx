@@ -21,28 +21,28 @@ const ListUsuarios: React.FC<ListUsuariosProps> = ({ usuarios, onEdit, onDelete,
 
   if (usuarios.length === 0) {
     return (
-      <div className="text-center py-20 bg-white rounded-3xl border border-slate-200 border-dashed">
+      <div className="text-center py-20 bg-white rounded-2xl border border-slate-200 border-dashed">
         <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
           <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
           </svg>
         </div>
-        <h3 className="text-slate-900 font-bold text-lg">Nenhum acesso configurado</h3>
-        <p className="text-slate-400 text-sm">Crie usuários no Dashboard do Supabase para vê-los aqui.</p>
+        <h3 className="text-slate-900 font-semibold text-lg">Nenhum acesso configurado</h3>
+        <p className="text-slate-500 text-sm">Crie usuários no Dashboard do Supabase para vê-los aqui.</p>
       </div>
     );
   }
 
   return (
-    <div className="overflow-hidden bg-white border border-slate-200 rounded-3xl shadow-sm">
+    <div className="overflow-hidden bg-white border border-slate-200 rounded-2xl shadow-sm">
       <table className="w-full text-left">
         <thead className="bg-slate-50 border-b border-slate-100">
           <tr>
-            <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Usuário</th>
-            <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">E-mail</th>
-            <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Nível de Acesso</th>
-            <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
-            <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Ações</th>
+            <th className="px-6 py-4 text-xs font-medium text-slate-500 normal-case tracking-normal">Usuário</th>
+            <th className="px-6 py-4 text-xs font-medium text-slate-500 normal-case tracking-normal">E-mail</th>
+            <th className="px-6 py-4 text-xs font-medium text-slate-500 normal-case tracking-normal">Nível de Acesso</th>
+            <th className="px-6 py-4 text-xs font-medium text-slate-500 normal-case tracking-normal">Status</th>
+            <th className="px-6 py-4 text-xs font-medium text-slate-500 normal-case tracking-normal text-right">Ações</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-50">
@@ -50,13 +50,13 @@ const ListUsuarios: React.FC<ListUsuariosProps> = ({ usuarios, onEdit, onDelete,
             <tr key={u.id} className={`hover:bg-slate-50 transition-colors ${!u.ativo ? 'opacity-60' : ''}`}>
               <td className="px-6 py-4">
                 <div className="flex items-center space-x-3">
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white font-black text-sm shadow-sm ${u.role === 'ADMIN' ? 'bg-indigo-900' : 'bg-indigo-500'
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white font-semibold text-sm shadow-sm ${u.role === 'ADMIN' ? 'bg-indigo-900' : 'bg-indigo-500'
                     }`}>
                     {u.nome?.charAt(0) || '?'}
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-slate-900">{u.nome} {u.sobrenome || ''}</p>
-                    <p className="text-[10px] text-slate-400 font-mono tracking-tighter uppercase">ID: {u.id.split('-')[0]}...</p>
+                    <p className="text-sm font-semibold text-slate-900">{u.nome} {u.sobrenome || ''}</p>
+                    <p className="text-xs text-slate-500 font-mono tracking-tight normal-case">ID: {u.id.split('-')[0]}...</p>
                   </div>
                 </div>
               </td>
@@ -64,7 +64,7 @@ const ListUsuarios: React.FC<ListUsuariosProps> = ({ usuarios, onEdit, onDelete,
                 <span className="text-sm text-slate-600 font-medium">{u.email}</span>
               </td>
               <td className="px-6 py-4">
-                <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-tighter border ${getRoleBadge(u.role)}`}>
+                <span className={`px-2 py-0.5 rounded text-xs font-medium normal-case tracking-tight border ${getRoleBadge(u.role)}`}>
                   {u.role}
                 </span>
               </td>
@@ -80,7 +80,7 @@ const ListUsuarios: React.FC<ListUsuariosProps> = ({ usuarios, onEdit, onDelete,
                     }`}
                 >
                   <div className={`w-1.5 h-1.5 rounded-full ${u.ativo ? 'bg-emerald-500' : 'bg-slate-400'}`} />
-                  <span className="text-[10px] font-bold uppercase">{u.ativo ? 'Ativo' : 'Inativo'}</span>
+                  <span className="text-xs font-medium normal-case">{u.ativo ? 'Ativo' : 'Inativo'}</span>
                 </button>
               </td>
               <td className="px-6 py-4 text-right">

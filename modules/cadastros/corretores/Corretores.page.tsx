@@ -107,9 +107,9 @@ const CorretoresPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500 relative">
+    <div className="space-y-6 animate-in fade-in duration-200 relative">
       {toast && (
-        <div className={`fixed top-6 right-6 z-[200] px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 animate-in slide-in-from-right duration-300 border backdrop-blur-md ${toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' :
+        <div data-drivecar-ui className={`fixed top-6 right-6 z-[200] px-6 py-4 rounded-2xl shadow-sm flex items-center space-x-3 animate-in slide-in-from-right duration-200 border backdrop-blur-md ${toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' :
             toast.type === 'info' ? 'bg-indigo-600/95 text-white border-indigo-400/50' :
               'bg-rose-600 text-white border-rose-400/50'
           }`}>
@@ -121,27 +121,27 @@ const CorretoresPage: React.FC = () => {
               <path strokeLinecap="round" strokeLinejoin="round" d={toast.type === 'success' ? "M5 13l4 4L19 7" : toast.type === 'info' ? "M13 10V3L4 14h7v7l9-11h-7z" : "M6 18L18 6M6 6l12 12"} />
             </svg>
           </div>
-          <span className="font-bold text-sm tracking-tight">{toast.message}</span>
+          <span className="font-semibold text-sm tracking-tight">{toast.message}</span>
         </div>
       )}
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center space-x-2">
-            <h1 className="text-3xl font-bold text-slate-900 tracking-tighter">Corretores</h1>
-            <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase tracking-widest rounded-md animate-pulse">Realtime</span>
+            <h1 className="text-3xl font-semibold text-slate-900 tracking-tight">Corretores</h1>
+            <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-medium normal-case tracking-normal rounded-md animate-pulse">Realtime</span>
           </div>
           <p className="text-slate-500 mt-1">Gerencie a equipe comercial e parceiros de venda.</p>
         </div>
-        <button onClick={handleOpenAdd} className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-sm font-black uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 flex items-center active:scale-95">
+        <button onClick={handleOpenAdd} className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-sm font-semibold normal-case tracking-normal hover:bg-indigo-700 transition-all shadow-sm shadow-none flex items-center active:scale-100">
           <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
           Novo Corretor
         </button>
       </div>
 
-      <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm p-8 min-h-[500px]">
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 min-h-[500px]">
         <div className="mb-8 relative max-w-md">
-          <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+          <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-500">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
           </span>
           <input
@@ -149,14 +149,14 @@ const CorretoresPage: React.FC = () => {
             placeholder="Buscar por nome, sobrenome ou CPF..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-white border border-slate-200 rounded-2xl py-3 pl-10 pr-4 text-sm font-bold text-[#111827] focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
+            className="w-full bg-white border border-slate-200 rounded-2xl py-3 pl-10 pr-4 text-sm font-medium text-[#111827] focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
           />
         </div>
 
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 space-y-4">
             <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-slate-400 font-bold uppercase text-[10px] tracking-widest">Carregando equipe...</p>
+            <p className="text-slate-500 font-medium normal-case text-xs tracking-normal">Carregando equipe...</p>
           </div>
         ) : filteredItems.length === 0 ? (
           <div className="py-20 text-center text-slate-400 italic">Nenhum corretor encontrado.</div>

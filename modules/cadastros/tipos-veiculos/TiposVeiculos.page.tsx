@@ -98,29 +98,29 @@ const TiposVeiculosPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500 relative">
+    <div className="space-y-6 animate-in fade-in duration-200 relative">
       {/* Toast Notification */}
       {toast && (
-        <div className={`fixed top-6 right-6 z-[220] px-6 py-3 rounded-2xl shadow-2xl flex items-center space-x-3 animate-in slide-in-from-right duration-300 ${toast.type === 'success' ? 'bg-slate-900 text-white border-l-4 border-emerald-500' : 'bg-rose-600 text-white'
+        <div data-drivecar-ui className={`fixed top-6 right-6 z-[220] px-6 py-3 rounded-2xl shadow-sm flex items-center space-x-3 animate-in slide-in-from-right duration-200 ${toast.type === 'success' ? 'bg-slate-900 text-white border-l-4 border-emerald-500' : 'bg-rose-600 text-white'
           }`}>
           <div className={toast.type === 'success' ? 'text-emerald-500' : 'text-white'}>
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <span className="font-bold text-sm tracking-tight">{toast.message}</span>
+          <span className="font-semibold text-sm tracking-tight">{toast.message}</span>
         </div>
       )}
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Tipos de Veículos</h1>
+          <h1 className="text-3xl font-semibold text-slate-900">Tipos de Veículos</h1>
           <p className="text-slate-500 mt-1">Categorias: Sedan, Hatch, SUV, Pickup, etc.</p>
         </div>
         <div className="flex p-1 bg-slate-100 rounded-2xl w-fit">
           <button
             onClick={() => setDisplayStatus('active')}
-            className={`px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${displayStatus === 'active'
+            className={`px-6 py-2 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all ${displayStatus === 'active'
               ? 'bg-white text-indigo-600 shadow-sm'
               : 'text-slate-500 hover:text-slate-700'
               }`}
@@ -129,7 +129,7 @@ const TiposVeiculosPage: React.FC = () => {
           </button>
           <button
             onClick={() => setDisplayStatus('inactive')}
-            className={`px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${displayStatus === 'inactive'
+            className={`px-6 py-2 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all ${displayStatus === 'inactive'
               ? 'bg-white text-rose-600 shadow-sm'
               : 'text-slate-500 hover:text-slate-700'
               }`}
@@ -140,45 +140,45 @@ const TiposVeiculosPage: React.FC = () => {
 
         <button
           onClick={() => handleOpen()}
-          className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-sm font-black uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg active:scale-95"
+          className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-sm font-semibold normal-case tracking-normal hover:bg-indigo-700 transition-all shadow-sm active:scale-100"
         >
           Novo Tipo
         </button>
       </div>
 
-      <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm p-8 min-h-[400px]">
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 min-h-[400px]">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 space-y-4">
             <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-slate-400 font-bold uppercase text-[10px] tracking-widest">Carregando categorias...</p>
+            <p className="text-slate-500 font-medium normal-case text-xs tracking-normal">Carregando categorias...</p>
           </div>
         ) : tipos.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mb-4 text-slate-200">
+            <div className="w-20 h-20 bg-slate-50 rounded-2xl flex items-center justify-center mb-4 text-slate-200">
               <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
               </svg>
             </div>
-            <p className="text-slate-400 text-sm font-medium">Nenhuma categoria cadastrada.</p>
+            <p className="text-slate-500 text-sm font-medium">Nenhuma categoria cadastrada.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {tipos.map(t => (
               <div 
                 key={t.id} 
-                className={`group relative p-6 rounded-[2rem] border flex items-center justify-between transition-all duration-300 ${
+                className={`group relative p-6 rounded-2xl border flex items-center justify-between transition-all duration-200 ${
                   t.ativo !== false 
-                    ? 'bg-slate-50 border-slate-100 hover:bg-white hover:border-indigo-200 hover:shadow-xl' 
+                    ? 'bg-slate-50 border-slate-100 hover:bg-white hover:border-indigo-200 hover:shadow-sm'
                     : 'bg-slate-100/50 border-slate-200 opacity-60 grayscale-[0.5]'
                 }`}
               >
                 <div className="flex items-center space-x-4 pr-16 w-full">
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-sm border font-black text-xs shrink-0 ${
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-sm border font-semibold text-xs shrink-0 ${
                     t.ativo !== false ? 'bg-white text-indigo-500 border-slate-100' : 'bg-slate-200 text-slate-400 border-slate-300'
                   }`}>
                     {t.nome.charAt(0).toUpperCase()}
                   </div>
-                  <span className="font-black text-slate-800 uppercase tracking-tighter truncate">{t.nome}</span>
+                  <span className="font-semibold text-slate-800 normal-case tracking-tight truncate">{t.nome}</span>
                 </div>
 
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity bg-white/80 backdrop-blur-sm p-1 rounded-xl shadow-sm border border-slate-100">
@@ -223,14 +223,14 @@ const TiposVeiculosPage: React.FC = () => {
 
       {/* Modal de Formulário */}
       {isOpen && (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-          <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
-            <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+        <div data-drivecar-ui className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white w-full max-w-md rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50">
               <div>
-                <h2 className="text-xl font-black text-slate-900 uppercase tracking-tighter">
+                <h2 className="text-xl font-semibold text-slate-900 normal-case tracking-tight">
                   {editing ? 'Editar Categoria' : 'Nova Categoria'}
                 </h2>
-                <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1">Defina o tipo veicular</p>
+                <p className="text-slate-500 text-xs font-medium normal-case tracking-normal mt-1">Defina o tipo veicular</p>
               </div>
               <button onClick={() => setIsOpen(false)} disabled={isSaving} className="p-2 hover:bg-white rounded-full transition-all text-slate-400">
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -239,15 +239,15 @@ const TiposVeiculosPage: React.FC = () => {
               </button>
             </div>
 
-            <form onSubmit={handleSave} className="p-8 space-y-6">
+            <form onSubmit={handleSave} className="p-6 space-y-6">
               <div>
-                <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Nome da Categoria</label>
+                <label className="block text-xs font-medium text-slate-500 normal-case mb-2 tracking-normal ml-1">Nome da Categoria</label>
                 <input
                   autoFocus
                   value={nome}
                   onChange={e => setNome(e.target.value.toUpperCase())}
                   disabled={isSaving}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-bold outline-none focus:ring-2 focus:ring-indigo-500 transition-all disabled:opacity-50"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-medium outline-none focus:ring-2 focus:ring-indigo-500 transition-all disabled:opacity-50"
                   placeholder="Ex: Sedan, SUV, Hatch..."
                   required
                 />
@@ -257,14 +257,14 @@ const TiposVeiculosPage: React.FC = () => {
                   type="button"
                   onClick={() => setIsOpen(false)}
                   disabled={isSaving}
-                  className="px-6 py-3 text-slate-500 font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 rounded-xl"
+                  className="px-6 py-3 text-slate-500 font-semibold normal-case text-xs tracking-normal hover:bg-slate-50 rounded-xl"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className="px-8 py-3 bg-indigo-600 text-white rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg shadow-indigo-100 disabled:opacity-50 min-w-[140px] flex items-center justify-center"
+                  className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold normal-case text-xs tracking-normal shadow-sm shadow-none disabled:opacity-50 min-w-[140px] flex items-center justify-center"
                 >
                   {isSaving ? (
                     <>

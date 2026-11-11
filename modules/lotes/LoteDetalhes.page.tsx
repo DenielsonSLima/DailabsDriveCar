@@ -50,7 +50,7 @@ export default function LoteDetalhesPage() {
   }, [id, queryClient]);
   const confirmMutation = useMutation({ mutationFn: async () => { if (confirm?.type === 'cancelar') await LotesService.cancelarVenda(confirm.id); else if (confirm?.type === 'encerrar') await LotesService.encerrar(id!); }, onSuccess: async () => { const message = confirm?.type === 'cancelar' ? 'Venda cancelada e unidades devolvidas ao saldo.' : 'Lote encerrado.'; setConfirm(null); await refresh(); setNotice(message); } });
   if (query.isPending) return <div role="status" className="flex min-h-[50vh] items-center justify-center text-sm font-semibold text-slate-500">Carregando o controle do lote…</div>;
-  if (!detalhes) return <div className="mx-auto max-w-xl space-y-4 p-6"><h1 className="text-xl font-black text-slate-900">Não foi possível abrir o lote</h1><ErrorMessage error={query.error || new Error('Lote não encontrado.')} /><button className={secondaryClass} onClick={() => query.refetch()}>Tentar novamente</button><Link className="ml-4 text-sm font-bold text-indigo-600" to="/pedidos-compra">Voltar às compras</Link></div>;
+  if (!detalhes) return <div className="mx-auto max-w-xl space-y-4 p-6"><h1 className="text-xl font-semibold text-slate-900">Não foi possível abrir o lote</h1><ErrorMessage error={query.error || new Error('Lote não encontrado.')} /><button className={secondaryClass} onClick={() => query.refetch()}>Tentar novamente</button><Link className="ml-4 text-sm font-bold text-indigo-600" to="/pedidos-compra">Voltar às compras</Link></div>;
   const stats = calcularIndicadoresLote(detalhes);
   const lote = detalhes.lote;
   const bloqueioQuantidade = bloqueioAjusteQuantidade(detalhes);
@@ -61,8 +61,8 @@ export default function LoteDetalhesPage() {
     <header className="space-y-3">
       <Link to={`/pedidos-compra/${lote.pedido_id}`} className="inline-flex text-xs font-bold text-indigo-600 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-600">← Voltar ao pedido de compra</Link>
       <div className="flex flex-wrap items-center gap-3">
-        <h1 className="min-w-0 break-words text-2xl font-bold tracking-tighter text-slate-900 sm:text-3xl">{lote.descricao}</h1>
-        <span className={`shrink-0 rounded-lg px-3 py-1.5 text-[9px] font-black uppercase tracking-widest ${lote.encerrado ? 'bg-slate-100 text-slate-500' : 'bg-indigo-50 text-indigo-600'}`}>{lote.encerrado ? 'Encerrado' : 'Em andamento'}</span>
+        <h1 className="min-w-0 break-words text-2xl font-bold tracking-normal text-slate-900 sm:text-3xl">{lote.descricao}</h1>
+        <span className={`shrink-0 rounded-lg px-3 py-1.5 text-xs font-semibold normal-case tracking-normal ${lote.encerrado ? 'bg-slate-100 text-slate-500' : 'bg-indigo-50 text-indigo-600'}`}>{lote.encerrado ? 'Encerrado' : 'Em andamento'}</span>
       </div>
       <p className="text-sm text-slate-500">Acompanhe a entrada, as despesas e as saídas do lote.</p>
       <div className="space-y-2">
@@ -82,7 +82,7 @@ export default function LoteDetalhesPage() {
         aria-pressed={activeTab === tab.id}
         aria-controls="lote-section"
         onClick={() => navigateTab(tab.id)}
-        className={`rounded-xl px-4 py-2.5 text-xs font-black uppercase tracking-widest transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-600 sm:px-6 ${activeTab === tab.id ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+        className={`rounded-xl px-4 py-2.5 text-xs font-semibold normal-case tracking-normal transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-600 sm:px-6 ${activeTab === tab.id ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
       >{tab.label}</button>)}
     </div>
 

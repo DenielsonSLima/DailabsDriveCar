@@ -757,20 +757,20 @@ const StoryGeneratorPage: React.FC = () => {
             <div className="flex flex-col md:flex-row justify-between items-start gap-10">
 
                 {/* ── Lado Esquerdo: Controles ── */}
-                <div className="w-full md:w-1/2 space-y-8">
+                <div className="w-full md:w-1/2 space-y-6">
                     <div className="flex flex-col gap-6">
                         <button 
                             onClick={() => navigate(-1)}
                             className="w-fit flex items-center gap-2 px-4 py-2 bg-white border border-slate-100 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-all shadow-sm group"
                         >
                             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                            <span className="text-[10px] font-black uppercase tracking-widest">Painel Início</span>
+                            <span className="text-xs font-semibold normal-case tracking-normal">Painel Início</span>
                         </button>
 
                         <div className="flex justify-between items-center">
                             <div>
-                                <h1 className="text-4xl font-black text-slate-900 tracking-tighter">Gerador de Stories</h1>
-                                <p className="text-slate-500 mt-2 uppercase text-xs font-bold tracking-widest">Marketing e Social Media Automático</p>
+                                <h1 className="text-4xl font-semibold text-slate-900 tracking-tight">Gerador de Stories</h1>
+                                <p className="text-slate-500 mt-2 normal-case text-xs font-bold tracking-normal">Marketing e Social Media Automático</p>
                             </div>
                         <input
                             type="file"
@@ -782,7 +782,7 @@ const StoryGeneratorPage: React.FC = () => {
                         <button
                             onClick={() => frameInputRef.current?.click()}
                             disabled={isUploadingFrame}
-                            className="p-4 bg-indigo-600 border border-indigo-500 rounded-2xl text-white hover:bg-indigo-700 disabled:opacity-60 transition-all shadow-lg flex items-center gap-2 group"
+                            className="p-4 bg-indigo-600 border border-indigo-500 rounded-2xl text-white hover:bg-indigo-700 disabled:opacity-60 transition-all shadow-sm flex items-center gap-2 group"
                             title="Trocar Moldura PNG"
                         >
                             {isUploadingFrame ? (
@@ -792,7 +792,7 @@ const StoryGeneratorPage: React.FC = () => {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                 </svg>
                             )}
-                            <span className="text-[10px] font-black uppercase tracking-widest">
+                            <span className="text-xs font-semibold normal-case tracking-normal">
                                 {isUploadingFrame ? 'Salvando...' : 'Trocar Moldura'}
                             </span>
                         </button>
@@ -817,7 +817,7 @@ const StoryGeneratorPage: React.FC = () => {
                     </div>
 
                     {/* Opções de Exibição */}
-                    <div className="bg-white p-6 rounded-[2rem] shadow-xl border border-slate-100 flex items-center justify-between">
+                    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
                         <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
                                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -825,7 +825,7 @@ const StoryGeneratorPage: React.FC = () => {
                                 </svg>
                             </div>
                             <div>
-                                <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Exibir Preço de Venda</p>
+                                <p className="text-xs font-semibold normal-case text-slate-400 tracking-normal">Exibir Preço de Venda</p>
                                 <p className="text-xs font-bold text-slate-600">Mostrar valor no story</p>
                             </div>
                         </div>
@@ -839,9 +839,9 @@ const StoryGeneratorPage: React.FC = () => {
 
                     {/* Seleção de Fotos */}
                     {veiculo && (
-                        <div className="bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100 space-y-6">
+                        <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 space-y-6">
                             <div className="flex justify-between items-center">
-                                <label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Escolha 3 fotos ({selectedPhotos.length}/3)</label>
+                                <label className="text-xs font-semibold normal-case text-slate-400 tracking-normal">Escolha 3 fotos ({selectedPhotos.length}/3)</label>
                                 <div className="flex gap-1">
                                     {[...Array(3)].map((_, i) => (
                                         <div key={i} className={`w-2 h-2 rounded-full ${selectedPhotos.length > i ? 'bg-indigo-600' : 'bg-slate-200'}`} />
@@ -857,11 +857,11 @@ const StoryGeneratorPage: React.FC = () => {
                                     >
                                         <img src={foto.url} className="w-full h-full object-cover" alt="Veiculo" />
                                         {selectedPhotos.includes(foto.url) && (
-                                            <div className="absolute top-2 right-2 bg-indigo-600 text-white rounded-full p-1 shadow-lg">
+                                            <div className="absolute top-2 right-2 bg-indigo-600 text-white rounded-full p-1 shadow-sm">
                                                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
                                             </div>
                                         )}
-                                        <div className="absolute bottom-1 left-0 right-0 text-center text-[9px] font-black text-white/70">
+                                        <div className="absolute bottom-1 left-0 right-0 text-center text-xs font-semibold text-white/70">
                                             {selectedPhotos.includes(foto.url) ? `#${selectedPhotos.indexOf(foto.url) + 1}` : ''}
                                         </div>
                                     </button>
@@ -872,9 +872,9 @@ const StoryGeneratorPage: React.FC = () => {
                 </div>
 
                 {/* ── Lado Direito: Preview ── */}
-                <div className="w-full md:w-[450px] flex-shrink-0 relative flex flex-col items-center">
+                <div className="w-full md:w-[450px] min-w-0 overflow-x-auto flex-shrink-0 relative flex flex-col items-center">
                     <div className="w-full flex justify-between items-center mb-6">
-                        <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                        <div className="text-xs font-semibold text-slate-400 normal-case tracking-normal flex items-center gap-2">
                             <div className="w-1.5 h-1.5 bg-rose-500 rounded-full animate-ping" />
                             Live Preview
                         </div>
@@ -882,7 +882,7 @@ const StoryGeneratorPage: React.FC = () => {
                         <button
                             disabled={selectedPhotos.length < 3 || isExporting}
                             onClick={handleExport}
-                            className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-200 disabled:cursor-not-allowed text-white rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-lg shadow-indigo-100 transition-all active:scale-95 flex items-center gap-2"
+                            className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-200 disabled:cursor-not-allowed text-white rounded-2xl font-semibold normal-case tracking-normal text-xs shadow-sm shadow-indigo-100 transition-all  flex items-center gap-2"
                         >
                             {isExporting ? (
                                 <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -900,7 +900,7 @@ const StoryGeneratorPage: React.FC = () => {
 
                     {/* Canvas de Preview */}
                     <div
-                        className="relative w-[360px] h-[640px] rounded-[3rem] overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.3)] cursor-ns-resize"
+                        className="relative w-[360px] h-[640px] rounded-2xl overflow-hidden shadow-md cursor-ns-resize"
                         onMouseMove={handleMouseMove}
                         onMouseUp={handleMouseUp}
                         onMouseLeave={handleMouseUp}
@@ -924,7 +924,7 @@ const StoryGeneratorPage: React.FC = () => {
                         ))}
 
                         {/* Mock do telefone */}
-                        <div className="absolute top-0 left-0 right-0 h-10 px-6 flex items-center justify-between text-white/50 text-[10px] font-black z-20 pointer-events-none">
+                        <div className="absolute top-0 left-0 right-0 h-10 px-6 flex items-center justify-between text-white/50 text-xs font-semibold z-20 pointer-events-none">
                             <span>9:41</span>
                             <div className="flex gap-1.5 items-center">
                                 <div className="w-4 h-2.5 rounded-sm border border-white/20" />

@@ -23,7 +23,7 @@ const ReceberList: React.FC<Props> = ({ items, loading, isGrouped, showDestinati
   if (loading) return (
     <div className="py-32 flex flex-col items-center justify-center space-y-4">
       <div className="w-12 h-12 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
-      <p className="text-slate-400 font-bold uppercase text-[10px] tracking-widest">Sincronizando recebíveis...</p>
+      <p className="text-slate-500 font-medium normal-case text-xs tracking-normal">Sincronizando recebíveis...</p>
     </div>
   );
 
@@ -39,77 +39,77 @@ const ReceberList: React.FC<Props> = ({ items, loading, isGrouped, showDestinati
     <div className="overflow-x-auto">
       <table className="w-full text-left">
         <thead className="bg-slate-50 border-b border-slate-100">
-          <tr className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-            <th className="px-8 py-5">Vencimento</th>
-            <th className="px-8 py-5">Status</th>
-            <th className="px-8 py-5">Cliente / Documento</th>
-            <th className="px-8 py-5">Categoria</th>
-            {showDestinationAccount && <th className="px-8 py-5">Conta de Destino</th>}
-            <th className="px-8 py-5 text-right">Valor Total</th>
-            <th className="px-8 py-5 text-right">Valor Recebido</th>
-            <th className=" px-8 py-5 text-right">Pendente</th>
-            <th className="px-8 py-5 text-right">Ações</th>
+          <tr className="text-xs font-semibold text-slate-400 normal-case tracking-normal">
+            <th className="px-6 py-3">Vencimento</th>
+            <th className="px-6 py-3">Status</th>
+            <th className="px-6 py-3">Cliente / Documento</th>
+            <th className="px-6 py-3">Categoria</th>
+            {showDestinationAccount && <th className="px-6 py-3">Conta de Destino</th>}
+            <th className="px-6 py-3 text-right">Valor Total</th>
+            <th className="px-6 py-3 text-right">Valor Recebido</th>
+            <th className=" px-6 py-3 text-right">Pendente</th>
+            <th className="px-6 py-3 text-right">Ações</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-50">
           {rows.map((t) => (
             <tr key={t.id} onClick={() => onRowClick(t)} className="hover:bg-slate-50/50 transition-colors group cursor-pointer">
-              <td className="px-8 py-6">
-                <p className="text-xs font-black text-slate-900">{formatDate(t.data_vencimento)}</p>
-                <p className="text-[9px] text-slate-400 font-bold uppercase mt-0.5">Ref: {t.documento_ref || 'N/D'}</p>
+              <td className="px-6 py-6">
+                <p className="text-xs font-medium text-slate-900">{formatDate(t.data_vencimento)}</p>
+                <p className="text-xs text-slate-500 font-medium normal-case mt-0.5">Ref: {t.documento_ref || 'N/D'}</p>
               </td>
-              <td className="px-8 py-6">
-                <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border ${getStatusStyle(t.status, t.data_vencimento)}`}>
+              <td className="px-6 py-6">
+                <span className={`px-3 py-1 rounded-lg text-xs font-medium normal-case tracking-normal border ${getStatusStyle(t.status, t.data_vencimento)}`}>
                   {t.data_vencimento < todayLocal() && t.status !== 'PAGO' ? 'VENCIDO' : t.status}
                 </span>
               </td>
-              <td className="px-8 py-6">
-                <p className="text-xs font-bold text-slate-700 uppercase truncate max-w-[220px]">{t.parceiro?.nome || t.descricao}</p>
+              <td className="px-6 py-6">
+                <p className="text-xs font-medium text-slate-700 normal-case truncate max-w-[220px]">{t.parceiro?.nome || t.descricao}</p>
                 {t.pedido_id && (
-                  <button onClick={(e) => { e.stopPropagation(); navigate(`/pedidos-venda/${t.pedido_id}`); }} className="flex items-center mt-1 text-[9px] font-black text-emerald-500 hover:text-emerald-700 uppercase tracking-tighter">
+                  <button onClick={(e) => { e.stopPropagation(); navigate(`/pedidos-venda/${t.pedido_id}`); }} className="flex items-center mt-1 text-xs font-semibold text-emerald-500 hover:text-emerald-700 normal-case tracking-tight">
                     <svg className="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
                     Ver Pedido de Venda
                   </button>
                 )}
               </td>
-              <td className="px-8 py-6">
-                <span className="text-[10px] font-black text-slate-400 bg-slate-50 px-2 py-0.5 rounded border border-slate-100 uppercase tracking-widest truncate max-w-[150px] inline-block">
+              <td className="px-6 py-6">
+                <span className="text-xs font-medium text-slate-500 bg-slate-50 px-2 py-0.5 rounded border border-slate-100 normal-case tracking-normal truncate max-w-[150px] inline-block">
                   {t.categoria?.nome || 'RECEITA'}
                 </span>
               </td>
               {showDestinationAccount && (
-                <td className="px-8 py-6">
+                <td className="px-6 py-6">
                   {t.transacoes && t.transacoes.length > 0 ? (
                     <div className="flex flex-col">
-                      <span className="text-[10px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 uppercase tracking-widest w-fit truncate max-w-[150px]">
+                      <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 normal-case tracking-normal w-fit truncate max-w-[150px]">
                         {t.transacoes[0].conta?.nome || t.transacoes[0].conta?.banco_nome || 'CONTA'}
                       </span>
-                      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">
+                      <span className="text-xs font-medium text-slate-500 normal-case tracking-normal mt-1">
                         {t.transacoes[0].conta?.agencia || '-'} / {t.transacoes[0].conta?.conta || '-'}
                       </span>
                     </div>
                   ) : (
-                    <span className="text-[10px] font-bold text-slate-300 italic">Pendente</span>
+                    <span className="text-xs font-medium text-slate-300 italic">Pendente</span>
                   )}
                 </td>
               )}
-              <td className="px-8 py-6 text-right">
-                <p className="text-sm font-black text-slate-900">{formatCurrency(t.valor_total)}</p>
+              <td className="px-6 py-6 text-right">
+                <p className="text-sm font-semibold text-slate-900">{formatCurrency(t.valor_total)}</p>
               </td>
-              <td className="px-8 py-6 text-right">
-                <p className={`text-sm font-black ${t.valor_pago > 0 ? 'text-emerald-600' : 'text-slate-400 opacity-40'}`}>
+              <td className="px-6 py-6 text-right">
+                <p className={`text-sm font-semibold ${t.valor_pago > 0 ? 'text-emerald-600' : 'text-slate-500 opacity-40'}`}>
                   {formatCurrency(t.valor_pago)}
                 </p>
               </td>
-              <td className="px-8 py-6 text-right">
-                <p className={`text-sm font-black ${(t.valor_pendente || 0) > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>
+              <td className="px-6 py-6 text-right">
+                <p className={`text-sm font-semibold ${(t.valor_pendente || 0) > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>
                   {formatCurrency(t.valor_pendente || 0)}
                 </p>
               </td>
-              <td className="px-8 py-6 text-right">
+              <td className="px-6 py-6 text-right">
                 <div className="flex justify-end space-x-2" onClick={(e) => e.stopPropagation()}>
                   {t.status !== 'PAGO' && (
-                    <button onClick={() => onBaixa(t)} className="px-4 py-2 bg-emerald-50 text-emerald-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-600 hover:text-white transition-all shadow-sm">
+                    <button onClick={() => onBaixa(t)} className="px-4 py-2 bg-emerald-50 text-emerald-600 rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-emerald-600 hover:text-white transition-all shadow-sm">
                       Baixar
                     </button>
                   )}
@@ -126,7 +126,7 @@ const ReceberList: React.FC<Props> = ({ items, loading, isGrouped, showDestinati
   );
 
   const renderCards = (rows: ITituloReceber[]) => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-8 bg-slate-50/30">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6 bg-slate-50/30">
       {rows.map((t) => (
         <ReceberCard
           key={t.id}
@@ -146,7 +146,7 @@ const ReceberList: React.FC<Props> = ({ items, loading, isGrouped, showDestinati
 
   if (!isGrouped) {
     const list = items as ITituloReceber[];
-    if (list.length === 0) return <div className="py-32 text-center text-slate-400 font-bold uppercase text-[10px] tracking-widest">Nenhum título a receber encontrado</div>;
+    if (list.length === 0) return <div className="py-32 text-center text-slate-400 font-semibold normal-case text-xs tracking-normal">Nenhum título a receber encontrado</div>;
     return renderContent(list);
   }
 
@@ -156,11 +156,11 @@ const ReceberList: React.FC<Props> = ({ items, loading, isGrouped, showDestinati
   return (
     <div className="divide-y divide-slate-100">
       {keys.map(groupKey => (
-        <div key={groupKey} className="animate-in fade-in slide-in-from-bottom-2 duration-300">
-          <div className="bg-slate-50/80 px-8 py-3 sticky top-0 z-10 backdrop-blur-sm border-y border-slate-100 flex items-center">
+        <div key={groupKey} className="animate-in fade-in slide-in-from-bottom-2 duration-200">
+          <div className="bg-slate-50/80 px-6 py-3 sticky top-0 z-10 backdrop-blur-sm border-y border-slate-100 flex items-center">
             <div className={`w-1.5 h-1.5 rounded-full mr-3 ${groupKey === 'PAGO' ? 'bg-emerald-500' : 'bg-rose-500'}`}></div>
-            <h3 className="text-[11px] font-black text-slate-600 uppercase tracking-[0.2em]">{groupKey}</h3>
-            <span className="ml-auto text-[9px] font-black text-slate-400 bg-white px-2 py-0.5 rounded-md border border-slate-100 uppercase">{grouped[groupKey].length} Títulos</span>
+            <h3 className="text-xs font-semibold text-slate-600 normal-case tracking-normal">{groupKey}</h3>
+            <span className="ml-auto text-xs font-medium text-slate-500 bg-white px-2 py-0.5 rounded-md border border-slate-100 normal-case">{grouped[groupKey].length} Títulos</span>
           </div>
           {renderContent(grouped[groupKey])}
         </div>

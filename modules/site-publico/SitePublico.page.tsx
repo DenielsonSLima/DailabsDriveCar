@@ -144,7 +144,7 @@ const SitePublicoPage: React.FC = () => {
               )}&z=17&t=k&output=embed`}
               title={`Localização ${data?.empresa?.nome_fantasia || 'Souza Veículos'}`}
             />
-            <div className="absolute bottom-6 right-6 pointer-events-none bg-white/90 backdrop-blur px-4 py-2 rounded-xl border border-slate-200 shadow-xl opacity-0 group-hover:opacity-100 transition-opacity z-10">
+            <div className="absolute bottom-6 right-6 pointer-events-none bg-white/90 backdrop-blur px-4 py-2 rounded-xl border border-slate-200 shadow-sm opacity-0 group-hover:opacity-100 transition-opacity z-10">
               <span className="text-[9px] font-black uppercase tracking-widest text-orange-600">{data?.empresa?.nome_fantasia || 'Souza Veículos'}</span>
             </div>
           </div>

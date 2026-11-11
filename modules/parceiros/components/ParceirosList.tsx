@@ -17,15 +17,15 @@ const ParceirosList: React.FC<ListProps> = ({ parceiros, loading, onEdit, onDele
     return (
       <div className="py-20 flex flex-col items-center justify-center space-y-4">
         <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-        <p className="text-slate-500 font-bold text-[10px] uppercase tracking-widest">Carregando parceiros...</p>
+        <p className="text-slate-500 font-bold text-xs normal-case tracking-normal">Carregando parceiros...</p>
       </div>
     );
   }
 
   if (parceiros.length === 0) {
     return (
-      <div className="py-20 text-center bg-white rounded-[2.5rem] border border-slate-200 border-dashed">
-        <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto mb-4 text-slate-300">
+      <div className="py-20 text-center bg-white rounded-2xl border border-slate-200 border-dashed">
+        <div className="w-20 h-20 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-slate-300">
           <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0" />
           </svg>

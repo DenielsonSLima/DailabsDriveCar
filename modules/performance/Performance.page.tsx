@@ -77,14 +77,14 @@ const PerformancePage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">Performance</h1>
-          <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mt-1">Visão completa da empresa por período</p>
+          <h1 className="text-3xl font-semibold text-slate-900 normal-case tracking-tight">Performance</h1>
+          <p className="text-slate-500 text-xs font-bold normal-case tracking-normal mt-1">Visão completa da empresa por período</p>
         </div>
         <div className="flex items-center space-x-4">
           <button
             onClick={handleOpenPdf}
             disabled={loadingPdf}
-            className="flex items-center space-x-2 px-6 py-2.5 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center space-x-2 px-6 py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-indigo-700 transition-all shadow-sm  disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loadingPdf ? (
               <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -95,7 +95,7 @@ const PerformancePage: React.FC = () => {
           </button>
           <div className="flex items-center space-x-2 bg-indigo-50 px-4 py-2 rounded-2xl border border-indigo-100">
             <div className="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></div>
-            <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest">Nexus BI</span>
+            <span className="text-xs font-semibold text-indigo-600 normal-case tracking-normal">Nexus BI</span>
           </div>
         </div>
       </div>
@@ -106,8 +106,8 @@ const PerformancePage: React.FC = () => {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center px-6 py-3.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === tab.id
-                ? 'bg-slate-900 text-white shadow-xl'
+            className={`flex items-center px-6 py-3.5 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all whitespace-nowrap ${activeTab === tab.id
+                ? 'bg-slate-900 text-white shadow-sm'
                 : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
               }`}
           >

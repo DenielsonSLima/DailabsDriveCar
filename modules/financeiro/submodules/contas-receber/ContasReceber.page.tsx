@@ -137,11 +137,11 @@ const ContasReceberPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-8 relative pb-20">
+    <div className="space-y-6 relative pb-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter leading-none">Contas a Receber</h2>
-          <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mt-2">Gestão de fluxo de caixa e entradas de faturamento</p>
+          <h2 className="text-3xl font-semibold text-slate-900 normal-case tracking-tight leading-none">Contas a Receber</h2>
+          <p className="text-slate-500 text-xs font-medium normal-case tracking-normal mt-2">Gestão de fluxo de caixa e entradas de faturamento</p>
         </div>
         <div className="flex bg-slate-100 p-1 rounded-xl">
           <button
@@ -168,9 +168,9 @@ const ContasReceberPage: React.FC = () => {
       <ReceberKpis kpis={kpis} />
 
       <div className="flex bg-white p-1.5 rounded-2xl border border-slate-200 w-fit shadow-sm">
-        <button onClick={() => { setActiveTab('EM_ABERTO'); setGroupBy('nenhum'); }} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'EM_ABERTO' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Em Aberto</button>
-        <button onClick={() => { setActiveTab('PAGOS'); setGroupBy('nenhum'); }} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'PAGOS' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Pagos</button>
-        <button onClick={() => { setActiveTab('TODOS'); setGroupBy('nenhum'); }} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'TODOS' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Todos</button>
+        <button onClick={() => { setActiveTab('EM_ABERTO'); setGroupBy('nenhum'); }} className={`px-6 py-2.5 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all ${activeTab === 'EM_ABERTO' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Em Aberto</button>
+        <button onClick={() => { setActiveTab('PAGOS'); setGroupBy('nenhum'); }} className={`px-6 py-2.5 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all ${activeTab === 'PAGOS' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Pagos</button>
+        <button onClick={() => { setActiveTab('TODOS'); setGroupBy('nenhum'); }} className={`px-6 py-2.5 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all ${activeTab === 'TODOS' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Todos</button>
       </div>
 
       <ReceberFilters
@@ -182,7 +182,7 @@ const ContasReceberPage: React.FC = () => {
         showGrouping={activeTab === 'TODOS'}
       />
 
-      <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden min-h-[400px]">
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden min-h-[400px]">
         <ReceberList
           items={processedData}
           loading={isLoading}
@@ -197,7 +197,7 @@ const ContasReceberPage: React.FC = () => {
         {/* Pagination Controls */}
         {!isLoading && totalPages > 1 && (
           <div className="flex items-center justify-between p-6 border-t border-slate-100 bg-slate-50/50">
-            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+            <p className="text-xs text-slate-500 font-medium normal-case tracking-normal">
               Página <span className="text-slate-900">{currentPage}</span> de <span className="text-slate-900">{totalPages}</span>
               <span className="ml-2 opacity-50">({totalCount} registros)</span>
             </p>
@@ -212,7 +212,7 @@ const ContasReceberPage: React.FC = () => {
                 </svg>
               </button>
 
-              <button className="w-8 h-8 rounded-lg text-[10px] font-black bg-indigo-600 text-white shadow-lg shadow-indigo-200 flex items-center justify-center">
+              <button className="w-8 h-8 rounded-lg text-xs font-semibold bg-indigo-600 text-white shadow-sm shadow-none flex items-center justify-center">
                 {currentPage}
               </button>
 

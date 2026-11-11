@@ -71,7 +71,7 @@ const VeiculosVendaList: React.FC<Props> = ({ pedido, veiculosDisponiveis, onLin
 
   if (pedido.lote_id) return (
     <div className="space-y-4">
-      <h3 className="font-black text-slate-800">Unidades do lote nesta venda ({getVendaUnits(pedido)})</h3>
+      <h3 className="font-semibold text-slate-800">Unidades do lote nesta venda ({getVendaUnits(pedido)})</h3>
       <p className="text-sm text-slate-500">Referência de custo registrada na venda. Identificação e alterações são gerenciadas no lote.</p>
       <div className="divide-y divide-slate-100">
         {(pedido.itens_lote || []).map((item, index) => (
@@ -88,7 +88,7 @@ const VeiculosVendaList: React.FC<Props> = ({ pedido, veiculosDisponiveis, onLin
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-700">
       <div className="flex items-center justify-between px-2">
-        <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] flex items-center">
+        <h3 className="text-xs font-semibold text-slate-400 normal-case tracking-normal flex items-center">
           <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2M7 7h10" /></svg>
           Produtos no Pedido ({veiculosList.length})
         </h3>
@@ -97,7 +97,7 @@ const VeiculosVendaList: React.FC<Props> = ({ pedido, veiculosDisponiveis, onLin
           <button
             disabled={actionLoading || localLinking}
             onClick={() => setShowSelector(!showSelector)}
-            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${showSelector ? 'bg-slate-200 text-slate-600' : 'bg-indigo-50 text-indigo-600 border border-indigo-100 hover:bg-indigo-100'
+            className={`px-4 py-2 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all ${showSelector ? 'bg-slate-200 text-slate-600' : 'bg-indigo-50 text-indigo-600 border border-indigo-100 hover:bg-indigo-100'
               } ${(actionLoading || localLinking) ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             {showSelector ? 'Cancelar Adição' : 'Adicionar Veículos'}
@@ -106,8 +106,8 @@ const VeiculosVendaList: React.FC<Props> = ({ pedido, veiculosDisponiveis, onLin
       </div>
 
       {showSelector && !isConcluido && (
-        <div className="bg-white rounded-[2.5rem] p-8 border border-slate-200 shadow-sm animate-in zoom-in-95 duration-300">
-          <label className="block text-[10px] font-black text-slate-400 uppercase mb-4 ml-1 tracking-widest">Buscar Veículo em Estoque</label>
+        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm animate-in zoom-in-95 duration-300">
+          <label className="block text-xs font-semibold text-slate-500 normal-case mb-4 ml-1 tracking-normal">Buscar Veículo em Estoque</label>
           <div className="space-y-4">
             <input
               autoFocus
@@ -116,13 +116,13 @@ const VeiculosVendaList: React.FC<Props> = ({ pedido, veiculosDisponiveis, onLin
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Digite placa, montadora, modelo, categoria, motorização ou KM"
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 font-bold text-slate-700 outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-6 py-3 font-medium text-slate-700 outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all"
             />
 
             <div className="max-h-[420px] overflow-y-auto space-y-3 pr-1">
               {filteredVehicles.length === 0 ? (
                 <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-6 text-center">
-                  <p className="text-xs font-black text-slate-400 uppercase tracking-wider">Nenhum veículo encontrado</p>
+                  <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal">Nenhum veículo encontrado</p>
                 </div>
               ) : (
                 filteredVehicles.map((v: any) => (
@@ -140,7 +140,7 @@ const VeiculosVendaList: React.FC<Props> = ({ pedido, veiculosDisponiveis, onLin
                         setLocalLinking(false);
                       }
                     }}
-                    className={`w-full text-left bg-slate-50 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-200 rounded-2xl p-4 transition-all ${localLinking ? 'opacity-50 pointer-events-none' : ''}`}
+                    className={`w-full text-left bg-slate-50 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-200 rounded-xl p-4 transition-all ${localLinking ? 'opacity-50 pointer-events-none' : ''}`}
                   >
                     <div className="flex items-center gap-4">
                       <div className="w-24 h-24 rounded-xl border border-slate-200 bg-white overflow-hidden shrink-0">
@@ -155,36 +155,36 @@ const VeiculosVendaList: React.FC<Props> = ({ pedido, veiculosDisponiveis, onLin
 
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between">
-                          <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest truncate">
+                          <p className="text-xs font-semibold text-indigo-500 normal-case tracking-normal truncate">
                             {v.montadora?.nome || 'Montadora'}
                           </p>
-                          <span className="text-[10px] font-black text-slate-700 bg-slate-200/50 px-2 py-0.5 rounded uppercase tracking-widest">{v.placa || 'SEM PLACA'}</span>
+                          <span className="text-xs font-semibold text-slate-700 bg-slate-200/50 px-2 py-0.5 rounded normal-case tracking-normal">{v.placa || 'SEM PLACA'}</span>
                         </div>
                         <div className="flex items-baseline gap-2 truncate">
-                          <h4 className="text-lg font-black text-slate-900 uppercase tracking-tight truncate">
+                          <h4 className="text-lg font-semibold text-slate-900 normal-case tracking-tight truncate">
                             {v.modelo?.nome || 'Modelo'}
                           </h4>
                           <span className="text-xs font-bold text-slate-400 truncate border-l border-slate-200 pl-2 leading-none">{v.versao?.nome || 'VERSÃO'}</span>
                         </div>
 
                         <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1">
-                          <span className="text-[9px] font-bold text-slate-500 uppercase">Cat: {v.tipo_veiculo?.nome || 'N/D'}</span>
-                          <span className="text-[9px] font-bold text-slate-500 uppercase">Motor: {v.motorizacao || 'N/D'}</span>
-                          <span className="text-[9px] font-bold text-slate-500 uppercase">KM: {(v.km || 0).toLocaleString('pt-BR')}</span>
+                          <span className="text-xs font-bold text-slate-500 normal-case">Cat: {v.tipo_veiculo?.nome || 'N/D'}</span>
+                          <span className="text-xs font-bold text-slate-500 normal-case">Motor: {v.motorizacao || 'N/D'}</span>
+                          <span className="text-xs font-bold text-slate-500 normal-case">KM: {(v.km || 0).toLocaleString('pt-BR')}</span>
                         </div>
 
                         <div className="mt-3 flex items-center gap-6 pt-3 border-t border-slate-100">
                           <div className="flex flex-col">
-                            <span className="text-[7px] font-black text-slate-400 uppercase leading-none mb-1">Custo Aquisição</span>
-                            <span className="text-xs font-black text-slate-700">{formatCurrency(v.valor_custo || 0)}</span>
+                            <span className="text-[7px] font-semibold text-slate-400 normal-case leading-none mb-1">Custo Aquisição</span>
+                            <span className="text-xs font-semibold text-slate-700">{formatCurrency(v.valor_custo || 0)}</span>
                           </div>
                           <div className="flex flex-col">
-                            <span className="text-[7px] font-black text-slate-400 uppercase leading-none mb-1">Custo Serviços</span>
-                            <span className="text-xs font-black text-indigo-600">{formatCurrency(v.valor_custo_servicos || 0)}</span>
+                            <span className="text-[7px] font-semibold text-slate-400 normal-case leading-none mb-1">Custo Serviços</span>
+                            <span className="text-xs font-semibold text-indigo-600">{formatCurrency(v.valor_custo_servicos || 0)}</span>
                           </div>
                           <div className="flex flex-col">
-                            <span className="text-[7px] font-black text-emerald-400 uppercase leading-none mb-1">Venda Sugerida</span>
-                            <span className="text-xs font-black text-emerald-600">{formatCurrency(v.valor_venda || 0)}</span>
+                            <span className="text-[7px] font-semibold text-emerald-400 normal-case leading-none mb-1">Venda Sugerida</span>
+                            <span className="text-xs font-semibold text-emerald-600">{formatCurrency(v.valor_venda || 0)}</span>
                           </div>
                         </div>
                       </div>
@@ -200,12 +200,12 @@ const VeiculosVendaList: React.FC<Props> = ({ pedido, veiculosDisponiveis, onLin
       {veiculosList.length === 0 && !showSelector && (
         <div
           onClick={() => !isConcluido && setShowSelector(true)}
-          className="bg-white rounded-[2.5rem] border-2 border-dashed border-indigo-200 p-16 text-center cursor-pointer hover:bg-indigo-50/10 transition-all group"
+          className="bg-white rounded-2xl border-2 border-dashed border-indigo-200 p-6 sm:p-10 text-center cursor-pointer hover:bg-indigo-50/10 transition-all group"
         >
-          <div className="w-20 h-20 bg-indigo-50 text-indigo-400 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+          <div className="w-20 h-20 bg-indigo-50 text-indigo-400 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-105 transition-transform">
             <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
           </div>
-          <h4 className="text-xl font-black text-slate-900 uppercase tracking-tighter">Nenhum veículo vinculado</h4>
+          <h4 className="text-xl font-semibold text-slate-900 normal-case tracking-normal">Nenhum veículo vinculado</h4>
           <p className="text-slate-500 text-sm mt-2">Clique aqui para adicionar o primeiro item desta venda.</p>
         </div>
       )}

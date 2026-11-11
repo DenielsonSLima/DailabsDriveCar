@@ -17,7 +17,7 @@ const ModelosList: React.FC<ListProps> = ({ agrupados, loading, onEdit, onDelete
     return (
       <div className="py-20 flex flex-col items-center justify-center space-y-4">
         <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-        <p className="text-slate-400 font-bold uppercase text-[10px] tracking-widest">Sincronizando Catálogo...</p>
+        <p className="text-slate-500 font-medium normal-case text-xs tracking-normal">Sincronizando Catálogo...</p>
       </div>
     );
   }
@@ -25,34 +25,34 @@ const ModelosList: React.FC<ListProps> = ({ agrupados, loading, onEdit, onDelete
   if (montadoras.length === 0) {
     return (
       <div className="py-20 text-center">
-        <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto mb-4 text-slate-200">
+        <div className="w-20 h-20 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-slate-200">
           <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5" />
           </svg>
         </div>
-        <p className="text-slate-400 text-sm font-medium">Nenhum modelo encontrado para os filtros selecionados.</p>
+        <p className="text-slate-500 text-sm font-medium">Nenhum modelo encontrado para os filtros selecionados.</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-6">
       {montadoras.map(nome => {
         const { montadora, modelos } = agrupados[nome];
         return (
-          <div key={montadora.id} className="animate-in slide-in-from-bottom-4 duration-500">
+          <div key={montadora.id} className="animate-in slide-in-from-bottom-4 duration-200">
             {/* Header da Montadora */}
             <div className="flex items-center space-x-4 mb-6 sticky top-16 bg-white/80 backdrop-blur-md py-2 z-10">
               <div className="w-14 h-14 bg-white border border-slate-100 rounded-2xl flex items-center justify-center p-2 shadow-sm">
                 {montadora.logo_url ? (
                   <img src={montadora.logo_url} alt={montadora.nome} className="max-h-full max-w-full object-contain" />
                 ) : (
-                  <span className="text-slate-300 font-black text-xl">{montadora.nome.charAt(0)}</span>
+                  <span className="text-slate-300 font-semibold text-xl">{montadora.nome.charAt(0)}</span>
                 )}
               </div>
               <div>
-                <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter leading-none">{montadora.nome}</h3>
-                <p className="text-[10px] text-indigo-500 font-black uppercase tracking-widest mt-1">
+                <h3 className="text-xl font-semibold text-slate-900 normal-case tracking-tight leading-none">{montadora.nome}</h3>
+                <p className="text-xs text-indigo-500 font-medium normal-case tracking-normal mt-1">
                   {modelos.length} {modelos.length === 1 ? 'Modelo Encontrado' : 'Modelos Encontrados'}
                 </p>
               </div>
@@ -60,18 +60,18 @@ const ModelosList: React.FC<ListProps> = ({ agrupados, loading, onEdit, onDelete
             </div>
 
             {/* Grid de Modelos - Ajustado para cards mais largos (3-4 colunas) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {modelos.map(modelo => {
                 const isInactive = modelo.ativo === false;
                 return (
                   <div 
                     key={modelo.id}
-                    className={`group bg-white border border-slate-100 rounded-[2.5rem] overflow-hidden hover:shadow-2xl hover:border-indigo-200 transition-all duration-500 flex flex-col ${isInactive ? 'opacity-75 grayscale-[0.3]' : ''}`}
+                    className={`group bg-white border border-slate-100 rounded-2xl overflow-hidden hover:shadow-sm hover:border-indigo-200 transition-all duration-200 flex flex-col ${isInactive ? 'opacity-75 grayscale-[0.3]' : ''}`}
                   >
                     {/* Foto do Modelo */}
                     <div className="h-48 bg-slate-50 flex items-center justify-center relative overflow-hidden group-hover:bg-white transition-colors">
                       {modelo.foto_url ? (
-                        <img src={modelo.foto_url} alt={modelo.nome} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                        <img src={modelo.foto_url} alt={modelo.nome} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-200" />
                       ) : (
                         <svg className="w-16 h-16 text-slate-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -84,7 +84,7 @@ const ModelosList: React.FC<ListProps> = ({ agrupados, loading, onEdit, onDelete
                           <>
                             <button 
                               onClick={() => onEdit(modelo)}
-                              className="p-4 bg-white text-slate-900 rounded-2xl hover:bg-indigo-600 hover:text-white transition-all transform hover:scale-110 shadow-lg"
+                              className="p-4 bg-white text-slate-900 rounded-2xl hover:bg-indigo-600 hover:text-white transition-all transform hover:scale-110 shadow-sm"
                               title="Editar"
                             >
                               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -93,7 +93,7 @@ const ModelosList: React.FC<ListProps> = ({ agrupados, loading, onEdit, onDelete
                             </button>
                             <button 
                               onClick={() => onDelete(modelo.id)}
-                              className="p-4 bg-white text-amber-600 rounded-2xl hover:bg-amber-600 hover:text-white transition-all transform hover:scale-110 shadow-lg"
+                              className="p-4 bg-white text-amber-600 rounded-2xl hover:bg-amber-600 hover:text-white transition-all transform hover:scale-110 shadow-sm"
                               title="Inativar"
                             >
                               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -104,7 +104,7 @@ const ModelosList: React.FC<ListProps> = ({ agrupados, loading, onEdit, onDelete
                         ) : (
                           <button 
                             onClick={() => onReactivate?.(modelo.id)}
-                            className="p-4 bg-white text-emerald-600 rounded-2xl hover:bg-emerald-600 hover:text-white transition-all transform hover:scale-110 shadow-lg"
+                            className="p-4 bg-white text-emerald-600 rounded-2xl hover:bg-emerald-600 hover:text-white transition-all transform hover:scale-110 shadow-sm"
                             title="Reativar"
                           >
                             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -117,7 +117,7 @@ const ModelosList: React.FC<ListProps> = ({ agrupados, loading, onEdit, onDelete
                       {/* Badge de Tipo no Topo do Card */}
                       {modelo.tipo_veiculo && (
                         <div className="absolute top-4 left-4">
-                          <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-indigo-600 text-[10px] font-black uppercase tracking-widest rounded-lg shadow-sm border border-indigo-50">
+                          <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-indigo-600 text-xs font-medium normal-case tracking-normal rounded-lg shadow-sm border border-indigo-50">
                             {modelo.tipo_veiculo.nome}
                           </span>
                         </div>
@@ -126,10 +126,10 @@ const ModelosList: React.FC<ListProps> = ({ agrupados, loading, onEdit, onDelete
 
                     {/* Info */}
                     <div className="p-6 text-center">
-                      <h4 className="font-black text-slate-800 uppercase tracking-tighter text-xl">{modelo.nome}</h4>
+                      <h4 className="font-semibold text-slate-800 normal-case tracking-tight text-xl">{modelo.nome}</h4>
                       <div className="flex items-center justify-center space-x-2 mt-2">
                         <span className="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Especificação Técnica</span>
+                        <span className="text-xs font-medium text-slate-500 normal-case tracking-normal">Especificação Técnica</span>
                       </div>
                     </div>
                   </div>

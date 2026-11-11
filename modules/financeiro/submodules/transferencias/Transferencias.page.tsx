@@ -110,24 +110,24 @@ const TransferenciasPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-8 relative">
+    <div className="space-y-6 relative">
       {toast && (
-        <div className={`fixed top-6 right-6 z-[200] px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 animate-in slide-in-from-right duration-300 border backdrop-blur-md ${
+        <div data-drivecar-ui className={`fixed top-6 right-6 z-[200] px-6 py-4 rounded-2xl shadow-sm flex items-center space-x-3 animate-in slide-in-from-right duration-200 border backdrop-blur-md ${
           toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' : 'bg-rose-600 text-white border-rose-400/50'
         }`}>
-          <span className="font-bold text-sm tracking-tight">{toast.message}</span>
+          <span className="font-semibold text-sm tracking-tight">{toast.message}</span>
         </div>
       )}
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter">Transferências entre Contas</h2>
-          <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mt-1">Movimentação interna de liquidez</p>
+          <h2 className="text-3xl font-semibold text-slate-900 normal-case tracking-tight">Transferências entre Contas</h2>
+          <p className="text-slate-500 text-xs font-medium normal-case tracking-normal mt-1">Movimentação interna de liquidez</p>
         </div>
         
         <button 
           onClick={() => { setEditingTransfer(null); setIsFormOpen(true); }}
-          className="px-8 py-4 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 transition-all shadow-xl active:scale-95 flex items-center"
+          className="px-6 py-4 bg-indigo-600 text-white rounded-2xl text-xs font-semibold normal-case tracking-normal hover:bg-indigo-600 transition-all shadow-sm active:scale-100 flex items-center"
         >
           <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -137,8 +137,8 @@ const TransferenciasPage: React.FC = () => {
       </div>
 
       <div className="flex bg-white p-1.5 rounded-2xl border border-slate-200 w-fit shadow-sm">
-        <button onClick={() => { setActiveTab('MES_ATUAL'); setGroupBy('nenhum'); }} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'MES_ATUAL' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Mês Atual</button>
-        <button onClick={() => setActiveTab('TODOS')} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'TODOS' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Todos os Meses</button>
+        <button onClick={() => { setActiveTab('MES_ATUAL'); setGroupBy('nenhum'); }} className={`px-6 py-2.5 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all ${activeTab === 'MES_ATUAL' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Mês Atual</button>
+        <button onClick={() => setActiveTab('TODOS')} className={`px-6 py-2.5 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all ${activeTab === 'TODOS' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Todos os Meses</button>
       </div>
 
       <TransferFilters 
@@ -151,7 +151,7 @@ const TransferenciasPage: React.FC = () => {
         showGrouping={activeTab === 'TODOS'}
       />
 
-      <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden min-h-[400px]">
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden min-h-[400px]">
         <TransferList 
           transfers={processedData} 
           loading={loading} 

@@ -39,7 +39,7 @@ const MobileBottomNav: React.FC<MobileBottomNavProps> = ({ onOpenMenu, isMenuOpe
 
   return (
     <>
-      <div className="fixed bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 z-50 md:hidden" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50 md:hidden" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
         <div className="flex items-center justify-around h-16">
           {mainNavItems.map((item) => {
             const isActive = location.pathname.startsWith(item.path);
@@ -48,27 +48,29 @@ const MobileBottomNav: React.FC<MobileBottomNavProps> = ({ onOpenMenu, isMenuOpe
                 key={item.path}
                 to={item.path}
                 className={`flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors ${
-                  isActive ? 'text-[#004691]' : 'text-slate-400 hover:text-white'
+                  isActive ? 'text-indigo-700 bg-indigo-50/60' : 'text-slate-500 hover:text-slate-900'
                 }`}
               >
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={isActive ? 2.5 : 2} d={item.icon} />
                 </svg>
-                <span className="text-[10px] font-medium">{item.label}</span>
+                <span className="text-xs font-medium">{item.label}</span>
               </NavLink>
             );
           })}
 
           <button
             onClick={onOpenMenu}
+            aria-label="Abrir menu principal"
+            aria-expanded={isMenuOpen}
             className={`flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors ${
-              isMenuOpen ? 'text-[#004691]' : 'text-slate-400 hover:text-white'
+              isMenuOpen ? 'text-indigo-700 bg-indigo-50/60' : 'text-slate-500 hover:text-slate-900'
             }`}
           >
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={isMenuOpen ? 2.5 : 2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
-            <span className="text-[10px] font-medium">Menu</span>
+            <span className="text-xs font-medium">Menu</span>
           </button>
         </div>
       </div>

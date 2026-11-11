@@ -164,7 +164,7 @@ const PublicHero: React.FC<Props> = ({ slides: propSlides, veiculos = [], source
                 <div className="absolute inset-0 z-10 flex items-end pb-20">
                   <div className="max-w-7xl mx-auto px-6 w-full">
                     <div className={`max-w-2xl transition-all duration-1000 ${index === current ? 'translate-x-0 opacity-100' : '-translate-x-20 opacity-0'}`}>
-                      <div className="bg-slate-950/75 border border-white/15 backdrop-blur-md rounded-2xl p-6 md:p-8 space-y-4 md:space-y-5 shadow-2xl">
+                      <div className="bg-slate-950/75 border border-white/15 backdrop-blur-md rounded-2xl p-6 md:p-8 space-y-4 md:space-y-5 shadow-sm">
                         
                         {/* Cabeçalho da Ficha */}
                         <div className="flex items-center justify-between gap-4">

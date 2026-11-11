@@ -172,16 +172,16 @@ const NovoAnuncioWizard: React.FC<WizardProps> = ({ onClose, onSuccess }) => {
   if (!isMounted) return null;
 
   return createPortal(
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col animate-in fade-in zoom-in-95 duration-200">
+    <div data-drivecar-ui className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-sm w-full max-w-2xl max-h-[90vh] flex flex-col animate-in fade-in zoom-in-95 duration-200">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-slate-100">
           <div>
-            <h2 className="text-lg font-black text-slate-900">Novo Anúncio</h2>
+            <h2 className="text-lg font-semibold text-slate-900">Novo Anúncio</h2>
             <div className="flex items-center gap-2 mt-2">
               {steps.map((s, i) => (
                 <React.Fragment key={s}>
-                  <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${
+                  <span className={`text-xs font-semibold normal-case tracking-normal px-2 py-0.5 rounded-full ${
                     step === i + 1 ? 'bg-slate-900 text-white' :
                     step > i + 1 ? 'bg-emerald-100 text-emerald-700' : 'text-slate-400'
                   }`}>{s}</span>
@@ -231,7 +231,7 @@ const NovoAnuncioWizard: React.FC<WizardProps> = ({ onClose, onSuccess }) => {
                     <PlatformIcon platform={p} className="w-5 h-5" />
                   </div>
                   <div className="text-left flex-1">
-                    <p className="font-black text-slate-900 text-sm">{p === 'FACEBOOK' ? 'Facebook Ads' : p === 'INSTAGRAM' ? 'Instagram Ads' : 'Google Ads'}</p>
+                    <p className="font-semibold text-slate-900 text-sm">{p === 'FACEBOOK' ? 'Facebook Ads' : p === 'INSTAGRAM' ? 'Instagram Ads' : 'Google Ads'}</p>
                     <p className="text-[11px] text-slate-500">{p === 'FACEBOOK' ? 'Feed, Reels e Marketplace' : p === 'INSTAGRAM' ? 'Feed, Stories e Reels' : 'Search, Display e YouTube'}</p>
                   </div>
                   <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${platform === p ? 'bg-[#004691] border-[#004691]' : 'border-slate-200'}`}>
@@ -247,62 +247,62 @@ const NovoAnuncioWizard: React.FC<WizardProps> = ({ onClose, onSuccess }) => {
             <div className="space-y-5">
               {/* Objetivo */}
               <div>
-                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Objetivo</label>
+                <label className="block text-xs font-semibold text-slate-500 normal-case tracking-normal mb-2">Objetivo</label>
                 <div className="grid grid-cols-2 gap-2">
                   {OBJECTIVES.map(o => (
                     <button key={o.key} onClick={() => setObjetivo(o.key)}
-                      className={`py-2.5 px-3 rounded-xl border-2 text-xs font-black transition-all ${objetivo === o.key ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-slate-100 text-slate-600 hover:border-slate-200'}`}
+                      className={`py-2.5 px-3 rounded-xl border-2 text-xs font-semibold transition-all ${objetivo === o.key ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-slate-100 text-slate-600 hover:border-slate-200'}`}
                     >{o.label}</button>
                   ))}
                 </div>
               </div>
               {/* Região */}
               <div>
-                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Região</label>
+                <label className="block text-xs font-semibold text-slate-500 normal-case tracking-normal mb-2">Região</label>
                 <div className="grid grid-cols-3 gap-2 mb-3">
                   {[{ k: 'RAIO', l: 'Local' }, { k: 'ESTADO', l: 'Estadual' }, { k: 'NACIONAL', l: 'Nacional' }].map(r => (
                     <button key={r.k} onClick={() => setTipoRegiao(r.k as 'RAIO' | 'ESTADO' | 'NACIONAL')}
-                      className={`py-2 rounded-xl border-2 text-[11px] font-black transition-all ${tipoRegiao === r.k ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-slate-100 text-slate-600 hover:border-slate-200'}`}
+                      className={`py-2 rounded-xl border-2 text-[11px] font-semibold transition-all ${tipoRegiao === r.k ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-slate-100 text-slate-600 hover:border-slate-200'}`}
                     >{r.l}</button>
                   ))}
                 </div>
                 {tipoRegiao === 'RAIO' && (
                   <div className="flex items-center gap-3">
                     <input type="range" min={5} max={200} step={5} value={raioKm} onChange={e => setRaioKm(Number(e.target.value))} className="flex-1 accent-indigo-600" />
-                    <span className="text-sm font-black text-indigo-600 w-16 text-right">{raioKm} km</span>
+                    <span className="text-sm font-semibold text-indigo-600 w-16 text-right">{raioKm} km</span>
                   </div>
                 )}
-                {empresa?.cidade && <p className="text-[10px] text-slate-400 mt-1">Centro: {empresa.cidade}{empresa.uf ? `, ${empresa.uf}` : ''}</p>}
+                {empresa?.cidade && <p className="text-xs text-slate-400 mt-1">Centro: {empresa.cidade}{empresa.uf ? `, ${empresa.uf}` : ''}</p>}
               </div>
               {/* Orçamento */}
               <div>
-                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Orçamento Diário (R$)</label>
+                <label className="block text-xs font-semibold text-slate-500 normal-case tracking-normal mb-2">Orçamento Diário (R$)</label>
                 <input type="number" min={5} step={5} value={orcamento} onChange={e => setOrcamento(Number(e.target.value))}
                   className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                 <div className="flex gap-2 mt-2">
                   {[20, 30, 80, 200].map(v => (
                     <button key={v} onClick={() => setOrcamento(v)}
-                      className={`flex-1 py-1.5 rounded-lg text-[10px] font-black transition-all ${orcamento === v ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                      className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all ${orcamento === v ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
                     >R$ {v}</button>
                   ))}
                 </div>
               </div>
               {/* Duração */}
               <div>
-                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Duração</label>
+                <label className="block text-xs font-semibold text-slate-500 normal-case tracking-normal mb-2">Duração</label>
                 <div className="flex items-center gap-3">
                   <input type="range" min={1} max={30} value={duracao} onChange={e => setDuracao(Number(e.target.value))} className="flex-1 accent-indigo-600" />
-                  <span className="text-sm font-black text-indigo-600 w-20 text-right">{duracao} dias</span>
+                  <span className="text-sm font-semibold text-indigo-600 w-20 text-right">{duracao} dias</span>
                 </div>
                 <div className="flex justify-between mt-1">
-                  <span className="text-[10px] text-slate-400">Total estimado:</span>
-                  <span className="text-xs font-black text-emerald-600">{MarketingAdsService.formatarMoeda(orcamento * duracao)}</span>
+                  <span className="text-xs text-slate-400">Total estimado:</span>
+                  <span className="text-xs font-semibold text-emerald-600">{MarketingAdsService.formatarMoeda(orcamento * duracao)}</span>
                 </div>
               </div>
 
               {/* Imagem do Anúncio (Criativo) */}
               <div>
-                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">
+                <label className="block text-xs font-semibold text-slate-500 normal-case tracking-normal mb-2">
                   Imagem do Anúncio (Criativo)
                 </label>
                 <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin">
@@ -316,7 +316,7 @@ const NovoAnuncioWizard: React.FC<WizardProps> = ({ onClose, onSuccess }) => {
                       }`}
                     >
                       <img src={veiculo.fotos[0].url} className="w-full h-full object-cover" alt="Principal" />
-                      <div className="absolute bottom-0 inset-x-0 bg-black/60 text-[8px] font-black text-white py-0.5 text-center">
+                      <div className="absolute bottom-0 inset-x-0 bg-black/60 text-xs font-semibold text-white py-0.5 text-center">
                         Principal
                       </div>
                     </button>
@@ -333,7 +333,7 @@ const NovoAnuncioWizard: React.FC<WizardProps> = ({ onClose, onSuccess }) => {
                       }`}
                     >
                       <img src={creative.url} className="w-full h-full object-cover" alt={creative.tipo} />
-                      <div className="absolute bottom-0 inset-x-0 bg-indigo-900/80 text-[8px] font-black text-white py-0.5 text-center">
+                      <div className="absolute bottom-0 inset-x-0 bg-indigo-900/80 text-xs font-semibold text-white py-0.5 text-center">
                         {creative.tipo}
                       </div>
                     </button>
@@ -360,7 +360,7 @@ const NovoAnuncioWizard: React.FC<WizardProps> = ({ onClose, onSuccess }) => {
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                         </svg>
-                        <span className="text-[8px] font-black uppercase tracking-wider">Upload</span>
+                        <span className="text-xs font-semibold normal-case tracking-normal">Upload</span>
                       </>
                     )}
                   </button>
@@ -381,17 +381,17 @@ const NovoAnuncioWizard: React.FC<WizardProps> = ({ onClose, onSuccess }) => {
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">Nome da Campanha</label>
+                  <label className="block text-xs font-semibold text-slate-500 normal-case tracking-normal mb-1.5">Nome da Campanha</label>
                   <input type="text" value={nome || nomeSugerido} onChange={e => setNome(e.target.value)}
                     className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500" />
                 </div>
               </div>
               <div className="bg-slate-50 rounded-2xl p-4 space-y-3">
-                {veiculo && <div className="flex justify-between"><span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Veículo</span><span className="text-xs font-bold text-slate-800">{veiculo.montadora?.nome} {veiculo.modelo?.nome} {veiculo.ano_modelo}</span></div>}
-                <div className="flex justify-between"><span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Plataforma</span><span className="text-xs font-bold text-slate-800">{platform}</span></div>
-                <div className="flex justify-between"><span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Objetivo</span><span className="text-xs font-bold text-slate-800">{OBJECTIVES.find(o => o.key === objetivo)?.label}</span></div>
-                <div className="flex justify-between"><span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Região</span><span className="text-xs font-bold text-slate-800">{tipoRegiao === 'RAIO' ? `${raioKm}km local` : tipoRegiao === 'ESTADO' ? 'Estadual' : 'Nacional'}</span></div>
-                <div className="flex justify-between border-t border-slate-200 pt-3"><span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Total Estimado</span><span className="text-sm font-black text-emerald-600">{MarketingAdsService.formatarMoeda(orcamento * duracao)}</span></div>
+                {veiculo && <div className="flex justify-between"><span className="text-xs text-slate-500 font-bold normal-case tracking-normal">Veículo</span><span className="text-xs font-bold text-slate-800">{veiculo.montadora?.nome} {veiculo.modelo?.nome} {veiculo.ano_modelo}</span></div>}
+                <div className="flex justify-between"><span className="text-xs text-slate-500 font-bold normal-case tracking-normal">Plataforma</span><span className="text-xs font-bold text-slate-800">{platform}</span></div>
+                <div className="flex justify-between"><span className="text-xs text-slate-500 font-bold normal-case tracking-normal">Objetivo</span><span className="text-xs font-bold text-slate-800">{OBJECTIVES.find(o => o.key === objetivo)?.label}</span></div>
+                <div className="flex justify-between"><span className="text-xs text-slate-500 font-bold normal-case tracking-normal">Região</span><span className="text-xs font-bold text-slate-800">{tipoRegiao === 'RAIO' ? `${raioKm}km local` : tipoRegiao === 'ESTADO' ? 'Estadual' : 'Nacional'}</span></div>
+                <div className="flex justify-between border-t border-slate-200 pt-3"><span className="text-xs text-slate-500 font-bold normal-case tracking-normal">Total Estimado</span><span className="text-sm font-semibold text-emerald-600">{MarketingAdsService.formatarMoeda(orcamento * duracao)}</span></div>
               </div>
               <div className="mt-4 p-3 bg-blue-50 border border-blue-100 rounded-xl">
                 <p className="text-[11px] text-blue-700">Após criar, clique em <strong>Impulsionar</strong> no card para ser direcionado ao {platform} com as configurações pré-preenchidas.</p>
@@ -402,10 +402,10 @@ const NovoAnuncioWizard: React.FC<WizardProps> = ({ onClose, onSuccess }) => {
 
         {/* Footer */}
         <div className="flex gap-3 p-6 border-t border-slate-100">
-          {step > 1 && <button onClick={() => setStep(s => s - 1)} className="flex-1 py-3 bg-slate-100 text-slate-700 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-200 transition-all">Voltar</button>}
+          {step > 1 && <button onClick={() => setStep(s => s - 1)} className="flex-1 py-3 bg-slate-100 text-slate-700 rounded-2xl font-semibold text-xs normal-case tracking-normal hover:bg-slate-200 transition-all">Voltar</button>}
           {step < 5
-            ? <button onClick={() => { if (step === 1 && !selectedVeiculoId) { toast.error('Selecione um veículo.'); return; } setStep(s => s + 1); }} className="flex-1 py-3 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow hover:opacity-90 transition-all flex items-center justify-center gap-2">Próximo <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg></button>
-            : <button onClick={handleSubmit} disabled={criarMutation.isPending} className="flex-1 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow hover:opacity-90 transition-all flex items-center justify-center gap-2 disabled:opacity-60">{criarMutation.isPending ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>Criar Anúncio</>}</button>
+            ? <button onClick={() => { if (step === 1 && !selectedVeiculoId) { toast.error('Selecione um veículo.'); return; } setStep(s => s + 1); }} className="flex-1 py-3 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-2xl font-semibold text-xs normal-case tracking-normal shadow hover:opacity-90 transition-all flex items-center justify-center gap-2">Próximo <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg></button>
+            : <button onClick={handleSubmit} disabled={criarMutation.isPending} className="flex-1 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-2xl font-semibold text-xs normal-case tracking-normal shadow hover:opacity-90 transition-all flex items-center justify-center gap-2 disabled:opacity-60">{criarMutation.isPending ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <><svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>Criar Anúncio</>}</button>
           }
         </div>
       </div>
@@ -461,7 +461,7 @@ const AnuncioCard: React.FC<{
           <PlatformIcon platform={campanha.platform} className="w-3.5 h-3.5" />
         </div>
         {/* Status badge */}
-        <div className={`absolute top-2 right-2 flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black border ${statusColors[campanha.status] || statusColors.RASCUNHO}`}>
+        <div className={`absolute top-2 right-2 flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold border ${statusColors[campanha.status] || statusColors.RASCUNHO}`}>
           <span className={`w-1.5 h-1.5 rounded-full ${statusDot[campanha.status] || statusDot.RASCUNHO}`} />
           {MarketingAdsService.getStatusLabel(campanha.status)}
         </div>
@@ -469,26 +469,26 @@ const AnuncioCard: React.FC<{
 
       {/* Info */}
       <div className="p-4">
-        <h3 className="font-black text-slate-900 text-sm leading-tight truncate">{vNome || campanha.nome}</h3>
+        <h3 className="font-semibold text-slate-900 text-sm leading-tight truncate">{vNome || campanha.nome}</h3>
         {campanha.veiculo?.ano_modelo && <p className="text-[11px] text-slate-400 mt-0.5">{campanha.veiculo.ano_modelo} • {campanha.veiculo.valor_venda ? MarketingAdsService.formatarMoeda(campanha.veiculo.valor_venda) : ''}</p>}
 
         {/* Métricas */}
         <div className="grid grid-cols-2 gap-2 mt-3">
           <div className="bg-slate-50 rounded-xl p-2.5">
-            <p className="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Alcance</p>
-            <p className="text-base font-black text-slate-900">{alcance.toLocaleString('pt-BR')}</p>
+            <p className="text-xs text-slate-500 font-bold normal-case tracking-normal">Alcance</p>
+            <p className="text-base font-semibold text-slate-900">{alcance.toLocaleString('pt-BR')}</p>
           </div>
           <div className="bg-slate-50 rounded-xl p-2.5">
-            <p className="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Cliques</p>
-            <p className="text-base font-black text-slate-900">{cliques.toLocaleString('pt-BR')}</p>
+            <p className="text-xs text-slate-500 font-bold normal-case tracking-normal">Cliques</p>
+            <p className="text-base font-semibold text-slate-900">{cliques.toLocaleString('pt-BR')}</p>
           </div>
           <div className="bg-slate-50 rounded-xl p-2.5">
-            <p className="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Impressões</p>
-            <p className="text-base font-black text-slate-900">{impressoes.toLocaleString('pt-BR')}</p>
+            <p className="text-xs text-slate-500 font-bold normal-case tracking-normal">Impressões</p>
+            <p className="text-base font-semibold text-slate-900">{impressoes.toLocaleString('pt-BR')}</p>
           </div>
           <div className="bg-slate-50 rounded-xl p-2.5">
-            <p className="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Gasto</p>
-            <p className="text-base font-black text-emerald-600">{MarketingAdsService.formatarMoeda(gasto)}</p>
+            <p className="text-xs text-slate-500 font-bold normal-case tracking-normal">Gasto</p>
+            <p className="text-base font-semibold text-emerald-600">{MarketingAdsService.formatarMoeda(gasto)}</p>
           </div>
         </div>
 
@@ -496,8 +496,8 @@ const AnuncioCard: React.FC<{
         {campanha.orcamento_diario && (
           <div className="mt-3">
             <div className="flex justify-between mb-1">
-              <span className="text-[9px] text-slate-500 font-bold uppercase tracking-widest">{MarketingAdsService.formatarMoeda(campanha.orcamento_diario)}/dia</span>
-              {diasRestantes !== null && <span className="text-[9px] text-slate-400">{diasRestantes}d restantes</span>}
+              <span className="text-xs text-slate-500 font-bold normal-case tracking-normal">{MarketingAdsService.formatarMoeda(campanha.orcamento_diario)}/dia</span>
+              {diasRestantes !== null && <span className="text-xs text-slate-400">{diasRestantes}d restantes</span>}
             </div>
           </div>
         )}
@@ -505,7 +505,7 @@ const AnuncioCard: React.FC<{
         {/* Actions */}
         <div className="flex gap-2 mt-3">
           <button onClick={() => onImpulsionar(campanha)}
-            className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-white text-[10px] font-black uppercase tracking-widest transition-all hover:opacity-90 shadow"
+            className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-white text-xs font-semibold normal-case tracking-normal transition-all hover:opacity-90 shadow"
             style={{ backgroundColor: color }}
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
@@ -632,11 +632,11 @@ const MarketingPage: React.FC = () => {
           { label: 'Contas Conectadas', value: `${contasConectadas} / 2`, color: 'from-amber-500 to-orange-600', icon: 'M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1' },
         ].map(k => (
           <div key={k.label} className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm">
-            <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${k.color} flex items-center justify-center text-white mb-2 shadow`}>
+            <div className={`w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600 mb-2 shadow`}>
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={k.icon} /></svg>
             </div>
-            <p className="text-[9px] text-slate-500 font-bold uppercase tracking-widest">{k.label}</p>
-            <p className="text-lg font-black text-slate-900 mt-0.5">{k.value}</p>
+            <p className="text-xs text-slate-500 font-bold normal-case tracking-normal">{k.label}</p>
+            <p className="text-lg font-semibold text-slate-900 mt-0.5">{k.value}</p>
           </div>
         ))}
       </div>
@@ -645,18 +645,18 @@ const MarketingPage: React.FC = () => {
       <div className="flex flex-wrap gap-3">
         {tabs.map(tab => (
           <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center px-5 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${
+            className={`flex items-center px-5 py-3.5 rounded-2xl text-xs font-semibold normal-case tracking-normal transition-all duration-300 ${
               activeTab === tab.id
-                ? 'bg-slate-900 text-white shadow-2xl scale-105 z-10'
+                ? 'bg-slate-900 text-white shadow-sm scale-105 z-10'
                 : 'bg-white text-slate-400 hover:text-slate-600 hover:bg-slate-50 border border-slate-200'
             }`}
           >
-            <svg className={`w-4 h-4 mr-2 ${activeTab === tab.id ? 'text-white' : 'text-violet-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className={`w-4 h-4 mr-2 ${activeTab === tab.id ? 'text-white' : 'text-slate-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={tab.icon} />
             </svg>
             {tab.label}
             {tab.count !== undefined && tab.count > 0 && (
-              <span className={`ml-2 px-1.5 py-0.5 rounded-full text-[9px] font-black ${activeTab === tab.id ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500'}`}>
+              <span className={`ml-2 px-1.5 py-0.5 rounded-full text-xs font-semibold ${activeTab === tab.id ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500'}`}>
                 {tab.count}
               </span>
             )}
@@ -665,7 +665,7 @@ const MarketingPage: React.FC = () => {
 
         {/* Botão Novo Anúncio (sempre visível) */}
         <button onClick={() => navigate('/marketing/anuncios/novo')}
-          className="ml-auto flex items-center gap-2 px-5 py-3.5 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-lg hover:opacity-90 transition-all"
+          className="ml-auto flex items-center gap-2 px-5 py-3.5 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-2xl font-semibold text-xs normal-case tracking-normal shadow-sm hover:opacity-90 transition-all"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
           Novo Anúncio
@@ -684,12 +684,12 @@ const MarketingPage: React.FC = () => {
               </div>
             ) : ativas.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 text-center">
-                <div className="w-16 h-16 rounded-3xl bg-violet-50 flex items-center justify-center mb-4">
-                  <svg className="w-8 h-8 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" /></svg>
+                <div className="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center mb-4">
+                  <svg className="w-8 h-8 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" /></svg>
                 </div>
-                <h3 className="font-black text-slate-700 text-lg">Nenhum anúncio ativo</h3>
+                <h3 className="font-semibold text-slate-700 text-lg">Nenhum anúncio ativo</h3>
                 <p className="text-sm text-slate-400 mt-1 max-w-xs">Crie seu primeiro anúncio para começar a divulgar seus veículos.</p>
-                <button onClick={() => navigate('/marketing/anuncios/novo')} className="mt-5 flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl font-black text-xs shadow hover:opacity-90 transition-all uppercase tracking-widest">
+                <button onClick={() => navigate('/marketing/anuncios/novo')} className="mt-5 flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl font-semibold text-xs shadow hover:opacity-90 transition-all normal-case tracking-normal">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
                   Criar Primeiro Anúncio
                 </button>
@@ -729,16 +729,16 @@ const MarketingPage: React.FC = () => {
                           : <div className="w-full h-full flex items-center justify-center"><svg className="w-8 h-8 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg></div>
                         }
                         {jaAnunciado && (
-                          <div className="absolute top-2 right-2 px-2 py-0.5 bg-emerald-500 text-white text-[9px] font-black rounded-full uppercase tracking-widest">Anunciado</div>
+                          <div className="absolute top-2 right-2 px-2 py-0.5 bg-emerald-500 text-white text-xs font-semibold rounded-full normal-case tracking-normal">Anunciado</div>
                         )}
                       </div>
                       <div className="p-4">
-                        <h3 className="font-black text-slate-900 text-sm truncate">{v.montadora?.nome} {v.modelo?.nome}</h3>
+                        <h3 className="font-semibold text-slate-900 text-sm truncate">{v.montadora?.nome} {v.modelo?.nome}</h3>
                         <p className="text-[11px] text-slate-400">{v.ano_modelo} · {v.km?.toLocaleString('pt-BR')} km</p>
-                        {v.valor_venda && <p className="text-sm font-black text-emerald-600 mt-1">{MarketingAdsService.formatarMoeda(v.valor_venda)}</p>}
+                        {v.valor_venda && <p className="text-sm font-semibold text-emerald-600 mt-1">{MarketingAdsService.formatarMoeda(v.valor_venda)}</p>}
                         <button onClick={() => navigate('/marketing/anuncios/novo')}
                           disabled={jaAnunciado}
-                          className="w-full mt-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow hover:opacity-90"
+                          className="w-full mt-3 py-2 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow hover:opacity-90"
                         >
                           {jaAnunciado ? 'Já anunciado' : 'Anunciar'}
                         </button>
@@ -776,16 +776,16 @@ const MarketingPage: React.FC = () => {
                           <div className="w-5 h-5 rounded-full flex items-center justify-center text-white" style={{ backgroundColor: color }}>
                             <PlatformIcon platform={c.platform} className="w-2.5 h-2.5" />
                           </div>
-                          <h4 className="font-black text-slate-900 text-sm truncate">{vNome || c.nome}</h4>
+                          <h4 className="font-semibold text-slate-900 text-sm truncate">{vNome || c.nome}</h4>
                         </div>
-                        <p className="text-[10px] text-slate-400">{c.data_inicio ? new Date(c.data_inicio).toLocaleDateString('pt-BR') : ''} → {c.data_fim ? new Date(c.data_fim).toLocaleDateString('pt-BR') : ''}</p>
+                        <p className="text-xs text-slate-400">{c.data_inicio ? new Date(c.data_inicio).toLocaleDateString('pt-BR') : ''} → {c.data_fim ? new Date(c.data_fim).toLocaleDateString('pt-BR') : ''}</p>
                         <div className="flex gap-4 mt-1">
-                          <span className="text-[10px] text-slate-500">Alcance: <strong>{(metricas.alcance ?? 0).toLocaleString('pt-BR')}</strong></span>
-                          <span className="text-[10px] text-slate-500">Cliques: <strong>{(metricas.cliques ?? 0).toLocaleString('pt-BR')}</strong></span>
-                          <span className="text-[10px] text-emerald-600">Gasto: <strong>{MarketingAdsService.formatarMoeda(metricas.gasto ?? 0)}</strong></span>
+                          <span className="text-xs text-slate-500">Alcance: <strong>{(metricas.alcance ?? 0).toLocaleString('pt-BR')}</strong></span>
+                          <span className="text-xs text-slate-500">Cliques: <strong>{(metricas.cliques ?? 0).toLocaleString('pt-BR')}</strong></span>
+                          <span className="text-xs text-emerald-600">Gasto: <strong>{MarketingAdsService.formatarMoeda(metricas.gasto ?? 0)}</strong></span>
                         </div>
                       </div>
-                      <span className="px-2 py-0.5 bg-slate-100 text-slate-500 text-[9px] font-black rounded-full uppercase tracking-widest flex-shrink-0">Encerrado</span>
+                      <span className="px-2 py-0.5 bg-slate-100 text-slate-500 text-xs font-semibold rounded-full normal-case tracking-normal flex-shrink-0">Encerrado</span>
                     </div>
                   );
                 })}
@@ -796,10 +796,10 @@ const MarketingPage: React.FC = () => {
 
         {/* ABA: CONFIGURAÇÕES */}
         {activeTab === 'CONFIGURACOES' && (
-          <div className="space-y-8">
+          <div className="space-y-6">
             {/* Conexões */}
             <div>
-              <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Contas de Anúncio</h3>
+              <h3 className="text-xs font-semibold text-slate-500 normal-case tracking-normal mb-3">Contas de Anúncio</h3>
               <div className="grid md:grid-cols-3 gap-4">
                 {PLATFORMS.map(platform => {
                   const integracao = MarketingAdsService.findIntegracaoForPlatform(integracoes, platform) ?? null;
@@ -816,33 +816,33 @@ const MarketingPage: React.FC = () => {
 
             {/* Templates */}
             <div>
-              <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Templates de Campanha</h3>
+              <h3 className="text-xs font-semibold text-slate-500 normal-case tracking-normal mb-3">Templates de Campanha</h3>
               <TemplateSelector templates={templates} selectedId={null} onSelect={() => {}} />
             </div>
 
             {/* Ferramentas de Criação */}
             <div>
-              <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Ferramentas de Criação Visual</h3>
+              <h3 className="text-xs font-semibold text-slate-500 normal-case tracking-normal mb-3">Ferramentas de Criação Visual</h3>
               <div className="grid md:grid-cols-2 gap-4">
                 <button onClick={() => navigate('/marketing/feed')}
                   className="flex items-center gap-4 p-5 bg-white border border-slate-100 rounded-2xl shadow-sm hover:shadow-md hover:border-indigo-200 transition-all group text-left"
                 >
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white shadow group-hover:scale-105 transition-transform">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white shadow  transition-transform">
                     <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                   </div>
                   <div>
-                    <p className="font-black text-slate-900">Gerador de Feed</p>
+                    <p className="font-semibold text-slate-900">Gerador de Feed</p>
                     <p className="text-xs text-slate-500 mt-0.5">Crie imagens 1080×1350 para o feed do Instagram e Facebook</p>
                   </div>
                 </button>
                 <button onClick={() => navigate('/marketing/stories')}
                   className="flex items-center gap-4 p-5 bg-white border border-slate-100 rounded-2xl shadow-sm hover:shadow-md hover:border-pink-200 transition-all group text-left"
                 >
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center text-white shadow group-hover:scale-105 transition-transform">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center text-white shadow  transition-transform">
                     <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
                   </div>
                   <div>
-                    <p className="font-black text-slate-900">Gerador de Stories</p>
+                    <p className="font-semibold text-slate-900">Gerador de Stories</p>
                     <p className="text-xs text-slate-500 mt-0.5">Crie stories 1080×1920 para Instagram e Facebook</p>
                   </div>
                 </button>
@@ -853,7 +853,7 @@ const MarketingPage: React.FC = () => {
             <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl flex gap-3">
               <svg className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
               <div>
-                <p className="text-xs font-black text-amber-900">Sobre a integração com as plataformas</p>
+                <p className="text-xs font-semibold text-amber-900">Sobre a integração com as plataformas</p>
                 <p className="text-xs text-amber-800 mt-1 leading-relaxed">Facebook e Instagram usam a mesma autorização Meta Ads. O saldo, moeda, conta e gastos devem ser sincronizados pelas APIs oficiais após o login; a criação automática de campanhas depende de backend com tokens seguros e aprovação da Meta/Google.</p>
               </div>
             </div>

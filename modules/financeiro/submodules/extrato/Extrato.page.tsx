@@ -99,7 +99,7 @@ const ExtratoPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-8 pb-20">
+    <div className="space-y-6 pb-8">
 
       {/* 1. KPIs do Período */}
       <ExtratoKpis totals={totals} />
@@ -108,17 +108,17 @@ const ExtratoPage: React.FC = () => {
       <ExtratoFilters filtros={filtros} onChange={handleFiltrosChange} />
 
       {/* 3. Tabela Unificada */}
-      <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden animate-in fade-in duration-500">
-        <div className="p-8 border-b border-slate-50 flex justify-between items-center bg-slate-50/50">
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden animate-in fade-in duration-200">
+        <div className="p-6 border-b border-slate-50 flex justify-between items-center bg-slate-50/50">
           <div>
-            <h2 className="text-xl font-black text-slate-900 uppercase tracking-tighter">Histórico Geral de Movimentações</h2>
-            <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-1">
+            <h2 className="text-xl font-semibold text-slate-900 normal-case tracking-tight">Histórico Geral de Movimentações</h2>
+            <p className="text-slate-500 text-xs font-medium normal-case tracking-normal mt-1">
               Todas as entradas, saídas, contas a pagar e a receber — compras, vendas, despesas e transferências
             </p>
           </div>
           <button
             onClick={exportCSV}
-            className="px-5 py-2.5 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-500 hover:bg-slate-50 transition-all shadow-sm"
+            className="px-5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold normal-case tracking-normal text-slate-500 hover:bg-slate-50 transition-all shadow-sm"
           >
             Exportar para CSV
           </button>
@@ -131,7 +131,7 @@ const ExtratoPage: React.FC = () => {
         {/* Paginação */}
         {!loading && totalPages > 1 && (
           <div className="flex items-center justify-between p-6 border-t border-slate-100 bg-slate-50/50">
-            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+            <p className="text-xs text-slate-500 font-medium normal-case tracking-normal">
               Página <span className="text-slate-900">{currentPage}</span> de <span className="text-slate-900">{totalPages}</span>
               <span className="ml-2 opacity-50">({totalCount} registros)</span>
             </p>
@@ -146,7 +146,7 @@ const ExtratoPage: React.FC = () => {
                 </svg>
               </button>
 
-              <button className="w-8 h-8 rounded-lg text-[10px] font-black bg-indigo-600 text-white shadow-lg shadow-indigo-200 flex items-center justify-center">
+              <button className="w-8 h-8 rounded-lg text-xs font-semibold bg-indigo-600 text-white shadow-sm shadow-none flex items-center justify-center">
                 {currentPage}
               </button>
 

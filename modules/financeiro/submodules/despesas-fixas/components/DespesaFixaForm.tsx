@@ -212,29 +212,29 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
   }, []);
 
   const content = (
-    <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="bg-white w-full max-w-xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 border border-slate-100 flex flex-col max-h-[90vh]">
+    <div data-drivecar-ui className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-white w-full max-w-xl rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 border border-slate-100 flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="p-6 border-b border-slate-50 bg-slate-900 text-white shrink-0">
-          <h3 className="text-xl font-black uppercase tracking-tighter">{tituloEditando ? 'Editar Custo Fixo' : 'Lançar Custo Fixo'}</h3>
-          <p className="text-[10px] font-bold uppercase tracking-widest opacity-80 mt-1">
+        <div className="p-6 border-b border-slate-50 bg-slate-50 text-slate-900 shrink-0">
+          <h3 className="text-xl font-semibold normal-case tracking-tight">{tituloEditando ? 'Editar Custo Fixo' : 'Lançar Custo Fixo'}</h3>
+          <p className="text-xs font-medium normal-case tracking-normal opacity-80 mt-1">
             Custos recorrentes e manutenção estrutural
           </p>
         </div>
 
         {/* Form Scrollable Area */}
-        <div className="overflow-y-auto shrink p-8">
+        <div className="overflow-y-auto shrink p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
 
             {/* Grupo e Categoria */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1 flex justify-between items-center">
+                <label className="block text-xs font-medium text-slate-500 normal-case mb-2 ml-1 flex justify-between items-center">
                   Grupo
                   <button
                     type="button"
                     onClick={() => { setIsAddingGrupo(true); setNewItemName(''); }}
-                    className="text-slate-900 hover:text-slate-700 font-black text-[9px] uppercase tracking-widest flex items-center"
+                    className="text-slate-900 hover:text-slate-700 font-semibold text-xs normal-case tracking-normal flex items-center"
                   >
                     <svg className="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -246,7 +246,7 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
                   required
                   value={formData.grupo_id}
                   onChange={e => setFormData({ ...formData, grupo_id: e.target.value, categoria_id: '' })}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-bold outline-none appearance-none focus:ring-2 focus:ring-slate-500"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-medium outline-none appearance-none focus:ring-2 focus:ring-slate-500"
                 >
                   <option value="">Selecione o grupo...</option>
                   {grupos.map(g => (
@@ -258,13 +258,13 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
               </div>
 
               <div>
-                <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1 flex justify-between items-center">
+                <label className="block text-xs font-medium text-slate-500 normal-case mb-2 ml-1 flex justify-between items-center">
                   Categoria (Subgrupo)
                   {formData.grupo_id && (
                     <button
                       type="button"
                       onClick={() => { setIsAddingCategoria(true); setNewItemName(''); }}
-                      className="text-slate-900 hover:text-slate-700 font-black text-[9px] uppercase tracking-widest flex items-center"
+                      className="text-slate-900 hover:text-slate-700 font-semibold text-xs normal-case tracking-normal flex items-center"
                     >
                       <svg className="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -278,7 +278,7 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
                   value={formData.categoria_id}
                   onChange={e => setFormData({ ...formData, categoria_id: e.target.value })}
                   disabled={!formData.grupo_id}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-bold outline-none appearance-none focus:ring-2 focus:ring-slate-500 disabled:opacity-50"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-medium outline-none appearance-none focus:ring-2 focus:ring-slate-500 disabled:opacity-50"
                 >
                   <option value="">Selecione a categoria...</option>
                   {categoriasDoGrupo.map(c => (
@@ -291,7 +291,7 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
             </div>
 
             <div>
-              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">
+              <label className="block text-xs font-medium text-slate-500 normal-case mb-2 ml-1">
                 Descrição / Motivo
               </label>
               <input
@@ -299,21 +299,21 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
                 value={formData.descricao}
                 onChange={e => setFormData({ ...formData, descricao: e.target.value.toUpperCase() })}
                 placeholder="Ex: Aluguel, Internet, Contador, Seguros..."
-                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3.5 font-bold outline-none focus:ring-2 focus:ring-slate-500"
+                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3.5 font-medium outline-none focus:ring-2 focus:ring-slate-500"
                 required
               />
             </div>
 
             {/* Valor */}
             <div>
-              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">
+              <label className="block text-xs font-medium text-slate-500 normal-case mb-2 ml-1">
                 Valor Total Previsto
               </label>
               <input
                 type="text"
                 value={valorFormatado}
                 onChange={handleCurrencyChange}
-                className="w-full bg-slate-50 border-2 border-slate-200 rounded-2xl px-5 py-4 text-2xl font-black text-slate-800 outline-none focus:border-slate-500 text-center transition-all"
+                className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-xl font-medium text-slate-800 outline-none focus:border-slate-500 text-center transition-all"
                 required
               />
             </div>
@@ -321,14 +321,14 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
             {/* Forma de Pagamento */}
             {!tituloEditando && (
               <div>
-                <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">
+                <label className="block text-xs font-medium text-slate-500 normal-case mb-2 ml-1">
                   Forma de Movimentação / Pagamento
                 </label>
                 <select
                   required
                   value={formData.forma_pagamento_id}
                   onChange={e => setFormData({ ...formData, forma_pagamento_id: e.target.value })}
-                  className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-bold text-slate-900 outline-none focus:ring-2 focus:ring-slate-500 appearance-none cursor-pointer"
+                  className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-medium text-slate-900 outline-none focus:ring-2 focus:ring-slate-500 appearance-none cursor-pointer"
                 >
                   <option value="">Selecione a forma de pagamento...</option>
                   {formas.map(f => <option key={f.id} value={f.id}>{f.nome}</option>)}
@@ -338,23 +338,23 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
 
             {/* Campos Dinâmicos (Parcelado vs À Vista) */}
             {(formaSelecionada || tituloEditando) && (
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">
+                  <label className="block text-xs font-medium text-slate-500 normal-case mb-2 ml-1">
                     {(formData.pago_avista && !tituloEditando) ? 'Data de Pagamento' : (tituloEditando ? 'Vencimento' : 'Primeiro Vencimento')}
                   </label>
                   <input
                     type="date"
                     value={formData.data_vencimento}
                     onChange={e => setFormData({ ...formData, data_vencimento: e.target.value })}
-                    className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3.5 font-bold outline-none focus:ring-2 focus:ring-slate-500"
+                    className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3.5 font-medium outline-none focus:ring-2 focus:ring-slate-500"
                     required
                   />
                 </div>
 
                 {!formData.pago_avista && !tituloEditando && formaSelecionada?.permite_parcelamento && (
                   <div>
-                    <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">
+                    <label className="block text-xs font-medium text-slate-500 normal-case mb-2 ml-1">
                       Qtd. de Parcelas
                     </label>
                     <input
@@ -363,7 +363,7 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
                       max={formaSelecionada?.qtd_max_parcelas || 120}
                       value={formData.qtd_parcelas}
                       onChange={e => setFormData({ ...formData, qtd_parcelas: Number(e.target.value) })}
-                      className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3.5 font-bold outline-none focus:ring-2 focus:ring-slate-500"
+                      className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3.5 font-medium outline-none focus:ring-2 focus:ring-slate-500"
                       required
                     />
                   </div>
@@ -373,13 +373,13 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
 
             {!formData.pago_avista && formData.qtd_parcelas > 1 && !tituloEditando && formaSelecionada?.permite_parcelamento && (
               <div>
-                <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">
+                <label className="block text-xs font-medium text-slate-500 normal-case mb-2 ml-1">
                   Intervalo entre Parcelas (Dias)
                 </label>
                 <select
                   value={formData.dias_intervalo}
                   onChange={e => setFormData({ ...formData, dias_intervalo: Number(e.target.value) })}
-                  className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-bold outline-none appearance-none focus:ring-2 focus:ring-slate-500 cursor-pointer"
+                  className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-medium outline-none appearance-none focus:ring-2 focus:ring-slate-500 cursor-pointer"
                 >
                   <option value={30}>Mensal (30 dias)</option>
                   <option value={15}>Quinzenal (15 dias)</option>
@@ -392,14 +392,14 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
             {formData.pago_avista && !tituloEditando && (
               <div className="space-y-4 p-5 bg-emerald-50 rounded-2xl border border-emerald-100">
                 <div>
-                  <label className="block text-[10px] font-black text-emerald-700 uppercase mb-2 ml-1">
+                  <label className="block text-xs font-medium text-emerald-700 normal-case mb-2 ml-1">
                     Conta Bancária / Caixa Origem
                   </label>
                   <select
                     required={formData.pago_avista}
                     value={formData.conta_id}
                     onChange={e => setFormData({ ...formData, conta_id: e.target.value })}
-                    className="w-full bg-white border border-emerald-200 rounded-xl px-4 py-3 text-sm font-bold text-emerald-900 outline-none focus:ring-2 focus:ring-emerald-500 appearance-none cursor-pointer"
+                    className="w-full bg-white border border-emerald-200 rounded-xl px-4 py-3 text-sm font-medium text-emerald-900 outline-none focus:ring-2 focus:ring-emerald-500 appearance-none cursor-pointer"
                   >
                     <option value="">Selecione a conta...</option>
                     {contas.map(c => <option key={c.id} value={c.id}>{formatContaBancaria(c)}</option>)}
@@ -410,31 +410,31 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
 
             {/* Documento Referência */}
             <div>
-              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">
-                Documento / Referência <span className="text-slate-300">(opcional)</span>
+              <label className="block text-xs font-medium text-slate-500 normal-case mb-2 ml-1">
+                Documento / Referência <span className="text-slate-500">(opcional)</span>
               </label>
               <input
                 type="text"
                 value={formData.documento_ref}
                 onChange={e => setFormData({ ...formData, documento_ref: e.target.value })}
                 placeholder="Ex: NF-1234, Boleto-5678..."
-                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3.5 font-bold outline-none focus:ring-2 focus:ring-slate-500"
+                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3.5 font-medium outline-none focus:ring-2 focus:ring-slate-500"
               />
             </div>
 
             {/* Actions */}
-            <div className="flex space-x-3 pt-4 pb-2">
+            <div className="flex flex-col sm:flex-row gap-3 pt-4 pb-2">
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 py-4 text-slate-500 font-black text-xs uppercase bg-slate-50 rounded-2xl hover:bg-slate-100 transition-all"
+                className="flex-1 py-4 text-slate-500 font-semibold text-xs normal-case bg-slate-50 rounded-2xl hover:bg-slate-100 transition-all"
               >
                 Cancelar
               </button>
               <button
                 type="submit"
                 disabled={isSaving}
-                className={`flex-1 py-4 text-white font-black text-xs uppercase tracking-widest rounded-2xl shadow-lg transition-all flex items-center justify-center ${formData.pago_avista ? 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-200' : 'bg-slate-900 hover:bg-slate-800'
+                className={`flex-1 py-4 text-white font-semibold text-xs normal-case tracking-normal rounded-2xl shadow-sm transition-all flex items-center justify-center ${formData.pago_avista ? 'bg-emerald-600 hover:bg-emerald-700 shadow-none' : 'bg-indigo-600 hover:bg-indigo-700'
                   }`}
               >
                 {isSaving ? 'Gravando...' : (tituloEditando ? 'Salvar Alterações' : (formData.pago_avista ? 'Liquidar Lançamento' : 'Confirmar Lançamento'))}
@@ -446,18 +446,18 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
 
       {/* Quick Add Modal */}
       {(isAddingGrupo || isAddingCategoria) && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300">
-          <div className="bg-white w-full max-w-sm rounded-[2rem] shadow-2xl overflow-hidden animate-in zoom-in-95 border border-slate-100 p-8">
-            <h4 className="text-lg font-black uppercase tracking-tighter text-slate-900 mb-2">
+        <div data-drivecar-ui className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white w-full max-w-sm rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 border border-slate-100 p-6">
+            <h4 className="text-lg font-semibold normal-case tracking-tight text-slate-900 mb-2">
               {isAddingGrupo ? 'Novo Grupo' : 'Nova Categoria'}
             </h4>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-6">
+            <p className="text-xs font-medium normal-case tracking-normal text-slate-500 mb-6">
               {isAddingGrupo ? 'Para custos fixos' : `Para o grupo: ${grupos.find(g => g.id === formData.grupo_id)?.nome}`}
             </p>
 
             <div className="space-y-6">
               <div>
-                <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">
+                <label className="block text-xs font-medium text-slate-500 normal-case mb-2 ml-1">
                   Nome do {isAddingGrupo ? 'Grupo' : 'Subgrupo'}
                 </label>
                 <input
@@ -466,7 +466,7 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
                   value={newItemName}
                   onChange={e => setNewItemName(e.target.value)}
                   placeholder="EX: ALUGUEL, MANUTENÇÃO..."
-                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3.5 font-bold outline-none focus:ring-2 focus:ring-slate-500 uppercase"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3.5 font-medium outline-none focus:ring-2 focus:ring-slate-500 normal-case"
                 />
               </div>
 
@@ -474,14 +474,14 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
                 <button
                   type="button"
                   onClick={() => { setIsAddingGrupo(false); setIsAddingCategoria(false); setNewItemName(''); }}
-                  className="flex-1 py-3.5 text-slate-500 font-black text-[10px] uppercase bg-slate-50 rounded-xl hover:bg-slate-100 transition-all"
+                  className="flex-1 py-3.5 text-slate-500 font-semibold text-xs normal-case bg-slate-50 rounded-xl hover:bg-slate-100 transition-all"
                 >
                   Cancelar
                 </button>
                 <button
                   type="button"
                   onClick={isAddingGrupo ? handleAddGrupo : handleAddCategoria}
-                  className="flex-1 py-3.5 text-white font-black text-[10px] uppercase tracking-widest bg-slate-900 rounded-xl hover:bg-slate-800 shadow-lg shadow-slate-200 transition-all"
+                  className="flex-1 py-3.5 text-white font-semibold text-xs normal-case tracking-normal bg-indigo-600 rounded-xl hover:bg-indigo-700 shadow-sm shadow-none transition-all"
                 >
                   Cadastrar
                 </button>

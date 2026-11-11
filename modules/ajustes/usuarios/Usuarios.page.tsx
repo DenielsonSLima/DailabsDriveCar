@@ -114,7 +114,7 @@ const UsuariosPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
+    <div className="space-y-6 animate-in fade-in duration-200">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-start space-x-4">
           <button
@@ -126,7 +126,7 @@ const UsuariosPage: React.FC = () => {
             </svg>
           </button>
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">Usuários e Acessos</h1>
+            <h1 className="text-3xl font-semibold text-slate-900">Usuários e Acessos</h1>
             <p className="text-slate-500 mt-1">Gerencie os perfis vinculados às contas de acesso.</p>
           </div>
         </div>
@@ -135,7 +135,7 @@ const UsuariosPage: React.FC = () => {
           {!isFormOpen && (
             <button
               onClick={handleOpenAdd}
-              className="px-6 py-3 bg-indigo-600 text-white rounded-2xl text-sm font-black uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg flex items-center"
+              className="px-6 py-3 bg-indigo-600 text-white rounded-2xl text-sm font-semibold normal-case tracking-normal hover:bg-indigo-700 transition-all shadow-sm flex items-center"
             >
               <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -156,16 +156,16 @@ const UsuariosPage: React.FC = () => {
         ) : (
           <div className="space-y-6">
             {errorStatus && (
-              <div className="bg-rose-50 border border-rose-100 p-6 rounded-3xl flex items-start space-x-4 animate-in zoom-in-95">
+              <div className="bg-rose-50 border border-rose-100 p-6 rounded-2xl flex items-start space-x-4 animate-in zoom-in-95">
                 <div className="bg-rose-100 p-3 rounded-2xl text-rose-600">
                   <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-sm font-black text-rose-900 uppercase tracking-widest">Erro de Configuração no Banco</h3>
+                  <h3 className="text-sm font-semibold text-rose-900 normal-case tracking-normal">Erro de Configuração no Banco</h3>
                   <p className="text-rose-700 text-sm mt-1 leading-relaxed">{errorStatus}</p>
-                  <p className="text-rose-500 text-[10px] mt-4 uppercase font-bold">Dica: Verifique se as políticas de RLS não são recursivas no seu SQL Editor.</p>
+                  <p className="text-rose-500 text-xs mt-4 normal-case font-medium">Dica: Verifique se as políticas de RLS não são recursivas no seu SQL Editor.</p>
                 </div>
               </div>
             )}
@@ -181,16 +181,16 @@ const UsuariosPage: React.FC = () => {
                     </svg>
                   </div>
                   <p className="text-xs text-indigo-700 font-medium leading-relaxed">
-                    <span className="font-bold">Gerenciamento de Perfis:</span> Esta lista exibe os dados da tabela <code className="bg-indigo-100 px-1 rounded font-bold italic">profiles</code>.
+                    <span className="font-semibold">Gerenciamento de Perfis:</span> Esta lista exibe os dados da tabela <code className="bg-indigo-100 px-1 rounded font-semibold italic">profiles</code>.
                   </p>
                 </div>
               </>
             )}
 
             {loading ? (
-              <div className="bg-white rounded-3xl border border-slate-200 p-20 flex flex-col items-center justify-center space-y-4">
+              <div className="bg-white rounded-2xl border border-slate-200 p-20 flex flex-col items-center justify-center space-y-4">
                 <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-                <p className="text-slate-400 font-bold uppercase text-[10px] tracking-widest">Aguardando Supabase...</p>
+                <p className="text-slate-500 font-medium normal-case text-xs tracking-normal">Aguardando Supabase...</p>
               </div>
             ) : !errorStatus && (
               <ListUsuarios
@@ -211,30 +211,30 @@ const UsuariosPage: React.FC = () => {
 
       {/* Modal de Confirmação de Exclusão */}
       {confirmDeleteId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white max-w-sm w-full rounded-3xl shadow-xl overflow-hidden animate-in zoom-in-95 duration-200">
+        <div data-drivecar-ui className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white max-w-sm w-full rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="bg-rose-500 p-6 flex items-center justify-center">
-              <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-lg">
+              <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-sm">
                 <svg className="w-7 h-7 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
               </div>
             </div>
-            <div className="p-8 text-center space-y-3">
-              <h2 className="text-xl font-black text-slate-800 tracking-tighter uppercase">Remover Acesso</h2>
+            <div className="p-6 text-center space-y-3">
+              <h2 className="text-xl font-semibold text-slate-800 tracking-tight normal-case">Remover Acesso</h2>
               <p className="text-slate-500 text-sm leading-relaxed">
                 Deseja realmente remover o acesso de <strong>{confirmDeleteName || 'este usuário'}</strong>? Esta ação é <strong>irreversível</strong>.
               </p>
               <div className="flex gap-3 pt-4">
                 <button
                   onClick={() => setConfirmDeleteId(null)}
-                  className="flex-1 py-3 border border-slate-200 text-slate-600 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-50 transition-all"
+                  className="flex-1 py-3 border border-slate-200 text-slate-600 rounded-2xl text-xs font-semibold normal-case tracking-normal hover:bg-slate-50 transition-all"
                 >
                   Cancelar
                 </button>
                 <button
                   onClick={confirmDelete}
-                  className="flex-1 py-3 bg-rose-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-rose-700 transition-all shadow-lg active:scale-95"
+                  className="flex-1 py-3 bg-rose-600 text-white rounded-2xl text-xs font-semibold normal-case tracking-normal hover:bg-rose-700 transition-all shadow-sm active:scale-100"
                 >
                   Sim, Remover
                 </button>
@@ -246,23 +246,23 @@ const UsuariosPage: React.FC = () => {
 
       {/* Modal de Sucesso de Exclusão */}
       {successDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white max-w-sm w-full rounded-3xl shadow-xl overflow-hidden animate-in zoom-in-95 duration-200">
+        <div data-drivecar-ui className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white max-w-sm w-full rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="bg-slate-700 p-6 flex items-center justify-center">
-              <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-lg">
+              <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-sm">
                 <svg className="w-7 h-7 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
             </div>
-            <div className="p-8 text-center space-y-3">
-              <h2 className="text-xl font-black text-slate-800 tracking-tighter uppercase">Acesso Removido</h2>
+            <div className="p-6 text-center space-y-3">
+              <h2 className="text-xl font-semibold text-slate-800 tracking-tight normal-case">Acesso Removido</h2>
               <p className="text-slate-500 text-sm leading-relaxed">
                 O acesso de <strong>{successDelete}</strong> foi removido com sucesso do sistema.
               </p>
               <button
                 onClick={() => setSuccessDelete(null)}
-                className="w-full py-3 mt-4 bg-slate-900 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg active:scale-95"
+                className="w-full py-3 mt-4 bg-indigo-600 text-white rounded-2xl text-xs font-semibold normal-case tracking-normal hover:bg-indigo-700 transition-all shadow-sm active:scale-100"
               >
                 Fechar
               </button>
@@ -274,21 +274,21 @@ const UsuariosPage: React.FC = () => {
 
       {/* Modal de Erro In-App */}
       {errorModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white max-w-sm w-full rounded-3xl shadow-xl overflow-hidden animate-in zoom-in-95 duration-200">
+        <div data-drivecar-ui className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white max-w-sm w-full rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="bg-amber-500 p-6 flex items-center justify-center">
-              <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-lg">
+              <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-sm">
                 <svg className="w-7 h-7 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
               </div>
             </div>
-            <div className="p-8 text-center space-y-3">
-              <h2 className="text-xl font-black text-slate-800 tracking-tighter uppercase">Atenção</h2>
+            <div className="p-6 text-center space-y-3">
+              <h2 className="text-xl font-semibold text-slate-800 tracking-tight normal-case">Atenção</h2>
               <p className="text-slate-600 text-sm leading-relaxed">{errorModal}</p>
               <button
                 onClick={() => setErrorModal(null)}
-                className="w-full py-3 mt-4 bg-slate-900 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg active:scale-95"
+                className="w-full py-3 mt-4 bg-indigo-600 text-white rounded-2xl text-xs font-semibold normal-case tracking-normal hover:bg-indigo-700 transition-all shadow-sm active:scale-100"
               >
                 Fechar
               </button>
@@ -299,25 +299,25 @@ const UsuariosPage: React.FC = () => {
 
       {/* Modal de Convite de Acesso Enviado */}
       {successInvite && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-          <div className="bg-white max-w-md w-full rounded-3xl shadow-xl overflow-hidden animate-in zoom-in-95 duration-300">
+        <div data-drivecar-ui className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white max-w-md w-full rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="bg-emerald-500 p-6 flex items-center justify-center">
-              <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg">
+              <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm">
                 <svg className="w-8 h-8 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
             </div>
 
-            <div className="p-8 text-center space-y-4">
-              <h2 className="text-2xl font-black text-slate-800 tracking-tighter uppercase">Convite Enviado!</h2>
+            <div className="p-6 text-center space-y-4">
+              <h2 className="text-2xl font-semibold text-slate-800 tracking-tight normal-case">Convite Enviado!</h2>
               <p className="text-slate-500 text-sm leading-relaxed">
                 O usuário foi cadastrado e recebeu um e-mail para confirmar o acesso. Ao abrir o link, ele será direcionado para definir a senha.
               </p>
 
               <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-left space-y-3 mt-6">
                 <div>
-                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Convite enviado para</label>
+                  <label className="block text-xs font-medium text-slate-500 normal-case tracking-normal mb-1">Convite enviado para</label>
                   <div className="font-mono text-sm text-slate-800 bg-white px-3 py-2 rounded-xl border border-slate-100 select-all">
                     {successInvite.email}
                   </div>
@@ -326,7 +326,7 @@ const UsuariosPage: React.FC = () => {
 
               <button
                 onClick={() => setSuccessInvite(null)}
-                className="w-full py-4 mt-6 bg-slate-900 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg active:scale-95"
+                className="w-full py-4 mt-6 bg-indigo-600 text-white rounded-2xl text-xs font-semibold normal-case tracking-normal hover:bg-indigo-700 transition-all shadow-sm active:scale-100"
               >
                 Entendi, Fechar
               </button>

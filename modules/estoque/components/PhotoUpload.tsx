@@ -184,8 +184,8 @@ const PhotoUpload: React.FC<Props> = ({ fotos, onChange, onNotification }) => {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center px-1">
-        <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">Galeria do Veículo</h3>
-        <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-lg ${fotos.length === MAX_PHOTOS ? 'bg-rose-100 text-rose-600' : 'bg-slate-100 text-slate-500'}`}>
+        <h3 className="text-sm font-semibold text-slate-900 normal-case tracking-normal">Galeria do Veículo</h3>
+        <span className={`text-xs font-bold normal-case tracking-normal px-2 py-1 rounded-lg ${fotos.length === MAX_PHOTOS ? 'bg-rose-100 text-rose-600' : 'bg-slate-100 text-slate-500'}`}>
           {fotos.length} de {MAX_PHOTOS} Fotos
         </span>
       </div>
@@ -206,12 +206,12 @@ const PhotoUpload: React.FC<Props> = ({ fotos, onChange, onNotification }) => {
             onClick={() => fileInputRef.current?.click()}
             className="aspect-[4/3] border-2 border-dashed border-slate-300 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-slate-50 hover:border-indigo-400 transition-all group"
           >
-            <div className="w-10 h-10 bg-white rounded-full shadow-sm flex items-center justify-center text-slate-400 group-hover:text-indigo-600 group-hover:scale-110 transition-all">
+            <div className="w-10 h-10 bg-white rounded-full shadow-sm flex items-center justify-center text-slate-400 group-hover:text-indigo-600 group-hover:scale-105 transition-all">
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
             </div>
-            <span className="mt-2 text-[10px] font-black text-slate-400 uppercase tracking-widest group-hover:text-indigo-600">
+            <span className="mt-2 text-xs font-semibold text-slate-400 normal-case tracking-normal group-hover:text-indigo-600">
               Adicionar Fotos
             </span>
           </div>
@@ -247,13 +247,13 @@ const PhotoUpload: React.FC<Props> = ({ fotos, onChange, onNotification }) => {
                   {!foto.is_capa ? (
                     <button
                       onClick={(e) => { e.stopPropagation(); handleSetCapa(foto.id); }}
-                      className="w-full py-1.5 bg-white text-indigo-900 text-[9px] font-black uppercase tracking-widest rounded-lg shadow-lg hover:bg-indigo-50 transition-colors"
+                      className="w-full py-1.5 bg-white text-indigo-900 text-xs font-semibold normal-case tracking-normal rounded-lg shadow-sm hover:bg-indigo-50 transition-colors"
                     >
                       Definir Capa
                     </button>
                   ) : (
                     <div className="text-center">
-                      <span className="inline-block px-2 py-1 bg-emerald-500 text-white text-[8px] font-black uppercase tracking-widest rounded-md shadow-sm">
+                      <span className="inline-block px-2 py-1 bg-emerald-500 text-white text-xs font-semibold normal-case tracking-normal rounded-md shadow-sm">
                         Capa Principal
                       </span>
                     </div>

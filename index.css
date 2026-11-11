@@ -1,21 +1,99 @@
-/* index.css - Arquivo base para estilos globais */
-
-/* Previne zoom automático em inputs no iOS e outros dispositivos móveis */
-@media screen and (max-width: 768px) {
-  input, 
-  select, 
-  textarea {
-    font-size: 16px !important;
-  }
+/* DriveCar UI. Presentation only: no global utility overrides or document reset. */
+:root {
+  --dc-canvas: #f8fafc;
+  --dc-surface: #ffffff;
+  --dc-border: #e2e8f0;
+  --dc-text: #0f172a;
+  --dc-muted: #64748b;
+  --dc-accent: #4f46e5;
+  --dc-accent-soft: #eef2ff;
+  --dc-radius-control: 0.5rem;
+  --dc-radius-panel: 0.75rem;
+  --dc-shadow-panel: 0 1px 3px rgb(15 23 42 / 0.04);
 }
 
-/* Tipografia restrita à navegação, sem alterar os demais módulos. */
+/* Explicit opt-in also covers portals without changing the public website. */
+[data-drivecar-ui] {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-synthesis: none;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Full-screen overlays must not inherit layout spacing from a space-y parent. */
+[data-drivecar-ui].fixed.inset-0 {
+  margin: 0 !important;
+}
+
 .app-sidebar {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   -webkit-font-smoothing: auto;
   -moz-osx-font-smoothing: auto;
-  font-synthesis: none;
   font-size: 14px;
   line-height: 20px;
   letter-spacing: normal;
+}
+
+/* Never style the printable/report canvas through these shared rules. */
+[data-drivecar-ui] :where(button, a, input, select, textarea, [tabindex]):focus-visible:not(
+  #print-content, #print-content *, #print-content-wrapper, #print-content-wrapper *, .print-container, .print-container *,
+  [data-drivecar-document], [data-drivecar-document] *
+) {
+  outline: 2px solid var(--dc-accent);
+  outline-offset: 3px;
+}
+
+[data-drivecar-ui] :where(input[type='checkbox'], input[type='radio']):not(
+  #print-content *, #print-content-wrapper *, .print-container, .print-container *, [data-drivecar-document] *
+) {
+  accent-color: var(--dc-accent);
+}
+
+[data-drivecar-ui] :where(button, input, select, textarea):disabled:not(
+  #print-content *, #print-content-wrapper *, .print-container, .print-container *, [data-drivecar-document] *
+) {
+  cursor: not-allowed;
+}
+
+[data-drivecar-ui] :where(input, select, textarea):not(
+  [type='checkbox'], [type='radio'], [type='range'], [type='color'], [type='file'], [type='hidden'],
+  #print-content *, #print-content-wrapper *, .print-container, .print-container *, [data-drivecar-document] *
+) {
+  min-height: 2.5rem;
+  min-width: 0;
+}
+
+[data-drivecar-ui] :where(textarea):not(
+  #print-content *, #print-content-wrapper *, .print-container, .print-container *, [data-drivecar-document] *
+) {
+  resize: vertical;
+}
+
+[data-drivecar-ui] :where(.overflow-x-auto, .overflow-y-auto, .overflow-auto) {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+/* Keep the native 16px input size on phones to prevent Safari zooming on focus. */
+@media screen and (max-width: 768px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  [data-drivecar-ui] :where(button, a[role='button']):not(
+    #print-content *, #print-content-wrapper *, .print-container, .print-container *, [data-drivecar-document] *
+  ) {
+    min-height: 2.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-drivecar-ui] *,
+  [data-drivecar-ui] *::before,
+  [data-drivecar-ui] *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }

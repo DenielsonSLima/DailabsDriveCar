@@ -77,22 +77,22 @@ const ContaForm: React.FC<Props> = ({ initialData, onClose, onSubmit }) => {
   }, []);
 
   const content = (
-    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col max-h-[90vh]">
+    <div data-drivecar-ui className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-white w-full max-w-2xl rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
 
         {/* Header */}
-        <div className="p-8 border-b border-slate-100 flex items-center justify-between">
+        <div className="p-6 border-b border-slate-100 flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-black text-slate-900 uppercase tracking-tighter">
+            <h2 className="text-xl font-semibold text-slate-900 normal-case tracking-tight">
               {initialData ? 'Editar Conta' : 'Nova Conta Bancária'}
             </h2>
-            <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1">Dados Bancários</p>
+            <p className="text-slate-500 text-xs font-medium normal-case tracking-normal mt-1">Dados Bancários</p>
           </div>
 
           <div className="flex items-center space-x-4">
             {/* Switch Sugestão: Permite Negativo */}
             <label className="flex items-center space-x-2 cursor-pointer bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100">
-              <span className={`text-[10px] font-black uppercase tracking-widest ${formData.permite_negativo ? 'text-indigo-600' : 'text-slate-400'}`}>
+              <span className={`text-xs font-medium normal-case tracking-normal ${formData.permite_negativo ? 'text-indigo-600' : 'text-slate-500'}`}>
                 {formData.permite_negativo ? 'Negativo OK' : 'Bloquear Negativo'}
               </span>
               <div className="relative">
@@ -103,7 +103,7 @@ const ContaForm: React.FC<Props> = ({ initialData, onClose, onSubmit }) => {
 
             {/* Switch Ativo */}
             <label className="flex items-center space-x-2 cursor-pointer bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100">
-              <span className={`text-[10px] font-black uppercase tracking-widest ${formData.ativo ? 'text-emerald-600' : 'text-slate-400'}`}>
+              <span className={`text-xs font-medium normal-case tracking-normal ${formData.ativo ? 'text-emerald-600' : 'text-slate-500'}`}>
                 {formData.ativo ? 'Ativa' : 'Inativa'}
               </span>
               <div className="relative">
@@ -119,11 +119,11 @@ const ContaForm: React.FC<Props> = ({ initialData, onClose, onSubmit }) => {
         </div>
 
         <div className="flex-1 overflow-y-auto">
-          <form onSubmit={handleSubmit} className="p-8 space-y-8">
+          <form onSubmit={handleSubmit} className="p-6 space-y-6">
 
             {/* 1. Instituição */}
             <div>
-              <label className="block text-[10px] font-black text-slate-400 uppercase mb-3 tracking-widest ml-1">1. Selecione a Instituição *</label>
+              <label className="block text-xs font-medium text-slate-500 normal-case mb-3 tracking-normal ml-1">1. Selecione a Instituição *</label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {bancosPopulares.map(b => (
                   <button
@@ -131,12 +131,12 @@ const ContaForm: React.FC<Props> = ({ initialData, onClose, onSubmit }) => {
                     type="button"
                     onClick={() => handleBancoSelect(b)}
                     className={`flex items-center p-3 rounded-xl border transition-all ${formData.banco_codigo === b.codigo || (formData.banco_nome?.toUpperCase() === b.nome)
-                        ? 'bg-slate-900 border-slate-900 text-white shadow-lg scale-[1.02]'
+                        ? 'bg-indigo-600 border-slate-900 text-white shadow-sm scale-[1.02]'
                         : 'bg-white border-slate-200 text-slate-600 hover:border-indigo-300'
                       }`}
                   >
                     <div className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: b.cor }}></div>
-                    <span className="text-[10px] font-black uppercase tracking-widest truncate">{b.nome}</span>
+                    <span className="text-xs font-medium normal-case tracking-normal truncate">{b.nome}</span>
                   </button>
                 ))}
               </div>
@@ -144,7 +144,7 @@ const ContaForm: React.FC<Props> = ({ initialData, onClose, onSubmit }) => {
                 name="banco_nome"
                 value={formData.banco_nome}
                 onChange={(e) => { e.target.value = e.target.value.toUpperCase(); handleChange(e); }}
-                className="mt-3 w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-xs font-bold outline-none focus:ring-2 focus:ring-indigo-500 placeholder:font-normal"
+                className="mt-3 w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-xs font-medium outline-none focus:ring-2 focus:ring-indigo-500 placeholder:font-normal"
                 placeholder="Ou digite o nome da instituição..."
                 required
               />
@@ -152,36 +152,36 @@ const ContaForm: React.FC<Props> = ({ initialData, onClose, onSubmit }) => {
 
             {/* 2. Titular */}
             <div>
-              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">2. Titular da Conta *</label>
+              <label className="block text-xs font-medium text-slate-500 normal-case mb-2 tracking-normal ml-1">2. Titular da Conta *</label>
               <input
                 name="titular"
                 value={formData.titular}
                 onChange={(e) => { e.target.value = e.target.value.toUpperCase(); handleChange(e); }}
-                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-bold text-slate-800 outline-none focus:ring-2 focus:ring-indigo-500 transition-all uppercase"
+                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-medium text-slate-800 outline-none focus:ring-2 focus:ring-indigo-500 transition-all normal-case"
                 placeholder="NOME DA EMPRESA OU SÓCIO"
                 required
               />
             </div>
 
             {/* 3. Agência e Conta (Lado a Lado) */}
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
-                <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">3. Agência (Opcional)</label>
+                <label className="block text-xs font-medium text-slate-500 normal-case mb-2 tracking-normal ml-1">3. Agência (Opcional)</label>
                 <input
                   name="agencia"
                   value={formData.agencia}
                   onChange={handleChange}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-mono font-bold outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-mono font-medium outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
                   placeholder="0000"
                 />
               </div>
               <div>
-                <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">4. Conta (Opcional)</label>
+                <label className="block text-xs font-medium text-slate-500 normal-case mb-2 tracking-normal ml-1">4. Conta (Opcional)</label>
                 <input
                   name="conta"
                   value={formData.conta}
                   onChange={handleChange}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-mono font-bold outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-mono font-medium outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
                   placeholder="00000-0"
                 />
               </div>
@@ -189,45 +189,45 @@ const ContaForm: React.FC<Props> = ({ initialData, onClose, onSubmit }) => {
 
             {/* Pré-visualização do Cartão */}
             <div className="pt-4">
-              <label className="block text-[10px] font-black text-slate-400 uppercase mb-3 tracking-widest ml-1">Pré-visualização</label>
+              <label className="block text-xs font-medium text-slate-500 normal-case mb-3 tracking-normal ml-1">Pré-visualização</label>
               <div
-                className={`relative w-full aspect-[1.586/1] max-w-[320px] mx-auto rounded-2xl shadow-xl overflow-hidden p-6 text-white flex flex-col justify-between transition-all ${!formData.ativo ? 'grayscale opacity-75' : ''}`}
+                className={`relative w-full aspect-[1.586/1] max-w-[320px] mx-auto rounded-2xl shadow-sm overflow-hidden p-6 text-white flex flex-col justify-between transition-all ${!formData.ativo ? 'grayscale opacity-75' : ''}`}
                 style={{ background: `linear-gradient(135deg, ${formData.cor_cartao} 0%, ${formData.cor_cartao}dd 100%)` }}
               >
                 {/* Texture Overlay */}
                 <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
 
                 <div className="relative z-10 flex justify-between items-start">
-                  <span className="font-bold uppercase tracking-wider text-sm">{formData.banco_nome || 'BANCO'}</span>
+                  <span className="font-semibold normal-case tracking-normal text-sm">{formData.banco_nome || 'BANCO'}</span>
                   <div className="w-8 h-5 bg-yellow-200/80 rounded-md"></div> {/* Fake Chip */}
                 </div>
 
-                <div className="relative z-10 font-mono text-lg tracking-widest">
+                <div className="relative z-10 font-mono text-lg tracking-normal">
                   **** **** **** {formData.conta ? formData.conta.slice(-4) : '0000'}
                 </div>
 
                 <div className="relative z-10 flex justify-between items-end">
                   <div>
-                    <p className="text-[8px] uppercase opacity-70">Titular</p>
-                    <p className="font-bold text-xs uppercase tracking-wider">{formData.titular || 'NOME DO TITULAR'}</p>
+                    <p className="text-xs normal-case opacity-70">Titular</p>
+                    <p className="font-medium text-xs normal-case tracking-normal">{formData.titular || 'NOME DO TITULAR'}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-[8px] uppercase opacity-70">Agência/Conta</p>
+                    <p className="text-xs normal-case opacity-70">Agência/Conta</p>
                     <p className="font-mono text-xs">{formData.agencia || '0000'} / {formData.conta || '00000-0'}</p>
                   </div>
                 </div>
               </div>
-              {!formData.ativo && <p className="text-center text-[10px] font-bold text-rose-500 mt-2 uppercase tracking-widest">Visualização de Conta Inativa</p>}
+              {!formData.ativo && <p className="text-center text-xs font-medium text-rose-500 mt-2 normal-case tracking-normal">Visualização de Conta Inativa</p>}
             </div>
 
           </form>
         </div>
 
         <div className="p-6 border-t border-slate-100 flex justify-end space-x-3 bg-white">
-          <button type="button" onClick={onClose} className="px-6 py-3 text-slate-500 font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 rounded-xl transition-all">Cancelar</button>
+          <button type="button" onClick={onClose} className="px-6 py-3 text-slate-500 font-semibold normal-case text-xs tracking-normal hover:bg-slate-50 rounded-xl transition-all">Cancelar</button>
           <button
             onClick={handleSubmit}
-            className="px-8 py-3 bg-indigo-600 text-white rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg hover:bg-indigo-700 transition-all active:scale-95"
+            className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold normal-case text-xs tracking-normal shadow-sm hover:bg-indigo-700 transition-all active:scale-100"
           >
             Salvar Conta
           </button>

@@ -107,28 +107,28 @@ const ModalBaixa: React.FC<Props> = ({ titulo, onClose, onSuccess }) => {
   const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 border border-slate-200 flex flex-col max-h-[90vh]">
+    <div data-drivecar-ui className="fixed !m-0 inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-white w-full max-w-md rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 duration-200 border border-slate-200 flex flex-col max-h-[90vh]">
         <div className={`p-6 text-white shrink-0 ${titulo.tipo === 'PAGAR' ? 'bg-rose-600' : 'bg-emerald-600'}`}>
-          <p className="text-[10px] font-black uppercase tracking-widest opacity-80">Confirmar Liquidação</p>
-          <h3 className="text-xl font-black uppercase tracking-tighter mt-1">{titulo.descricao}</h3>
-          <div className="mt-4 flex justify-between items-end">
+          <p className="text-xs font-medium normal-case tracking-normal opacity-80">Confirmar Liquidação</p>
+          <h3 className="text-xl font-semibold normal-case tracking-tight break-words mt-1">{titulo.descricao}</h3>
+          <div className="mt-4 flex flex-wrap gap-3 justify-between items-end">
             <div>
-              <p className="text-[8px] font-black uppercase opacity-60">Saldo Devedor Original</p>
-              <p className="text-lg font-black">{formatCurrency(saldoDevedorOriginal)}</p>
+              <p className="text-xs font-medium normal-case opacity-90">Saldo Devedor Original</p>
+              <p className="text-lg font-semibold">{formatCurrency(saldoDevedorOriginal)}</p>
             </div>
-            <p className="text-[10px] font-black bg-black/20 px-2 py-1 rounded-lg">PARCELA {titulo.parcela_numero}/{titulo.parcela_total}</p>
+            <p className="text-xs font-medium bg-black/20 px-2 py-1 rounded-lg">PARCELA {titulo.parcela_numero}/{titulo.parcela_total}</p>
           </div>
         </div>
 
-        <div className="overflow-y-auto shrink p-8">
+        <div className="overflow-y-auto shrink p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-[10px] font-black text-emerald-600 uppercase mb-2 tracking-widest ml-1">Desconto</label>
+                <label className="block text-xs font-medium text-emerald-600 normal-case mb-2 tracking-normal ml-1">Desconto</label>
                 <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">R$</span>
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-medium">R$</span>
                   <input
                     type="text"
                     value={descontoRaw}
@@ -137,15 +137,15 @@ const ModalBaixa: React.FC<Props> = ({ titulo, onClose, onSuccess }) => {
                       setDescontoRaw(masked);
                       setValorDesconto(parseCurrencyToNumber(masked));
                     }}
-                    className="w-full bg-white border-2 border-slate-100 rounded-2xl px-5 py-3 pl-10 text-lg font-black text-[#111827] outline-none focus:border-emerald-500 transition-all text-right"
+                    className="w-full bg-white border-2 border-slate-100 rounded-2xl px-5 py-3 pl-10 text-lg font-medium text-[#111827] outline-none focus:border-emerald-500 transition-all text-right"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-[10px] font-black text-rose-600 uppercase mb-2 tracking-widest ml-1">Acréscimo (Juros)</label>
+                <label className="block text-xs font-medium text-rose-600 normal-case mb-2 tracking-normal ml-1">Acréscimo (Juros)</label>
                 <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">R$</span>
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-medium">R$</span>
                   <input
                     type="text"
                     value={acrescimoRaw}
@@ -154,16 +154,16 @@ const ModalBaixa: React.FC<Props> = ({ titulo, onClose, onSuccess }) => {
                       setAcrescimoRaw(masked);
                       setValorAcrescimo(parseCurrencyToNumber(masked));
                     }}
-                    className="w-full bg-white border-2 border-slate-100 rounded-2xl px-5 py-3 pl-10 text-lg font-black text-[#111827] outline-none focus:border-rose-500 transition-all text-right"
+                    className="w-full bg-white border-2 border-slate-100 rounded-2xl px-5 py-3 pl-10 text-lg font-medium text-[#111827] outline-none focus:border-rose-500 transition-all text-right"
                   />
                 </div>
               </div>
             </div>
 
             <div>
-              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Valor a ser Efetivamente {titulo.tipo === 'PAGAR' ? 'pago' : 'recebido'}</label>
+              <label className="block text-xs font-medium text-slate-500 normal-case mb-2 tracking-normal ml-1">Valor a ser Efetivamente {titulo.tipo === 'PAGAR' ? 'pago' : 'recebido'}</label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">R$</span>
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-medium">R$</span>
                 <input
                   type="text"
                   value={pagoRaw}
@@ -172,34 +172,34 @@ const ModalBaixa: React.FC<Props> = ({ titulo, onClose, onSuccess }) => {
                     setPagoRaw(masked);
                     setValorPago(parseCurrencyToNumber(masked));
                   }}
-                  className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 pl-12 text-2xl font-black text-[#111827] outline-none focus:border-indigo-500 transition-all"
+                  className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 pl-12 text-2xl font-medium text-[#111827] outline-none focus:border-indigo-500 transition-all"
                 />
               </div>
               {valorPago > 0 && valorPago < (saldoDevedorOriginal + valorAcrescimo - valorDesconto) && (
-                <p className="text-[9px] text-amber-600 font-bold uppercase mt-2 ml-1">💡 Atenção: Baixa menor que o saldo final (Liquidará Parcialmente).</p>
+                <p className="text-xs text-amber-600 font-medium normal-case mt-2 ml-1">💡 Atenção: Baixa menor que o saldo final (Liquidará Parcialmente).</p>
               )}
             </div>
 
             <div>
-              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Data de Pagamento</label>
+              <label className="block text-xs font-medium text-slate-500 normal-case mb-2 tracking-normal ml-1">Data de Pagamento</label>
               <input
                 type="date"
                 required
                 value={dataPagamento}
                 onChange={e => setDataPagamento(e.target.value)}
-                className="w-full bg-white border-2 border-slate-100 rounded-2xl px-5 py-3 text-lg font-black text-[#111827] outline-none focus:border-indigo-500 transition-all font-sans"
+                className="w-full bg-white border-2 border-slate-100 rounded-2xl px-5 py-3 text-lg font-medium text-[#111827] outline-none focus:border-indigo-500 transition-all font-sans"
               />
             </div>
 
             {valorPago > 0 && (
-              <div className="grid grid-cols-1 gap-4 bg-slate-50 p-4 rounded-3xl border border-slate-100">
+              <div className="grid grid-cols-1 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
                 <div>
-                  <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Conta Bancária / Caixa</label>
+                  <label className="block text-xs font-medium text-slate-500 normal-case mb-2 tracking-normal ml-1">Conta Bancária / Caixa</label>
                   <select
                     required={valorPago > 0}
                     value={contaId}
                     onChange={e => setContaId(e.target.value)}
-                    className="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-[#111827] outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50"
+                    className="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-[#111827] outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50"
                   >
                     <option value="">Selecione a conta...</option>
                     {contas.map(c => <option key={c.id} value={c.id}>{formatContaBancaria(c)}</option>)}
@@ -207,12 +207,12 @@ const ModalBaixa: React.FC<Props> = ({ titulo, onClose, onSuccess }) => {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Forma de Movimentação</label>
+                  <label className="block text-xs font-medium text-slate-500 normal-case mb-2 tracking-normal ml-1">Forma de Movimentação</label>
                   <select
                     required={valorPago > 0}
                     value={formaId}
                     onChange={e => setFormaId(e.target.value)}
-                    className="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-[#111827] outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50"
+                    className="w-full bg-white border-2 border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-[#111827] outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50"
                   >
                     <option value="">Selecione a forma...</option>
                     {formas.map(f => <option key={f.id} value={f.id}>{f.nome}</option>)}
@@ -222,11 +222,11 @@ const ModalBaixa: React.FC<Props> = ({ titulo, onClose, onSuccess }) => {
             )}
 
             <div className="flex space-x-3 pt-4 pb-2">
-              <button type="button" onClick={onClose} className="flex-1 py-4 text-slate-500 font-black text-xs uppercase bg-slate-50 rounded-2xl hover:bg-slate-100 transition-all">Cancelar</button>
+              <button type="button" onClick={onClose} className="flex-1 py-4 text-slate-500 font-semibold text-xs normal-case bg-slate-50 rounded-2xl hover:bg-slate-100 transition-all">Cancelar</button>
               <button
                 type="submit"
                 disabled={isSaving}
-                className={`flex-1 py-4 text-white font-black text-xs uppercase tracking-widest rounded-2xl shadow-lg transition-all active:scale-95 ${titulo.tipo === 'PAGAR' ? 'bg-rose-600 hover:bg-rose-700 shadow-rose-200' : 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-200'
+                className={`flex-1 py-4 text-white font-semibold text-xs normal-case tracking-normal rounded-2xl shadow-sm transition-all active:scale-100 ${titulo.tipo === 'PAGAR' ? 'bg-rose-600 hover:bg-rose-700 shadow-none' : 'bg-emerald-600 hover:bg-emerald-700 shadow-none'
                   }`}
               >
                 {isSaving ? 'Processando...' : 'Confirmar'}

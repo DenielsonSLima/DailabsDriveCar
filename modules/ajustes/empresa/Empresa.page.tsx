@@ -63,10 +63,10 @@ const EmpresaPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in zoom-in-95 duration-300 relative">
+    <div className="space-y-6 animate-in fade-in zoom-in-95 duration-200 relative">
       {/* Toast Notification */}
       {toast && (
-        <div className={`fixed top-6 right-6 z-[200] px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 animate-in slide-in-from-right duration-300 border backdrop-blur-md ${
+        <div data-drivecar-ui className={`fixed top-6 right-6 z-[200] px-6 py-4 rounded-2xl shadow-sm flex items-center space-x-3 animate-in slide-in-from-right duration-200 border backdrop-blur-md ${
           toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' : 'bg-rose-600 text-white border-rose-400/50'
         }`}>
           <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${toast.type === 'success' ? 'bg-emerald-500 text-white' : 'bg-white text-rose-600'}`}>
@@ -74,7 +74,7 @@ const EmpresaPage: React.FC = () => {
               <path strokeLinecap="round" strokeLinejoin="round" d={toast.type === 'success' ? "M5 13l4 4L19 7" : "M6 18L18 6M6 6l12 12"} />
             </svg>
           </div>
-          <span className="font-bold text-sm tracking-tight">{toast.message}</span>
+          <span className="font-semibold text-sm tracking-tight">{toast.message}</span>
         </div>
       )}
 
@@ -89,7 +89,7 @@ const EmpresaPage: React.FC = () => {
             </svg>
           </button>
           <div>
-            <h1 className="text-3xl font-bold text-slate-900 tracking-tighter">Dados da Empresa</h1>
+            <h1 className="text-3xl font-semibold text-slate-900 tracking-tight">Dados da Empresa</h1>
             <p className="text-slate-500 mt-1">Configure as informações fiscais e identidade visual.</p>
           </div>
         </div>
@@ -97,9 +97,9 @@ const EmpresaPage: React.FC = () => {
 
       <div className="max-w-5xl">
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-20 space-y-4 bg-white rounded-[2.5rem] border border-slate-200">
+          <div className="flex flex-col items-center justify-center py-20 space-y-4 bg-white rounded-2xl border border-slate-200">
             <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-slate-400 font-bold uppercase text-[10px] tracking-widest">Carregando configurações...</p>
+            <p className="text-slate-500 font-medium normal-case text-xs tracking-normal">Carregando configurações...</p>
           </div>
         ) : (
           <FormEmpresa 

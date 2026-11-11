@@ -70,7 +70,7 @@ const EstoquePublicoFilters: React.FC<Props> = ({
       {/* 2. FAIXA DE PREÇO */}
       <div className="space-y-6">
         <h3 className="text-xs font-black text-slate-900 uppercase tracking-[0.2em] px-1">Faixa de Preço</h3>
-        <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm space-y-5">
+        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
           <div className="space-y-2">
             <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Valor Mínimo</label>
             <div className="relative">
@@ -91,7 +91,7 @@ const EstoquePublicoFilters: React.FC<Props> = ({
       {/* 3. ORDENAÇÃO E AGRUPAMENTO (MOVIDOS PARA CÁ) */}
       <div className="space-y-6">
          <h3 className="text-xs font-black text-slate-900 uppercase tracking-[0.2em] px-1">Modos de Visualização</h3>
-         <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm space-y-6">
+         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
             <div>
               <label className="block text-[9px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Ordenar por</label>
               <select 
@@ -116,7 +116,7 @@ const EstoquePublicoFilters: React.FC<Props> = ({
          </div>
       </div>
 
-      <div className="bg-[#050a14] rounded-[2rem] p-8 text-white shadow-xl relative overflow-hidden group">
+      <div className="bg-[#050a14] rounded-2xl p-8 text-white shadow-sm relative overflow-hidden group">
          <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10 group-hover:scale-150 transition-transform duration-700"></div>
          <h4 className="text-sm font-black uppercase tracking-tighter relative z-10">Atendimento Premium</h4>
          <p className="text-[10px] text-slate-300 mt-2 leading-relaxed relative z-10 opacity-70">Nossos consultores estão prontos para ajudar você com as melhores condições.</p>

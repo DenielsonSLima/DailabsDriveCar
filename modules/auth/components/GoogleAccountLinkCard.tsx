@@ -42,9 +42,9 @@ const GoogleAccountLinkCard: React.FC = () => {
   };
 
   return (
-    <div className="bg-white border border-slate-200 rounded-3xl p-5 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div className="flex items-start gap-4">
-        <div className="h-11 w-11 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0">
+        <div className="h-11 w-11 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0">
           <svg className="w-6 h-6" viewBox="0 0 24 24" aria-hidden="true">
             <path fill="#4285F4" d="M21.6 12.23c0-.79-.07-1.55-.2-2.23H12v4.22h5.37a4.6 4.6 0 01-1.99 3.02v2.51h3.23c1.89-1.74 2.99-4.31 2.99-7.52z" />
             <path fill="#34A853" d="M12 22c2.7 0 4.96-.9 6.61-2.44l-3.23-2.51c-.9.6-2.04.95-3.38.95-2.6 0-4.81-1.76-5.6-4.12H3.06v2.59A9.99 9.99 0 0012 22z" />
@@ -54,8 +54,8 @@ const GoogleAccountLinkCard: React.FC = () => {
         </div>
         <div>
           <div className="flex items-center gap-2 flex-wrap">
-            <h3 className="text-sm font-black text-slate-900 uppercase tracking-tight">Conta Google</h3>
-            <span className={`px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-widest ${isLinked ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500'}`}>
+            <h3 className="text-sm font-semibold text-slate-900 normal-case tracking-tight">Conta Google</h3>
+            <span className={`px-2 py-0.5 rounded-md text-xs font-semibold normal-case tracking-normal ${isLinked ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500'}`}>
               {loading ? 'Verificando' : isLinked ? 'Vinculada' : 'Opcional'}
             </span>
           </div>
@@ -64,7 +64,7 @@ const GoogleAccountLinkCard: React.FC = () => {
               ? 'Seu login também pode ser feito com a conta Google vinculada.'
               : `Vincule ${session?.user.email || 'seu e-mail'} para entrar no sistema com Google.`}
           </p>
-          {error && <p className="text-[11px] text-rose-600 font-bold mt-2">{error}</p>}
+          {error && <p className="text-xs text-rose-600 font-medium mt-2">{error}</p>}
         </div>
       </div>
 
@@ -72,7 +72,7 @@ const GoogleAccountLinkCard: React.FC = () => {
         type="button"
         onClick={handleLinkGoogle}
         disabled={loading || linking || isLinked}
-        className="px-5 py-3 bg-slate-900 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 transition-all disabled:opacity-50 disabled:hover:bg-slate-900 whitespace-nowrap"
+        className="px-5 py-3 bg-slate-900 text-white rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-indigo-600 transition-all disabled:opacity-50 disabled:hover:bg-slate-900 whitespace-nowrap"
       >
         {linking ? 'Abrindo Google...' : isLinked ? 'Já Vinculada' : 'Vincular Google'}
       </button>

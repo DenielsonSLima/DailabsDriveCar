@@ -590,15 +590,15 @@ const NovoAnuncioPage: React.FC = () => {
           </svg>
         </button>
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tighter">Novo Anúncio</h1>
-          <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">Tráfego Pago — Passo {step} de 6</p>
+          <h1 className="text-2xl font-semibold text-slate-900 tracking-tight">Novo Anúncio</h1>
+          <p className="text-xs text-slate-500 font-bold normal-case tracking-normal">Tráfego Pago — Passo {step} de 6</p>
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         {STEPS.map((s, idx) => (
           <React.Fragment key={s.num}>
-            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${
+            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold normal-case tracking-normal transition-all ${
               step === s.num
                 ? 'bg-indigo-600 text-white shadow-md'
                 : step > s.num
@@ -621,10 +621,10 @@ const NovoAnuncioPage: React.FC = () => {
         ))}
       </div>
 
-      <div className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6">
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
         {step === 1 && (
           <div>
-            <h2 className="text-lg font-black text-slate-900 mb-1">Qual veículo deseja anunciar?</h2>
+            <h2 className="text-lg font-semibold text-slate-900 mb-1">Qual veículo deseja anunciar?</h2>
             <p className="text-xs text-slate-500 mb-4">Selecione um veículo do estoque disponível</p>
             <MarketingVehicleSelection
               veiculos={estoque?.data || []}
@@ -636,12 +636,12 @@ const NovoAnuncioPage: React.FC = () => {
 
         {step === 2 && (
           <div>
-            <h2 className="text-lg font-black text-slate-900 mb-1">Defina verba e plataformas</h2>
+            <h2 className="text-lg font-semibold text-slate-900 mb-1">Defina verba e plataformas</h2>
             <p className="text-xs text-slate-500 mb-6">Escolha uma ou mais plataformas. O rateio começa automático e pode ser ajustado.</p>
 
             <div className="space-y-5">
               <div>
-                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">
+                <label className="block text-xs font-semibold text-slate-500 normal-case tracking-normal mb-2">
                   Verba diária total
                 </label>
                 <div className="flex items-center gap-3">
@@ -666,7 +666,7 @@ const NovoAnuncioPage: React.FC = () => {
                         setOrcamentoDiario(value);
                         setRateioManual(false);
                       }}
-                      className={`py-1.5 rounded-lg text-[10px] font-black transition-all ${
+                      className={`py-1.5 rounded-lg text-xs font-semibold transition-all ${
                         orcamentoDiario === value
                           ? 'bg-indigo-600 text-white'
                           : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
@@ -679,7 +679,7 @@ const NovoAnuncioPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">
+                <label className="block text-xs font-semibold text-slate-500 normal-case tracking-normal mb-2">
                   Plataformas
                 </label>
                 <div className="grid gap-3 md:grid-cols-3">
@@ -700,8 +700,8 @@ const NovoAnuncioPage: React.FC = () => {
                             {platform.icon}
                           </div>
                           <div className="min-w-0 flex-1">
-                            <p className="font-black text-slate-900 text-sm">{platform.label}</p>
-                            <p className="text-[10px] text-slate-500 mt-0.5">{platform.canais}</p>
+                            <p className="font-semibold text-slate-900 text-sm">{platform.label}</p>
+                            <p className="text-xs text-slate-500 mt-0.5">{platform.canais}</p>
                           </div>
                           <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
                             isSelected ? 'bg-[#004691] border-[#004691]' : 'border-slate-200'
@@ -722,12 +722,12 @@ const NovoAnuncioPage: React.FC = () => {
               <div className="bg-slate-50 rounded-2xl border border-slate-100 p-4">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3">
                   <div>
-                    <p className="text-xs font-black text-slate-900">Rateio da verba diária</p>
-                    <p className="text-[10px] text-slate-500">Ajuste manualmente se quiser priorizar uma plataforma.</p>
+                    <p className="text-xs font-semibold text-slate-900">Rateio da verba diária</p>
+                    <p className="text-xs text-slate-500">Ajuste manualmente se quiser priorizar uma plataforma.</p>
                   </div>
                   <button
                     onClick={() => setRateioManual(false)}
-                    className="px-3 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 hover:border-indigo-300"
+                    className="px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold normal-case tracking-normal text-slate-600 hover:border-indigo-300"
                   >
                     Rateio automático
                   </button>
@@ -736,7 +736,7 @@ const NovoAnuncioPage: React.FC = () => {
                 <div className="grid gap-3">
                   {selectedPlatforms.map(platform => (
                     <div key={platform} className="flex items-center gap-3">
-                      <span className="w-24 text-xs font-black text-slate-700">{getPlatformLabel(platform)}</span>
+                      <span className="w-24 text-xs font-semibold text-slate-700">{getPlatformLabel(platform)}</span>
                       <div className="flex-1 flex items-center gap-2">
                         <span className="text-xs text-slate-400 font-bold">R$</span>
                         <input
@@ -751,7 +751,7 @@ const NovoAnuncioPage: React.FC = () => {
                           className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         />
                       </div>
-                      <span className="w-20 text-right text-[10px] font-bold text-slate-400">
+                      <span className="w-20 text-right text-xs font-bold text-slate-400">
                         {orcamentoDiario > 0 ? Math.round(((platformBudgets[platform] || 0) / orcamentoDiario) * 100) : 0}%
                       </span>
                     </div>
@@ -759,15 +759,15 @@ const NovoAnuncioPage: React.FC = () => {
                 </div>
 
                 <div className="mt-3 flex items-center justify-between border-t border-slate-200 pt-3">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Soma do rateio</span>
-                  <span className={`text-xs font-black ${Math.abs(diferencaRateio) > 0.01 ? 'text-rose-600' : 'text-emerald-600'}`}>
+                  <span className="text-xs font-bold normal-case tracking-normal text-slate-500">Soma do rateio</span>
+                  <span className={`text-xs font-semibold ${Math.abs(diferencaRateio) > 0.01 ? 'text-rose-600' : 'text-emerald-600'}`}>
                     {MarketingAdsService.formatarMoeda(rateioTotal)} / {MarketingAdsService.formatarMoeda(orcamentoDiario)}
                   </span>
                 </div>
               </div>
 
               <div>
-                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">
+                <label className="block text-xs font-semibold text-slate-500 normal-case tracking-normal mb-2">
                   Duração
                 </label>
                 <div className="flex items-center gap-3">
@@ -779,11 +779,11 @@ const NovoAnuncioPage: React.FC = () => {
                     onChange={e => setDuracaoDias(Number(e.target.value))}
                     className="flex-1 accent-indigo-600"
                   />
-                  <span className="text-sm font-black text-indigo-600 w-20 text-right">{duracaoDias} dias</span>
+                  <span className="text-sm font-semibold text-indigo-600 w-20 text-right">{duracaoDias} dias</span>
                 </div>
                 <div className="flex justify-between mt-1">
-                  <span className="text-[10px] text-slate-400">Gasto total estimado:</span>
-                  <span className="text-xs font-black text-emerald-600">{MarketingAdsService.formatarMoeda(totalEstimado)}</span>
+                  <span className="text-xs text-slate-400">Gasto total estimado:</span>
+                  <span className="text-xs font-semibold text-emerald-600">{MarketingAdsService.formatarMoeda(totalEstimado)}</span>
                 </div>
               </div>
             </div>
@@ -792,7 +792,7 @@ const NovoAnuncioPage: React.FC = () => {
 
         {step === 3 && (
           <div>
-            <h2 className="text-lg font-black text-slate-900 mb-1">Escolha um template de campanha</h2>
+            <h2 className="text-lg font-semibold text-slate-900 mb-1">Escolha um template de campanha</h2>
             <p className="text-xs text-slate-500 mb-4">Modelos focados em vendas de carros para Sergipe, Nordeste, Bahia e Alagoas.</p>
             <div className="grid gap-3">
               {CAMPANHA_TEMPLATES.map(template => {
@@ -815,13 +815,13 @@ const NovoAnuncioPage: React.FC = () => {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="font-black text-slate-900 text-sm">{template.label}</span>
-                          <span className="px-1.5 py-0.5 bg-amber-50 text-amber-700 text-[9px] font-black uppercase tracking-widest rounded-full border border-amber-200">
+                          <span className="font-semibold text-slate-900 text-sm">{template.label}</span>
+                          <span className="px-1.5 py-0.5 bg-amber-50 text-amber-700 text-xs font-semibold normal-case tracking-normal rounded-full border border-amber-200">
                             {template.badge}
                           </span>
                         </div>
                         <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">{template.descricao}</p>
-                        <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-[10px] text-slate-500">
+                        <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-xs text-slate-500">
                           <span className="font-bold text-emerald-600">{MarketingAdsService.formatarMoeda(template.orcamento)}/dia</span>
                           <span>{template.duracao} dias</span>
                           <span>{template.ufs.join(', ')}</span>
@@ -847,12 +847,12 @@ const NovoAnuncioPage: React.FC = () => {
 
         {step === 4 && (
           <div>
-            <h2 className="text-lg font-black text-slate-900 mb-1">Configure o anúncio</h2>
+            <h2 className="text-lg font-semibold text-slate-900 mb-1">Configure o anúncio</h2>
             <p className="text-xs text-slate-500 mb-6">Ajuste objetivo, região, público e interesses.</p>
 
             <div className="space-y-5">
               <div>
-                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">
+                <label className="block text-xs font-semibold text-slate-500 normal-case tracking-normal mb-2">
                   Objetivo da campanha
                 </label>
                 <div className="grid grid-cols-2 gap-2">
@@ -864,15 +864,15 @@ const NovoAnuncioPage: React.FC = () => {
                         objetivo === obj.key ? 'border-indigo-500 bg-indigo-50' : 'border-slate-100 hover:border-slate-200'
                       }`}
                     >
-                      <p className="text-xs font-black text-slate-900">{obj.label}</p>
-                      <p className="text-[10px] text-slate-500 mt-0.5">{obj.descricao}</p>
+                      <p className="text-xs font-semibold text-slate-900">{obj.label}</p>
+                      <p className="text-xs text-slate-500 mt-0.5">{obj.descricao}</p>
                     </button>
                   ))}
                 </div>
               </div>
 
               <div>
-                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">
+                <label className="block text-xs font-semibold text-slate-500 normal-case tracking-normal mb-2">
                   Resultado esperado
                 </label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -884,15 +884,15 @@ const NovoAnuncioPage: React.FC = () => {
                         resultadoEsperado === item.key ? 'border-emerald-500 bg-emerald-50' : 'border-slate-100 hover:border-slate-200'
                       }`}
                     >
-                      <p className="text-xs font-black text-slate-900">{item.label}</p>
-                      <p className="text-[10px] text-slate-500 mt-0.5">{item.descricao}</p>
+                      <p className="text-xs font-semibold text-slate-900">{item.label}</p>
+                      <p className="text-xs text-slate-500 mt-0.5">{item.descricao}</p>
                     </button>
                   ))}
                 </div>
               </div>
 
               <div>
-                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">
+                <label className="block text-xs font-semibold text-slate-500 normal-case tracking-normal mb-2">
                   Região de exibição
                 </label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3">
@@ -910,7 +910,7 @@ const NovoAnuncioPage: React.FC = () => {
                         estado: regiao.tipo === 'ESTADO' || regiao.tipo === 'CIDADE' ? selectedUfs.join(',') : undefined,
                         cidades: regiao.tipo === 'CIDADE' ? cidadesSelecionadas : undefined,
                       })}
-                      className={`py-2 px-3 rounded-xl border-2 text-[11px] font-black transition-all ${
+                      className={`py-2 px-3 rounded-xl border-2 text-[11px] font-semibold transition-all ${
                         regiaoConfig.tipo === regiao.tipo
                           ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
                           : 'border-slate-100 text-slate-600 hover:border-slate-200'
@@ -924,13 +924,13 @@ const NovoAnuncioPage: React.FC = () => {
                 {(regiaoConfig.tipo === 'CIDADE' || regiaoConfig.tipo === 'ESTADO') && (
                   <div className="space-y-3">
                     <div>
-                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">UFs</p>
+                      <p className="text-xs font-semibold normal-case tracking-normal text-slate-400 mb-2">UFs</p>
                       <div className="flex flex-wrap gap-2">
                         {NORDESTE_UFS.map(item => (
                           <button
                             key={item.uf}
                             onClick={() => toggleUf(item.uf)}
-                            className={`px-3 py-2 rounded-xl border text-[10px] font-black uppercase tracking-widest transition-all ${
+                            className={`px-3 py-2 rounded-xl border text-xs font-semibold normal-case tracking-normal transition-all ${
                               selectedUfs.includes(item.uf)
                                 ? 'bg-indigo-600 text-white border-indigo-600'
                                 : 'bg-white text-slate-500 border-slate-200 hover:border-indigo-300'
@@ -945,10 +945,10 @@ const NovoAnuncioPage: React.FC = () => {
                     {regiaoConfig.tipo === 'CIDADE' && (
                       <div>
                         <div className="flex items-center justify-between gap-2 mb-2">
-                          <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Cidades principais</p>
+                          <p className="text-xs font-semibold normal-case tracking-normal text-slate-400">Cidades principais</p>
                           <button
                             onClick={selecionarTopCidades}
-                            className="px-3 py-1.5 bg-slate-100 text-slate-600 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-slate-200"
+                            className="px-3 py-1.5 bg-slate-100 text-slate-600 rounded-lg text-xs font-semibold normal-case tracking-normal hover:bg-slate-200"
                           >
                             Selecionar top 10
                           </button>
@@ -956,7 +956,7 @@ const NovoAnuncioPage: React.FC = () => {
                         <div className="space-y-3">
                           {selectedUfs.map(uf => (
                             <div key={uf}>
-                              <p className="text-[10px] font-bold text-slate-400 mb-1">{uf}</p>
+                              <p className="text-xs font-bold text-slate-400 mb-1">{uf}</p>
                               <div className="flex flex-wrap gap-2">
                                 {(cidadesPorUf[uf] || []).slice(0, 10).map(cidade => {
                                   const value = getCityValue(cidade, uf);
@@ -964,7 +964,7 @@ const NovoAnuncioPage: React.FC = () => {
                                     <button
                                       key={value}
                                       onClick={() => toggleCidade(value)}
-                                      className={`px-3 py-2 rounded-xl border text-[10px] font-black uppercase tracking-widest transition-all ${
+                                      className={`px-3 py-2 rounded-xl border text-xs font-semibold normal-case tracking-normal transition-all ${
                                         cidadesSelecionadas.includes(value)
                                           ? 'bg-indigo-600 text-white border-indigo-600'
                                           : 'bg-white text-slate-500 border-slate-200 hover:border-indigo-300'
@@ -995,12 +995,12 @@ const NovoAnuncioPage: React.FC = () => {
                       onChange={e => setRegiaoConfig({ ...regiaoConfig, raio_km: Number(e.target.value) })}
                       className="flex-1 accent-indigo-600"
                     />
-                    <span className="text-sm font-black text-indigo-600 w-16 text-right">{regiaoConfig.raio_km ?? 30} km</span>
+                    <span className="text-sm font-semibold text-indigo-600 w-16 text-right">{regiaoConfig.raio_km ?? 30} km</span>
                   </div>
                 )}
 
                 {empresa?.cidade && (
-                  <p className="text-[10px] text-slate-400 mt-2 flex items-center gap-1">
+                  <p className="text-xs text-slate-400 mt-2 flex items-center gap-1">
                     <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                     </svg>
@@ -1010,7 +1010,7 @@ const NovoAnuncioPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">
+                <label className="block text-xs font-semibold text-slate-500 normal-case tracking-normal mb-2">
                   Público para loja de carros
                 </label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -1022,20 +1022,20 @@ const NovoAnuncioPage: React.FC = () => {
                         publicoPerfil === item.key ? 'border-orange-500 bg-orange-50' : 'border-slate-100 hover:border-slate-200'
                       }`}
                     >
-                      <p className="text-xs font-black text-slate-900">{item.label}</p>
-                      <p className="text-[10px] text-slate-500 mt-0.5">{item.descricao}</p>
+                      <p className="text-xs font-semibold text-slate-900">{item.label}</p>
+                      <p className="text-xs text-slate-500 mt-0.5">{item.descricao}</p>
                     </button>
                   ))}
                 </div>
               </div>
 
               <div>
-                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">
+                <label className="block text-xs font-semibold text-slate-500 normal-case tracking-normal mb-2">
                   Faixa etária
                 </label>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-black text-slate-400 uppercase">Min</span>
+                    <span className="text-xs font-semibold text-slate-400 normal-case">Min</span>
                     <input
                       type="number"
                       min={18}
@@ -1046,7 +1046,7 @@ const NovoAnuncioPage: React.FC = () => {
                     />
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-black text-slate-400 uppercase">Max</span>
+                    <span className="text-xs font-semibold text-slate-400 normal-case">Max</span>
                     <input
                       type="number"
                       min={18}
@@ -1060,7 +1060,7 @@ const NovoAnuncioPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">
+                <label className="block text-xs font-semibold text-slate-500 normal-case tracking-normal mb-2">
                   Interesses
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -1068,7 +1068,7 @@ const NovoAnuncioPage: React.FC = () => {
                     <button
                       key={item}
                       onClick={() => toggleInteresse(item)}
-                      className={`px-3 py-2 rounded-xl border text-[10px] font-black uppercase tracking-widest transition-all ${
+                      className={`px-3 py-2 rounded-xl border text-xs font-semibold normal-case tracking-normal transition-all ${
                         interesses.includes(item)
                           ? 'bg-slate-900 text-white border-slate-900'
                           : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
@@ -1093,13 +1093,13 @@ const NovoAnuncioPage: React.FC = () => {
                   />
                   <button
                     onClick={addInteresse}
-                    className="px-4 py-3 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest"
+                    className="px-4 py-3 bg-slate-900 text-white rounded-xl text-xs font-semibold normal-case tracking-normal"
                   >
                     Add
                   </button>
                 </div>
                 {interesses.length > 0 && (
-                  <p className="text-[10px] text-slate-400 mt-2">
+                  <p className="text-xs text-slate-400 mt-2">
                     Selecionados: {interesses.join(', ')}
                   </p>
                 )}
@@ -1110,28 +1110,28 @@ const NovoAnuncioPage: React.FC = () => {
 
         {step === 5 && (
           <div>
-            <h2 className="text-lg font-black text-slate-900 mb-1">Estimativa de resultado</h2>
+            <h2 className="text-lg font-semibold text-slate-900 mb-1">Estimativa de resultado</h2>
             <p className="text-xs text-slate-500 mb-6">Previsão aproximada antes da revisão final, baseada em verba, região e objetivo.</p>
 
             <div className="grid md:grid-cols-3 gap-3 mb-5">
               <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
-                <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Investimento</p>
-                <p className="text-xl font-black text-slate-900 mt-1">{MarketingAdsService.formatarMoeda(estimativaTotal.investimento)}</p>
-                <p className="text-[10px] text-slate-400 mt-1">{duracaoDias} dias de campanha</p>
+                <p className="text-xs font-semibold normal-case tracking-normal text-slate-500">Investimento</p>
+                <p className="text-xl font-semibold text-slate-900 mt-1">{MarketingAdsService.formatarMoeda(estimativaTotal.investimento)}</p>
+                <p className="text-xs text-slate-400 mt-1">{duracaoDias} dias de campanha</p>
               </div>
               <div className="bg-blue-50 rounded-2xl p-4 border border-blue-100">
-                <p className="text-[10px] font-black uppercase tracking-widest text-blue-700">Alcance estimado</p>
-                <p className="text-xl font-black text-blue-900 mt-1">
+                <p className="text-xs font-semibold normal-case tracking-normal text-blue-700">Alcance estimado</p>
+                <p className="text-xl font-semibold text-blue-900 mt-1">
                   {formatCompact(estimativaTotal.alcanceMin)} - {formatCompact(estimativaTotal.alcanceMax)}
                 </p>
-                <p className="text-[10px] text-blue-500 mt-1">pessoas alcançadas</p>
+                <p className="text-xs text-blue-500 mt-1">pessoas alcançadas</p>
               </div>
               <div className="bg-emerald-50 rounded-2xl p-4 border border-emerald-100">
-                <p className="text-[10px] font-black uppercase tracking-widest text-emerald-700">Conversão de leads</p>
-                <p className="text-xl font-black text-emerald-900 mt-1">
+                <p className="text-xs font-semibold normal-case tracking-normal text-emerald-700">Conversão de leads</p>
+                <p className="text-xl font-semibold text-emerald-900 mt-1">
                   {formatCompact(estimativaTotal.leadsMin)} - {formatCompact(estimativaTotal.leadsMax)}
                 </p>
-                <p className="text-[10px] text-emerald-500 mt-1">contatos potenciais</p>
+                <p className="text-xs text-emerald-500 mt-1">contatos potenciais</p>
               </div>
             </div>
 
@@ -1146,18 +1146,18 @@ const NovoAnuncioPage: React.FC = () => {
                           {PLATFORMS.find(platform => platform.key === item.platform)?.icon}
                         </div>
                         <div>
-                          <p className="text-sm font-black text-slate-900">{getPlatformLabel(item.platform)}</p>
-                          <p className="text-[10px] text-slate-500">{MarketingAdsService.formatarMoeda(item.investimento)} no período</p>
+                          <p className="text-sm font-semibold text-slate-900">{getPlatformLabel(item.platform)}</p>
+                          <p className="text-xs text-slate-500">{MarketingAdsService.formatarMoeda(item.investimento)} no período</p>
                         </div>
                       </div>
                       <div className="grid grid-cols-2 gap-3 md:w-72">
                         <div>
-                          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Alcance</p>
-                          <p className="text-xs font-black text-slate-800">{formatCompact(item.alcanceMin)} - {formatCompact(item.alcanceMax)}</p>
+                          <p className="text-xs font-bold normal-case tracking-normal text-slate-400">Alcance</p>
+                          <p className="text-xs font-semibold text-slate-800">{formatCompact(item.alcanceMin)} - {formatCompact(item.alcanceMax)}</p>
                         </div>
                         <div>
-                          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Leads</p>
-                          <p className="text-xs font-black text-slate-800">{formatCompact(item.leadsMin)} - {formatCompact(item.leadsMax)}</p>
+                          <p className="text-xs font-bold normal-case tracking-normal text-slate-400">Leads</p>
+                          <p className="text-xs font-semibold text-slate-800">{formatCompact(item.leadsMin)} - {formatCompact(item.leadsMax)}</p>
                         </div>
                       </div>
                     </div>
@@ -1176,11 +1176,11 @@ const NovoAnuncioPage: React.FC = () => {
 
         {step === 6 && (
           <div>
-            <h2 className="text-lg font-black text-slate-900 mb-1">Revisar e criar</h2>
+            <h2 className="text-lg font-semibold text-slate-900 mb-1">Revisar e criar</h2>
             <p className="text-xs text-slate-500 mb-6">Confirme as informações antes de criar os rascunhos.</p>
 
             <div className="mb-4">
-              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">
+              <label className="block text-xs font-semibold text-slate-500 normal-case tracking-normal mb-1.5">
                 Nome da campanha
               </label>
               <input
@@ -1194,54 +1194,54 @@ const NovoAnuncioPage: React.FC = () => {
             <div className="bg-slate-50 rounded-2xl p-4 space-y-3 mb-4">
               {veiculo && (
                 <div className="flex items-center justify-between gap-4">
-                  <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Veículo</span>
+                  <span className="text-xs text-slate-500 font-bold normal-case tracking-normal">Veículo</span>
                   <span className="text-xs font-bold text-slate-800 text-right">
                     {veiculo.montadora?.nome} {veiculo.modelo?.nome} {veiculo.ano_modelo}
                   </span>
                 </div>
               )}
               <div className="flex items-center justify-between gap-4">
-                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Template</span>
+                <span className="text-xs text-slate-500 font-bold normal-case tracking-normal">Template</span>
                 <span className="text-xs font-bold text-slate-800 text-right">{selectedTemplate.label}</span>
               </div>
               <div className="flex items-center justify-between gap-4">
-                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Plataformas</span>
+                <span className="text-xs text-slate-500 font-bold normal-case tracking-normal">Plataformas</span>
                 <span className="text-xs font-bold text-slate-800 text-right">
                   {selectedPlatforms.map(platform => `${getPlatformLabel(platform)} (${MarketingAdsService.formatarMoeda(platformBudgets[platform] || 0)}/dia)`).join(' · ')}
                 </span>
               </div>
               <div className="flex items-center justify-between gap-4">
-                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Objetivo</span>
+                <span className="text-xs text-slate-500 font-bold normal-case tracking-normal">Objetivo</span>
                 <span className="text-xs font-bold text-slate-800">{getLabel(OBJECTIVES, objetivo)}</span>
               </div>
               <div className="flex items-center justify-between gap-4">
-                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Resultado</span>
+                <span className="text-xs text-slate-500 font-bold normal-case tracking-normal">Resultado</span>
                 <span className="text-xs font-bold text-slate-800">{getLabel(RESULTADOS, resultadoEsperado)}</span>
               </div>
               <div className="flex items-center justify-between gap-4">
-                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Região</span>
+                <span className="text-xs text-slate-500 font-bold normal-case tracking-normal">Região</span>
                 <span className="text-xs font-bold text-slate-800 text-right">{getRegiaoResumo()}</span>
               </div>
               <div className="flex items-center justify-between gap-4">
-                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Público</span>
+                <span className="text-xs text-slate-500 font-bold normal-case tracking-normal">Público</span>
                 <span className="text-xs font-bold text-slate-800 text-right">
                   {getLabel(PUBLICOS, publicoPerfil)} · {idadeMin}-{idadeMax} anos
                 </span>
               </div>
               <div className="flex items-start justify-between gap-4">
-                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Interesses</span>
+                <span className="text-xs text-slate-500 font-bold normal-case tracking-normal">Interesses</span>
                 <span className="text-xs font-bold text-slate-800 text-right">{interesses.join(', ')}</span>
               </div>
               <div className="grid md:grid-cols-2 gap-3 border-t border-slate-200 pt-3">
                 <div>
-                  <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Investimento</span>
-                  <p className="text-sm font-black text-emerald-600">
+                  <span className="text-xs text-slate-500 font-bold normal-case tracking-normal">Investimento</span>
+                  <p className="text-sm font-semibold text-emerald-600">
                     {MarketingAdsService.formatarMoeda(rateioTotal)}/dia × {duracaoDias} dias = {MarketingAdsService.formatarMoeda(totalEstimado)}
                   </p>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Estimativa</span>
-                  <p className="text-sm font-black text-blue-700">
+                  <span className="text-xs text-slate-500 font-bold normal-case tracking-normal">Estimativa</span>
+                  <p className="text-sm font-semibold text-blue-700">
                     {formatCompact(estimativaTotal.alcanceMin)}-{formatCompact(estimativaTotal.alcanceMax)} alcance · {formatCompact(estimativaTotal.leadsMin)}-{formatCompact(estimativaTotal.leadsMax)} leads
                   </p>
                 </div>
@@ -1249,7 +1249,7 @@ const NovoAnuncioPage: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">
+              <label className="block text-xs font-semibold text-slate-500 normal-case tracking-normal mb-1.5">
                 Observações (opcional)
               </label>
               <textarea
@@ -1274,7 +1274,7 @@ const NovoAnuncioPage: React.FC = () => {
         {step > 1 && (
           <button
             onClick={() => setStep(s => Math.max(1, s - 1) as Step)}
-            className="flex-1 py-3 px-6 bg-slate-100 text-slate-700 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-slate-200 transition-all"
+            className="flex-1 py-3 px-6 bg-slate-100 text-slate-700 rounded-2xl font-semibold text-sm normal-case tracking-normal hover:bg-slate-200 transition-all"
           >
             Voltar
           </button>
@@ -1282,7 +1282,7 @@ const NovoAnuncioPage: React.FC = () => {
         {step < 6 ? (
           <button
             onClick={handleNextStep}
-            className="flex-1 py-3 px-6 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg hover:opacity-90 transition-all flex items-center justify-center gap-2"
+            className="flex-1 py-3 px-6 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-2xl font-semibold text-sm normal-case tracking-normal shadow-sm hover:opacity-90 transition-all flex items-center justify-center gap-2"
           >
             Próximo
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1293,7 +1293,7 @@ const NovoAnuncioPage: React.FC = () => {
           <button
             onClick={handleSubmit}
             disabled={criarMutation.isPending}
-            className="flex-1 py-3 px-6 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg hover:opacity-90 transition-all flex items-center justify-center gap-2 disabled:opacity-60"
+            className="flex-1 py-3 px-6 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-2xl font-semibold text-sm normal-case tracking-normal shadow-sm hover:opacity-90 transition-all flex items-center justify-center gap-2 disabled:opacity-60"
           >
             {criarMutation.isPending ? (
               <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

@@ -25,23 +25,23 @@ const FormCardTechnical: React.FC<Props> = ({ formData, cores, onChange }) => {
   const selectedCor = cores.find(c => c.id === formData.cor_id);
 
   return (
-    <div className="bg-white rounded-[2.5rem] p-8 border border-slate-200 shadow-sm animate-in slide-in-from-bottom-4">
-      <h3 className="text-lg font-black text-slate-900 uppercase tracking-tighter mb-8 flex items-center">
+    <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm animate-in slide-in-from-bottom-4">
+      <h3 className="text-lg font-semibold text-slate-900 normal-case tracking-normal mb-8 flex items-center">
         <span className="w-8 h-8 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center mr-3 text-sm">03</span>
         Dados Técnicos & Documentação
       </h3>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-8">
           {/* Seletor de Cor */}
           <div>
-            <label className="block text-[10px] font-black text-slate-400 uppercase mb-4 ml-1 tracking-widest flex justify-between">
+            <label className="block text-xs font-semibold text-slate-500 normal-case mb-4 ml-1 tracking-normal flex justify-between">
               Cor do Veículo
               <span className="text-indigo-600 font-bold">{selectedCor?.nome || 'Não selecionada'}</span>
             </label>
-            <div className="flex flex-wrap gap-3 p-4 bg-white rounded-3xl border border-slate-200 shadow-sm">
+            <div className="flex flex-wrap gap-3 p-4 bg-white rounded-2xl border border-slate-200 shadow-sm">
               {cores.length === 0 ? (
-                <p className="text-[10px] text-slate-400 italic">Nenhuma cor cadastrada no sistema.</p>
+                <p className="text-xs text-slate-400 italic">Nenhuma cor cadastrada no sistema.</p>
               ) : (
                 cores.map(cor => (
                   <button
@@ -65,26 +65,26 @@ const FormCardTechnical: React.FC<Props> = ({ formData, cores, onChange }) => {
         <div className="space-y-8 flex flex-col">
           {/* Quilometragem */}
           <div>
-            <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1 tracking-widest">Quilometragem (KM)</label>
+            <label className="block text-xs font-semibold text-slate-500 normal-case mb-2 ml-1 tracking-normal">Quilometragem (KM)</label>
             <input
               type="text"
               inputMode="numeric"
               value={formData.km === 0 ? '' : formData.km.toString()}
               onChange={handleKmChange}
-              className="w-full bg-white border border-slate-200 rounded-2xl px-6 py-5 text-2xl font-black text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 text-right"
+              className="w-full bg-white border border-slate-200 rounded-xl px-6 py-5 text-2xl font-semibold text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 text-right"
               placeholder="0"
             />
           </div>
 
           {/* Chassi */}
           <div>
-            <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1 tracking-widest">Chassi (17 Dígitos)</label>
+            <label className="block text-xs font-semibold text-slate-500 normal-case mb-2 ml-1 tracking-normal">Chassi (17 Dígitos)</label>
             <input
               type="text"
               value={formData.chassi || ''}
               onChange={e => onChange({ chassi: e.target.value.toUpperCase() })}
               maxLength={17}
-              className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 text-sm font-mono font-black text-slate-900 uppercase outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-sm hover:shadow-md transition-all"
+              className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 text-sm font-mono font-semibold text-slate-900 uppercase outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 shadow-sm hover:shadow-md transition-all"
               placeholder="DIGITE O CHASSI..."
             />
           </div>

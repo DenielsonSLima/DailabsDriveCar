@@ -22,21 +22,21 @@ const SiteAnalyticsSection: React.FC<SiteAnalyticsSectionProps> = ({
   locations 
 }) => {
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
       {/* Header da Seção */}
       <div className="flex items-end justify-between">
         <div className="space-y-1">
-          <p className="text-[10px] font-black text-orange-600 uppercase tracking-[0.4em]">Analytics Site Público</p>
-          <h2 className="text-3xl font-[900] text-slate-900 uppercase tracking-tighter leading-none">Desempenho Online</h2>
+          <p className="text-xs font-semibold text-slate-500 normal-case tracking-normal">Analytics Site Público</p>
+          <h2 className="text-3xl font-[900] text-slate-900 normal-case tracking-tight leading-none">Desempenho Online</h2>
         </div>
         <div className="hidden md:block text-right">
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Atualizado em tempo real</p>
+          <p className="text-xs font-bold text-slate-500 normal-case tracking-normal">Atualizado em tempo real</p>
           <div className="flex items-center gap-1 justify-end mt-1">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
-            <span className="text-[9px] font-black text-emerald-600 uppercase tracking-widest">Live</span>
+            <span className="text-xs font-semibold text-emerald-600 normal-case tracking-normal">Live</span>
           </div>
         </div>
       </div>
@@ -63,7 +63,7 @@ const SiteAnalyticsSection: React.FC<SiteAnalyticsSectionProps> = ({
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         {/* Veículos Mais Vistos */}
         <div className="lg:col-span-8">
           <TopViewedVehiclesCard topVehicles={topVehicles} />
