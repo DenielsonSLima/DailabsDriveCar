@@ -92,14 +92,14 @@ const PedidoVendaCard: React.FC<Props> = ({ pedido, onClick }) => {
       </div>
 
       {/* 2. Informações Gerais */}
-      <div className="p-6 flex flex-col flex-1">
+      <div className="p-4 flex flex-col flex-1 min-w-0">
         <div className="flex justify-between items-start mb-4">
           <div>
             <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-1">Pedido #{pedido.numero_venda || '---'}</p>
             <p className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md inline-block normal-case">{formatDate(pedido.data_venda)}</p>
           </div>
           <div className="text-right min-w-0">
-            <h4 className="text-xs font-semibold text-slate-800 normal-case truncate max-w-[150px] leading-none">
+            <h4 className="text-xs font-semibold text-slate-800 normal-case truncate max-w-[110px] leading-none">
               {pedido.lote_id ? `${getVendaUnits(pedido)} unidades do lote` : v?.modelo?.nome || 'Veículo N/D'}
             </h4>
             <p className="text-xs font-bold text-slate-400 normal-case mt-1">
@@ -109,9 +109,9 @@ const PedidoVendaCard: React.FC<Props> = ({ pedido, onClick }) => {
         </div>
 
         {/* Bloco Cliente - ATUALIZADO COM DOCUMENTO */}
-        <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100 mb-6">
-          <div className="flex items-start gap-3">
-            <div className="w-10 h-10 bg-white rounded-xl border border-slate-200 flex items-center justify-center shrink-0 shadow-sm text-slate-400">
+        <div className="bg-slate-50 rounded-2xl p-3 border border-slate-100 mb-4">
+          <div className="flex items-start gap-2">
+            <div className="w-8 h-8 bg-white rounded-xl border border-slate-200 flex items-center justify-center shrink-0 shadow-sm text-slate-400">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
             </div>
             <div className="min-w-0 flex-1">
@@ -123,7 +123,7 @@ const PedidoVendaCard: React.FC<Props> = ({ pedido, onClick }) => {
         </div>
 
         {/* Grid Financeiro - ATUALIZADO COM PREÇO EFETIVO */}
-        <div className="grid grid-cols-2 gap-2 mb-6">
+        <div className="grid grid-cols-2 gap-2 mb-4">
           <div className="bg-slate-50 border border-slate-100 rounded-xl p-3">
             <p className="text-[11px] font-semibold text-slate-400 normal-case tracking-normal mb-1">Investimento</p>
             <p className="text-sm font-semibold text-slate-700 tabular-nums break-words">{formatCurrency(totalInvestido)}</p>

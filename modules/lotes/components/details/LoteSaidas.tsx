@@ -20,8 +20,8 @@ interface Props {
 export default function LoteSaidas({ detalhes, stats, catalogos, canCreate, onReceber, onCancelar, onRegistrar }: Props) {
   const contas = separarContasLote(detalhes).saidas;
   return (
-    <div className="space-y-6">
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div className="space-y-4">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <LoteMetric label="Vendas confirmadas" value={money(stats.vendido)} tone="indigo" />
         <LoteMetric label="Recebido dos clientes" value={money(stats.recebido)} tone="emerald" />
         <LoteMetric label="A receber" value={money(stats.aReceber)} tone="amber" />

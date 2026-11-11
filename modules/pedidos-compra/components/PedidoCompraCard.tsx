@@ -129,7 +129,7 @@ const PedidoCompraCard: React.FC<Props> = ({ pedido, onClick }) => {
       </div>
 
       {/* 2. Informações Gerais do Pedido */}
-      <div className="p-6 flex flex-col flex-1">
+      <div className="p-4 flex flex-col flex-1 min-w-0">
         <div className="flex justify-between items-start mb-4">
           <div>
             <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-1">Pedido #{pedido.numero_pedido || '---'}</p>
@@ -137,7 +137,7 @@ const PedidoCompraCard: React.FC<Props> = ({ pedido, onClick }) => {
           </div>
           {hasVeiculos && (
             <div className="text-right">
-              <h4 className="text-xs font-semibold text-slate-800 normal-case truncate max-w-[150px] leading-none">
+              <h4 className="text-xs font-semibold text-slate-800 normal-case truncate max-w-[110px] leading-none">
                 {v?.modelo?.nome}
               </h4>
               <p className="text-xs font-bold text-slate-400 normal-case mt-1">
@@ -147,9 +147,9 @@ const PedidoCompraCard: React.FC<Props> = ({ pedido, onClick }) => {
           )}
         </div>
 
-        <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100 mb-6">
-          <div className="flex items-start gap-3">
-            <div className="w-10 h-10 bg-white rounded-xl border border-slate-200 flex items-center justify-center shrink-0 shadow-sm text-slate-400">
+        <div className="bg-slate-50 rounded-2xl p-3 border border-slate-100 mb-4">
+          <div className="flex items-start gap-2">
+            <div className="w-8 h-8 bg-white rounded-xl border border-slate-200 flex items-center justify-center shrink-0 shadow-sm text-slate-400">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
             </div>
             <div className="min-w-0">
@@ -162,7 +162,7 @@ const PedidoCompraCard: React.FC<Props> = ({ pedido, onClick }) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-2 mb-6">
+        <div className="grid grid-cols-2 gap-2 mb-4">
           <div className="bg-slate-50 border border-slate-100 rounded-xl p-3">
             <p className="text-[11px] font-semibold text-slate-400 normal-case tracking-normal mb-1">Custo Base</p>
             <p className="text-sm font-semibold text-slate-700 tabular-nums break-words">{formatCurrency(custoAquisicao)}</p>
@@ -188,7 +188,7 @@ const PedidoCompraCard: React.FC<Props> = ({ pedido, onClick }) => {
                   <div className="w-5 h-5 bg-indigo-600 text-white rounded flex items-center justify-center text-xs font-semibold normal-case shrink-0 mr-2">{s.nome.charAt(0)}</div>
                   <span className="text-sm font-semibold text-slate-700 tabular-nums break-words max-w-[90px]">{s.nome.split(' ')[0]}</span>
                 </div>
-                <div className="flex items-center gap-2 text-xs font-semibold shrink-0">
+                <div className="flex items-center gap-2 text-xs font-semibold flex-wrap justify-end">
                   <span className="text-indigo-500 bg-indigo-50 px-1.5 py-0.5 rounded">{s.porcentagem.toFixed(0)}%</span>
                   <span className="text-slate-500">{formatCurrency(s.valor)}</span>
                 </div>

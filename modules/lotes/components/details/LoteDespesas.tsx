@@ -20,8 +20,9 @@ export default function LoteDespesas({ detalhes, stats, canCreate, onPagar, onAd
   const vinculadas = new Set(detalhes.despesas.map(despesa => despesa.titulo_id));
   const contasSemDespesa = contas.filter(titulo => !vinculadas.has(titulo.id));
   return (
-    <div className="space-y-6">
-      <div className="grid gap-4 sm:grid-cols-3">
+    <div className="space-y-4">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <LoteMetric label="Despesa média por unidade" value={stats.compradas > 0 ? money(stats.despesas / stats.compradas) : '—'} hint="Despesas distribuídas pelo total adquirido" />
         <LoteMetric label="Despesas registradas" value={money(stats.despesas)} tone="indigo" />
         <LoteMetric label="Despesas pagas" value={money(financeiro.pago)} tone="emerald" />
         <LoteMetric label="Despesas a pagar" value={money(financeiro.pendente)} tone="amber" />

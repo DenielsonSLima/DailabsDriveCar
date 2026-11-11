@@ -1,104 +1,44 @@
-
 import React from 'react';
 import { ISocio } from '../../ajustes/socios/socios.types';
 
-interface Props {
-  stats: any;
-  socios: ISocio[];
-}
+interface Props { stats: any; socios: ISocio[]; }
 
-const EstoqueDashboard: React.FC<Props> = ({ stats, socios }) => {
-
-  const analytics = stats || {
-    totalVenda: 0,
-    totalCustoBase: 0,
-    totalServicos: 0,
-    totalInvestido: 0,
-    ticketMedioVenda: 0,
-    socioStats: [],
-    count: 0
-  };
-
-  const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 2 }).format(val);
-
-  return (
-    <div className="space-y-6 mb-12 animate-in fade-in slide-in-from-top-4 duration-700">
-
-      {/* Dashboard Visual de Sócios e KPIs */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-        {/* KPIs (Substituindo Ticket Médio) */}
-        <div className="lg:col-span-5 flex flex-col gap-4 h-full">
-          {/* Linha 1 */}
-          <div className="grid grid-cols-2 gap-4 flex-1">
-            <div className="relative overflow-hidden bg-slate-900 p-5 rounded-2xl border border-slate-800 shadow-sm flex flex-col justify-center group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
-              <div className="absolute -top-10 -right-10 w-32 h-32 bg-indigo-500 rounded-full blur-[60px] opacity-20 group-hover:opacity-40 transition-opacity"></div>
-              <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-1 relative z-10">Total Investido (Estoque)</p>
-              <h3 className="text-lg lg:text-xl font-semibold text-white relative z-10">{formatCurrency(analytics.totalInvestido)}</h3>
-            </div>
-            <div className="relative overflow-hidden bg-indigo-600 p-5 rounded-2xl border border-indigo-500 shadow-sm flex flex-col justify-center group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
-              <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white rounded-full blur-[60px] opacity-20 group-hover:opacity-30 transition-opacity"></div>
-              <p className="text-xs font-semibold text-indigo-200 normal-case tracking-normal mb-1 relative z-10">Veículos em Pátio</p>
-              <h3 className="text-lg lg:text-xl font-semibold text-white relative z-10">{analytics.count} <span className="text-xs text-indigo-200 normal-case">Unidades</span></h3>
-            </div>
-          </div>
-          {/* Linha 2 */}
-          <div className="grid grid-cols-2 gap-4 flex-1">
-            <div className="relative overflow-hidden bg-white p-5 rounded-2xl border border-slate-200 shadow-md flex flex-col justify-center group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
-              <div className="absolute inset-0 bg-gradient-to-br from-transparent to-slate-50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-1 relative z-10">Valor Custo Veículos</p>
-              <h3 className="text-lg lg:text-xl font-semibold text-slate-900 relative z-10">{formatCurrency(analytics.totalCustoBase)}</h3>
-            </div>
-            <div className="relative overflow-hidden bg-gradient-to-br from-amber-50 to-orange-50 p-5 rounded-2xl border border-orange-100 shadow-md flex flex-col justify-center group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
-              <div className="absolute -top-10 -right-10 w-32 h-32 bg-amber-400 rounded-full blur-[60px] opacity-10 group-hover:opacity-20 transition-opacity"></div>
-              <p className="text-xs font-semibold text-amber-500 normal-case tracking-normal mb-1 relative z-10">Valor Total Serviços</p>
-              <h3 className="text-lg lg:text-xl font-semibold text-amber-600 relative z-10">{formatCurrency(analytics.totalServicos)}</h3>
-            </div>
-          </div>
-        </div>
-
-        {/* Gráfico de Barras: Sócios */}
-        <div className="lg:col-span-7 bg-white rounded-2xl border border-slate-200 p-6 shadow-sm h-full flex flex-col">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h3 className="text-lg font-semibold text-slate-900 normal-case tracking-normal">Participação por Sócio</h3>
-              <p className="text-xs text-slate-400 font-bold normal-case mt-1">Exposição de capital no estoque atual</p>
-            </div>
-          </div>
-
-          <div className="space-y-6">
-            {analytics.socioStats.length === 0 ? (
-              <div className="py-12 text-center text-slate-300 italic normal-case font-semibold text-xs tracking-normal border-2 border-dashed border-slate-100 rounded-2xl">Nenhum sócio vinculado.</div>
-            ) : (
-              analytics.socioStats.map((s: any, idx: number) => (
-                <div key={idx} className="group">
-                  <div className="flex items-end justify-between mb-2">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-xs font-semibold normal-case shadow-sm">{s.nome.charAt(0)}</div>
-                      <div>
-                        <p className="text-xs font-semibold text-slate-800 normal-case truncate max-w-[150px]">{s.nome}</p>
-                        <p className="text-xs text-slate-400 font-bold normal-case">{s.count} {s.count === 1 ? 'Carro' : 'Carros'}</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-xs font-semibold text-indigo-600 leading-none">{formatCurrency(s.totalvalor || s.totalValor || 0)}</p>
-                      <p className="text-xs font-semibold text-slate-400 normal-case mt-1">{(s.percent || 0).toFixed(1)}% do Estoque</p>
-                    </div>
-                  </div>
-                  <div className="h-3 w-full bg-slate-100 rounded-full overflow-hidden p-0.5 shadow-inner">
-                    <div
-                      className="h-full bg-indigo-500 rounded-full transition-all duration-1000 ease-out shadow-sm"
-                      style={{ width: `${s.percent}%` }}
-                    ></div>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
+const EstoqueDashboard: React.FC<Props> = ({ stats }) => {
+  const analytics = stats || { totalCustoBase: 0, totalServicos: 0, totalInvestido: 0, socioStats: [], count: 0 };
+  const currency = (value: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+  const metrics = [
+    { label: 'Total investido', value: currency(analytics.totalInvestido), hint: 'Compra + serviços', accent: true },
+    { label: 'Veículos em pátio', value: String(analytics.count), hint: 'Unidades no estoque' },
+    { label: 'Custo dos veículos', value: currency(analytics.totalCustoBase), hint: 'Valor de aquisição' },
+    { label: 'Serviços agregados', value: currency(analytics.totalServicos), hint: 'Custos vinculados aos veículos' },
+  ];
+  return <section aria-label="Indicadores do estoque" className="space-y-3">
+    <dl className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      {metrics.map(metric => <div key={metric.label} className="min-w-0 rounded-xl border border-slate-200 bg-white px-4 py-3.5 shadow-sm">
+        <dt className="text-xs font-medium text-slate-500">{metric.label}</dt>
+        <dd className={`mt-1 text-xl font-semibold tracking-tight tabular-nums break-words ${metric.accent ? 'text-indigo-600' : 'text-slate-900'}`}>{metric.value}</dd>
+        <p className="mt-1 text-xs text-slate-400">{metric.hint}</p>
+      </div>)}
+    </dl>
+    <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+      <div className="mb-3 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        <h2 className="text-sm font-semibold text-slate-900">Participação por sócio</h2>
+        <p className="text-xs text-slate-500">Exposição de capital no estoque atual</p>
       </div>
+      {analytics.socioStats.length === 0 ? <p className="text-xs text-slate-500">Nenhum sócio vinculado.</p> :
+        <div className="grid gap-4 md:grid-cols-3">
+          {analytics.socioStats.map((s: any, index: number) => <div key={s.id || index} className="min-w-0">
+            <div className="flex items-center justify-between gap-3 text-xs">
+              <span className="min-w-0 truncate font-medium text-slate-700" title={s.nome}>{s.nome}</span>
+              <span className="shrink-0 font-semibold tabular-nums text-slate-800">{currency(s.totalvalor || s.totalValor || 0)}</span>
+            </div>
+            <div className="my-1.5 h-1.5 overflow-hidden rounded-full bg-slate-100" role="img" aria-label={`${s.nome}: ${(s.percent || 0).toFixed(1)}% do estoque`}>
+              <div className="h-full rounded-full bg-indigo-400" style={{ width: `${Math.max(0, Math.min(100, s.percent || 0))}%` }} />
+            </div>
+            <p className="flex justify-between gap-2 text-xs text-slate-400"><span>{s.count} {s.count === 1 ? 'veículo' : 'veículos'}</span><span>{(s.percent || 0).toFixed(1)}%</span></p>
+          </div>)}
+        </div>}
     </div>
-  );
+  </section>;
 };
-
 export default EstoqueDashboard;

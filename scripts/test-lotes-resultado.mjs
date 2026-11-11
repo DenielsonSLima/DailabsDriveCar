@@ -11,13 +11,13 @@ try {
   await build({ stdin: { resolveDir: process.cwd(), loader: 'tsx', contents: `
     import React from 'react';
     import { renderToStaticMarkup } from 'react-dom/server';
-    import Resumo from './modules/lotes/components/details/LoteResumo';
+    import Resumo, { getResumoLoteLucros } from './modules/lotes/components/details/LoteResumo';
     import { calcularIndicadoresLote } from './modules/lotes/lotes.utils';
-    export { calcularIndicadoresLote };
+    export { calcularIndicadoresLote, getResumoLoteLucros };
     export const render = details => renderToStaticMarkup(<Resumo detalhes={details}
       stats={calcularIndicadoresLote(details)} onEncerrar={() => {}} canClose={false} onNavigate={() => {}} />);
   ` }, bundle: true, platform: 'node', format: 'cjs', outfile: output, logLevel: 'silent' });
-  const { calcularIndicadoresLote: calculate, render } = (await import(pathToFileURL(output).href)).default;
+  const { calcularIndicadoresLote: calculate, getResumoLoteLucros: profits, render } = (await import(pathToFileURL(output).href)).default;
   const title = (id, total, paid, extra = {}) => ({ id, tipo: 'PAGAR', status: paid === total ? 'PAGO' : 'PENDENTE',
     valor_total: total, valor_pago: paid, valor_pendente: total - paid, ...extra });
   const details = {
@@ -32,6 +32,7 @@ try {
   assert.equal(stats.custoAquisicaoEstoque, 304000);
   assert.equal(stats.resultadoComEstoque, 0);
   assert.equal(stats.saldoCaixa, -304000);
+  assert.deepEqual(profits(stats, 0), { bruto: 0, liquido: 0, medio: null });
   const unpaid = structuredClone(details);
   unpaid.titulos[0] = title('compra', 304000, 0);
   assert.equal(calculate(unpaid).resultadoComEstoque, 0);
@@ -52,9 +53,9 @@ try {
   assert.equal(stats.saldoCaixa, -332901);
   const html = render(details);
   const main = html.split('<details')[0];
-  assert.match(main, /Resultado com estoque/);
+  assert.match(main, /Lucro líquido do lote/);
   assert.match(main, /28\.901,00/);
-  assert.match(main, /Estoque a custo de compra/);
+  assert.match(html, /Estoque a custo de compra/);
   assert.doesNotMatch(main, /-R\$[^<]*332\.901,00/);
   assert.match(html, /Caixa e contas do lote/);
   assert.match(html, /Fluxo de caixa do lote/);
@@ -77,6 +78,10 @@ try {
   stats = calculate(details);
   assert.equal(stats.custoAquisicaoEstoque, 281200);
   assert.equal(stats.resultadoComEstoque, -24701);
+  assert.deepEqual(profits(stats, 3), { bruto: 4200, liquido: -24701, medio: -24701 / 3 });
+  assert.match(render(details), /Lucro médio por moto/);
+  assert.match(render(details), /Lucro líquido do lote/);
+  assert.match(render(details), /Lucro bruto/);
   assert.equal(stats.resultado, 2032.41);
   assert.equal(stats.recebido, 12000);
   assert.equal(stats.aReceber, 15000);
@@ -103,6 +108,7 @@ try {
   stats = calculate(details);
   assert.equal(stats.custoAquisicaoEstoque, 0);
   assert.equal(stats.resultadoComEstoque, 67099);
+  assert.deepEqual(profits(stats, 40), { bruto: 96000, liquido: 67099, medio: 67099 / 40 });
   assert.equal(stats.resultadoComEstoque, stats.resultado);
 
   // Centavos, unidades consignadas e lote sem unidades não inventam patrimônio.

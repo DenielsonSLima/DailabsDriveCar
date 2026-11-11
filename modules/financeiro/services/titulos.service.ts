@@ -37,8 +37,8 @@ export const TitulosService = {
       loteId = data.lote_id;
     }
     if (loteId) {
-      if (desconto || acrescimo) throw new Error('Ajustes de valor de um lote devem ser registrados no controle do lote.');
       const payload = { p_titulo_id: titulo.id,
+        ...(desconto || acrescimo ? { p_desconto: desconto, p_acrescimo: acrescimo } : {}),
         p_valor: valor, p_conta_id: contaId, p_forma_pagamento_id: formaId,
         p_data_pagamento: dataPagamento || new Date().toLocaleDateString('en-CA') };
       const intent = await lotePaymentIntent(payload);

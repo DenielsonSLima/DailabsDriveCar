@@ -11,8 +11,8 @@ interface Props {
 
 export default function LoteUnidades({ unidades, encerrado, onIdentificar }: Props) {
   return (
-    <details className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <summary className="cursor-pointer p-5 text-base font-semibold normal-case tracking-tight text-slate-900 focus-visible:outline focus-visible:outline-indigo-600 sm:p-6">Unidades do lote <span className="ml-2 text-xs font-medium normal-case tracking-normal text-slate-500">{unidades.length} unidades · identificar quando necessário</span></summary>
+    <details className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+      <summary className="cursor-pointer p-4 text-sm font-semibold normal-case tracking-tight text-slate-900 focus-visible:outline focus-visible:outline-indigo-600">Unidades do lote <span className="ml-2 text-xs font-medium normal-case tracking-normal text-slate-500">{unidades.length} unidades · identificar quando necessário</span></summary>
       {unidades.length === 0 ? <LoteEmpty>Nenhuma unidade encontrada neste lote.</LoteEmpty> : (
         <div className="overflow-x-auto">
           <table className="w-full min-w-[650px]">
