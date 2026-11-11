@@ -26,13 +26,13 @@ const ParceirosFilters: React.FC<FiltersProps> = ({ activeTab, setActiveTab, sea
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === tab.id
+            className={`flex items-center px-5 py-2.5 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all whitespace-nowrap ${activeTab === tab.id
               ? 'bg-slate-900 text-white shadow-md'
               : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
               }`}
           >
             {tab.label}
-            <span className={`ml-2 px-1.5 py-0.5 rounded text-[9px] ${activeTab === tab.id ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500'
+            <span className={`ml-2 px-1.5 py-0.5 rounded text-xs ${activeTab === tab.id ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500'
               }`}>
               {stats[tab.id as keyof IParceirosStats]}
             </span>
@@ -52,7 +52,7 @@ const ParceirosFilters: React.FC<FiltersProps> = ({ activeTab, setActiveTab, sea
           placeholder="Buscar por nome, documento ou cidade..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full bg-white border border-slate-200 rounded-2xl py-3.5 pl-10 pr-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all shadow-sm"
+          className="w-full bg-white border border-slate-200 rounded-xl py-3.5 pl-10 pr-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all shadow-sm"
         />
       </div>
     </div>

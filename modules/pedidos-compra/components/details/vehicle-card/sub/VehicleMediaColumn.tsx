@@ -20,18 +20,18 @@ const VehicleMediaColumn: React.FC<Props> = ({ veiculo, allCaracteristicas, allO
       {/* Imagem com Proporção Controlada (Fixando 380x280 para evitar estiramento) */}
       <div className="w-full h-[280px] bg-slate-900 relative shrink-0 overflow-hidden shadow-sm">
         {capaUrl ? (
-          <img src={capaUrl} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Veículo" />
+          <img src={capaUrl} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt="Veículo" />
         ) : (
           <div className="w-full h-full bg-slate-200 flex flex-col items-center justify-center text-slate-400">
             <svg className="w-16 h-16 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] mt-2">Nenhuma Mídia</span>
+            <span className="text-xs font-semibold normal-case tracking-normal mt-2">Nenhuma Mídia</span>
           </div>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>
 
         {/* Badge do Status/Placa flutuante na imagem */}
         <div className="absolute bottom-4 left-4 flex gap-2">
-          <div className="bg-white/95 backdrop-blur-md px-3 py-1 rounded-xl text-[10px] font-black text-slate-900 shadow-xl uppercase font-mono">
+          <div className="bg-white/95 backdrop-blur-sm px-3 py-1 rounded-xl text-xs font-semibold text-slate-900 shadow-sm normal-case font-mono">
             {veiculo.placa || 'SEM PLACA'}
           </div>
         </div>
@@ -43,13 +43,13 @@ const VehicleMediaColumn: React.FC<Props> = ({ veiculo, allCaracteristicas, allO
           {/* Características */}
           {tagsCar.length > 0 && (
             <div>
-              <p className="text-[8px] font-black text-indigo-500 uppercase tracking-widest mb-2.5 flex items-center">
+              <p className="text-xs font-semibold text-indigo-500 normal-case tracking-normal mb-2.5 flex items-center">
                 <span className="w-1 h-1 bg-indigo-500 rounded-full mr-1.5"></span>
                 Destaques Principais
               </p>
               <div className="flex flex-wrap gap-1.5">
                 {tagsCar.map(c => (
-                  <span key={c.id} className="px-2 py-1 bg-indigo-50 text-indigo-700 rounded-lg text-[9px] font-black border border-indigo-100 uppercase tracking-tighter shadow-sm">{c.nome}</span>
+                  <span key={c.id} className="px-2 py-1 bg-indigo-50 text-indigo-700 rounded-lg text-xs font-semibold border border-indigo-100 normal-case tracking-normal shadow-sm">{c.nome}</span>
                 ))}
               </div>
             </div>
@@ -58,13 +58,13 @@ const VehicleMediaColumn: React.FC<Props> = ({ veiculo, allCaracteristicas, allO
           {/* Opcionais */}
           {tagsOp.length > 0 && (
             <div>
-              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-2.5 flex items-center">
+              <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-2.5 flex items-center">
                 <span className="w-1 h-1 bg-slate-400 rounded-full mr-1.5"></span>
                 Opcionais
               </p>
               <div className="flex flex-wrap gap-1.5">
                 {tagsOp.map(o => (
-                  <span key={o.id} className="px-2 py-1 bg-white text-slate-600 rounded-lg text-[9px] font-bold border border-slate-200 uppercase tracking-tighter shadow-sm">{o.nome}</span>
+                  <span key={o.id} className="px-2 py-1 bg-white text-slate-600 rounded-lg text-xs font-bold border border-slate-200 normal-case tracking-normal shadow-sm">{o.nome}</span>
                 ))}
               </div>
             </div>
@@ -73,7 +73,7 @@ const VehicleMediaColumn: React.FC<Props> = ({ veiculo, allCaracteristicas, allO
           {tagsCar.length === 0 && tagsOp.length === 0 && (
             <div className="h-full flex flex-col items-center justify-center py-10 opacity-30">
               <svg className="w-8 h-8 text-slate-300 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-              <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">Checklist Pendente</span>
+              <span className="text-xs font-semibold normal-case tracking-normal text-slate-400">Checklist Pendente</span>
             </div>
           )}
         </div>

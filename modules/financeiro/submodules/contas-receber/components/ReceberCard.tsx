@@ -28,21 +28,21 @@ const ReceberCard: React.FC<ReceberCardProps> = ({ titulo, onBaixa, onDelete, on
     return (
         <div
             onClick={() => onClick(titulo)}
-            className="group bg-white rounded-[2rem] border border-slate-200 p-6 hover:shadow-xl hover:border-indigo-200 transition-all cursor-pointer flex flex-col h-full active:scale-[0.98]"
+            className="group bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-sm hover:border-indigo-200 transition-all cursor-pointer flex flex-col h-full active:scale-[0.98]"
         >
             {/* Header: Status and Date */}
             <div className="flex justify-between items-start mb-6">
                 <div className="space-y-1">
-                    <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border ${getStatusStyle(titulo.status, titulo.data_vencimento)}`}>
+                    <span className={`px-3 py-1 rounded-lg text-xs font-medium normal-case tracking-normal border ${getStatusStyle(titulo.status, titulo.data_vencimento)}`}>
                         {isVencido ? 'VENCIDO' : titulo.status}
                     </span>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest block pt-1">
+                    <p className="text-xs text-slate-500 font-medium normal-case tracking-normal block pt-1">
                         Venc: <span className="text-slate-900">{formatDate(titulo.data_vencimento)}</span>
                     </p>
                 </div>
                 <div className="text-right">
-                    <p className="text-[9px] text-slate-400 font-bold uppercase">Ref: {titulo.documento_ref || 'N/D'}</p>
-                    <span className="text-[9px] font-black text-slate-400 bg-slate-50 px-2 py-0.5 rounded border border-slate-100 uppercase tracking-widest mt-1 inline-block">
+                    <p className="text-xs text-slate-500 font-medium normal-case">Ref: {titulo.documento_ref || 'N/D'}</p>
+                    <span className="text-xs font-medium text-slate-500 bg-slate-50 px-2 py-0.5 rounded border border-slate-100 normal-case tracking-normal mt-1 inline-block">
                         {titulo.categoria?.nome || 'RECEITA'}
                     </span>
                 </div>
@@ -52,57 +52,57 @@ const ReceberCard: React.FC<ReceberCardProps> = ({ titulo, onBaixa, onDelete, on
             <div className="flex-1 space-y-4">
                 {/* Vehicle Info - Highlithed for quick identification */}
                 {titulo.veiculo ? (
-                    <div className="bg-slate-900 rounded-2xl p-4 shadow-lg relative overflow-hidden group-hover:bg-indigo-950 transition-colors">
+                    <div className="bg-slate-50 rounded-2xl p-4 shadow-sm relative overflow-hidden group-hover:bg-slate-100 transition-colors">
                         <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500 rounded-full blur-[80px] opacity-20"></div>
                         <div className="relative z-10 flex justify-between items-center">
                             <div>
-                                <p className="text-[8px] text-indigo-400 font-black uppercase tracking-[0.2em] mb-0.5">Veículo</p>
-                                <h4 className="text-white font-black text-sm uppercase truncate max-w-[140px]">
+                                <p className="text-xs text-indigo-600 font-medium normal-case tracking-normal mb-0.5">Veículo</p>
+                                <h4 className="text-slate-900 font-semibold text-sm normal-case truncate max-w-[140px]">
                                     {titulo.veiculo.montadora?.nome} {titulo.veiculo.modelo?.nome}
                                 </h4>
                             </div>
-                            <div className="bg-white/10 px-2.5 py-1 rounded-lg border border-white/20">
-                                <p className="text-white font-black text-[11px] tracking-widest uppercase">{titulo.veiculo.placa}</p>
+                            <div className="bg-white px-2.5 py-1 rounded-lg border border-slate-200">
+                                <p className="text-slate-900 font-medium text-xs tracking-normal normal-case">{titulo.veiculo.placa}</p>
                             </div>
                         </div>
                     </div>
                 ) : titulo.origem_tipo === 'OUTRO_CREDITO' ? (
                     <div className="bg-slate-100 rounded-2xl p-4 border border-slate-200 group-hover:border-indigo-200 transition-colors">
-                        <p className="text-[8px] text-slate-400 font-black uppercase tracking-[0.2em] mb-0.5">Veículo (Ref. Descrição)</p>
-                        <h4 className="text-slate-900 font-black text-sm uppercase truncate">
+                        <p className="text-xs text-slate-500 font-medium normal-case tracking-normal mb-0.5">Veículo (Ref. Descrição)</p>
+                        <h4 className="text-slate-900 font-semibold text-sm normal-case truncate">
                             {titulo.descricao}
                         </h4>
                     </div>
                 ) : (
                     <div className="h-14 border border-dashed border-slate-200 rounded-2xl flex items-center justify-center">
-                        <p className="text-[9px] text-slate-300 font-bold uppercase tracking-widest italic">Sem veículo vinculado</p>
+                        <p className="text-xs text-slate-300 font-medium normal-case tracking-normal italic">Sem veículo vinculado</p>
                     </div>
                 )}
 
                 <div>
-                    <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest mb-1">Cliente</p>
-                    <h3 className="text-sm font-black text-slate-900 uppercase truncate leading-tight">
+                    <p className="text-xs text-slate-500 font-medium normal-case tracking-normal mb-1">Cliente</p>
+                    <h3 className="text-sm font-semibold text-slate-900 normal-case truncate leading-tight">
                         {titulo.parceiro?.nome || titulo.descricao}
                     </h3>
-                    <p className="text-[10px] text-slate-400 font-medium">
+                    <p className="text-xs text-slate-500 font-medium">
                         {titulo.parceiro?.documento || 'Doc não informado'}
                     </p>
                 </div>
             </div>
 
             {/* Values */}
-            <div className="mt-6 pt-6 border-t border-slate-100 grid grid-cols-3 gap-2">
+            <div className="mt-6 pt-6 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <div>
-                    <p className="text-[8px] text-slate-400 font-black uppercase tracking-widest mb-1">Total</p>
-                    <p className="text-sm font-black text-slate-900 tracking-tighter">{formatCurrency(titulo.valor_total)}</p>
+                    <p className="text-xs text-slate-500 font-medium normal-case tracking-normal mb-1">Total</p>
+                    <p className="text-sm font-semibold text-slate-900 tracking-tight">{formatCurrency(titulo.valor_total)}</p>
                 </div>
                 <div className="text-center">
-                    <p className="text-[8px] text-emerald-600 font-black uppercase tracking-widest mb-1">Recebido</p>
-                    <p className="text-sm font-black text-emerald-600 tracking-tighter">{formatCurrency(valorLiquidado)}</p>
+                    <p className="text-xs text-emerald-600 font-medium normal-case tracking-normal mb-1">Recebido</p>
+                    <p className="text-sm font-semibold text-emerald-600 tracking-tight">{formatCurrency(valorLiquidado)}</p>
                 </div>
                 <div className="text-right">
-                    <p className="text-[8px] text-rose-600 font-black uppercase tracking-widest mb-1">Pendente</p>
-                    <p className={`text-sm font-black tracking-tighter ${valorPendente > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>
+                    <p className="text-xs text-rose-600 font-medium normal-case tracking-normal mb-1">Pendente</p>
+                    <p className={`text-sm font-semibold tracking-tight ${valorPendente > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>
                         {formatCurrency(valorPendente)}
                     </p>
                 </div>
@@ -113,7 +113,7 @@ const ReceberCard: React.FC<ReceberCardProps> = ({ titulo, onBaixa, onDelete, on
                 {titulo.status !== 'PAGO' && (
                     <button
                         onClick={() => onBaixa(titulo)}
-                        className="flex-1 py-3 bg-emerald-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100 active:scale-95"
+                        className="flex-1 py-3 bg-emerald-600 text-white rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-emerald-700 transition-all shadow-sm shadow-none active:scale-100"
                     >
                         Baixar Título
                     </button>

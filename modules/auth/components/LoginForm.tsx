@@ -23,18 +23,20 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, onForgotPassword, onGoo
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       <div>
-        <label className="block text-[10px] font-black text-white/70 uppercase mb-2 tracking-widest ml-1">E-mail</label>
+        <label htmlFor="login-email" className="block text-sm font-medium text-slate-700 mb-2">E-mail</label>
         <div className="relative group">
-          <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-black/40 group-focus-within:text-black transition-colors z-10 transition-transform duration-300 group-focus-within:scale-110">
+          <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 group-focus-within:text-indigo-600 transition-colors z-10">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.206" />
             </svg>
           </span>
           <input
+            id="login-email"
+            autoComplete="username"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm text-white placeholder-white/30 focus:bg-white/10 focus:border-white/30 focus:ring-2 focus:ring-white/20 outline-none transition-all font-bold backdrop-blur-sm"
+            className="w-full bg-white border border-slate-300 rounded-lg py-3 pl-12 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-colors"
             placeholder="exemplo@nexus.com"
             required
           />
@@ -42,25 +44,28 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, onForgotPassword, onGoo
       </div>
 
       <div>
-        <label className="block text-[10px] font-black text-white/70 uppercase mb-2 tracking-widest ml-1">Senha de Acesso</label>
+        <label htmlFor="login-password" className="block text-sm font-medium text-slate-700 mb-2">Senha de Acesso</label>
         <div className="relative group">
-          <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-black/40 group-focus-within:text-black transition-colors z-10 transition-transform duration-300 group-focus-within:scale-110">
+          <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 group-focus-within:text-indigo-600 transition-colors z-10">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
           </span>
           <input
+            id="login-password"
+            autoComplete="current-password"
             type={showPassword ? "text" : "password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-12 text-sm text-white placeholder-white/30 focus:bg-white/10 focus:border-white/30 focus:ring-2 focus:ring-white/20 outline-none transition-all font-mono backdrop-blur-sm"
+            className="w-full bg-white border border-slate-300 rounded-lg py-3 pl-12 pr-12 text-sm text-slate-900 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-colors"
             placeholder="••••••••"
             required
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute inset-y-0 right-0 pr-4 flex items-center text-white/40 hover:text-white transition-colors z-20"
+            className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-500 hover:text-slate-800 transition-colors z-20"
+            aria-label={showPassword ? "Ocultar senha" : "Ver senha"}
             title={showPassword ? "Ocultar senha" : "Ver senha"}
           >
             {showPassword ? (
@@ -77,16 +82,16 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, onForgotPassword, onGoo
         </div>
       </div>
 
-      <div className="flex items-center justify-between px-1">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <label className="flex items-center space-x-2 cursor-pointer group">
-          <input type="checkbox" className="w-4 h-4 rounded border-white/20 bg-white/5 text-emerald-500 focus:ring-emerald-500 focus:ring-offset-0" />
-          <span className="text-xs font-bold text-white/60 group-hover:text-white transition-colors">Lembrar acesso</span>
+          <input type="checkbox" className="w-4 h-4 rounded border-slate-300 bg-white text-indigo-600 focus:ring-indigo-500 focus:ring-offset-0" />
+          <span className="text-xs font-medium text-slate-600 group-hover:text-slate-900 transition-colors">Lembrar acesso</span>
         </label>
         <button
           type="button"
           onClick={() => onForgotPassword(email)}
           disabled={isResetLoading || isLoading}
-          className="text-xs font-black text-white/80 hover:text-white hover:underline uppercase tracking-tighter transition-colors disabled:opacity-50"
+          className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 hover:underline normal-case tracking-tight transition-colors disabled:opacity-50"
         >
           {isResetLoading ? 'Enviando...' : 'Esqueceu a senha?'}
         </button>
@@ -96,29 +101,29 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, onForgotPassword, onGoo
         <button
           type="submit"
           disabled={isLoading || isGoogleLoading}
-          className="w-full bg-white text-[#004691] py-5 rounded-[1.5rem] font-black uppercase tracking-[0.2em] text-xs shadow-xl shadow-black/20 hover:bg-emerald-400 hover:text-emerald-950 active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center space-x-3"
+          className="w-full bg-indigo-600 text-white py-3 rounded-lg font-medium text-sm shadow-sm hover:bg-indigo-700 transition-colors disabled:opacity-50 flex items-center justify-center space-x-3"
         >
           {isLoading ? (
-            <div className="w-5 h-5 border-2 border-[#004691]/30 border-t-[#004691] rounded-full animate-spin" />
+            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
           ) : (
             <span>Entrar no Sistema</span>
           )}
         </button>
 
         <div className="flex items-center gap-3">
-          <div className="h-px flex-1 bg-white/10"></div>
-          <span className="text-[9px] font-black uppercase tracking-[0.2em] text-white/40">ou</span>
-          <div className="h-px flex-1 bg-white/10"></div>
+          <div className="h-px flex-1 bg-slate-200"></div>
+          <span className="text-xs font-semibold normal-case tracking-normal text-slate-500">ou</span>
+          <div className="h-px flex-1 bg-slate-200"></div>
         </div>
 
         <button
           type="button"
           onClick={onGoogleLogin}
           disabled={isLoading || isGoogleLoading}
-          className="w-full bg-white/10 border border-white/20 text-white py-4 rounded-[1.25rem] font-black uppercase tracking-[0.14em] text-[10px] shadow-xl shadow-black/10 hover:bg-white hover:text-slate-900 active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center space-x-3"
+          className="w-full bg-white border border-slate-300 text-slate-700 py-3 rounded-lg font-medium text-sm hover:bg-slate-50 transition-colors disabled:opacity-50 flex items-center justify-center space-x-3"
         >
           {isGoogleLoading ? (
-            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            <div className="w-5 h-5 border-2 border-indigo-200 border-t-indigo-600 rounded-full animate-spin" />
           ) : (
             <>
               <svg className="w-5 h-5" viewBox="0 0 24 24" aria-hidden="true">

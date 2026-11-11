@@ -207,22 +207,22 @@ const DespesasVariaveisPage: React.FC<DespesasVariaveisPageProps> = ({ modoUnifi
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 relative">
+    <div className="space-y-6 animate-in fade-in duration-200 relative">
       {toast && (
-        <div className={`fixed top-6 right-6 z-[200] px-6 py-4 rounded-2xl shadow-2xl animate-in slide-in-from-right duration-300 border backdrop-blur-md ${toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' : 'bg-rose-600 text-white'
+        <div data-drivecar-ui className={`fixed top-6 right-6 z-[200] px-6 py-4 rounded-2xl shadow-sm animate-in slide-in-from-right duration-200 border backdrop-blur-md ${toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' : 'bg-rose-600 text-white'
           }`}>
-          <span className="font-bold text-sm tracking-tight">{toast.message}</span>
+          <span className="font-semibold text-sm tracking-tight">{toast.message}</span>
         </div>
       )}
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter leading-none">{modoUnificado ? 'Despesas' : 'Despesas Variáveis'}</h2>
-          <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mt-2">{modoUnificado ? 'Gestão simplificada de despesas financeiras' : 'Gestão de gastos operacionais e eventuais'}</p>
+          <h2 className="text-3xl font-semibold text-slate-900 normal-case tracking-tight leading-none">{modoUnificado ? 'Despesas' : 'Despesas Variáveis'}</h2>
+          <p className="text-slate-500 text-xs font-medium normal-case tracking-normal mt-2">{modoUnificado ? 'Gestão simplificada de despesas financeiras' : 'Gestão de gastos operacionais e eventuais'}</p>
         </div>
         <button
           onClick={handleOpenCreate}
-          className="px-8 py-4 bg-orange-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-orange-700 transition-all shadow-xl active:scale-95 flex items-center shadow-orange-200"
+          className="px-6 py-4 bg-orange-600 text-white rounded-2xl text-xs font-semibold normal-case tracking-normal hover:bg-orange-700 transition-all shadow-sm active:scale-100 flex items-center shadow-none"
         >
           <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -234,11 +234,11 @@ const DespesasVariaveisPage: React.FC<DespesasVariaveisPageProps> = ({ modoUnifi
       <VariaveisKpis kpis={kpis} />
 
       <div className="flex bg-white p-1.5 rounded-2xl border border-slate-200 w-fit shadow-sm overflow-x-auto max-w-full gap-1">
-        <button onClick={() => setActiveTab('MES_ATUAL')} className={`px-6 py-2.5 rounded-xl text-[10px] whitespace-nowrap font-black uppercase tracking-widest transition-all ${activeTab === 'MES_ATUAL' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Mês Atual</button>
-        <button onClick={() => setActiveTab('FUTUROS')} className={`px-6 py-2.5 rounded-xl text-[10px] whitespace-nowrap font-black uppercase tracking-widest transition-all ${activeTab === 'FUTUROS' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Futuros</button>
-        <button onClick={() => setActiveTab('PAGO')} className={`px-6 py-2.5 rounded-xl text-[10px] whitespace-nowrap font-black uppercase tracking-widest transition-all ${activeTab === 'PAGO' ? 'bg-orange-600 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Pago</button>
-        <button onClick={() => setActiveTab('PENDENTES')} className={`px-6 py-2.5 rounded-xl text-[10px] whitespace-nowrap font-black uppercase tracking-widest transition-all ${activeTab === 'PENDENTES' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Pendentes</button>
-        <button onClick={() => setActiveTab('TODOS')} className={`px-6 py-2.5 rounded-xl text-[10px] whitespace-nowrap font-black uppercase tracking-widest transition-all ${activeTab === 'TODOS' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Todos</button>
+        <button onClick={() => setActiveTab('MES_ATUAL')} className={`px-6 py-2.5 rounded-xl text-xs whitespace-nowrap font-semibold normal-case tracking-normal transition-all ${activeTab === 'MES_ATUAL' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Mês Atual</button>
+        <button onClick={() => setActiveTab('FUTUROS')} className={`px-6 py-2.5 rounded-xl text-xs whitespace-nowrap font-semibold normal-case tracking-normal transition-all ${activeTab === 'FUTUROS' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Futuros</button>
+        <button onClick={() => setActiveTab('PAGO')} className={`px-6 py-2.5 rounded-xl text-xs whitespace-nowrap font-semibold normal-case tracking-normal transition-all ${activeTab === 'PAGO' ? 'bg-orange-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Pago</button>
+        <button onClick={() => setActiveTab('PENDENTES')} className={`px-6 py-2.5 rounded-xl text-xs whitespace-nowrap font-semibold normal-case tracking-normal transition-all ${activeTab === 'PENDENTES' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Pendentes</button>
+        <button onClick={() => setActiveTab('TODOS')} className={`px-6 py-2.5 rounded-xl text-xs whitespace-nowrap font-semibold normal-case tracking-normal transition-all ${activeTab === 'TODOS' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Todos</button>
       </div>
 
       <VariaveisFilters
@@ -249,7 +249,7 @@ const DespesasVariaveisPage: React.FC<DespesasVariaveisPageProps> = ({ modoUnifi
         setGroupBy={setGroupBy}
       />
 
-      <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden min-h-[400px]">
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden min-h-[400px]">
         <VariaveisList
           items={processedData as any}
           loading={loading}
@@ -291,11 +291,11 @@ const DespesasVariaveisPage: React.FC<DespesasVariaveisPageProps> = ({ modoUnifi
       )}
 
       {showTipoModal && (
-        <div className="fixed inset-0 z-[180] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-slate-200 p-6 animate-in zoom-in-95 duration-200">
+        <div data-drivecar-ui className="fixed inset-0 z-[180] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white w-full max-w-md rounded-2xl shadow-sm border border-slate-200 p-6 animate-in zoom-in-95 duration-200">
             <div className="mb-6">
-              <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight">Tipo da despesa</h3>
-              <p className="text-xs text-slate-500 font-bold uppercase tracking-widest mt-1">Escolha como o lançamento será classificado</p>
+              <h3 className="text-xl font-semibold text-slate-900 normal-case tracking-tight">Tipo da despesa</h3>
+              <p className="text-xs text-slate-500 font-medium normal-case tracking-normal mt-1">Escolha como o lançamento será classificado</p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button
@@ -303,22 +303,22 @@ const DespesasVariaveisPage: React.FC<DespesasVariaveisPageProps> = ({ modoUnifi
                 onClick={() => handleSelectTipo('VARIAVEL')}
                 className="p-5 rounded-2xl border border-orange-100 bg-orange-50 text-left hover:border-orange-300 hover:bg-orange-100 transition-all"
               >
-                <span className="block text-sm font-black text-orange-700 uppercase tracking-tight">Variável</span>
-                <span className="block text-[10px] text-orange-600/80 font-bold uppercase mt-1">Gasto eventual</span>
+                <span className="block text-sm font-semibold text-orange-700 normal-case tracking-tight">Variável</span>
+                <span className="block text-xs text-orange-600/80 font-medium normal-case mt-1">Gasto eventual</span>
               </button>
               <button
                 type="button"
                 onClick={() => handleSelectTipo('FIXA')}
                 className="p-5 rounded-2xl border border-slate-200 bg-slate-50 text-left hover:border-slate-400 hover:bg-slate-100 transition-all"
               >
-                <span className="block text-sm font-black text-slate-800 uppercase tracking-tight">Fixa</span>
-                <span className="block text-[10px] text-slate-500 font-bold uppercase mt-1">Custo recorrente</span>
+                <span className="block text-sm font-semibold text-slate-800 normal-case tracking-tight">Fixa</span>
+                <span className="block text-xs text-slate-500 font-medium normal-case mt-1">Custo recorrente</span>
               </button>
             </div>
             <button
               type="button"
               onClick={() => setShowTipoModal(false)}
-              className="w-full mt-5 py-3 text-slate-500 text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-slate-50 transition-all"
+              className="w-full mt-5 py-3 text-slate-500 text-xs font-semibold normal-case tracking-normal rounded-2xl hover:bg-slate-50 transition-all"
             >
               Cancelar
             </button>

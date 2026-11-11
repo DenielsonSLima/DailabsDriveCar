@@ -25,21 +25,21 @@ const VendaKpis: React.FC<Props> = ({ pedidos }) => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-      <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
-        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">VGV (Faturado)</p>
-        <h3 className="text-2xl font-black text-slate-900 mt-1">{fmt(stats.vgv)}</h3>
+      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal">VGV (Faturado)</p>
+        <h3 className="text-2xl font-semibold text-slate-900 mt-1">{fmt(stats.vgv)}</h3>
       </div>
-      <div className="bg-slate-900 p-6 rounded-3xl shadow-xl">
-        <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Lucro Bruto Realizado</p>
-        <h3 className="text-2xl font-black text-white mt-1">{fmt(stats.lucro)}</h3>
+      <div className="bg-slate-900 p-6 rounded-2xl shadow-sm">
+        <p className="text-xs font-semibold text-emerald-400 normal-case tracking-normal">Lucro Bruto Realizado</p>
+        <h3 className="text-2xl font-semibold text-white mt-1">{fmt(stats.lucro)}</h3>
       </div>
-      <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
-        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Veículos Vendidos</p>
-        <h3 className="text-2xl font-black text-slate-900 mt-1">{stats.qtd} <span className="text-xs font-bold text-slate-400 uppercase">Unid.</span></h3>
+      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal">Veículos Vendidos</p>
+        <h3 className="text-2xl font-semibold text-slate-900 mt-1">{stats.qtd} <span className="text-xs font-bold text-slate-400 normal-case">Unid.</span></h3>
       </div>
-      <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
-        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Ticket Médio Saída</p>
-        <h3 className="text-2xl font-black text-slate-900 mt-1">{fmt(stats.ticket)}</h3>
+      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal">Ticket Médio Saída</p>
+        <h3 className="text-2xl font-semibold text-slate-900 mt-1">{fmt(stats.ticket)}</h3>
       </div>
     </div>
   );

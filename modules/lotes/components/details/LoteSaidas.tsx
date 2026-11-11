@@ -43,7 +43,7 @@ export default function LoteSaidas({ detalhes, stats, catalogos, canCreate, onRe
                     <td className={`${tableTdClass} whitespace-nowrap font-bold tabular-nums`}>{money(venda.valor_venda)}</td>
                     <td className={`${tableTdClass} whitespace-nowrap tabular-nums`}>{money(recebimentos.recebido)}</td>
                     <td className={`${tableTdClass} whitespace-nowrap tabular-nums`}>{money(recebimentos.aReceber)}</td>
-                    <td className={tableTdClass}>{venda.status === 'CONCLUIDO' && recebimentos.recebido === 0 && <button type="button" disabled={!canCreate} className="text-xs font-bold text-rose-600 hover:underline focus-visible:outline focus-visible:outline-rose-600 disabled:opacity-50" onClick={() => onCancelar(venda.id)}>Cancelar venda</button>}{venda.status === 'CONCLUIDO' && recebimentos.recebido > 0 && <p className="max-w-48 text-xs leading-relaxed text-slate-500">Venda com recebimentos exige devolução financeira antes do cancelamento.</p>}</td>
+                    <td className={tableTdClass}>{venda.status === 'CONCLUIDO' && recebimentos.recebido === 0 && <button type="button" disabled={!canCreate} className="text-xs font-semibold text-rose-600 hover:underline focus-visible:outline focus-visible:outline-rose-600 disabled:opacity-50" onClick={() => onCancelar(venda.id)}>Cancelar venda</button>}{venda.status === 'CONCLUIDO' && recebimentos.recebido > 0 && <p className="max-w-48 text-xs leading-relaxed text-slate-500">Venda com recebimentos exige devolução financeira antes do cancelamento.</p>}</td>
                   </tr>
                 );
               })}</tbody>

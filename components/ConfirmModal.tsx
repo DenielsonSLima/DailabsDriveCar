@@ -40,14 +40,14 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   if (!isOpen) return null;
 
   const content = (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
+    <div data-drivecar-ui role="dialog" aria-modal="true" aria-label={title} className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/35 backdrop-blur-sm animate-in fade-in duration-300">
       <div
-        className="bg-white w-full max-w-md rounded-[2rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 border border-slate-100"
+        className="bg-white w-full max-w-md max-h-[90dvh] overflow-y-auto rounded-xl shadow-lg overflow-hidden animate-in zoom-in-95 duration-300 border border-slate-100"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="p-8 text-center">
+        <div className="p-6 text-center">
           {/* Ícone */}
-          <div className={`w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-sm ${variant === 'danger' ? 'bg-rose-50 text-rose-500' : 'bg-indigo-50 text-indigo-500'
+          <div className={`w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-6 shadow-sm ${variant === 'danger' ? 'bg-rose-50 text-rose-500' : 'bg-indigo-50 text-indigo-500'
             }`}>
             {variant === 'danger' ? (
               <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -60,7 +60,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
             )}
           </div>
 
-          <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter mb-2">
+          <h3 className="text-xl font-semibold text-slate-900 normal-case tracking-tight mb-2">
             {title}
           </h3>
 
@@ -73,16 +73,16 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
           <button
             onClick={onClose}
             disabled={isLoading}
-            className="flex-1 py-3.5 bg-white border border-slate-200 text-slate-600 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-50 transition-all disabled:opacity-50"
+            className="flex-1 py-3 bg-white border border-slate-200 text-slate-600 rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-slate-50 transition-all disabled:opacity-50"
           >
             {cancelText}
           </button>
           <button
             onClick={onConfirm}
             disabled={isLoading}
-            className={`flex-1 py-3.5 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg transition-all flex items-center justify-center disabled:opacity-50 ${variant === 'danger'
-              ? 'bg-rose-600 hover:bg-rose-700 shadow-rose-200'
-              : 'bg-indigo-600 hover:bg-indigo-700 shadow-indigo-200'
+            className={`flex-1 py-3 text-white rounded-xl text-xs font-semibold normal-case tracking-normal shadow-lg transition-all flex items-center justify-center disabled:opacity-50 ${variant === 'danger'
+              ? 'bg-rose-600 hover:bg-rose-700 shadow-none'
+              : 'bg-indigo-600 hover:bg-indigo-700 shadow-none'
               }`}
           >
             {isLoading ? (

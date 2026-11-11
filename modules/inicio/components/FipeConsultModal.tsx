@@ -153,12 +153,12 @@ const FipeConsultModal: React.FC<FipeConsultModalProps> = ({ isOpen, onClose }) 
   const vehicle = result?.data?.resultados?.[0];
   
   return createPortal(
-    <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-xl animate-in fade-in duration-500" onClick={onClose} />
+    <div data-drivecar-ui className="fixed inset-0 z-[99999] flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-500" onClick={onClose} />
 
       {/* Notificações Toast */}
       {toastData && (
-        <div className={`fixed top-6 right-6 z-[100000] px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 animate-in slide-in-from-right duration-300 border backdrop-blur-md ${
+        <div className={`fixed top-6 right-6 z-[100000] px-6 py-4 rounded-2xl shadow-sm flex items-center space-x-3 animate-in slide-in-from-right duration-300 border backdrop-blur-sm ${
           toastData.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' :
           toastData.type === 'warning' ? 'bg-slate-900/95 text-white border-amber-500/50' :
           'bg-rose-600 text-white border-rose-400/50'
@@ -172,36 +172,36 @@ const FipeConsultModal: React.FC<FipeConsultModalProps> = ({ isOpen, onClose }) 
         </div>
       )}
       
-      <div className="relative w-full max-w-4xl bg-white rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] border border-white overflow-hidden animate-in zoom-in-95 duration-500 flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-4xl bg-white rounded-2xl shadow-lg border border-white overflow-hidden animate-in zoom-in-95 duration-500 flex flex-col max-h-[90vh]">
         
         {/* Header Orquestrador */}
-        <div className="px-6 py-4 bg-slate-900 text-white relative flex items-center justify-between shrink-0">
+        <div className="px-6 py-4 bg-slate-50 text-slate-900 border-b border-slate-200 relative flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-indigo-500/20 rounded-lg flex items-center justify-center border border-indigo-400/30">
-              <Search className="w-5 h-5 text-indigo-400" />
+            <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center border border-slate-200">
+              <Search className="w-5 h-5 text-slate-600" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-lg font-black uppercase tracking-tighter">Valuation Express</h3>
+                <h3 className="text-lg font-semibold normal-case tracking-tight">Valuation Express</h3>
               </div>
-              <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest leading-none">Inteligência de Mercado</p>
+              <p className="text-xs font-bold text-slate-500 normal-case tracking-normal leading-none">Inteligência de Mercado</p>
             </div>
           </div>
 
           <div className="flex items-center gap-4">
             <div className="text-right hidden sm:block">
               <div className="flex items-center justify-end gap-2 mb-1">
-                <span className="text-[7px] font-black text-slate-400 uppercase tracking-widest">Uso Loja</span>
-                <span className="text-[9px] font-black text-indigo-400">{stats?.used || 0}/{stats?.limit || 100}</span>
+                <span className="text-xs font-semibold text-slate-500 normal-case tracking-normal">Uso Loja</span>
+                <span className="text-xs font-semibold text-indigo-600">{stats?.used || 0}/{stats?.limit || 100}</span>
               </div>
-              <div className="w-20 h-1 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+              <div className="w-20 h-1 bg-slate-200 rounded-full overflow-hidden border border-slate-200">
                 <div 
-                  className="h-full rounded-full bg-indigo-500 transition-all duration-1000"
+                  className="h-full rounded-full bg-indigo-500 transition-all duration-300"
                   style={{ width: `${Math.min(usedPercentage, 100)}%` }}
                 />
               </div>
             </div>
-            <button onClick={onClose} className="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-800 hover:bg-slate-700 text-slate-400 transition-colors border border-slate-700">
+            <button onClick={onClose} className="w-8 h-8 rounded-lg flex items-center justify-center bg-white hover:bg-slate-100 text-slate-500 transition-colors border border-slate-200">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
           </div>
@@ -248,7 +248,7 @@ const FipeConsultModal: React.FC<FipeConsultModalProps> = ({ isOpen, onClose }) 
               <div className="flex items-center gap-3 pt-6 border-t border-slate-100 shrink-0">
                 <button 
                   onClick={() => { setResult(null); setCurrentPage(1); }}
-                  className="px-8 py-4 rounded-xl border border-slate-100 text-slate-400 font-black uppercase text-[9px] tracking-widest hover:bg-slate-50 transition-all"
+                  className="px-8 py-4 rounded-xl border border-slate-100 text-slate-500 font-semibold normal-case text-xs tracking-normal hover:bg-slate-50 transition-all"
                 >
                   Nova Consulta
                 </button>
@@ -281,7 +281,7 @@ const FipeConsultModal: React.FC<FipeConsultModalProps> = ({ isOpen, onClose }) 
                     } 
                    });
                   }}
-                  className="bg-slate-900 hover:bg-black text-white px-10 py-4 rounded-xl font-black uppercase text-[10px] tracking-widest transition-all shadow-xl flex items-center gap-3 active:scale-95"
+                  className="bg-slate-900 hover:bg-black text-white px-10 py-4 rounded-xl font-semibold normal-case text-xs tracking-normal transition-all shadow-sm flex items-center gap-3 "
                 >
                   Iniciar Pedido de Compra <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                 </button>

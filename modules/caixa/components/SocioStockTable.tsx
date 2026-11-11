@@ -82,38 +82,38 @@ const SocioStockTable: React.FC<Props> = ({ socios }) => {
     }, [socios]);
 
     return (
-        <div className="bg-white/40 backdrop-blur-xl border border-slate-200/60 rounded-[3rem] overflow-hidden shadow-2xl shadow-slate-200/50 transition-all duration-500">
-            <div className="p-10 border-b border-slate-100 flex items-center justify-between bg-white/60">
+        <div className="bg-white/40 backdrop-blur-xl border border-slate-200/60 rounded-2xl overflow-hidden shadow-sm shadow-slate-200/50 transition-all duration-500">
+            <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-white/60">
                 <div className="flex items-center gap-6">
-                    <div className="w-14 h-14 rounded-2xl bg-slate-900 flex items-center justify-center text-white shadow-xl shadow-slate-300 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
+                    <div className="w-14 h-14 rounded-2xl bg-slate-900 flex items-center justify-center text-white shadow-sm shadow-slate-300 transform -rotate-3 hover:rotate-0 transition-transform duration-300">
                         <ActivityIcon />
                     </div>
                     <div>
-                        <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tighter leading-none">Detalhamento do Estoque</h3>
-                        <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-2 flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-lg shadow-emerald-200"></span>
+                        <h3 className="text-2xl font-semibold text-slate-900 normal-case tracking-normal leading-none">Detalhamento do Estoque</h3>
+                        <p className="text-[11px] font-bold text-slate-400 normal-case tracking-normal mt-2 flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-sm shadow-emerald-200"></span>
                             Exposição de Capital & Especificações Técnicas
                         </p>
                     </div>
                 </div>
                 <div className="px-6 py-3 bg-white border border-slate-100 rounded-2xl shadow-sm flex flex-col items-end">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Patrimônio Ativo</span>
-                    <span className="text-lg font-black text-slate-900 tracking-tighter">{vehicleRows.length} VEÍCULOS</span>
+                    <span className="text-xs font-semibold text-slate-400 normal-case tracking-normal">Patrimônio Ativo</span>
+                    <span className="text-lg font-semibold text-slate-900 tracking-normal">{vehicleRows.length} VEÍCULOS</span>
                 </div>
             </div>
 
-            <div className="p-6 md:p-8 space-y-6 bg-slate-50/30">
+            <div className="p-6 md:p-6 space-y-6 bg-slate-50/30">
                 {vehicleRows.map((row, idx) => (
                     <div
                         key={row.id}
-                        className="bg-white border border-slate-200/60 rounded-[2.5rem] shadow-xl shadow-slate-100/50 hover:shadow-2xl hover:shadow-indigo-100/40 hover:border-indigo-100 transition-all duration-500 overflow-hidden group"
+                        className="bg-white border border-slate-200/60 rounded-2xl shadow-sm shadow-slate-100/50 hover:shadow-sm hover:shadow-indigo-100/40 hover:border-indigo-100 transition-all duration-500 overflow-hidden group"
                     >
                         <div className="grid grid-cols-1 md:grid-cols-12 items-center">
                             {/* LADO ESQUERDO: VEÍCULO & FLAGS */}
-                            <div className="md:col-span-5 p-8 border-r border-slate-50">
+                            <div className="md:col-span-5 p-6 border-r border-slate-50">
                                 <div className="flex gap-6 items-center">
                                     {row.montadora_logo ? (
-                                        <div className="w-16 h-16 flex-shrink-0 rounded-[1.5rem] bg-white border border-slate-100 p-3 flex items-center justify-center shadow-inner group-hover:scale-105 transition-all duration-500 overflow-hidden">
+                                        <div className="w-16 h-16 flex-shrink-0 rounded-2xl bg-white border border-slate-100 p-3 flex items-center justify-center shadow-inner group-hover:scale-105 transition-all duration-500 overflow-hidden">
                                             <img
                                                 src={row.montadora_logo}
                                                 alt={row.montadora}
@@ -127,35 +127,35 @@ const SocioStockTable: React.FC<Props> = ({ socios }) => {
                                             />
                                         </div>
                                     ) : (
-                                        <div className="w-16 h-16 flex-shrink-0 rounded-[1.5rem] bg-slate-900 flex items-center justify-center text-xs font-black text-white uppercase shadow-lg group-hover:scale-105 transition-all">
+                                        <div className="w-16 h-16 flex-shrink-0 rounded-2xl bg-slate-900 flex items-center justify-center text-xs font-semibold text-white normal-case shadow-sm group-hover:scale-105 transition-all">
                                             {row.montadora.substring(0, 3)}
                                         </div>
                                     )}
                                     <div>
-                                        <span className="text-[10px] font-black text-indigo-500 uppercase tracking-[0.3em] block mb-1">{row.montadora}</span>
-                                        <h4 className="text-xl font-black text-slate-900 uppercase tracking-tight leading-none">
+                                        <span className="text-xs font-semibold text-indigo-500 normal-case tracking-normal block mb-1">{row.montadora}</span>
+                                        <h4 className="text-xl font-semibold text-slate-900 normal-case tracking-tight leading-none">
                                             {row.modelo} <span className="text-slate-400 font-bold ml-1">{row.versao}</span>
                                         </h4>
                                         <div className="mt-3 flex flex-wrap gap-2">
-                                            <div className="px-2.5 py-1 bg-slate-900 text-[10px] font-black text-white rounded-lg tracking-widest uppercase shadow-md">
+                                            <div className="px-2.5 py-1 bg-slate-900 text-xs font-semibold text-white rounded-lg tracking-normal normal-case shadow-md">
                                                 {row.placa}
                                             </div>
                                             <div className="flex items-center gap-4 ml-2 opacity-50 group-hover:opacity-100 transition-opacity">
                                                 <div className="flex items-center gap-1.5" title="Combustível">
                                                     <FuelIcon />
-                                                    <span className="text-[10px] font-black text-slate-600 uppercase tracking-tighter">{row.combustivel || '-'}</span>
+                                                    <span className="text-xs font-semibold text-slate-600 normal-case tracking-normal">{row.combustivel || '-'}</span>
                                                 </div>
                                                 <div className="flex items-center gap-1.5" title="Motorização">
                                                     <GaugeIcon />
-                                                    <span className="text-[10px] font-black text-slate-600 uppercase tracking-tighter">{row.motorizacao || '-'}</span>
+                                                    <span className="text-xs font-semibold text-slate-600 normal-case tracking-normal">{row.motorizacao || '-'}</span>
                                                 </div>
                                                 <div className="flex items-center gap-1.5" title="Câmbio">
                                                     <SettingsIcon />
-                                                    <span className="text-[10px] font-black text-slate-600 uppercase tracking-tighter">{row.cambio || '-'}</span>
+                                                    <span className="text-xs font-semibold text-slate-600 normal-case tracking-normal">{row.cambio || '-'}</span>
                                                 </div>
                                                 <div className="flex items-center gap-1.5" title="Ano">
                                                     <div className="w-1.5 h-1.5 rounded-full bg-slate-400"></div>
-                                                    <span className="text-[10px] font-black text-slate-600 uppercase tracking-tighter">{row.ano_fabricacao}/{row.ano_modelo}</span>
+                                                    <span className="text-xs font-semibold text-slate-600 normal-case tracking-normal">{row.ano_fabricacao}/{row.ano_modelo}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -164,33 +164,33 @@ const SocioStockTable: React.FC<Props> = ({ socios }) => {
                             </div>
 
                             {/* CENTRO: VALOR TOTAL */}
-                            <div className="md:col-span-3 p-8 bg-slate-50/50 h-full flex flex-col justify-center items-center border-r border-slate-50 text-center">
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Equity de Custo</span>
-                                <p className="text-2xl font-black text-slate-900 tracking-tighter tabular-nums leading-none">
+                            <div className="md:col-span-3 p-6 bg-slate-50/50 h-full flex flex-col justify-center items-center border-r border-slate-50 text-center">
+                                <span className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-2">Equity de Custo</span>
+                                <p className="text-2xl font-semibold text-slate-900 tracking-normal tabular-nums leading-none">
                                     {fmt(row.totalCost)}
                                 </p>
                                 <div className="mt-4 flex items-center gap-2 px-3 py-1 bg-white border border-slate-100 rounded-full shadow-sm group-hover:border-indigo-100 transition-colors">
                                     <UsersIcon />
-                                    <span className="text-[9px] font-black text-slate-500 uppercase tracking-wider">{row.partners.length} INVESTIDORES</span>
+                                    <span className="text-xs font-semibold text-slate-500 normal-case tracking-normal">{row.partners.length} INVESTIDORES</span>
                                 </div>
                             </div>
 
                             {/* LADO DIREITO: DISTRIBUIÇÃO */}
-                            <div className="md:col-span-4 p-8 flex flex-col justify-center gap-3">
+                            <div className="md:col-span-4 p-6 flex flex-col justify-center gap-3">
                                 {row.partners.map((p, pIdx) => (
                                     <div key={pIdx} className="flex items-center justify-between p-3 bg-slate-50 border border-slate-100/50 rounded-2xl group-hover:bg-white group-hover:border-indigo-50 transition-all duration-300">
                                         <div className="flex items-center gap-3">
-                                            <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black text-white shadow-lg ${pIdx === 0 ? 'bg-indigo-500' : pIdx === 1 ? 'bg-slate-900' : 'bg-rose-500'}`}>
+                                            <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-semibold text-white shadow-sm ${pIdx === 0 ? 'bg-indigo-500' : pIdx === 1 ? 'bg-slate-900' : 'bg-rose-500'}`}>
                                                 {p.nome.charAt(0)}
                                             </div>
                                             <div>
-                                                <p className="text-[11px] font-black text-slate-900 uppercase tracking-tight">{p.nome}</p>
-                                                <p className="text-[10px] font-bold text-slate-400 tabular-nums">{fmt(p.valor)}</p>
+                                                <p className="text-[11px] font-semibold text-slate-900 normal-case tracking-tight">{p.nome}</p>
+                                                <p className="text-xs font-bold text-slate-400 tabular-nums">{fmt(p.valor)}</p>
                                             </div>
                                         </div>
                                         <div className="text-right">
-                                            <span className="text-xs font-black text-slate-900 tabular-nums leading-none block">{p.percent.toFixed(1)}%</span>
-                                            <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Participação</span>
+                                            <span className="text-xs font-semibold text-slate-900 tabular-nums leading-none block">{p.percent.toFixed(1)}%</span>
+                                            <span className="text-xs font-semibold text-slate-400 normal-case tracking-normal">Participação</span>
                                         </div>
                                     </div>
                                 ))}
@@ -201,26 +201,26 @@ const SocioStockTable: React.FC<Props> = ({ socios }) => {
             </div>
 
             {/* FOOTER: TOTAL CONSOLIDADO */}
-            <div className="p-10 bg-slate-900 text-white relative overflow-hidden">
+            <div className="p-6 bg-slate-900 text-white relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-transparent"></div>
                 <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500/10 rounded-full blur-[100px] -mr-40 -mt-40 animate-pulse"></div>
 
                 <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
                     <div className="flex items-center gap-5">
-                        <div className="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center shadow-2xl shadow-indigo-500/50 border border-indigo-400/30">
+                        <div className="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center shadow-sm shadow-indigo-500/50 border border-indigo-400/30">
                             <DollarSignIcon />
                         </div>
                         <div>
-                            <h4 className="text-xl font-black uppercase tracking-tighter leading-none">Visão Consolidada</h4>
-                            <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-[0.3em] mt-2">Capital Alocado por Sócio em Todo Estoque</p>
+                            <h4 className="text-xl font-semibold normal-case tracking-normal leading-none">Visão Consolidada</h4>
+                            <p className="text-xs font-bold text-indigo-400 normal-case tracking-normal mt-2">Capital Alocado por Sócio em Todo Estoque</p>
                         </div>
                     </div>
 
                     <div className="flex flex-wrap gap-6">
                         {partnerTotals.map((pt, i) => (
-                            <div key={i} className="flex flex-col items-center md:items-end p-5 bg-white/5 border border-white/10 rounded-[2rem] min-w-[160px] hover:bg-white/10 transition-colors backdrop-blur-md shadow-2xl">
-                                <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-2">{pt.nome}</span>
-                                <span className="text-xl font-black tracking-tighter tabular-nums">{fmt(pt.total)}</span>
+                            <div key={i} className="flex flex-col items-center md:items-end p-5 bg-white/5 border border-white/10 rounded-2xl min-w-[160px] hover:bg-white/10 transition-colors backdrop-blur-sm shadow-sm">
+                                <span className="text-xs font-semibold text-indigo-400 normal-case tracking-normal mb-2">{pt.nome}</span>
+                                <span className="text-xl font-semibold tracking-normal tabular-nums">{fmt(pt.total)}</span>
                             </div>
                         ))}
                     </div>

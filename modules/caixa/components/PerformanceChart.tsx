@@ -29,30 +29,30 @@ const PerformanceChart: React.FC<Props> = ({ history }) => {
     const ySteps = 4;
 
     return (
-        <div className="bg-white rounded-[2.5rem] border border-slate-200 p-8 shadow-sm h-full flex flex-col relative">
+        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm h-full flex flex-col relative">
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
                 <div>
-                    <h3 className="text-sm font-black text-slate-900 uppercase tracking-tight">Desempenho Trimestral</h3>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Histórico de faturamento, custos e lucro</p>
+                    <h3 className="text-sm font-semibold text-slate-900 normal-case tracking-tight">Desempenho Trimestral</h3>
+                    <p className="text-xs text-slate-400 font-bold normal-case tracking-normal mt-1">Histórico de faturamento, custos e lucro</p>
                 </div>
 
                 <div className="flex items-center gap-4 flex-wrap">
                     <div className="flex items-center gap-1.5">
                         <div className="w-2.5 h-2.5 rounded-sm bg-indigo-500"></div>
-                        <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">Faturado</span>
+                        <span className="text-xs font-bold text-slate-500 normal-case tracking-normal">Faturado</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                         <div className="w-2.5 h-2.5 rounded-sm bg-amber-500"></div>
-                        <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">Custo</span>
+                        <span className="text-xs font-bold text-slate-500 normal-case tracking-normal">Custo</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                         <div className="w-2.5 h-2.5 rounded-sm bg-rose-500"></div>
-                        <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">Despesas</span>
+                        <span className="text-xs font-bold text-slate-500 normal-case tracking-normal">Despesas</span>
                     </div>
                     <div className="flex items-center gap-1.5 ml-2">
                         <div className="w-4 h-0.5 bg-emerald-500 rounded-full"></div>
-                        <span className="text-[9px] font-bold text-slate-600 uppercase tracking-wider">Lucro</span>
+                        <span className="text-xs font-bold text-slate-600 normal-case tracking-normal">Lucro</span>
                     </div>
                 </div>
             </div>
@@ -63,7 +63,7 @@ const PerformanceChart: React.FC<Props> = ({ history }) => {
                     {/* Y-Axis Grid */}
                     <div className="relative h-64 border-l border-b border-slate-100 mb-6">
                         {/* Y-Axis Labels (now absolutely positioned outside the area) */}
-                        <div className="absolute top-0 bottom-0 -left-12 w-10 flex flex-col justify-between text-[8px] font-bold text-slate-300 pointer-events-none text-right">
+                        <div className="absolute top-0 bottom-0 -left-12 w-10 flex flex-col justify-between text-xs font-bold text-slate-300 pointer-events-none text-right">
                             <span>{fmtK(maxVal)}</span>
                             <span>{fmtK(maxVal * 0.75)}</span>
                             <span>{fmtK(maxVal * 0.5)}</span>
@@ -119,11 +119,11 @@ const PerformanceChart: React.FC<Props> = ({ history }) => {
                                                 className="absolute flex flex-col items-center justify-center"
                                                 style={{ left: `${x}%`, top: `${y}%`, transform: 'translate(-50%, -50%)' }}
                                             >
-                                                <div className="w-3 h-3 bg-[#064e3b] rounded-full flex items-center justify-center shadow-lg ring-2 ring-emerald-500/20">
+                                                <div className="w-3 h-3 bg-[#064e3b] rounded-full flex items-center justify-center shadow-sm ring-2 ring-emerald-500/20">
                                                     <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>
                                                 </div>
                                                 <span
-                                                    className="absolute -top-6 text-[10px] font-black text-emerald-500 whitespace-nowrap drop-shadow-sm"
+                                                    className="absolute -top-6 text-xs font-semibold text-emerald-500 whitespace-nowrap drop-shadow-sm"
                                                     style={{ fontSize: '10px' }}
                                                 >
                                                     {m.lucro > 0 ? `${(m.lucro / 1000).toFixed(0)}k` : '0'}
@@ -160,31 +160,31 @@ const PerformanceChart: React.FC<Props> = ({ history }) => {
                                                 {/* Tooltip - Adjusted for better overlap and visibility */}
                                                 <div className="absolute -top-24 opacity-0 group-hover:opacity-100 group-hover:-top-32 transition-all duration-300 bg-slate-900/98 backdrop-blur-xl text-white p-4 rounded-2xl text-[9.5px] font-bold z-[100] pointer-events-none whitespace-nowrap shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/20 ring-1 ring-black scale-90 group-hover:scale-100">
                                                     <div className="flex justify-between gap-8 mb-2">
-                                                        <span className="text-slate-400 uppercase tracking-wider">Faturado:</span>
+                                                        <span className="text-slate-400 normal-case tracking-normal">Faturado:</span>
                                                         <span className="text-blue-400 tabular-nums">{fmt(m.faturado)}</span>
                                                     </div>
                                                     <div className="flex justify-between gap-8 mb-2">
-                                                        <span className="text-slate-400 uppercase tracking-wider">Custo:</span>
+                                                        <span className="text-slate-400 normal-case tracking-normal">Custo:</span>
                                                         <span className="text-slate-300 tabular-nums">{fmt(m.custo)}</span>
                                                     </div>
                                                     <div className="flex justify-between gap-8 mb-2">
-                                                        <span className="text-slate-400 uppercase tracking-wider">Fixas:</span>
+                                                        <span className="text-slate-400 normal-case tracking-normal">Fixas:</span>
                                                         <span className="text-rose-400 tabular-nums">{fmt(m.despesas_fixas)}</span>
                                                     </div>
                                                     <div className="flex justify-between gap-8 mb-2">
-                                                        <span className="text-slate-400 uppercase tracking-wider">Variáveis:</span>
+                                                        <span className="text-slate-400 normal-case tracking-normal">Variáveis:</span>
                                                         <span className="text-rose-400 tabular-nums">{fmt(m.despesas_variaveis)}</span>
                                                     </div>
                                                     <div className="pt-2 mt-1 border-t border-white/10 flex justify-between gap-8">
-                                                        <span className="text-slate-400 uppercase font-black tracking-widest">Lucro:</span>
-                                                        <span className="text-emerald-400 font-black tabular-nums">{fmt(m.lucro)}</span>
+                                                        <span className="text-slate-400 normal-case font-semibold tracking-normal">Lucro:</span>
+                                                        <span className="text-emerald-400 font-semibold tabular-nums">{fmt(m.lucro)}</span>
                                                     </div>
                                                     <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-slate-900 rotate-45 border-b border-r border-white/10"></div>
                                                 </div>
 
                                                 {/* Label below the bar */}
                                                 <div className="absolute -bottom-10 left-0 right-0 text-center">
-                                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-tighter group-hover:text-blue-600 group-hover:scale-110 transition-all cursor-default">
+                                                    <span className="text-xs font-semibold text-slate-400 normal-case tracking-normal group-hover:text-blue-600 group-hover:scale-105 transition-all cursor-default">
                                                         {m.label}
                                                     </span>
                                                 </div>
@@ -198,7 +198,7 @@ const PerformanceChart: React.FC<Props> = ({ history }) => {
                 </div>
 
                 {/* User values confirmation */}
-                <div className="absolute bottom-4 right-8 text-[8px] font-bold text-slate-300 uppercase tracking-widest text-right">
+                <div className="absolute bottom-4 right-8 text-xs font-bold text-slate-300 normal-case tracking-normal text-right">
                     Valores verificados conforme espelho comercial
                 </div>
             </div>

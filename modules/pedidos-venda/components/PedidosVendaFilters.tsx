@@ -18,7 +18,7 @@ const PedidosVendaFilters: React.FC<Props> = ({ filtros, corretores, socios, onC
   };
 
   return (
-    <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm mb-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mb-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
       <div className="flex flex-col xl:flex-row gap-6">
 
         {/* Busca Textual */}
@@ -33,7 +33,7 @@ const PedidosVendaFilters: React.FC<Props> = ({ filtros, corretores, socios, onC
             placeholder="Buscar por número da venda, cliente ou veículo..."
             value={filtros.busca}
             onChange={(e) => handleChange('busca', e.target.value)}
-            className="w-full bg-white border border-slate-200 rounded-2xl py-3.5 pl-10 pr-4 text-sm font-bold text-slate-900 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all placeholder:font-medium shadow-sm hover:shadow-md"
+            className="w-full bg-white border border-slate-200 rounded-xl py-3.5 pl-10 pr-4 text-sm font-medium text-slate-900 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all placeholder:font-medium shadow-sm hover:shadow-md"
           />
         </div>
 
@@ -46,7 +46,7 @@ const PedidosVendaFilters: React.FC<Props> = ({ filtros, corretores, socios, onC
               type="date"
               value={filtros.dataInicio}
               onChange={(e) => handleChange('dataInicio', e.target.value)}
-              className="bg-transparent text-xs font-bold text-slate-600 outline-none px-2 py-1.5 cursor-pointer"
+              className="bg-transparent text-xs font-medium text-slate-600 outline-none px-2 py-1.5 cursor-pointer"
               title="Data Início"
             />
             <span className="text-slate-300">-</span>
@@ -54,7 +54,7 @@ const PedidosVendaFilters: React.FC<Props> = ({ filtros, corretores, socios, onC
               type="date"
               value={filtros.dataFim}
               onChange={(e) => handleChange('dataFim', e.target.value)}
-              className="bg-transparent text-xs font-bold text-slate-600 outline-none px-2 py-1.5 cursor-pointer"
+              className="bg-transparent text-xs font-medium text-slate-600 outline-none px-2 py-1.5 cursor-pointer"
               title="Data Fim"
             />
           </div>
@@ -66,7 +66,7 @@ const PedidosVendaFilters: React.FC<Props> = ({ filtros, corretores, socios, onC
             <select
               value={filtros.status || ''}
               onChange={(e) => handleChange('status', e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 cursor-pointer shadow-sm hover:shadow-md transition-all"
+              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-medium text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 cursor-pointer shadow-sm hover:shadow-md transition-all"
             >
               <option value="">Todos os Status</option>
               <option value="RASCUNHO">Em Negociação</option>

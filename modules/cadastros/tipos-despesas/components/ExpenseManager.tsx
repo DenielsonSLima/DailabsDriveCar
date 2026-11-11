@@ -133,11 +133,11 @@ const ExpenseManager: React.FC = () => {
   const currentTabColor = tabs.find(t => t.id === activeTab)?.color || 'indigo';
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 relative">
+    <div className="space-y-6 animate-in fade-in duration-200 relative">
       
       {/* Toast Notification */}
       {toast && (
-        <div className={`fixed top-6 right-6 z-[250] px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 animate-in slide-in-from-right duration-300 border backdrop-blur-md ${
+        <div data-drivecar-ui className={`fixed top-6 right-6 z-[250] px-6 py-4 rounded-2xl shadow-sm flex items-center space-x-3 animate-in slide-in-from-right duration-200 border backdrop-blur-md ${
           toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' : 'bg-rose-600 text-white border-rose-400/50'
         }`}>
           <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${toast.type === 'success' ? 'bg-emerald-500 text-white' : 'bg-white text-rose-600'}`}>
@@ -145,7 +145,7 @@ const ExpenseManager: React.FC = () => {
               <path strokeLinecap="round" strokeLinejoin="round" d={toast.type === 'success' ? "M5 13l4 4L19 7" : "M6 18L18 6M6 6l12 12"} />
             </svg>
           </div>
-          <span className="font-bold text-sm tracking-tight">{toast.message}</span>
+          <span className="font-semibold text-sm tracking-tight">{toast.message}</span>
         </div>
       )}
 
@@ -155,9 +155,9 @@ const ExpenseManager: React.FC = () => {
           <button
             key={tab.id}
             onClick={() => { setActiveTab(tab.id); setExpandedGroup(null); }}
-            className={`px-6 py-4 rounded-2xl text-sm font-black uppercase tracking-widest transition-all shadow-sm flex items-center space-x-2 ${
+            className={`px-6 py-4 rounded-2xl text-sm font-semibold normal-case tracking-normal transition-all shadow-sm flex items-center space-x-2 ${
               activeTab === tab.id 
-                ? `bg-${tab.color}-600 text-white shadow-${tab.color}-200 shadow-xl scale-105` 
+                ? `bg-${tab.color}-600 text-white shadow-${tab.color}-200 shadow-sm scale-100`
                 : 'bg-white text-slate-400 hover:bg-slate-50 hover:text-slate-600'
             }`}
           >
@@ -170,19 +170,19 @@ const ExpenseManager: React.FC = () => {
       </div>
 
       {/* Área de Conteúdo */}
-      <div className={`bg-white rounded-[2.5rem] border border-slate-200 p-8 shadow-sm min-h-[500px] relative overflow-hidden ring-4 ring-${currentTabColor}-50/50 transition-all`}>
+      <div className={`bg-white rounded-2xl border border-slate-200 p-6 shadow-sm min-h-[500px] relative overflow-hidden ring-4 ring-${currentTabColor}-50/50 transition-all`}>
         
         {/* Header da Lista */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
           <div>
-            <h2 className={`text-2xl font-black text-slate-900 uppercase tracking-tighter`}>
+            <h2 className={`text-2xl font-semibold text-slate-900 normal-case tracking-tight`}>
               Grupos de <span className={`text-${currentTabColor}-600`}>{tabs.find(t => t.id === activeTab)?.label}</span>
             </h2>
             <p className="text-slate-500 text-xs mt-1">Organize suas contas e centros de custo.</p>
           </div>
           <button 
             onClick={() => handleOpenGroupForm()}
-            className={`px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest text-white shadow-lg transition-all active:scale-95 flex items-center bg-${currentTabColor}-600 hover:bg-${currentTabColor}-700 shadow-${currentTabColor}-200`}
+            className={`px-6 py-3 rounded-2xl text-xs font-semibold normal-case tracking-normal text-white shadow-sm transition-all active:scale-100 flex items-center bg-${currentTabColor}-600 hover:bg-${currentTabColor}-700 shadow-${currentTabColor}-200`}
           >
             <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
             Novo Grupo
@@ -193,14 +193,14 @@ const ExpenseManager: React.FC = () => {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 space-y-4">
             <div className={`w-12 h-12 border-4 border-${currentTabColor}-600 border-t-transparent rounded-full animate-spin`}></div>
-            <p className="text-slate-400 font-bold uppercase text-[10px] tracking-widest">Carregando plano de contas...</p>
+            <p className="text-slate-500 font-medium normal-case text-xs tracking-normal">Carregando plano de contas...</p>
           </div>
         ) : grupos.length === 0 ? (
-          <div className="text-center py-20 bg-slate-50 rounded-[2rem] border border-slate-100 border-dashed">
+          <div className="text-center py-20 bg-slate-50 rounded-2xl border border-slate-100 border-dashed">
             <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300 shadow-sm">
               <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg>
             </div>
-            <p className="text-slate-400 font-bold text-sm">Nenhum grupo cadastrado nesta categoria.</p>
+            <p className="text-slate-500 font-medium text-sm">Nenhum grupo cadastrado nesta categoria.</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -208,7 +208,7 @@ const ExpenseManager: React.FC = () => {
               const isExpanded = expandedGroup === grupo.id;
               
               return (
-                <div key={grupo.id} className={`border rounded-[1.5rem] transition-all duration-300 ${isExpanded ? `border-${currentTabColor}-200 bg-${currentTabColor}-50/30 shadow-lg` : 'border-slate-100 bg-slate-50 hover:bg-white hover:border-slate-200'}`}>
+                <div key={grupo.id} className={`border rounded-2xl transition-all duration-200 ${isExpanded ? `border-${currentTabColor}-200 bg-${currentTabColor}-50/30 shadow-sm` : 'border-slate-100 bg-slate-50 hover:bg-white hover:border-slate-200'}`}>
                   
                   {/* Cabeçalho do Grupo */}
                   <div 
@@ -222,8 +222,8 @@ const ExpenseManager: React.FC = () => {
                         </svg>
                       </div>
                       <div>
-                        <h4 className={`text-sm font-black uppercase tracking-tight ${isExpanded ? `text-${currentTabColor}-900` : 'text-slate-700'}`}>{grupo.nome}</h4>
-                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">
+                        <h4 className={`text-sm font-semibold normal-case tracking-tight ${isExpanded ? `text-${currentTabColor}-900` : 'text-slate-700'}`}>{grupo.nome}</h4>
+                        <p className="text-xs text-slate-500 font-medium normal-case tracking-normal mt-0.5">
                           {grupo.categorias?.length || 0} {grupo.categorias?.length === 1 ? 'Categoria' : 'Categorias'}
                         </p>
                       </div>
@@ -249,7 +249,7 @@ const ExpenseManager: React.FC = () => {
                       </div>
                       
                       {/* Seta Accordion */}
-                      <div className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''} text-slate-400`}>
+                      <div className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''} text-slate-400`}>
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                       </div>
                     </div>
@@ -257,13 +257,13 @@ const ExpenseManager: React.FC = () => {
 
                   {/* Corpo do Grupo (Lista de Categorias) */}
                   {isExpanded && (
-                    <div className="px-5 pb-5 animate-in slide-in-from-top-2 duration-300">
+                    <div className="px-5 pb-5 animate-in slide-in-from-top-2 duration-200">
                       <div className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm">
                         <div className="flex justify-between items-center mb-4">
-                          <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest ml-1">Itens do Grupo</p>
+                          <p className="text-xs text-slate-500 font-medium normal-case tracking-normal ml-1">Itens do Grupo</p>
                           <button 
                             onClick={() => handleOpenCategoryForm(grupo)}
-                            className={`text-[10px] font-black uppercase tracking-widest text-${currentTabColor}-600 hover:bg-${currentTabColor}-50 px-3 py-1.5 rounded-lg transition-colors flex items-center`}
+                            className={`text-xs font-semibold normal-case tracking-normal text-${currentTabColor}-600 hover:bg-${currentTabColor}-50 px-3 py-1.5 rounded-lg transition-colors flex items-center`}
                           >
                             <svg className="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
                             Adicionar Item
@@ -271,14 +271,14 @@ const ExpenseManager: React.FC = () => {
                         </div>
 
                         {(!grupo.categorias || grupo.categorias.length === 0) ? (
-                          <div className="text-center py-8 text-slate-300 italic text-xs">Nenhuma categoria cadastrada neste grupo.</div>
+                          <div className="text-center py-6 text-slate-300 italic text-xs">Nenhuma categoria cadastrada neste grupo.</div>
                         ) : (
                           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                             {grupo.categorias.map(cat => (
                               <div key={cat.id} className="flex items-center justify-between p-3 bg-slate-50 hover:bg-slate-100 rounded-xl border border-slate-100 transition-colors group/cat">
                                 <div className="flex items-center space-x-2 overflow-hidden">
                                   <div className={`w-1.5 h-1.5 rounded-full bg-${currentTabColor}-400 shrink-0`}></div>
-                                  <span className="text-xs font-bold text-slate-700 truncate">{cat.nome}</span>
+                                  <span className="text-xs font-medium text-slate-700 truncate">{cat.nome}</span>
                                 </div>
                                 <div className="flex space-x-1 opacity-0 group-hover/cat:opacity-100 transition-opacity">
                                   <button onClick={() => handleOpenCategoryForm(grupo, cat)} className="p-1.5 text-indigo-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg">

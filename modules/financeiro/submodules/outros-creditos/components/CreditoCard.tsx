@@ -21,10 +21,10 @@ const CreditoCard: React.FC<Props> = ({ titulo, onReceber, onEdit, onDelete, onB
     return (
         <div
             onClick={() => onReceber(titulo)}
-            className="group bg-white border border-slate-200 rounded-[2rem] p-6 hover:shadow-2xl hover:border-teal-300 transition-all duration-500 cursor-pointer flex flex-col h-full animate-in fade-in"
+            className="group bg-white border border-slate-200 rounded-2xl p-6 hover:shadow-sm hover:border-teal-300 transition-all duration-200 cursor-pointer flex flex-col h-full animate-in fade-in"
         >
             <div className="flex justify-between items-start mb-4">
-                <span className={`px-3 py-1 rounded-xl text-[9px] font-black uppercase tracking-widest border ${isPago ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-teal-50 text-teal-600 border-teal-100'
+                <span className={`px-3 py-1 rounded-xl text-xs font-medium normal-case tracking-normal border ${isPago ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-teal-50 text-teal-600 border-teal-100'
                     }`}>
                     {titulo.status}
                 </span>
@@ -50,10 +50,10 @@ const CreditoCard: React.FC<Props> = ({ titulo, onReceber, onEdit, onDelete, onB
             </div>
 
             <div className="mb-4 min-w-0">
-                <h4 className="text-xs font-black text-slate-800 uppercase truncate leading-tight group-hover:text-teal-700 transition-colors">
+                <h4 className="text-xs font-semibold text-slate-800 normal-case truncate leading-tight group-hover:text-teal-700 transition-colors">
                     {titulo.descricao || 'Sem Descrição'}
                 </h4>
-                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">
+                <p className="text-xs font-medium text-slate-500 normal-case tracking-normal mt-1">
                     {titulo.parceiro?.nome || titulo.categoria?.nome || 'Diversos'}
                 </p>
             </div>
@@ -65,13 +65,13 @@ const CreditoCard: React.FC<Props> = ({ titulo, onReceber, onEdit, onDelete, onB
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                         </div>
                         <div>
-                            <p className="text-[8px] font-black text-slate-400 uppercase tracking-tighter">Vencimento</p>
-                            <p className="text-[10px] font-black text-slate-700 leading-none">{formatDate(titulo.data_vencimento)}</p>
+                            <p className="text-xs font-medium text-slate-500 normal-case tracking-tight">Vencimento</p>
+                            <p className="text-xs font-medium text-slate-700 leading-none">{formatDate(titulo.data_vencimento)}</p>
                         </div>
                     </div>
                     <div className="text-right">
-                        <p className="text-[8px] font-black text-slate-400 uppercase tracking-tighter">Conta</p>
-                        <p className="text-[10px] font-black text-slate-700 leading-none truncate max-w-[100px]">
+                        <p className="text-xs font-medium text-slate-500 normal-case tracking-tight">Conta</p>
+                        <p className="text-xs font-medium text-slate-700 leading-none truncate max-w-[100px]">
                             {titulo.transacoes?.[0]?.conta_origem?.banco_nome || 'A DEFINIR'}
                         </p>
                     </div>
@@ -79,18 +79,18 @@ const CreditoCard: React.FC<Props> = ({ titulo, onReceber, onEdit, onDelete, onB
 
                 <div className="space-y-3 pt-3 border-t border-slate-200/50">
                     <div className="flex justify-between items-end">
-                        <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Valor Total</p>
-                        <p className="text-sm font-black text-slate-900 leading-none">{formatCurrency(titulo.valor_total)}</p>
+                        <p className="text-xs font-medium text-slate-500 normal-case tracking-normal">Valor Total</p>
+                        <p className="text-sm font-semibold text-slate-900 leading-none">{formatCurrency(titulo.valor_total)}</p>
                     </div>
 
                     <div className="flex justify-between items-end">
-                        <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest">Recebido</p>
-                        <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">{formatCurrency(valorLiquidado)}</span>
+                        <p className="text-xs font-medium text-emerald-600 normal-case tracking-normal">Recebido</p>
+                        <span className="text-xs font-medium text-emerald-600 normal-case tracking-normal">{formatCurrency(valorLiquidado)}</span>
                     </div>
 
                     <div className="flex justify-between items-end">
-                        <p className="text-[9px] font-black text-rose-600 uppercase tracking-widest">Pendente</p>
-                        <p className="text-[11px] font-black text-rose-600 leading-none">{formatCurrency(valorPendente)}</p>
+                        <p className="text-xs font-medium text-rose-600 normal-case tracking-normal">Pendente</p>
+                        <p className="text-xs font-medium text-rose-600 leading-none">{formatCurrency(valorPendente)}</p>
                     </div>
                 </div>
             </div>
@@ -102,8 +102,8 @@ const CreditoCard: React.FC<Props> = ({ titulo, onReceber, onEdit, onDelete, onB
                         style={{ width: `${porcentagem}%` }}
                     />
                 </div>
-                <div className="flex justify-between text-[8px] font-black uppercase tracking-tighter">
-                    <span className="text-slate-400">Progresso</span>
+                <div className="flex justify-between text-xs font-semibold normal-case tracking-tight">
+                    <span className="text-slate-500">Progresso</span>
                     <span className={isPago ? 'text-emerald-600' : 'text-teal-600'}>
                         {porcentagem}%
                     </span>

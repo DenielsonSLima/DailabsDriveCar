@@ -15,22 +15,22 @@ const TransmissaoList: React.FC<Props> = ({ items, onEdit, onDelete, onReactivat
       {items.map(item => (
         <div 
           key={item.id} 
-          className={`group relative p-3 sm:p-4 rounded-[1.5rem] border flex items-center justify-between transition-all duration-300 ${
+          className={`group relative p-3 sm:p-4 rounded-2xl border flex items-center justify-between transition-all duration-200 ${
             item.ativo !== false 
-              ? 'bg-slate-50 border-slate-100 hover:bg-white hover:border-indigo-200 hover:shadow-lg' 
+              ? 'bg-slate-50 border-slate-100 hover:bg-white hover:border-indigo-200 hover:shadow-sm'
               : 'bg-slate-100/50 border-slate-200 opacity-60 grayscale-[0.5]'
           }`}
         >
           <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 pr-12 w-full">
             <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center shrink-0 ${
-              item.ativo !== false ? 'bg-cyan-50 text-cyan-500' : 'bg-slate-200 text-slate-400'
+              item.ativo !== false ? 'bg-slate-100 text-slate-600' : 'bg-slate-200 text-slate-400'
             }`}>
                <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924-1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                </svg>
             </div>
-            <span className="font-bold text-slate-700 uppercase text-[10px] sm:text-xs truncate tracking-tighter leading-tight">
+            <span className="font-medium text-slate-700 normal-case text-xs sm:text-xs truncate tracking-tight leading-tight">
               {item.nome}
             </span>
           </div>

@@ -145,7 +145,7 @@ const PedidoCompraFormPage: React.FC = () => {
   if (isLoading) return (
     <div className="flex flex-col items-center justify-center py-40 animate-pulse">
       <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-      <p className="text-slate-400 font-black uppercase text-[10px] tracking-[0.2em]">Sincronizando Módulos...</p>
+      <p className="text-slate-400 font-semibold normal-case text-xs tracking-normal">Sincronizando Módulos...</p>
     </div>
   );
 
@@ -160,14 +160,14 @@ const PedidoCompraFormPage: React.FC = () => {
       />
 
       {isConcluido && (
-        <div className="bg-amber-50 border border-amber-200 p-6 rounded-[2rem] flex items-center space-x-4 animate-in zoom-in-95 shadow-sm">
+        <div className="bg-amber-50 border border-amber-200 p-6 rounded-2xl flex items-center space-x-4 animate-in zoom-in-95 shadow-sm">
           <div className="w-12 h-12 bg-amber-200 text-amber-700 rounded-2xl flex items-center justify-center shrink-0">
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
           </div>
           <div>
-            <p className="text-sm font-black text-amber-900 uppercase tracking-tight">Pedido em Modo de Edição Pós-Finalização</p>
+            <p className="text-sm font-semibold text-amber-900 normal-case tracking-tight">Pedido em Modo de Edição Pós-Finalização</p>
             <p className="text-xs font-medium text-amber-700 leading-relaxed">
               As alterações feitas aqui atualizarão o cabeçalho do pedido, mas <span className="font-bold">não alteram</span> títulos financeiros ou entradas de estoque que já foram processadas.
             </p>

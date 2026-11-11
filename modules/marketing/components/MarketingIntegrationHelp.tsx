@@ -45,10 +45,10 @@ const requirements = [
 const MarketingIntegrationHelp: React.FC = () => {
   return (
     <div className="space-y-6">
-      <div className="overflow-hidden rounded-3xl border border-slate-200 bg-slate-950 text-white shadow-sm">
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-950 text-white shadow-sm">
         <div className="p-6 md:p-8">
-          <p className="text-[10px] font-black uppercase tracking-[0.22em] text-sky-300">Ajuda da integração</p>
-          <h3 className="mt-2 max-w-3xl text-2xl font-black tracking-tight">
+          <p className="text-xs font-semibold normal-case tracking-normal text-sky-300">Ajuda da integração</p>
+          <h3 className="mt-2 max-w-3xl text-2xl font-semibold tracking-tight">
             Como o ERP conecta Meta Ads e Google Ads sem pedir senha, saldo ou ID manual
           </h3>
           <p className="mt-3 max-w-4xl text-sm leading-relaxed text-slate-300">
@@ -65,7 +65,7 @@ const MarketingIntegrationHelp: React.FC = () => {
               <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-100 text-slate-700">
                 <Icon className="h-5 w-5" />
               </div>
-              <p className="text-sm font-black text-slate-950">{step.title}</p>
+              <p className="text-sm font-semibold text-slate-950">{step.title}</p>
               <p className="mt-2 text-xs leading-relaxed text-slate-500">{step.description}</p>
             </div>
           );
@@ -74,7 +74,7 @@ const MarketingIntegrationHelp: React.FC = () => {
 
       <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-          <h4 className="text-sm font-black text-slate-950">O que precisa estar pronto para criar anúncios automaticamente</h4>
+          <h4 className="text-sm font-semibold text-slate-950">O que precisa estar pronto para criar anúncios automaticamente</h4>
           <div className="mt-4 space-y-3">
             {requirements.map((item) => (
               <div key={item} className="flex gap-3">
@@ -86,12 +86,12 @@ const MarketingIntegrationHelp: React.FC = () => {
         </div>
 
         <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5 shadow-sm">
-          <h4 className="text-sm font-black text-amber-950">Por que não preencher saldo manualmente?</h4>
+          <h4 className="text-sm font-semibold text-amber-950">Por que não preencher saldo manualmente?</h4>
           <p className="mt-3 text-xs leading-relaxed text-amber-800">
             Saldo manual fica desatualizado e pode fazer o usuário tomar decisão errada. O correto é o backend consultar a Meta ou o Google, calcular saldo/gasto real e atualizar o ERP em sincronizações periódicas.
           </p>
           <div className="mt-4 rounded-2xl bg-white/70 p-4">
-            <p className="text-[10px] font-black uppercase tracking-widest text-amber-900">Variáveis esperadas no frontend</p>
+            <p className="text-xs font-semibold normal-case tracking-normal text-amber-900">Variáveis esperadas no frontend</p>
             <p className="mt-2 text-xs font-mono text-amber-900">VITE_META_APP_ID</p>
             <p className="mt-1 text-xs font-mono text-amber-900">VITE_GOOGLE_ADS_CLIENT_ID</p>
             <p className="mt-3 text-xs leading-relaxed text-amber-800">
@@ -104,7 +104,7 @@ const MarketingIntegrationHelp: React.FC = () => {
       <div className="rounded-2xl border border-sky-200 bg-sky-50 p-5 shadow-sm">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
-            <h4 className="text-sm font-black text-sky-950">Referência técnica</h4>
+            <h4 className="text-sm font-semibold text-sky-950">Referência técnica</h4>
             <p className="mt-1 text-xs leading-relaxed text-sky-800">
               O Google Ads API usa OAuth 2.0 para autorização, permitindo acesso sem manipular dados de login do usuário. A Meta segue o mesmo desenho de autorização via login oficial para anúncios.
             </p>
@@ -113,7 +113,7 @@ const MarketingIntegrationHelp: React.FC = () => {
             href="https://developers.google.com/google-ads/api/docs/oauth/overview"
             target="_blank"
             rel="noreferrer"
-            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-sky-600 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-white shadow-sm transition-all hover:bg-sky-700"
+            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-sky-600 px-4 py-3 text-xs font-semibold normal-case tracking-normal text-white shadow-sm transition-all hover:bg-sky-700"
           >
             <ExternalLink className="h-4 w-4" />
             Google OAuth

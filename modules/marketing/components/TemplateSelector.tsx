@@ -105,9 +105,9 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
               {/* Info */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-black text-slate-900 text-sm">{template.nome}</span>
+                  <span className="font-semibold text-slate-900 text-sm">{template.nome}</span>
                   {template.is_padrao && (
-                    <span className="px-1.5 py-0.5 bg-amber-50 text-amber-700 text-[9px] font-black uppercase tracking-widest rounded-full border border-amber-200">
+                    <span className="px-1.5 py-0.5 bg-amber-50 text-amber-700 text-xs font-semibold normal-case tracking-normal rounded-full border border-amber-200">
                       Padrão
                     </span>
                   )}
@@ -118,26 +118,26 @@ const TemplateSelector: React.FC<TemplateSelectorProps> = ({
 
                 {/* Stats */}
                 <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2">
-                  <div className="flex items-center gap-1 text-[10px] text-slate-500">
+                  <div className="flex items-center gap-1 text-xs text-slate-500">
                     <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <span className="font-bold text-emerald-600">{MarketingAdsService.formatarMoeda(template.orcamento_diario)}/dia</span>
                   </div>
-                  <div className="flex items-center gap-1 text-[10px] text-slate-500">
+                  <div className="flex items-center gap-1 text-xs text-slate-500">
                     <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                     <span>{template.duracao_dias} dias</span>
                   </div>
-                  <div className="flex items-center gap-1 text-[10px] text-slate-500">
+                  <div className="flex items-center gap-1 text-xs text-slate-500">
                     <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                     <span>{regiaoLabel(template.regiao_config)}</span>
                   </div>
-                  <div className="flex items-center gap-1 text-[10px] text-slate-500">
+                  <div className="flex items-center gap-1 text-xs text-slate-500">
                     <span className="font-bold" style={{ color }}>
                       Total: {MarketingAdsService.formatarMoeda(template.orcamento_diario * template.duracao_dias)}
                     </span>

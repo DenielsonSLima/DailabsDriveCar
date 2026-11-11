@@ -37,19 +37,19 @@ const VisaoGeralPage: React.FC = () => {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* 1. Identificação no Topo */}
       <HeaderVisaoGeral />
 
       {/* 2. Conteúdo em Colunas */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Coluna Principal: Resumo de Contas */}
-        <div className="lg:col-span-8">
+        <div className="min-w-0 lg:col-span-8">
           <CardSaldoContas contas={contas} isLoading={isLoading} />
         </div>
 
         {/* Coluna Lateral: Alertas e Próximos Passos */}
-        <div className="lg:col-span-4">
+        <div className="min-w-0 lg:col-span-4">
           <CardPendenciasUrgentes pendencias={pendencias} isLoading={isLoading} />
         </div>
       </div>

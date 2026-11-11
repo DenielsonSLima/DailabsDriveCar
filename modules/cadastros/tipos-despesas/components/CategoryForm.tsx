@@ -34,30 +34,30 @@ const CategoryForm: React.FC<Props> = ({ grupo, initialData, onClose, onSubmit, 
   }, []);
 
   const content = (
-    <div className="fixed inset-0 z-[160] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="bg-white w-full max-w-sm rounded-[2rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 border-2 border-indigo-100">
+    <div data-drivecar-ui className="fixed inset-0 z-[160] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-white w-full max-w-sm rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 duration-200 border-2 border-indigo-100">
         <div className="p-6 border-b border-slate-100 bg-indigo-50/50">
-          <h3 className="text-lg font-black text-slate-900 uppercase tracking-tighter">
+          <h3 className="text-lg font-semibold text-slate-900 normal-case tracking-tight">
             {initialData ? 'Editar Categoria' : 'Nova Categoria'}
           </h3>
-          <p className="text-[10px] text-indigo-500 font-bold uppercase tracking-widest mt-1">
+          <p className="text-xs text-indigo-500 font-medium normal-case tracking-normal mt-1">
             Grupo: {grupo.nome}
           </p>
         </div>
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
-            <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1 tracking-widest">Nome da Despesa</label>
+            <label className="block text-xs font-medium text-slate-500 normal-case mb-2 ml-1 tracking-normal">Nome da Despesa</label>
             <input 
               autoFocus
               value={nome}
               onChange={e => setNome(e.target.value.toUpperCase())}
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
               placeholder="Ex: Energia Elétrica"
             />
           </div>
           <div className="flex space-x-2 pt-2">
-            <button type="button" onClick={onClose} className="flex-1 py-3 text-slate-500 font-bold text-xs bg-slate-100 rounded-xl hover:bg-slate-200 transition-all">Cancelar</button>
-            <button type="submit" disabled={isSaving} className="flex-1 py-3 bg-indigo-600 text-white font-bold text-xs rounded-xl hover:bg-indigo-700 transition-all disabled:opacity-50">
+            <button type="button" onClick={onClose} className="flex-1 py-3 text-slate-500 font-semibold text-xs bg-slate-100 rounded-xl hover:bg-slate-200 transition-all">Cancelar</button>
+            <button type="submit" disabled={isSaving} className="flex-1 py-3 bg-indigo-600 text-white font-semibold text-xs rounded-xl hover:bg-indigo-700 transition-all disabled:opacity-50">
               {isSaving ? 'Salvando...' : 'Salvar'}
             </button>
           </div>

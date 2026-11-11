@@ -26,13 +26,13 @@ const TransferFilters: React.FC<Props> = ({
   showGrouping
 }) => {
   return (
-    <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm space-y-6 animate-in fade-in duration-500">
+    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6 animate-in fade-in duration-200">
       <div className="flex flex-col xl:flex-row gap-6 items-end">
         {/* Busca */}
         <div className="flex-1 w-full relative">
-          <label className="block text-[9px] font-black text-slate-400 uppercase mb-1.5 ml-1 tracking-widest">Pesquisar</label>
+          <label className="block text-xs font-medium text-slate-500 normal-case mb-1.5 ml-1 tracking-normal">Pesquisar</label>
           <div className="relative">
-            <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+            <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-500">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
             </span>
             <input 
@@ -40,38 +40,38 @@ const TransferFilters: React.FC<Props> = ({
               placeholder="Descrição ou valor..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3 pl-10 pr-4 text-sm font-bold focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3 pl-10 pr-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
             />
           </div>
         </div>
 
         {/* Período */}
         <div className="w-full xl:w-auto">
-          <label className="block text-[9px] font-black text-slate-400 uppercase mb-1.5 ml-1 tracking-widest">Período</label>
+          <label className="block text-xs font-medium text-slate-500 normal-case mb-1.5 ml-1 tracking-normal">Período</label>
           <div className="flex items-center space-x-2 bg-slate-50 border border-slate-200 rounded-2xl p-1">
             <input 
               type="date" 
               value={dateStart} 
               onChange={e => setDateStart(e.target.value)}
-              className="bg-transparent text-xs font-bold text-slate-600 px-3 py-2 outline-none cursor-pointer"
+              className="bg-transparent text-xs font-medium text-slate-600 px-3 py-2 outline-none cursor-pointer"
             />
-            <span className="text-slate-300 font-bold text-[10px]">ATÉ</span>
+            <span className="text-slate-300 font-medium text-xs">ATÉ</span>
             <input 
               type="date" 
               value={dateEnd} 
               onChange={e => setDateEnd(e.target.value)}
-              className="bg-transparent text-xs font-bold text-slate-600 px-3 py-2 outline-none cursor-pointer"
+              className="bg-transparent text-xs font-medium text-slate-600 px-3 py-2 outline-none cursor-pointer"
             />
           </div>
         </div>
 
         {/* Banco */}
         <div className="w-full xl:w-56">
-          <label className="block text-[9px] font-black text-slate-400 uppercase mb-1.5 ml-1 tracking-widest">Filtrar por Conta</label>
+          <label className="block text-xs font-medium text-slate-500 normal-case mb-1.5 ml-1 tracking-normal">Filtrar por Conta</label>
           <select 
             value={selectedAccountId} 
             onChange={e => setSelectedAccountId(e.target.value)}
-            className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-bold outline-none focus:ring-2 focus:ring-indigo-500/20 cursor-pointer appearance-none"
+            className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-xs font-medium outline-none focus:ring-2 focus:ring-indigo-500/20 cursor-pointer appearance-none"
           >
             <option value="">Todas as Contas</option>
             {contas.map(c => <option key={c.id} value={c.id}>{c.banco_nome} - {c.titular}</option>)}
@@ -81,23 +81,23 @@ const TransferFilters: React.FC<Props> = ({
         {/* Agrupamento (Apenas se showGrouping) */}
         {showGrouping && (
           <div className="w-full xl:w-auto">
-            <label className="block text-[9px] font-black text-slate-400 uppercase mb-1.5 ml-1 tracking-widest">Agrupar por</label>
+            <label className="block text-xs font-medium text-slate-500 normal-case mb-1.5 ml-1 tracking-normal">Agrupar por</label>
             <div className="flex bg-slate-100 p-1 rounded-2xl">
               <button 
                 onClick={() => setGroupBy('nenhum')}
-                className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all ${groupBy === 'nenhum' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                className={`px-4 py-2 rounded-xl text-xs font-semibold normal-case transition-all ${groupBy === 'nenhum' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
               >
                 Lista
               </button>
               <button 
                 onClick={() => setGroupBy('mes')}
-                className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all ${groupBy === 'mes' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                className={`px-4 py-2 rounded-xl text-xs font-semibold normal-case transition-all ${groupBy === 'mes' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
               >
                 Mês
               </button>
               <button 
                 onClick={() => setGroupBy('conta')}
-                className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase transition-all ${groupBy === 'conta' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                className={`px-4 py-2 rounded-xl text-xs font-semibold normal-case transition-all ${groupBy === 'conta' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
               >
                 Conta
               </button>

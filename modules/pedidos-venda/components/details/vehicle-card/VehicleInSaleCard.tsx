@@ -76,7 +76,7 @@ const VehicleInSaleCard: React.FC<Props> = ({ veiculo, isConcluido, isConsignado
 
   return (
     <div
-      className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm relative overflow-hidden transition-all duration-500 hover:shadow-xl hover:border-indigo-300 group animate-in slide-in-from-bottom-4"
+      className="bg-white rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden transition-all duration-500 hover:shadow-sm hover:border-indigo-300 group animate-in slide-in-from-bottom-4"
     >
       {/* Grid Principal Simétrico - Proporção 380px para imagem para manter consistência com Compra */}
       <div

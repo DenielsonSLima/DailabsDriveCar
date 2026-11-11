@@ -15,24 +15,24 @@ const CoresList: React.FC<Props> = ({ items, onEdit, onDelete, onReactivate }) =
       {items.map(item => (
         <div 
           key={item.id} 
-          className={`group relative p-3 sm:p-4 rounded-[1.5rem] border flex items-center justify-between transition-all duration-300 ${
+          className={`group relative p-3 sm:p-4 rounded-2xl border flex items-center justify-between transition-all duration-200 ${
             item.ativo !== false 
-              ? 'bg-slate-50 border-slate-100 hover:bg-white hover:border-indigo-200 hover:shadow-lg' 
+              ? 'bg-slate-50 border-slate-100 hover:bg-white hover:border-indigo-200 hover:shadow-sm'
               : 'bg-slate-100/50 border-slate-200 opacity-60 grayscale-[0.5]'
           }`}
         >
           <div className="flex items-center space-x-3 min-w-0 pr-12 w-full">
             {/* Amostra de Cor */}
             <div 
-              className="w-8 h-8 rounded-full border-2 border-white shadow-md shrink-0 ring-1 ring-slate-100"
+              className="w-8 h-8 rounded-full border-2 border-white shadow-sm shrink-0 ring-1 ring-slate-100"
               style={{ backgroundColor: item.rgb_hex }}
               title={item.rgb_hex}
             ></div>
             <div className="flex flex-col min-w-0">
-              <span className="font-bold text-slate-700 uppercase text-[10px] sm:text-xs truncate tracking-tighter leading-tight">
+              <span className="font-medium text-slate-700 normal-case text-xs sm:text-xs truncate tracking-tight leading-tight">
                 {item.nome}
               </span>
-              <span className="text-[9px] text-slate-400 font-mono tracking-tighter">
+              <span className="text-xs text-slate-500 font-mono tracking-tight">
                 {item.rgb_hex}
               </span>
             </div>

@@ -94,16 +94,16 @@ const SociosPage: React.FC = () => {
     return (
       <div className="flex flex-col items-center justify-center py-40 space-y-4">
         <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-        <p className="text-slate-400 font-bold uppercase text-[10px] tracking-widest">Carregando quadro societário...</p>
+        <p className="text-slate-500 font-medium normal-case text-xs tracking-normal">Carregando quadro societário...</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500 relative">
+    <div className="space-y-6 animate-in fade-in duration-200 relative">
       {/* Toast Notification */}
       {toast && (
-        <div className={`fixed top-6 right-6 z-[200] px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 animate-in slide-in-from-right duration-300 border backdrop-blur-md ${
+        <div data-drivecar-ui className={`fixed top-6 right-6 z-[200] px-6 py-4 rounded-2xl shadow-sm flex items-center space-x-3 animate-in slide-in-from-right duration-200 border backdrop-blur-md ${
           toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' : 'bg-rose-600 text-white border-rose-400/50'
         }`}>
           <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${toast.type === 'success' ? 'bg-emerald-500 text-white' : 'bg-white text-rose-600'}`}>
@@ -111,7 +111,7 @@ const SociosPage: React.FC = () => {
               <path strokeLinecap="round" strokeLinejoin="round" d={toast.type === 'success' ? "M5 13l4 4L19 7" : "M6 18L18 6M6 6l12 12"} />
             </svg>
           </div>
-          <span className="font-bold text-sm tracking-tight">{toast.message}</span>
+          <span className="font-semibold text-sm tracking-tight">{toast.message}</span>
         </div>
       )}
 
@@ -126,7 +126,7 @@ const SociosPage: React.FC = () => {
             </svg>
           </button>
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">Quadro de Sócios</h1>
+            <h1 className="text-3xl font-semibold text-slate-900">Quadro de Sócios</h1>
             <p className="text-slate-500 mt-1">Gerencie os administradores e proprietários do sistema.</p>
           </div>
         </div>
@@ -134,7 +134,7 @@ const SociosPage: React.FC = () => {
         {!isFormOpen && (
           <button
             onClick={handleOpenAdd}
-            className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-sm font-black uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 flex items-center"
+            className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-sm font-semibold normal-case tracking-normal hover:bg-indigo-700 transition-all shadow-sm shadow-none flex items-center"
           >
             <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />

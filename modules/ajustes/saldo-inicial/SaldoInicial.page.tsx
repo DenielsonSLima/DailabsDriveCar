@@ -107,11 +107,11 @@ const SaldoInicialPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500 max-w-5xl mx-auto relative">
+    <div className="space-y-6 animate-in fade-in duration-200 max-w-5xl mx-auto relative">
       
       {/* Toast Notification Component */}
       {toast && (
-        <div className={`fixed top-6 right-6 z-[250] px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 animate-in slide-in-from-right duration-300 border backdrop-blur-md ${
+        <div data-drivecar-ui className={`fixed top-6 right-6 z-[250] px-6 py-4 rounded-2xl shadow-sm flex items-center space-x-3 animate-in slide-in-from-right duration-200 border backdrop-blur-md ${
           toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' : 
           'bg-rose-600 text-white border-rose-400/50'
         }`}>
@@ -123,7 +123,7 @@ const SaldoInicialPage: React.FC = () => {
               <path strokeLinecap="round" strokeLinejoin="round" d={toast.type === 'success' ? "M5 13l4 4L19 7" : "M6 18L18 6M6 6l12 12"} />
             </svg>
           </div>
-          <span className="font-bold text-sm tracking-tight">{toast.message}</span>
+          <span className="font-semibold text-sm tracking-tight">{toast.message}</span>
         </div>
       )}
 
@@ -133,13 +133,13 @@ const SaldoInicialPage: React.FC = () => {
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
           </button>
           <div>
-            <h1 className="text-3xl font-bold text-slate-900 tracking-tighter">Saldo Inicial</h1>
+            <h1 className="text-3xl font-semibold text-slate-900 tracking-tight">Saldo Inicial</h1>
             <p className="text-slate-500 mt-1">Defina o ponto de partida financeiro para cada conta.</p>
           </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden p-8">
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden p-6">
         {loading ? (
           <div className="flex justify-center py-20"><div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div></div>
         ) : contas.length === 0 ? (
@@ -150,25 +150,25 @@ const SaldoInicialPage: React.FC = () => {
               <div 
                 key={conta.id} 
                 onClick={() => handleOpenModal(conta)}
-                className="group flex items-center justify-between p-5 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-indigo-200 hover:shadow-lg transition-all cursor-pointer"
+                className="group flex items-center justify-between p-5 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-indigo-200 hover:shadow-sm transition-all cursor-pointer"
               >
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 rounded-xl flex items-center justify-center text-white shadow-sm" style={{ backgroundColor: conta.cor_cartao }}>
-                    <span className="font-black text-xs">{conta.banco_nome.substring(0, 2).toUpperCase()}</span>
+                    <span className="font-medium text-xs">{conta.banco_nome.substring(0, 2).toUpperCase()}</span>
                   </div>
                   <div>
-                    <h4 className="font-bold text-slate-900 text-lg group-hover:text-indigo-600 transition-colors">{conta.banco_nome}</h4>
+                    <h4 className="font-semibold text-slate-900 text-lg group-hover:text-indigo-600 transition-colors">{conta.banco_nome}</h4>
                     <p className="text-xs text-slate-500 font-mono">AG: {conta.agencia || '-'} • CC: {conta.conta || '-'}</p>
                   </div>
                 </div>
 
                 <div className="text-right">
-                  <p className="text-[10px] uppercase font-black text-slate-400 tracking-widest mb-1">Saldo de Abertura</p>
+                  <p className="text-xs normal-case font-medium text-slate-500 tracking-normal mb-1">Saldo de Abertura</p>
                   <div className="flex items-center justify-end space-x-3">
-                    <span className="text-xs font-medium text-slate-400 bg-slate-100 px-2 py-1 rounded-lg">
+                    <span className="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-1 rounded-lg">
                       {formatDate(conta.data_saldo_inicial)}
                     </span>
-                    <span className={`text-xl font-black ${conta.saldo_inicial > 0 ? 'text-emerald-600' : 'text-slate-700'}`}>
+                    <span className={`text-xl font-semibold ${conta.saldo_inicial > 0 ? 'text-emerald-600' : 'text-slate-700'}`}>
                       {formatCurrency(conta.saldo_inicial)}
                     </span>
                     <svg className="w-5 h-5 text-slate-300 group-hover:text-indigo-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
@@ -182,35 +182,35 @@ const SaldoInicialPage: React.FC = () => {
 
       {/* Modal Específico */}
       {selectedConta && (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-          <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
-            <div className="p-8 border-b border-slate-100 bg-slate-50">
-              <h2 className="text-xl font-black text-slate-900 uppercase tracking-tighter">Definir Saldo Inicial</h2>
-              <p className="text-slate-500 text-xs mt-1 font-bold">{selectedConta.banco_nome} • {selectedConta.conta}</p>
+        <div data-drivecar-ui className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white w-full max-w-md rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="p-6 border-b border-slate-100 bg-slate-50">
+              <h2 className="text-xl font-semibold text-slate-900 normal-case tracking-tight">Definir Saldo Inicial</h2>
+              <p className="text-slate-500 text-xs mt-1 font-medium">{selectedConta.banco_nome} • {selectedConta.conta}</p>
             </div>
             
-            <form onSubmit={handleSave} className="p-8 space-y-6">
+            <form onSubmit={handleSave} className="p-6 space-y-6">
               <div>
-                <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Data de Referência (Corte)</label>
+                <label className="block text-xs font-medium text-slate-500 normal-case mb-2 tracking-normal ml-1">Data de Referência (Corte)</label>
                 <input 
                   type="date" 
                   required
                   value={formData.data}
                   onChange={e => setFormData(prev => ({ ...prev, data: e.target.value }))}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-bold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-medium text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500"
                 />
-                <p className="text-[10px] text-slate-400 mt-2 ml-1 leading-tight">O sistema considerará este valor como o saldo disponível no início do dia selecionado.</p>
+                <p className="text-xs text-slate-500 mt-2 ml-1 leading-tight">O sistema considerará este valor como o saldo disponível no início do dia selecionado.</p>
               </div>
 
               <div>
-                <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Valor do Saldo</label>
+                <label className="block text-xs font-medium text-slate-500 normal-case mb-2 tracking-normal ml-1">Valor do Saldo</label>
                 <input 
                   type="text"
                   inputMode="numeric"
                   required
                   value={formData.valor}
                   onChange={handleCurrencyChange}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-mono font-black text-2xl text-slate-800 outline-none focus:ring-2 focus:ring-indigo-500 transition-all placeholder:text-slate-300"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-mono font-medium text-2xl text-slate-800 outline-none focus:ring-2 focus:ring-indigo-500 transition-all placeholder:text-slate-300"
                   placeholder="R$ 0,00"
                 />
               </div>
@@ -220,14 +220,14 @@ const SaldoInicialPage: React.FC = () => {
                   type="button" 
                   onClick={() => setSelectedConta(null)} 
                   disabled={isSaving}
-                  className="px-6 py-3 text-slate-500 font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 rounded-xl"
+                  className="px-6 py-3 text-slate-500 font-semibold normal-case text-xs tracking-normal hover:bg-slate-50 rounded-xl"
                 >
                   Cancelar
                 </button>
                 <button 
                   type="submit" 
                   disabled={isSaving} 
-                  className="px-8 py-3 bg-indigo-600 text-white rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg shadow-indigo-100 disabled:opacity-50 min-w-[140px] flex items-center justify-center"
+                  className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold normal-case text-xs tracking-normal shadow-sm shadow-none disabled:opacity-50 min-w-[140px] flex items-center justify-center"
                 >
                   {isSaving ? 'Salvando...' : 'Confirmar'}
                 </button>

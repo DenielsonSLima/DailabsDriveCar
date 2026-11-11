@@ -17,10 +17,10 @@ const CategoriasManager: React.FC = () => {
   }
 
   return (
-    <div className="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm">
+    <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-sm font-black uppercase text-slate-400 tracking-widest">Plano de Contas / Categorias</h3>
-        <button className="text-[10px] font-black text-indigo-600 hover:underline uppercase">Nova Categoria</button>
+        <h3 className="text-sm font-semibold normal-case text-slate-400 tracking-normal">Plano de Contas / Categorias</h3>
+        <button className="text-xs font-semibold text-indigo-600 hover:underline normal-case">Nova Categoria</button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -28,9 +28,9 @@ const CategoriasManager: React.FC = () => {
           <div key={c.id} className="flex items-center justify-between p-4 bg-white rounded-2xl border border-slate-200 shadow-sm">
             <div className="flex items-center space-x-3">
               <div className={`w-2 h-2 rounded-full ${c.natureza === 'ENTRADA' ? 'bg-emerald-500' : 'bg-rose-500'}`}></div>
-              <span className="text-xs font-bold text-slate-700 uppercase">{c.nome}</span>
+              <span className="text-xs font-medium text-slate-700 normal-case">{c.nome}</span>
             </div>
-            <span className="text-[8px] font-black bg-white px-2 py-0.5 rounded-md border border-slate-200 text-slate-400 uppercase">{c.tipo}</span>
+            <span className="text-xs font-medium bg-white px-2 py-0.5 rounded-md border border-slate-200 text-slate-500 normal-case">{c.tipo}</span>
           </div>
         ))}
       </div>

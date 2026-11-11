@@ -177,7 +177,7 @@ const ParceirosPage: React.FC = () => {
     <div className="space-y-6 animate-in fade-in duration-500 relative pb-20">
       {/* Toast */}
       {toast && (
-        <div className={`fixed top-6 right-6 z-[200] px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 animate-in slide-in-from-right duration-300 border backdrop-blur-md ${toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' : 'bg-rose-600 text-white border-rose-400/50'
+        <div className={`fixed top-6 right-6 z-[200] px-6 py-4 rounded-2xl shadow-sm flex items-center space-x-3 animate-in slide-in-from-right duration-300 border backdrop-blur-sm ${toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' : 'bg-rose-600 text-white border-rose-400/50'
           }`}>
           <span className="font-bold text-sm tracking-tight">{toast.message}</span>
         </div>
@@ -188,8 +188,8 @@ const ParceirosPage: React.FC = () => {
         <div className="flex items-start space-x-4">
           <div>
             <div className="flex items-center space-x-2">
-              <h1 className="text-3xl font-bold text-slate-900 tracking-tighter">Gestão de Parceiros</h1>
-              <div className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-[9px] font-black uppercase tracking-widest rounded-md animate-pulse">
+              <h1 className="text-3xl font-bold text-slate-900 tracking-normal">Gestão de Parceiros</h1>
+              <div className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-semibold normal-case tracking-normal rounded-md animate-pulse">
                 Online
               </div>
             </div>
@@ -198,7 +198,7 @@ const ParceirosPage: React.FC = () => {
         </div>
         <button
           onClick={handleOpenAdd}
-          className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-sm font-black uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 flex items-center active:scale-95"
+          className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-sm font-semibold normal-case tracking-normal hover:bg-indigo-700 transition-all shadow-sm shadow-indigo-100 flex items-center active:scale-95"
         >
           <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -209,7 +209,7 @@ const ParceirosPage: React.FC = () => {
 
       <ParceirosKpis stats={stats} />
 
-      <div className="bg-white rounded-[2.5rem] p-6 border border-slate-200 shadow-sm relative overflow-hidden">
+      <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm relative overflow-hidden">
         <ParceirosFilters
           activeTab={activeTab}
           setActiveTab={setActiveTab}
@@ -229,14 +229,14 @@ const ParceirosPage: React.FC = () => {
         {/* Pagination Controls */}
         {!isLoadingList && totalPages > 1 && (
           <div className="flex items-center justify-between mt-8 pt-6 border-t border-slate-100">
-            <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">
+            <p className="text-xs text-slate-400 font-bold normal-case tracking-normal">
               Página <span className="text-slate-900">{currentPage}</span> de <span className="text-slate-900">{totalPages}</span>
             </p>
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="p-3 rounded-2xl hover:bg-slate-50 text-slate-400 hover:text-indigo-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                className="p-3 rounded-xl hover:bg-slate-50 text-slate-400 hover:text-indigo-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -258,8 +258,8 @@ const ParceirosPage: React.FC = () => {
                     <button
                       key={pageNum}
                       onClick={() => handlePageChange(pageNum)}
-                      className={`w-10 h-10 rounded-xl text-xs font-black transition-all ${currentPage === pageNum
-                        ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 scale-110'
+                      className={`w-10 h-10 rounded-xl text-xs font-semibold transition-all ${currentPage === pageNum
+                        ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-200 scale-110'
                         : 'bg-slate-50 text-slate-500 hover:bg-indigo-50 hover:text-indigo-600'
                         }`}
                     >
@@ -271,7 +271,7 @@ const ParceirosPage: React.FC = () => {
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="p-3 rounded-2xl hover:bg-slate-50 text-slate-400 hover:text-indigo-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                className="p-3 rounded-xl hover:bg-slate-50 text-slate-400 hover:text-indigo-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

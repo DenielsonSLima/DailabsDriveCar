@@ -74,23 +74,23 @@ const ForcePasswordChangeModal: React.FC<ForcePasswordChangeModalProps> = ({ onS
     };
 
     return (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/90 backdrop-blur-xl animate-in fade-in duration-500">
-            <div className="bg-white max-w-md w-full rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-500">
+        <div data-drivecar-ui role="dialog" aria-modal="true" aria-label="Alterar senha" className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/35 backdrop-blur-sm animate-in fade-in duration-500">
+            <div className="bg-white max-w-md w-full max-h-[90dvh] overflow-y-auto rounded-xl shadow-lg overflow-hidden animate-in zoom-in-95 duration-500">
 
                 {/* Header Visual */}
-                <div className="bg-indigo-600 p-8 flex flex-col items-center justify-center relative overflow-hidden">
+                <div className="bg-slate-50 border-b border-slate-200 p-6 flex flex-col items-center justify-center relative overflow-hidden">
                     <div className="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 bg-white/10 blur-3xl rounded-full"></div>
 
-                    <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-xl mb-4 relative z-10">
-                        <svg className="w-10 h-10 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div className="w-14 h-14 bg-slate-100 rounded-full flex items-center justify-center shadow-sm mb-4 relative z-10">
+                        <svg className="w-7 h-7 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                         </svg>
                     </div>
 
-                    <h2 className="text-2xl font-black text-white tracking-tighter uppercase relative z-10">
+                    <h2 className="text-xl font-semibold text-slate-900 tracking-tight normal-case relative z-10">
                         {mode === 'recovery' ? 'Redefinir Senha' : 'Segurança em 1º Lugar'}
                     </h2>
-                    <p className="text-indigo-100 text-sm mt-2 text-center relative z-10 opacity-90">
+                    <p className="text-slate-600 text-sm mt-2 text-center relative z-10 opacity-90">
                         {mode === 'recovery'
                             ? 'Crie uma nova senha para voltar a acessar o sistema com segurança.'
                             : 'Bem-vindo! Para sua segurança, é obrigatório criar uma nova senha no seu primeiro acesso.'}
@@ -98,30 +98,33 @@ const ForcePasswordChangeModal: React.FC<ForcePasswordChangeModalProps> = ({ onS
                 </div>
 
                 {/* Form Content */}
-                <form onSubmit={handleSubmit} className="p-8 space-y-6">
+                <form onSubmit={handleSubmit} className="p-6 space-y-5">
 
                     {error && (
-                        <div className="bg-rose-50 text-rose-600 p-4 rounded-2xl text-sm font-medium flex items-start flex-col">
-                            <span className="font-black text-[10px] uppercase tracking-widest mb-1">Acesso Negado</span>
+                        <div className="bg-rose-50 text-rose-600 p-4 rounded-xl text-sm font-medium flex items-start flex-col">
+                            <span className="font-semibold text-xs normal-case tracking-normal mb-1">Acesso Negado</span>
                             {error}
                         </div>
                     )}
 
                     <div>
-                        <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1 tracking-widest">Sua Nova Senha</label>
+                        <label htmlFor="new-password" className="block text-sm font-medium text-slate-700 mb-2">Sua Nova Senha</label>
                         <div className="relative">
                             <input
                                 type={showSenha ? "text" : "password"}
+                                id="new-password"
+                                autoComplete="new-password"
                                 value={senha}
                                 onChange={(e) => setSenha(e.target.value)}
-                                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-4 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-mono"
+                                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-mono"
                                 placeholder="Mínimo 6 caracteres"
                                 required
                             />
                             <button
                                 type="button"
+                                aria-label={showSenha ? "Ocultar senha" : "Ver senha"}
                                 onClick={() => setShowSenha(!showSenha)}
-                                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600"
+                                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-indigo-600"
                             >
                                 {showSenha ? (
                                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" /></svg>
@@ -135,8 +138,8 @@ const ForcePasswordChangeModal: React.FC<ForcePasswordChangeModalProps> = ({ onS
                         {senha.length > 0 && (
                             <div className="mt-3 px-1 animate-in fade-in slide-in-from-top-2 duration-300">
                                 <div className="flex justify-between items-center mb-1.5">
-                                    <span className="text-[9px] font-black uppercase text-slate-400 tracking-wider">Força da Senha</span>
-                                    <span className={`text-[9px] font-black uppercase tracking-wider ${strength.color.replace('bg-', 'text-')}`}>{strength.label}</span>
+                                    <span className="text-xs font-semibold normal-case text-slate-500 tracking-wider">Força da Senha</span>
+                                    <span className={`text-xs font-semibold normal-case tracking-wider ${strength.color.replace('bg-', 'text-')}`}>{strength.label}</span>
                                 </div>
                                 <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden flex gap-0.5">
                                     {[1, 2, 3, 4].map((i) => (
@@ -151,12 +154,14 @@ const ForcePasswordChangeModal: React.FC<ForcePasswordChangeModalProps> = ({ onS
                     </div>
 
                     <div>
-                        <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1 tracking-widest">Confirme a Senha</label>
+                        <label htmlFor="confirm-password" className="block text-sm font-medium text-slate-700 mb-2">Confirme a Senha</label>
                         <input
                             type={showSenha ? "text" : "password"}
+                            id="confirm-password"
+                            autoComplete="new-password"
                             value={confirmSenha}
                             onChange={(e) => setConfirmSenha(e.target.value)}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-4 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-mono"
+                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-mono"
                             placeholder="Digite novamente"
                             required
                         />
@@ -166,7 +171,7 @@ const ForcePasswordChangeModal: React.FC<ForcePasswordChangeModalProps> = ({ onS
                         <button
                             type="submit"
                             disabled={loading || senha.length < 6 || senha !== confirmSenha}
-                            className="w-full py-4 bg-indigo-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none flex justify-center items-center h-[52px]"
+                            className="w-full py-3 bg-indigo-600 text-white rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-indigo-700 hover:shadow-lg hover:shadow-none transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none flex justify-center items-center h-[52px]"
                         >
                             {loading ? (
                                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -179,7 +184,7 @@ const ForcePasswordChangeModal: React.FC<ForcePasswordChangeModalProps> = ({ onS
                             type="button"
                             onClick={onLogout}
                             disabled={loading}
-                            className="w-full py-4 bg-white border-2 border-slate-100 text-slate-500 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-50 hover:border-rose-100 hover:text-rose-500 transition-all flex justify-center items-center h-[52px]"
+                            className="w-full py-3 bg-white border-2 border-slate-100 text-slate-500 rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-slate-50 hover:border-rose-100 hover:text-rose-500 transition-all flex justify-center items-center h-[52px]"
                         >
                             Sair da Conta
                         </button>

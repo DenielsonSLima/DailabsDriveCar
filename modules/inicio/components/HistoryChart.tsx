@@ -27,23 +27,23 @@ const CustomTooltip = ({ active, payload, label }: any) => {
         const labelTitle = date.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
 
         return (
-            <div className="bg-slate-900 border border-slate-800 p-4 rounded-2xl shadow-2xl backdrop-blur-xl bg-opacity-95">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 border-b border-white/10 pb-2">
+            <div className="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm backdrop-blur-sm bg-opacity-95">
+                <p className="text-xs font-semibold text-slate-500 normal-case tracking-normal mb-3 border-b border-slate-200 pb-2">
                     {labelTitle}
                 </p>
                 <div className="space-y-2">
                     {payload.map((entry: any, index: number) => (
-                        <div key={index} className="flex items-center justify-between gap-8">
+                        <div key={index} className="flex items-center justify-between gap-6">
                             <div className="flex items-center gap-2">
                                 <div
                                     className="w-2 h-2 rounded-full"
                                     style={{ backgroundColor: entry.color }}
                                 />
-                                <span className="text-[10px] font-bold text-slate-300 uppercase tracking-tight">
+                                <span className="text-xs font-medium text-slate-600 normal-case tracking-tight">
                                     {entry.name}
                                 </span>
                             </div>
-                            <span className="text-xs font-black text-white">
+                            <span className="text-xs font-semibold text-slate-900">
                                 {formatCurrency(entry.value)}
                             </span>
                         </div>
@@ -67,32 +67,32 @@ export const HistoryChart = ({ data }: { data: IHistoryData[] }) => {
     }, [data]);
 
     return (
-        <div className="bg-white rounded-3xl p-8 border border-slate-200/60 shadow-sm overflow-hidden group">
-            <div className="flex items-center justify-between mb-10">
-                <div>
-                    <h3 className="text-lg font-black text-slate-900 tracking-tight uppercase">Histórico de Performance</h3>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Análise consolidada dos últimos 3 meses</p>
+        <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/60 shadow-sm overflow-hidden group">
+            <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
+                <div className="min-w-0 max-w-full flex-[1_0_18rem]">
+                    <h3 className="text-lg font-semibold text-slate-900 tracking-tight normal-case">Histórico de Performance</h3>
+                    <p className="text-xs font-bold text-slate-500 normal-case tracking-normal mt-1">Análise consolidada dos últimos 3 meses</p>
                 </div>
-                <div className="flex items-center gap-4 bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
-                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white shadow-sm border border-slate-100">
+                <div className="flex max-w-full flex-wrap items-center gap-2 bg-slate-50 p-1.5 rounded-xl border border-slate-100">
+                    <div className="flex shrink-0 items-center gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg bg-white shadow-sm border border-slate-100">
                         <div className="w-2 h-2 rounded-full bg-slate-400" />
-                        <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest">Patrimônio</span>
+                        <span className="text-xs font-semibold text-slate-600 normal-case tracking-normal">Patrimônio</span>
                     </div>
-                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white shadow-sm border border-slate-100">
+                    <div className="flex shrink-0 items-center gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg bg-white shadow-sm border border-slate-100">
                         <div className="w-2 h-2 rounded-full bg-indigo-500" />
-                        <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest">Vendas</span>
+                        <span className="text-xs font-semibold text-slate-600 normal-case tracking-normal">Vendas</span>
                     </div>
-                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white shadow-sm border border-slate-100">
+                    <div className="flex shrink-0 items-center gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg bg-white shadow-sm border border-slate-100">
                         <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                        <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest">Compras</span>
+                        <span className="text-xs font-semibold text-slate-600 normal-case tracking-normal">Compras</span>
                     </div>
-                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white shadow-sm border border-slate-100">
+                    <div className="flex shrink-0 items-center gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg bg-white shadow-sm border border-slate-100">
                         <div className="w-2 h-2 rounded-full bg-rose-500" />
-                        <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest">Despesas Ob.</span>
+                        <span className="text-xs font-semibold text-slate-600 normal-case tracking-normal">Despesas Ob.</span>
                     </div>
-                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-indigo-600 shadow-lg shadow-indigo-200">
+                    <div className="flex shrink-0 items-center gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg bg-indigo-600 shadow-sm shadow-indigo-200">
                         <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
-                        <span className="text-[9px] font-black text-white uppercase tracking-widest">Resultado</span>
+                        <span className="text-xs font-semibold text-white normal-case tracking-normal">Resultado</span>
                     </div>
                 </div>
             </div>

@@ -361,18 +361,18 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
   }, []);
 
   const content = (
-    <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 border border-slate-100 max-h-[90vh] flex flex-col">
+    <div data-drivecar-ui className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-white w-full max-w-lg rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 border border-slate-100 max-h-[90vh] flex flex-col">
         {/* Header */}
-        <div className="p-8 border-b border-slate-50 bg-teal-600 text-white shrink-0">
-          <h3 className="text-xl font-black uppercase tracking-tighter">{isEditing ? 'Editar Crédito' : 'Lançar Crédito'}</h3>
-          <p className="text-[10px] font-bold uppercase tracking-widest opacity-80 mt-1">
+        <div className="p-6 border-b border-slate-50 bg-teal-600 text-white shrink-0">
+          <h3 className="text-xl font-semibold normal-case tracking-tight">{isEditing ? 'Editar Crédito' : 'Lançar Crédito'}</h3>
+          <p className="text-xs font-medium normal-case tracking-normal opacity-80 mt-1">
             {isEditing ? 'Alterar dados do crédito lançado' : 'Aportes, rendimentos e entradas extraordinárias'}
           </p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-8 space-y-6 overflow-y-auto flex-1">
+        <form onSubmit={handleSubmit} className="p-6 space-y-6 overflow-y-auto flex-1">
 
           {/* Erro Inline */}
           {formError && (
@@ -382,7 +382,7 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </div>
-              <p className="text-xs font-bold leading-relaxed">{formError}</p>
+              <p className="text-xs font-medium leading-relaxed">{formError}</p>
               <button type="button" onClick={() => setFormError(null)} className="ml-auto text-rose-400 hover:text-rose-600 transition-colors shrink-0">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
@@ -391,7 +391,7 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
 
           {/* 1. Descrição */}
           <div>
-            <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">
+            <label className="block text-xs font-medium text-slate-500 normal-case mb-2 ml-1">
               Descrição / Motivo
             </label>
             <input
@@ -399,34 +399,34 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
               value={formData.descricao}
               onChange={e => setFormData({ ...formData, descricao: e.target.value.toUpperCase() })}
               placeholder="Ex: Rendimento aplicação, aporte sócio, bonificação..."
-              className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3.5 font-bold text-[#111827] outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3.5 font-medium text-[#111827] outline-none focus:ring-2 focus:ring-teal-500"
               required
             />
           </div>
 
           {/* 2. Valor + Data Base */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">
+              <label className="block text-xs font-medium text-slate-500 normal-case mb-2 ml-1">
                 Valor Total
               </label>
               <input
                 type="text"
                 value={valorFormatado}
                 onChange={handleCurrencyChange}
-                className="w-full bg-white border-2 border-teal-100 rounded-2xl px-5 py-3.5 text-lg font-black text-teal-600 outline-none focus:border-teal-500 text-center"
+                className="w-full bg-white border-2 border-teal-100 rounded-2xl px-5 py-3.5 text-lg font-medium text-teal-600 outline-none focus:border-teal-500 text-center"
                 required
               />
             </div>
             <div>
-              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">
+              <label className="block text-xs font-medium text-slate-500 normal-case mb-2 ml-1">
                 Data do Lançamento
               </label>
               <input
                 type="date"
                 value={formData.data_vencimento}
                 onChange={e => setFormData({ ...formData, data_vencimento: e.target.value })}
-                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3.5 font-bold text-[#111827] outline-none focus:ring-2 focus:ring-teal-500"
+                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3.5 font-medium text-[#111827] outline-none focus:ring-2 focus:ring-teal-500"
                 required
               />
             </div>
@@ -435,14 +435,14 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
           {/* 3. Forma de Recebimento */}
           {!isEditing && (
             <div>
-              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">
+              <label className="block text-xs font-medium text-slate-500 normal-case mb-2 ml-1">
                 Forma de Recebimento
               </label>
               <select
                 required
                 value={formaPagamendoId}
                 onChange={e => setFormaPagamentoId(e.target.value)}
-                className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-bold text-[#111827] outline-none appearance-none focus:ring-2 focus:ring-teal-500"
+                className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-medium text-[#111827] outline-none appearance-none focus:ring-2 focus:ring-teal-500"
               >
                 <option value="">Selecione a forma...</option>
                 {formasPagamento.map(f => (
@@ -454,8 +454,8 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
 
           {/* 4. Condição de Pagamento (Prazo) */}
           {formaPagamendoId && !isEditing && (
-            <div className="animate-in slide-in-from-top-2 duration-300">
-              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1 flex justify-between">
+            <div className="animate-in slide-in-from-top-2 duration-200">
+              <label className="block text-xs font-medium text-slate-500 normal-case mb-2 ml-1 flex justify-between">
                 Condição / Regra de Prazo
                 {loadingCondicoes && <div className="w-3 h-3 border-2 border-teal-500 border-t-transparent rounded-full animate-spin"></div>}
               </label>
@@ -463,7 +463,7 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
                 required
                 value={condicaoId}
                 onChange={e => setCondicaoId(e.target.value)}
-                className="w-full bg-teal-50 border border-teal-100 rounded-xl px-4 py-3.5 text-sm font-bold text-teal-700 outline-none appearance-none focus:ring-2 focus:ring-teal-500"
+                className="w-full bg-teal-50 border border-teal-100 rounded-xl px-4 py-3.5 text-sm font-medium text-teal-700 outline-none appearance-none focus:ring-2 focus:ring-teal-500"
               >
                 <option value="">{loadingCondicoes ? 'Buscando...' : 'Selecione a condição...'}</option>
                 {condicoes.map(c => (
@@ -475,10 +475,10 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
 
           {/* 5. Cronograma de Parcelas */}
           {parcelas.length > 0 && condicaoId && (
-            <div className="bg-slate-50 border border-slate-100 p-5 rounded-3xl space-y-4 animate-in slide-in-from-bottom-2">
+            <div className="bg-slate-50 border border-slate-100 p-5 rounded-2xl space-y-4 animate-in slide-in-from-bottom-2">
               <div className="flex items-center justify-between px-1">
-                <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Cronograma de Recebimento</h4>
-                <span className="text-[9px] font-black bg-teal-500 text-white px-2 py-0.5 rounded uppercase">
+                <h4 className="text-xs font-semibold text-slate-400 normal-case tracking-normal">Cronograma de Recebimento</h4>
+                <span className="text-xs font-medium bg-teal-500 text-white px-2 py-0.5 rounded normal-case">
                   {parcelas.length} {parcelas.length === 1 ? 'Parcela' : 'Parcelas'}
                 </span>
               </div>
@@ -487,22 +487,22 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
                 {parcelas.map(p => (
                   <div key={p.numero} className="flex items-center gap-4 bg-white p-4 rounded-2xl border border-slate-100 group shadow-sm hover:border-teal-200 transition-all">
                     <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0">
-                      <span className="text-xs font-black text-slate-400">{p.numero}º</span>
+                      <span className="text-xs font-medium text-slate-500">{p.numero}º</span>
                     </div>
 
                     <div className="flex-1">
-                      <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Data Prevista</p>
+                      <p className="text-xs font-medium text-slate-500 normal-case mb-1">Data Prevista</p>
                       <input
                         type="date"
                         value={p.data_vencimento}
                         onChange={(e) => updateParcelaDate(p.numero, e.target.value)}
-                        className="w-full bg-transparent font-black text-slate-800 text-xs outline-none cursor-pointer focus:text-teal-600"
+                        className="w-full bg-transparent font-medium text-slate-800 text-xs outline-none cursor-pointer focus:text-teal-600"
                       />
                     </div>
 
                     <div className="text-right">
-                      <p className="text-[8px] font-black text-slate-400 uppercase mb-1">Valor</p>
-                      <p className="text-sm font-black text-[#111827]">
+                      <p className="text-xs font-medium text-slate-500 normal-case mb-1">Valor</p>
+                      <p className="text-sm font-semibold text-[#111827]">
                         {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(p.valor)}
                       </p>
                     </div>
@@ -514,15 +514,15 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
 
           {/* 6. Conta Bancária (Apenas se for Vista) */}
           {isVista && !isEditing && (
-            <div className="animate-in slide-in-from-top-2 duration-300 bg-emerald-50 border border-emerald-100 p-5 rounded-3xl">
-              <label className="block text-[10px] font-black text-emerald-600 uppercase mb-3 ml-1">
+            <div className="animate-in slide-in-from-top-2 duration-200 bg-emerald-50 border border-emerald-100 p-5 rounded-2xl">
+              <label className="block text-xs font-medium text-emerald-600 normal-case mb-3 ml-1">
                 Conta para Recebimento Imediato
               </label>
               <select
                 required
                 value={formData.conta_id}
                 onChange={e => setFormData({ ...formData, conta_id: e.target.value })}
-                className="w-full bg-white border border-emerald-200 rounded-xl px-4 py-3.5 text-sm font-bold text-emerald-900 outline-none appearance-none focus:ring-2 focus:ring-emerald-500 shadow-sm"
+                className="w-full bg-white border border-emerald-200 rounded-xl px-4 py-3.5 text-sm font-medium text-emerald-900 outline-none appearance-none focus:ring-2 focus:ring-emerald-500 shadow-sm"
               >
                 <option value="">Selecione a conta...</option>
                 {contas.map(c => (
@@ -537,7 +537,7 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
 
           {/* Documento Referência */}
           <div>
-            <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">
+            <label className="block text-xs font-medium text-slate-500 normal-case mb-2 ml-1">
               Documento / Referência <span className="text-slate-300">(opcional)</span>
             </label>
             <input
@@ -545,45 +545,45 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
               value={formData.documento_ref}
               onChange={e => setFormData({ ...formData, documento_ref: e.target.value })}
               placeholder="Ex: NF-1234, TED-5678..."
-              className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3.5 font-bold text-[#111827] outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3.5 font-medium text-[#111827] outline-none focus:ring-2 focus:ring-teal-500"
             />
           </div>
 
           {/* Divisão entre Sócios - Tornada obrigatória */}
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center">
-              <div className="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mr-4">
+              <div className="w-10 h-10 rounded-2xl bg-slate-100 text-slate-600 flex items-center justify-center mr-4">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
               </div>
               <div>
-                <h3 className="text-sm font-black text-slate-800 uppercase tracking-tight">Divisão entre Sócios</h3>
-                <p className="text-[10px] text-slate-500 font-medium">Selecione os sócios e defina as participações</p>
+                <h3 className="text-sm font-semibold text-slate-800 normal-case tracking-tight">Divisão entre Sócios</h3>
+                <p className="text-xs text-slate-500 font-medium">Selecione os sócios e defina as participações</p>
               </div>
             </div>
           </div>
 
           {/* Partner Split Section - Always visible now */}
-          <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
             {/* Progress Bar */}
             {sociosVinculados.length > 0 && (
-              <div className="bg-slate-900 rounded-2xl p-4 text-white">
+              <div className="bg-slate-50 rounded-2xl p-4 text-slate-900">
                 <div className="flex justify-between items-end mb-3">
                   <div>
-                    <p className="text-[8px] font-black uppercase tracking-widest opacity-50">Alocado</p>
-                    <h4 className="text-xl font-black tracking-tight">
-                      {totalPorcentagem.toFixed(1)}<span className="text-xs text-indigo-400 ml-0.5">%</span>
+                    <p className="text-xs font-medium normal-case tracking-normal opacity-50">Alocado</p>
+                    <h4 className="text-xl font-semibold tracking-tight">
+                      {totalPorcentagem.toFixed(1)}<span className="text-xs text-indigo-600 ml-0.5">%</span>
                     </h4>
                   </div>
                   <div className="text-right">
-                    <p className="text-[8px] font-black uppercase tracking-widest opacity-50">Livre</p>
-                    <h4 className={`text-xl font-black tracking-tight ${(100 - totalPorcentagem) <= 0.01 ? 'text-slate-600' : 'text-emerald-400'}`}>
+                    <p className="text-xs font-medium normal-case tracking-normal opacity-50">Livre</p>
+                    <h4 className={`text-xl font-semibold tracking-tight ${(100 - totalPorcentagem) <= 0.01 ? 'text-slate-600' : 'text-emerald-400'}`}>
                       {Math.max(0, 100 - totalPorcentagem).toFixed(1)}<span className="text-xs opacity-50 ml-0.5">%</span>
                     </h4>
                   </div>
                 </div>
-                <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden flex">
+                <div className="h-2 w-full bg-slate-200 rounded-full overflow-hidden flex">
                   {sociosVinculados.map((s, i) => (
                     <div
                       key={s.socio_id}
@@ -600,7 +600,7 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
               <button
                 type="button"
                 onClick={dividirIgualmente}
-                className="w-full py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-2xl text-[9px] font-black uppercase tracking-widest border border-indigo-200/50 transition-all"
+                className="w-full py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-2xl text-xs font-semibold normal-case tracking-normal border border-indigo-200/50 transition-all"
               >
                 ⚡ Dividir Igualmente
               </button>
@@ -615,7 +615,7 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
                   <div
                     key={socio.id}
                     className={`border-2 rounded-2xl p-4 transition-all duration-200 ${vinculado
-                      ? 'bg-white border-indigo-100 shadow-lg'
+                      ? 'bg-white border-indigo-100 shadow-sm'
                       : 'bg-slate-50/50 border-slate-100 opacity-60 hover:opacity-100'
                       }`}
                   >
@@ -625,13 +625,13 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
                           type="button"
                           onClick={() => toggleSocio(socio)}
                           className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all shrink-0 ${vinculado
-                            ? 'bg-indigo-600 border-indigo-600 text-white shadow-md'
+                            ? 'bg-indigo-600 border-indigo-600 text-white shadow-sm'
                             : 'border-slate-200 bg-white hover:border-indigo-400'
                             }`}
                         >
                           {vinculado && <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
                         </button>
-                        <p className={`text-xs font-black uppercase tracking-tight truncate ${vinculado ? 'text-slate-900' : 'text-slate-400'}`}>
+                        <p className={`text-xs font-medium normal-case tracking-tight truncate ${vinculado ? 'text-slate-900' : 'text-slate-500'}`}>
                           {socio.nome}
                         </p>
                       </div>
@@ -643,7 +643,7 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
                               type="text"
                               value={new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(vinculado.valor)}
                               onChange={(e) => updateSocioValor(socio.id, e.target.value)}
-                              className="w-28 bg-white border border-slate-200 rounded-xl py-1.5 px-3 text-[10px] font-black text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500 text-right shadow-sm"
+                              className="w-28 bg-white border border-slate-200 rounded-xl py-1.5 px-3 text-xs font-medium text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500 text-right shadow-sm"
                             />
                           </div>
                           <div className="relative">
@@ -652,10 +652,10 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
                               inputMode="decimal"
                               value={vinculado.porcentagem === 0 ? '' : vinculado.porcentagem.toString()}
                               onChange={(e) => updateSocioPorcentagem(socio.id, e.target.value)}
-                              className="w-16 bg-indigo-50/50 border border-indigo-100 rounded-xl py-1.5 pl-2 pr-6 text-[10px] font-black text-indigo-600 outline-none focus:ring-2 focus:ring-indigo-500 text-right"
+                              className="w-16 bg-indigo-50/50 border border-indigo-100 rounded-xl py-1.5 pl-2 pr-6 text-xs font-medium text-indigo-600 outline-none focus:ring-2 focus:ring-indigo-500 text-right"
                               placeholder="0"
                             />
-                            <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[9px] font-black text-indigo-400 opacity-50">%</span>
+                            <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs font-medium text-indigo-400 opacity-50">%</span>
                           </div>
                         </div>
                       )}
@@ -671,14 +671,14 @@ const CreditoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-4 text-slate-500 font-black text-xs uppercase bg-slate-50 rounded-2xl hover:bg-slate-100 transition-all"
+              className="flex-1 py-4 text-slate-500 font-semibold text-xs normal-case bg-slate-50 rounded-2xl hover:bg-slate-100 transition-all"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={isSaving}
-              className="flex-1 py-4 bg-teal-600 text-white font-black text-xs uppercase tracking-widest rounded-2xl shadow-lg hover:bg-teal-700 transition-all flex items-center justify-center"
+              className="flex-1 py-4 bg-teal-600 text-white font-semibold text-xs normal-case tracking-normal rounded-2xl shadow-sm hover:bg-teal-700 transition-all flex items-center justify-center"
             >
               {isSaving ? 'Gravando...' : isEditing ? 'Salvar Alterações' : 'Confirmar Crédito'}
             </button>

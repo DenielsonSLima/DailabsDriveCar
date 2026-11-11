@@ -57,11 +57,11 @@ const CidadeForm: React.FC<FormProps> = ({ initialData, onClose, onSubmit }) => 
   }, []);
 
   const content = (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col border border-slate-200 animate-in zoom-in-95 duration-300">
-        <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+    <div data-drivecar-ui className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-white w-full max-w-2xl rounded-2xl shadow-sm overflow-hidden flex flex-col border border-slate-200 animate-in zoom-in-95 duration-200">
+        <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50">
           <div>
-            <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">
+            <h2 className="text-2xl font-semibold text-slate-900 normal-case tracking-tight">
               {initialData ? 'Editar Cidade' : 'Nova Cidade'}
             </h2>
             <p className="text-slate-500 text-xs">Informe os dados básicos do município.</p>
@@ -73,10 +73,10 @@ const CidadeForm: React.FC<FormProps> = ({ initialData, onClose, onSubmit }) => 
           </button>
         </div>
 
-        <form onSubmit={(e) => { e.preventDefault(); onSubmit(formData); }} className="p-8 space-y-6">
+        <form onSubmit={(e) => { e.preventDefault(); onSubmit(formData); }} className="p-6 space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-6">
             <div className="sm:col-span-3">
-              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Nome do Município</label>
+              <label className="block text-xs font-medium text-slate-500 normal-case mb-2 tracking-normal ml-1">Nome do Município</label>
               <input
                 type="text"
                 name="nome"
@@ -84,20 +84,20 @@ const CidadeForm: React.FC<FormProps> = ({ initialData, onClose, onSubmit }) => 
                 onChange={handleChange}
                 required
                 autoFocus
-                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 text-sm font-bold text-[#111827] focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 text-sm font-medium text-[#111827] focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
                 placeholder="Ex: São Paulo"
               />
             </div>
 
             <div className="sm:col-span-1">
-              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">UF</label>
+              <label className="block text-xs font-medium text-slate-500 normal-case mb-2 tracking-normal ml-1">UF</label>
               <div className="relative">
                 <select
                   name="uf"
                   value={formData.uf}
                   onChange={handleChange}
                   required
-                  className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 text-sm font-bold text-[#111827] focus:ring-2 focus:ring-indigo-500 outline-none transition-all appearance-none cursor-pointer"
+                  className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 text-sm font-medium text-[#111827] focus:ring-2 focus:ring-indigo-500 outline-none transition-all appearance-none cursor-pointer"
                 >
                   <option value="">...</option>
                   {ufs.map(item => (
@@ -115,13 +115,13 @@ const CidadeForm: React.FC<FormProps> = ({ initialData, onClose, onSubmit }) => 
             <button
               type="button"
               onClick={onClose}
-              className="px-8 py-4 text-slate-500 text-xs font-black uppercase tracking-widest hover:bg-slate-50 rounded-2xl transition-all"
+              className="px-6 py-4 text-slate-500 text-xs font-semibold normal-case tracking-normal hover:bg-slate-50 rounded-2xl transition-all"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="px-10 py-4 bg-indigo-600 text-white text-xs font-black uppercase tracking-widest rounded-2xl hover:bg-indigo-700 shadow-xl shadow-indigo-100 transition-all active:scale-95"
+              className="px-6 py-4 bg-indigo-600 text-white text-xs font-semibold normal-case tracking-normal rounded-2xl hover:bg-indigo-700 shadow-sm shadow-none transition-all active:scale-100"
             >
               {initialData ? 'Salvar Alterações' : 'Cadastrar Cidade'}
             </button>

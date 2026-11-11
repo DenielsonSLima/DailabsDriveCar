@@ -65,14 +65,16 @@ const AIAssistant: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-[100] font-sans">
+    <div data-drivecar-ui className="fixed bottom-24 md:bottom-6 right-4 md:right-6 z-[100] font-sans">
       {/* Floating Button */}
       <button
+        aria-label={isOpen ? "Fechar assistente" : "Abrir assistente"}
+        aria-expanded={isOpen}
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 transform hover:scale-110 active:scale-95
+        className={`w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 transform hover:scale-105 active:scale-95
           ${isOpen 
             ? 'bg-slate-800 text-white' 
-            : 'bg-[#004691] text-white'
+            : 'bg-indigo-600 text-white'
           }
         `}
       >
@@ -81,32 +83,32 @@ const AIAssistant: React.FC = () => {
         ) : (
           <div className="relative" key="bot-icon">
             <Bot size={28} />
-            <span className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-[#004691]"></span>
+            <span className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-indigo-600"></span>
           </div>
         )}
       </button>
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="absolute bottom-20 right-0 w-[400px] h-[600px] max-h-[85vh] bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-blue-100 flex flex-col overflow-hidden animate-in slide-in-from-bottom-10 duration-300">
+        <div className="absolute bottom-20 right-0 w-[min(400px,calc(100vw-2rem))] h-[600px] max-h-[calc(100dvh-12rem)] bg-white rounded-xl shadow-lg border border-blue-100 flex flex-col overflow-hidden animate-in slide-in-from-bottom-10 duration-300">
           
           {/* Header */}
-          <div className="p-5 bg-gradient-to-r from-[#004691] to-blue-700 text-white flex items-center justify-between">
+          <div className="p-4 bg-indigo-600 text-white flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-md">
-                <Sparkles size={20} className="text-yellow-300" />
+                <Sparkles size={20} className="text-slate-300" />
               </div>
               <div>
-                <h3 className="font-bold text-lg leading-none">Nexus AI</h3>
-                <span className="text-[10px] text-blue-200 font-medium uppercase tracking-widest">Inteligência RAG Ativa</span>
+                <h3 className="font-medium text-lg leading-none">Nexus AI</h3>
+                <span className="text-xs text-white font-medium normal-case tracking-normal">Inteligência RAG Ativa</span>
               </div>
             </div>
             <div className="flex items-center space-x-2">
-                <div className="flex items-center text-[10px] bg-emerald-500/20 px-2 py-1 rounded-full border border-emerald-500/30">
+                <div className="flex items-center text-xs bg-emerald-500/20 px-2 py-1 rounded-full border border-emerald-500/30">
                     <Database size={10} className="mr-1" />
                     SYNC
                 </div>
-                <button onClick={() => setIsOpen(false)} className="p-1 hover:bg-white/10 rounded-lg">
+                <button aria-label="Fechar assistente" onClick={() => setIsOpen(false)} className="p-1 hover:bg-white/10 rounded-lg">
                     <X size={20} />
                 </button>
             </div>
@@ -123,15 +125,15 @@ const AIAssistant: React.FC = () => {
                 className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div 
-                  className={`max-w-[85%] p-4 rounded-2xl shadow-sm
+                  className={`max-w-[85%] p-4 rounded-xl shadow-sm
                     ${msg.role === 'user' 
-                      ? 'bg-[#004691] text-white rounded-tr-none' 
+                      ? 'bg-indigo-600 text-white rounded-tr-none'
                       : 'bg-white text-slate-700 border border-slate-200 rounded-tl-none prose prose-sm'
                     }
                   `}
                 >
                   <ReactMarkdown>{msg.content}</ReactMarkdown>
-                  <div className={`text-[9px] mt-2 opacity-50 ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
+                  <div className={`text-xs mt-2 ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
                     {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </div>
                 </div>
@@ -139,7 +141,7 @@ const AIAssistant: React.FC = () => {
             ))}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="bg-white border border-slate-200 p-4 rounded-2xl rounded-tl-none shadow-sm flex items-center space-x-2">
+                <div className="bg-white border border-slate-200 p-4 rounded-xl rounded-tl-none shadow-sm flex items-center space-x-2">
                   <Loader2 size={16} className="animate-spin text-[#004691]" />
                   <span className="text-xs text-slate-500 font-medium italic">Nexus está consultando o ERP...</span>
                 </div>
@@ -152,21 +154,23 @@ const AIAssistant: React.FC = () => {
             <div className="relative flex items-center">
               <input
                 type="text"
+                aria-label="Mensagem para o assistente"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                 placeholder="Pergunte sobre vendas, estoque ou clientes..."
-                className="w-full pl-4 pr-12 py-3 bg-slate-100 border-none rounded-2xl text-sm focus:ring-2 focus:ring-[#004691] outline-none transition-all"
+                className="w-full pl-4 pr-12 py-3 bg-slate-100 border-none rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
               />
               <button
+                aria-label="Enviar mensagem"
                 onClick={handleSend}
                 disabled={isLoading || !input.trim()}
-                className="absolute right-2 p-2 bg-[#004691] text-white rounded-xl hover:bg-blue-800 disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors"
+                className="absolute right-2 p-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors"
               >
                 <Send size={18} />
               </button>
             </div>
-            <p className="text-[10px] text-center text-slate-400 mt-2">
+            <p className="text-xs text-center text-slate-500 mt-2">
               Os dados são privados e protegidos pela criptografia do NEXUS.
             </p>
           </div>

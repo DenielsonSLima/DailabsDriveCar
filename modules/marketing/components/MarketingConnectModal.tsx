@@ -109,16 +109,16 @@ const MarketingConnectModal: React.FC<MarketingConnectModalProps> = ({
   };
 
   const modalContent = (
-    <div
-      className="fixed inset-0 z-[10000] flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-md"
+    <div data-drivecar-ui
+      className="fixed inset-0 z-[10000] flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm"
       style={{ width: '100vw', height: '100dvh', minHeight: '100dvh' }}
     >
-      <div className="w-full max-w-lg overflow-hidden rounded-3xl bg-white shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+      <div className="w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-sm animate-in fade-in zoom-in-95 duration-200">
         <div className={`h-2 bg-gradient-to-r ${copy.accent}`} />
         <div className="p-6">
           <div className="mb-4 flex items-start justify-between gap-4">
             <div>
-              <h2 className="text-lg font-black text-slate-950">{copy.title}</h2>
+              <h2 className="text-lg font-semibold text-slate-950">{copy.title}</h2>
               <p className="mt-1 text-xs font-semibold leading-relaxed text-slate-500">{copy.subtitle}</p>
             </div>
             <button
@@ -135,7 +135,7 @@ const MarketingConnectModal: React.FC<MarketingConnectModalProps> = ({
             <button
               type="button"
               onClick={() => setConnectionMode('manual')}
-              className={`flex-1 pb-2 text-center text-[10px] font-black uppercase tracking-widest border-b-2 transition-all ${
+              className={`flex-1 pb-2 text-center text-xs font-semibold normal-case tracking-normal border-b-2 transition-all ${
                 connectionMode === 'manual'
                   ? 'border-indigo-600 text-indigo-600'
                   : 'border-transparent text-slate-400 hover:text-slate-600'
@@ -146,7 +146,7 @@ const MarketingConnectModal: React.FC<MarketingConnectModalProps> = ({
             <button
               type="button"
               onClick={() => setConnectionMode('oauth')}
-              className={`flex-1 pb-2 text-center text-[10px] font-black uppercase tracking-widest border-b-2 transition-all ${
+              className={`flex-1 pb-2 text-center text-xs font-semibold normal-case tracking-normal border-b-2 transition-all ${
                 connectionMode === 'oauth'
                   ? 'border-indigo-600 text-indigo-600'
                   : 'border-transparent text-slate-400 hover:text-slate-600'
@@ -164,7 +164,7 @@ const MarketingConnectModal: React.FC<MarketingConnectModalProps> = ({
                     <ShieldCheck className="h-5 w-5" />
                   </div>
                   <div>
-                    <p className="text-sm font-black text-slate-900">Autorização segura</p>
+                    <p className="text-sm font-semibold text-slate-900">Autorização segura</p>
                     <p className="mt-1 text-xs leading-relaxed text-slate-500">
                       O ERP redireciona para a plataforma oficial. E-mail, senha, conta de anúncios e permissões são tratados pela Meta ou Google.
                     </p>
@@ -176,7 +176,7 @@ const MarketingConnectModal: React.FC<MarketingConnectModalProps> = ({
                     <RefreshCw className="h-5 w-5" />
                   </div>
                   <div>
-                    <p className="text-sm font-black text-slate-900">Dados sincronizados</p>
+                    <p className="text-sm font-semibold text-slate-900">Dados sincronizados</p>
                     <p className="mt-1 text-xs leading-relaxed text-slate-500">
                       Nome, ID da conta, saldo, moeda e gastos devem vir da API após o callback de integração, sem preenchimento manual.
                     </p>
@@ -186,7 +186,7 @@ const MarketingConnectModal: React.FC<MarketingConnectModalProps> = ({
 
               {oauthConfig.missingEnv.length > 0 && (
                 <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
-                  <p className="text-xs font-black uppercase tracking-widest text-amber-900">Configuração pendente</p>
+                  <p className="text-xs font-semibold normal-case tracking-normal text-amber-900">Configuração pendente</p>
                   <p className="mt-1 text-xs leading-relaxed text-amber-800">
                     Configure {oauthConfig.missingEnv.join(', ')} e o callback {oauthConfig.redirectUri} para liberar o redirecionamento real.
                   </p>
@@ -197,7 +197,7 @@ const MarketingConnectModal: React.FC<MarketingConnectModalProps> = ({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="flex-1 rounded-xl bg-slate-100 py-3 text-xs font-black uppercase tracking-widest text-slate-700 transition-all hover:bg-slate-200"
+                  className="flex-1 rounded-xl bg-slate-100 py-3 text-xs font-semibold normal-case tracking-normal text-slate-700 transition-all hover:bg-slate-200"
                 >
                   Cancelar
                 </button>
@@ -205,7 +205,7 @@ const MarketingConnectModal: React.FC<MarketingConnectModalProps> = ({
                   type="button"
                   onClick={onAuthorize}
                   disabled={isAuthorizing}
-                  className={`flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r ${copy.accent} py-3 text-xs font-black uppercase tracking-widest text-white shadow-lg transition-all hover:opacity-90 disabled:opacity-60`}
+                  className={`flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r ${copy.accent} py-3 text-xs font-semibold normal-case tracking-normal text-white shadow-sm transition-all hover:opacity-90 disabled:opacity-60`}
                 >
                   {isAuthorizing ? <RefreshCw className="h-4 w-4 animate-spin" /> : <ExternalLink className="h-4 w-4" />}
                   {copy.action}
@@ -215,7 +215,7 @@ const MarketingConnectModal: React.FC<MarketingConnectModalProps> = ({
           ) : (
             <form onSubmit={handleSaveManual} className="space-y-4">
               <div>
-                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">
+                <label className="block text-xs font-semibold text-slate-500 normal-case tracking-normal mb-1.5">
                   Nome da Conta de Anúncios <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -229,7 +229,7 @@ const MarketingConnectModal: React.FC<MarketingConnectModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">
+                <label className="block text-xs font-semibold text-slate-500 normal-case tracking-normal mb-1.5">
                   {platform === 'GOOGLE' ? 'ID da Conta Google Ads' : 'ID da Conta de Anúncios (Ad Account ID)'} <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -243,7 +243,7 @@ const MarketingConnectModal: React.FC<MarketingConnectModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">
+                <label className="block text-xs font-semibold text-slate-500 normal-case tracking-normal mb-1.5">
                   Token de Acesso (Access Token) <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -259,7 +259,7 @@ const MarketingConnectModal: React.FC<MarketingConnectModalProps> = ({
               {(platform === 'FACEBOOK' || platform === 'INSTAGRAM') && (
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">
+                    <label className="block text-xs font-semibold text-slate-500 normal-case tracking-normal mb-1.5">
                       ID da Página FB (Opcional)
                     </label>
                     <input
@@ -271,7 +271,7 @@ const MarketingConnectModal: React.FC<MarketingConnectModalProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">
+                    <label className="block text-xs font-semibold text-slate-500 normal-case tracking-normal mb-1.5">
                       ID Conta Instagram (Opcional)
                     </label>
                     <input
@@ -286,9 +286,9 @@ const MarketingConnectModal: React.FC<MarketingConnectModalProps> = ({
               )}
 
               <div className="mt-3 p-3 bg-indigo-50 border border-indigo-100 rounded-xl">
-                <p className="text-[9px] font-black text-indigo-950 uppercase tracking-widest mb-1">Como obter as credenciais?</p>
-                <p className="text-[10px] text-indigo-800 leading-relaxed">
-                  Você pode gerar o Token de Acesso permanente criando um Usuário de System em seu Gerenciador de Negócios (Business Manager) da Meta ou gerá-lo no portal <a href="https://developers.facebook.com" target="_blank" rel="noreferrer" className="underline font-black text-indigo-950">developers.facebook.com</a>.
+                <p className="text-xs font-semibold text-indigo-950 normal-case tracking-normal mb-1">Como obter as credenciais?</p>
+                <p className="text-xs text-indigo-800 leading-relaxed">
+                  Você pode gerar o Token de Acesso permanente criando um Usuário de System em seu Gerenciador de Negócios (Business Manager) da Meta ou gerá-lo no portal <a href="https://developers.facebook.com" target="_blank" rel="noreferrer" className="underline font-semibold text-indigo-950">developers.facebook.com</a>.
                 </p>
               </div>
 
@@ -296,14 +296,14 @@ const MarketingConnectModal: React.FC<MarketingConnectModalProps> = ({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="flex-1 rounded-xl bg-slate-100 py-3 text-xs font-black uppercase tracking-widest text-slate-700 transition-all hover:bg-slate-200"
+                  className="flex-1 rounded-xl bg-slate-100 py-3 text-xs font-semibold normal-case tracking-normal text-slate-700 transition-all hover:bg-slate-200"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={isSaving}
-                  className={`flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r ${copy.accent} py-3 text-xs font-black uppercase tracking-widest text-white shadow-lg transition-all hover:opacity-90 disabled:opacity-60`}
+                  className={`flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r ${copy.accent} py-3 text-xs font-semibold normal-case tracking-normal text-white shadow-sm transition-all hover:opacity-90 disabled:opacity-60`}
                 >
                   {isSaving ? <RefreshCw className="h-4 w-4 animate-spin" /> : <ShieldCheck className="h-4 w-4" />}
                   Salvar Conexão

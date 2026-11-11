@@ -47,12 +47,12 @@ export default function LoteContas({ title, titulos, canCreate, onBaixar }: Prop
                 const pendente = getTituloPendente(titulo);
                 return (
                   <tr key={titulo.id} className={titulo.status === 'CANCELADO' ? 'bg-slate-50 text-slate-400' : ''}>
-                    <td className={tableTdClass}><p className="font-bold text-slate-900">{titulo.descricao}</p><p className="mt-1 text-[10px] font-bold uppercase tracking-wide text-slate-400">Parcela {titulo.parcela_numero || 1}/{titulo.parcela_total || 1}</p></td>
+                    <td className={tableTdClass}><p className="font-bold text-slate-900">{titulo.descricao}</p><p className="mt-1 text-xs font-bold normal-case tracking-wide text-slate-400">Parcela {titulo.parcela_numero || 1}/{titulo.parcela_total || 1}</p></td>
                     <td className={tableTdClass}>{dateLabel(titulo.data_vencimento)}</td>
                     <td className={`${tableTdClass} whitespace-nowrap tabular-nums`}>{money(titulo.valor_total)}</td>
                     <td className={`${tableTdClass} whitespace-nowrap tabular-nums`}>{money(titulo.valor_pago)}</td>
                     <td className={`${tableTdClass} whitespace-nowrap font-bold tabular-nums`}>{money(pendente)}</td>
-                    <td className={tableTdClass}><span className={`inline-flex rounded-lg px-2 py-1 text-[10px] font-black uppercase tracking-wide ${titulo.status === 'CANCELADO' ? 'bg-slate-100 text-slate-500' : pendente > 0.005 ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700'}`}>{statusLabels[titulo.status]}</span></td>
+                    <td className={tableTdClass}><span className={`inline-flex rounded-lg px-2 py-1 text-xs font-semibold normal-case tracking-wide ${titulo.status === 'CANCELADO' ? 'bg-slate-100 text-slate-500' : pendente > 0.005 ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700'}`}>{statusLabels[titulo.status]}</span></td>
                     <td className={tableTdClass}>{titulo.status !== 'CANCELADO' && pendente > 0.005 && <button type="button" disabled={!canCreate} className={secondaryClass} onClick={() => onBaixar(titulo)}>{titulo.tipo === 'RECEBER' ? 'Receber' : 'Pagar'}</button>}</td>
                   </tr>
                 );

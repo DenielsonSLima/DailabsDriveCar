@@ -17,14 +17,14 @@ const DebitosKpis: React.FC<Props> = ({ kpis, loading }) => {
   const totalAtrasado = kpis?.total_atrasado ?? 0;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in slide-in-from-top-4 duration-700">
-      <div className="bg-white p-6 rounded-[2.5rem] border border-slate-200 shadow-sm flex items-center justify-between group hover:border-rose-300 transition-all">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in slide-in-from-top-4 duration-200">
+      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between group hover:border-rose-300 transition-all">
         <div>
-          <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest">Total Debitado</p>
+          <p className="text-slate-500 text-xs font-medium normal-case tracking-normal">Total Debitado</p>
           {loading ? (
             <div className="h-8 w-32 bg-slate-100 animate-pulse rounded-xl mt-1" />
           ) : (
-            <h3 className="text-2xl font-black text-rose-600 mt-1">{formatCurrency(totalDebitado)}</h3>
+            <h3 className="text-2xl font-semibold text-rose-600 mt-1">{formatCurrency(totalDebitado)}</h3>
           )}
         </div>
         <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-rose-50 text-rose-600 shadow-sm">
@@ -32,13 +32,13 @@ const DebitosKpis: React.FC<Props> = ({ kpis, loading }) => {
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-[2.5rem] border border-slate-200 shadow-sm flex items-center justify-between group hover:border-rose-300 transition-all">
+      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between group hover:border-rose-300 transition-all">
         <div>
-          <p className="text-slate-500 text-[10px] font-black uppercase tracking-widest">Previsto (Em Aberto)</p>
+          <p className="text-slate-500 text-xs font-medium normal-case tracking-normal">Previsto (Em Aberto)</p>
           {loading ? (
             <div className="h-8 w-32 bg-slate-100 animate-pulse rounded-xl mt-1" />
           ) : (
-            <h3 className="text-2xl font-black text-slate-900 mt-1">{formatCurrency(totalPendente)}</h3>
+            <h3 className="text-2xl font-semibold text-slate-900 mt-1">{formatCurrency(totalPendente)}</h3>
           )}
         </div>
         <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-slate-50 text-slate-400">
@@ -46,16 +46,16 @@ const DebitosKpis: React.FC<Props> = ({ kpis, loading }) => {
         </div>
       </div>
 
-      <div className="bg-slate-900 p-6 rounded-[2.5rem] shadow-xl flex items-center justify-between border border-slate-800">
+      <div className="bg-slate-50 p-6 rounded-2xl shadow-sm flex items-center justify-between border border-slate-200">
         <div>
-          <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest">Atrasados</p>
+          <p className="text-slate-500 text-xs font-medium normal-case tracking-normal">Atrasados</p>
           {loading ? (
-            <div className="h-8 w-16 bg-white/10 animate-pulse rounded-xl mt-1" />
+            <div className="h-8 w-16 bg-white animate-pulse rounded-xl mt-1" />
           ) : (
-            <h3 className="text-2xl font-black text-rose-500 mt-1">{formatCurrency(totalAtrasado)}</h3>
+            <h3 className="text-2xl font-semibold text-rose-500 mt-1">{formatCurrency(totalAtrasado)}</h3>
           )}
         </div>
-        <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-white/10 text-rose-500">
+        <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-white text-rose-500">
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
         </div>
       </div>

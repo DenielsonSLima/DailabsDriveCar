@@ -27,7 +27,7 @@ const CidadesList: React.FC<ListProps> = ({ agrupadas, loading, onEdit, onDelete
     return (
       <div className="py-20 flex flex-col items-center justify-center space-y-4">
         <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-        <p className="text-slate-500 font-bold uppercase text-[10px] tracking-widest">Carregando mapa territorial...</p>
+        <p className="text-slate-500 font-medium normal-case text-xs tracking-normal">Carregando mapa territorial...</p>
       </div>
     );
   }
@@ -35,31 +35,31 @@ const CidadesList: React.FC<ListProps> = ({ agrupadas, loading, onEdit, onDelete
   if (ufs.length === 0) {
     return (
       <div className="py-20 text-center flex flex-col items-center">
-        <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mb-4 text-slate-200">
+        <div className="w-20 h-20 bg-slate-50 rounded-2xl flex items-center justify-center mb-4 text-slate-200">
            <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
            </svg>
         </div>
-        <h3 className="text-slate-900 font-bold text-lg">Nenhuma cidade encontrada</h3>
-        <p className="text-slate-400 text-sm mt-1">Utilize o botão "Nova Cidade" para começar o cadastro.</p>
+        <h3 className="text-slate-900 font-semibold text-lg">Nenhuma cidade encontrada</h3>
+        <p className="text-slate-500 text-sm mt-1">Utilize o botão "Nova Cidade" para começar o cadastro.</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-6">
       {ufs.map(uf => (
-        <div key={uf} className="animate-in slide-in-from-bottom-4 duration-500">
+        <div key={uf} className="animate-in slide-in-from-bottom-4 duration-200">
           {/* Header do Estado */}
           <div className="flex items-center space-x-4 mb-6 sticky top-0 bg-white/95 backdrop-blur-sm py-4 z-10 border-b border-slate-100">
-            <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white font-black text-lg shadow-lg shadow-indigo-200 shrink-0">
+            <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white font-semibold text-lg shadow-sm shadow-none shrink-0">
               {uf}
             </div>
             <div>
-              <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter leading-none">
+              <h3 className="text-xl font-semibold text-slate-900 normal-case tracking-tight leading-none">
                 {UFNames[uf] || uf}
               </h3>
-              <p className="text-[10px] text-indigo-500 font-black uppercase tracking-widest mt-1">
+              <p className="text-xs text-indigo-500 font-medium normal-case tracking-normal mt-1">
                 {agrupadas[uf].length} {agrupadas[uf].length === 1 ? 'Município Cadastrado' : 'Municípios Cadastrados'}
               </p>
             </div>
@@ -70,9 +70,9 @@ const CidadesList: React.FC<ListProps> = ({ agrupadas, loading, onEdit, onDelete
             {agrupadas[uf].map(cidade => (
               <div 
                 key={cidade.id} 
-                className={`group border rounded-[1.5rem] p-5 flex items-center justify-between transition-all duration-300 relative overflow-hidden ${
+                className={`group border rounded-2xl p-5 flex items-center justify-between transition-all duration-200 relative overflow-hidden ${
                   cidade.ativo !== false 
-                    ? 'bg-slate-50 border-slate-100 hover:bg-white hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-50/50' 
+                    ? 'bg-slate-50 border-slate-100 hover:bg-white hover:border-indigo-200 hover:shadow-sm hover:shadow-none'
                     : 'bg-slate-100/50 border-slate-200 opacity-60 grayscale-[0.5]'
                 }`}
               >
@@ -82,13 +82,13 @@ const CidadesList: React.FC<ListProps> = ({ agrupadas, loading, onEdit, onDelete
                 }`}></div>
 
                 <div className="min-w-0 pr-2">
-                  <p className={`text-sm font-bold truncate transition-colors ${
+                  <p className={`text-sm font-semibold truncate transition-colors ${
                     cidade.ativo !== false ? 'text-slate-800 group-hover:text-indigo-700' : 'text-slate-500'
                   }`} title={cidade.nome}>
                     {cidade.nome}
                   </p>
                   <div className="flex items-center space-x-2 mt-1">
-                    <span className="px-1.5 py-0.5 bg-slate-200 rounded text-[9px] font-black text-slate-500 font-mono">
+                    <span className="px-1.5 py-0.5 bg-slate-200 rounded text-xs font-medium text-slate-500 font-mono">
                       {uf}
                     </span>
                   </div>

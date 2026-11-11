@@ -80,11 +80,11 @@ const CadastrosPage: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-700 pb-20">
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-200 pb-8">
 
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-slate-900 tracking-tighter">Cadastros Gerais</h1>
+        <h1 className="text-3xl font-semibold text-slate-900 tracking-tight">Cadastros Gerais</h1>
         <p className="text-slate-500 mt-2 max-w-2xl text-sm leading-relaxed">
           Gerencie a base de dados principal do seu ecossistema. Selecione uma categoria abaixo para visualizar e editar as tabelas de domínio que alimentam os módulos operacionais.
         </p>
@@ -93,10 +93,10 @@ const CadastrosPage: React.FC = () => {
       {categories.map((category) => (
         <section key={category.id} className="pt-4 border-t border-slate-100 first:border-t-0 first:pt-0">
           <div className="flex items-center space-x-3 mb-6">
-            <div className={`p-2.5 rounded-xl border transition-colors ${colorVariants[category.color] || colorVariants['slate']} !bg-transparent group-hover:!bg-transparent group-hover:!text-inherit`}>
+            <div className={`p-2.5 rounded-xl border transition-colors bg-slate-100 text-slate-600 border-slate-200`}>
               {category.icon}
             </div>
-            <h2 className="text-2xl font-black text-slate-900 tracking-tighter uppercase">{category.title}</h2>
+            <h2 className="text-2xl font-semibold text-slate-900 tracking-tight normal-case">{category.title}</h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -104,22 +104,22 @@ const CadastrosPage: React.FC = () => {
               <div
                 key={idx}
                 onClick={() => sub.path && navigate(sub.path)}
-                className={`flex flex-col p-5 bg-white border border-slate-200 rounded-[1.5rem] shadow-sm transition-all relative overflow-hidden group ${sub.path ? 'cursor-pointer hover:border-indigo-400 hover:shadow-lg hover:-translate-y-1' : 'opacity-75 cursor-not-allowed'
+                className={`flex flex-col p-5 bg-white border border-slate-200 rounded-2xl shadow-sm transition-all relative overflow-hidden group ${sub.path ? 'cursor-pointer hover:border-indigo-400 hover:shadow-sm hover:translate-y-0' : 'opacity-75 cursor-not-allowed'
                   }`}
               >
                 <div className="flex justify-between items-start mb-3">
-                  <div className={`px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest ${sub.status === 'pronto' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'
+                  <div className={`px-2 py-0.5 rounded text-xs font-semibold normal-case tracking-normal ${sub.status === 'pronto' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'
                     }`}>
                     {sub.status === 'pronto' ? 'Ativo' : 'Em Breve'}
                   </div>
                 </div>
 
-                <h3 className="text-[14px] leading-tight font-black text-slate-900 tracking-tight uppercase group-hover:text-indigo-600 transition-colors">
+                <h3 className="text-[14px] leading-tight font-semibold text-slate-900 tracking-tight normal-case group-hover:text-indigo-600 transition-colors">
                   {sub.label}
                 </h3>
 
                 {sub.path && (
-                  <div className="mt-4 flex items-center text-slate-400 text-[10px] font-black uppercase tracking-widest group-hover:text-indigo-500 transition-colors">
+                  <div className="mt-4 flex items-center text-slate-400 text-xs font-semibold normal-case tracking-normal group-hover:text-indigo-500 transition-colors">
                     <span>Acessar</span>
                     <svg className="w-3 h-3 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M17 8l4 4m0 0l-4 4m4-4H3" />

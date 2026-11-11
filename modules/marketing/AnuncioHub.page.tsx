@@ -122,20 +122,20 @@ const AnuncioHubPage: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3 mb-1">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center shadow-lg">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center shadow-sm">
               <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
               </svg>
             </div>
             <div>
-              <h1 className="text-2xl font-black text-slate-900 tracking-tighter">Central de Anúncios</h1>
-              <p className="text-xs text-slate-500 font-bold uppercase tracking-widest">Tráfego Pago — Facebook · Instagram · Google</p>
+              <h1 className="text-2xl font-semibold text-slate-900 tracking-tight">Central de Anúncios</h1>
+              <p className="text-xs text-slate-500 font-bold normal-case tracking-normal">Tráfego Pago — Facebook · Instagram · Google</p>
             </div>
           </div>
         </div>
         <button
           onClick={() => navigate('/marketing/anuncios/novo')}
-          className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-2xl font-black text-sm shadow-lg hover:opacity-90 transition-all"
+          className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-2xl font-semibold text-sm shadow-sm hover:opacity-90 transition-all"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -173,11 +173,11 @@ const AnuncioHubPage: React.FC = () => {
           },
         ].map(kpi => (
           <div key={kpi.label} className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm">
-            <div className={`w-9 h-9 rounded-xl bg-gradient-to-br ${kpi.color} flex items-center justify-center text-white mb-3 shadow`}>
+            <div className={`w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600 mb-3 shadow`}>
               {kpi.icon}
             </div>
-            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{kpi.label}</p>
-            <p className="text-xl font-black text-slate-900 mt-0.5">{kpi.value}</p>
+            <p className="text-xs text-slate-500 font-bold normal-case tracking-normal">{kpi.label}</p>
+            <p className="text-xl font-semibold text-slate-900 mt-0.5">{kpi.value}</p>
           </div>
         ))}
       </div>
@@ -192,7 +192,7 @@ const AnuncioHubPage: React.FC = () => {
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold normal-case tracking-normal transition-all ${
               activeTab === tab.key
                 ? 'bg-white text-slate-900 shadow-sm'
                 : 'text-slate-500 hover:text-slate-700'
@@ -200,7 +200,7 @@ const AnuncioHubPage: React.FC = () => {
           >
             {tab.label}
             {tab.count !== undefined && (
-              <span className={`px-1.5 py-0.5 rounded-full text-[9px] font-black ${
+              <span className={`px-1.5 py-0.5 rounded-full text-xs font-semibold ${
                 activeTab === tab.key ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-200 text-slate-500'
               }`}>
                 {tab.count}
@@ -222,18 +222,18 @@ const AnuncioHubPage: React.FC = () => {
             </div>
           ) : campanhas.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-slate-400">
-              <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-violet-100 to-indigo-100 flex items-center justify-center mb-4">
-                <svg className="w-10 h-10 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-violet-100 to-indigo-100 flex items-center justify-center mb-4">
+                <svg className="w-10 h-10 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
                 </svg>
               </div>
-              <h3 className="font-black text-slate-700 text-lg">Nenhum anúncio criado</h3>
+              <h3 className="font-semibold text-slate-700 text-lg">Nenhum anúncio criado</h3>
               <p className="text-sm text-slate-400 mt-1 text-center max-w-xs">
                 Crie seu primeiro anúncio para começar a divulgar seus veículos nas redes sociais.
               </p>
               <button
                 onClick={() => navigate('/marketing/anuncios/novo')}
-                className="mt-6 flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl font-black text-sm shadow hover:opacity-90 transition-all"
+                className="mt-6 flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl font-semibold text-sm shadow hover:opacity-90 transition-all"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -282,7 +282,7 @@ const AnuncioHubPage: React.FC = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <div>
-                <p className="text-xs font-black text-amber-900">Como funciona a integração?</p>
+                <p className="text-xs font-semibold text-amber-900">Como funciona a integração?</p>
                 <p className="text-xs text-amber-800 mt-1 leading-relaxed">
                   Facebook e Instagram usam a mesma autorização Meta Ads. O saldo, moeda, conta e gastos devem ser sincronizados pelas APIs oficiais após o login; a criação automática de campanhas depende de backend com tokens seguros e aprovação da Meta/Google.
                 </p>

@@ -121,8 +121,8 @@ const ImageMigration: React.FC = () => {
     };
 
     return (
-        <div className="p-8 max-w-4xl mx-auto bg-white rounded-3xl shadow-xl border border-slate-100 my-10">
-            <h2 className="text-2xl font-black text-slate-800 mb-4">Migração de Imagens (Otimização)</h2>
+        <div className="p-8 max-w-4xl mx-auto bg-white rounded-xl shadow-sm border border-slate-100 my-10">
+            <h2 className="text-2xl font-semibold text-slate-800 mb-4">Migração de Imagens (Otimização)</h2>
             <p className="text-slate-500 mb-6">
                 Este utilitário varre o banco de dados em busca de imagens salvas como Base64 (pesadas)
                 e as move para o Supabase Storage, atualizando os registros com links otimizados.
@@ -132,14 +132,14 @@ const ImageMigration: React.FC = () => {
                 <button
                     onClick={handleStart}
                     disabled={isMigrating}
-                    className="px-6 py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 disabled:opacity-50 transition-all"
+                    className="px-6 py-3 bg-indigo-600 text-white font-medium rounded-xl hover:bg-indigo-700 disabled:opacity-50 transition-all"
                 >
                     {isMigrating ? 'Migrando...' : 'Iniciar Migração'}
                 </button>
-                <span className="font-bold text-slate-700">{status}</span>
+                <span className="font-medium text-slate-700">{status}</span>
             </div>
 
-            <div className="bg-slate-900 rounded-2xl p-6 h-96 overflow-y-auto font-mono text-xs text-green-400 shadow-inner">
+            <div className="bg-slate-900 rounded-xl p-6 h-96 overflow-y-auto font-mono text-xs text-green-400 shadow-none">
                 {logs.length === 0 ? (
                     <span className="text-slate-600 opacity-50">Log de processamento aparecerá aqui...</span>
                 ) : (

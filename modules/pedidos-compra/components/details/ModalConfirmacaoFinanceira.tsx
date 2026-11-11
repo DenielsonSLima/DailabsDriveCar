@@ -84,51 +84,51 @@ const ModalConfirmacaoFinanceira: React.FC<Props> = ({ pedido, onClose, onConfir
     pedido.forma_pagamento?.destino_lancamento === 'CAIXA';
 
   return (
-    <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
-      <div className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-        <div className="p-8 bg-slate-900 text-white flex justify-between items-center">
+    <div data-drivecar-ui className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
+      <div className="bg-white w-full max-w-2xl rounded-2xl shadow-sm overflow-hidden flex flex-col max-h-[90vh]">
+        <div className="p-6 bg-slate-900 text-white flex justify-between items-center">
           <div>
-            <h3 className="text-xl font-black uppercase tracking-tighter">Finalizar Compra</h3>
-            <p className="text-[10px] text-indigo-400 font-bold uppercase tracking-widest mt-1">Geração de Obrigações Financeiras</p>
+            <h3 className="text-xl font-semibold normal-case tracking-normal">Finalizar Compra</h3>
+            <p className="text-xs text-indigo-400 font-bold normal-case tracking-normal mt-1">Geração de Obrigações Financeiras</p>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full transition-colors"><svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M6 18L18 6M6 6l12 12" /></svg></button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-8 space-y-6">
-          <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100 grid grid-cols-2 gap-4">
+        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 grid grid-cols-2 gap-4">
             <div>
-              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Valor Negociado</p>
-              <p className="text-2xl font-black text-slate-900">{formatCurrency(pedido.valor_negociado)}</p>
+              <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal">Valor Negociado</p>
+              <p className="text-2xl font-semibold text-slate-900">{formatCurrency(pedido.valor_negociado)}</p>
             </div>
             <div>
-              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Forma de Pagamento</p>
-              <p className="text-lg font-black text-indigo-600 uppercase">{pedido.forma_pagamento?.nome}</p>
+              <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal">Forma de Pagamento</p>
+              <p className="text-lg font-semibold text-indigo-600 normal-case">{pedido.forma_pagamento?.nome}</p>
             </div>
           </div>
 
           <div className="space-y-4">
-            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Regra de Parcelamento (Condição)</label>
+            <label className="block text-xs font-semibold text-slate-500 normal-case tracking-normal ml-1">Regra de Parcelamento (Condição)</label>
             <select
               value={selectedCondicaoId}
               onChange={e => setSelectedCondicaoId(e.target.value)}
-              className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-5 py-4 font-bold text-slate-800 outline-none focus:border-indigo-500 appearance-none cursor-pointer"
+              className="w-full bg-slate-50 border-2 border-slate-100 rounded-xl px-5 py-3 font-medium text-slate-800 outline-none focus:border-indigo-500 appearance-none cursor-pointer"
             >
               <option value="">Escolha a condição de pagamento...</option>
               {condicoes.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
             </select>
 
             {requiresAccount && (
-              <div className="bg-emerald-50 border border-emerald-100 p-6 rounded-3xl animate-in slide-in-from-left">
+              <div className="bg-emerald-50 border border-emerald-100 p-6 rounded-2xl animate-in slide-in-from-left">
                 <div className="flex items-start space-x-3 mb-4">
                   <div className="w-8 h-8 bg-emerald-500 text-white rounded-lg flex items-center justify-center shrink-0">
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                   </div>
-                  <p className="text-[10px] text-emerald-800 font-bold uppercase leading-relaxed">Pagamento à Vista: Selecione de qual conta sairá o saldo para a primeira parcela hoje.</p>
+                  <p className="text-xs text-emerald-800 font-bold normal-case leading-relaxed">Pagamento à Vista: Selecione de qual conta sairá o saldo para a primeira parcela hoje.</p>
                 </div>
                 <select
                   value={selectedContaId}
                   onChange={e => setSelectedContaId(e.target.value)}
-                  className="w-full bg-white border border-emerald-200 rounded-xl px-4 py-3 text-xs font-black text-emerald-700 outline-none"
+                  className="w-full bg-white border border-emerald-200 rounded-xl px-4 py-3 text-xs font-semibold text-emerald-700 outline-none"
                 >
                   <option value="">Selecione a Conta Bancária...</option>
                   {contas.map(c => <option key={c.id} value={c.id}>{c.banco_nome} - {c.titular} | Saldo: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(c.saldo_atual || 0)}</option>)}
@@ -138,15 +138,15 @@ const ModalConfirmacaoFinanceira: React.FC<Props> = ({ pedido, onClose, onConfir
 
             {parcelasPrevia.length > 0 && (
               <div className="space-y-2">
-                <h4 className="text-[9px] font-black text-slate-400 uppercase tracking-widest px-1">Prévia dos Lançamentos</h4>
+                <h4 className="text-xs font-semibold text-slate-400 normal-case tracking-normal px-1">Prévia dos Lançamentos</h4>
                 <div className="grid grid-cols-1 gap-2">
                   {parcelasPrevia.map((p, i) => (
                     <div key={i} className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-2xl">
                       <div className="flex items-center space-x-3">
-                        <span className="w-6 h-6 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-[10px] font-black text-slate-400">{p.numero}</span>
+                        <span className="w-6 h-6 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-xs font-semibold text-slate-400">{p.numero}</span>
                         <span className="text-xs font-bold text-slate-700">{new Date(p.data_vencimento).toLocaleDateString('pt-BR')}</span>
                       </div>
-                      <span className="text-sm font-black text-slate-900">{formatCurrency(p.valor)}</span>
+                      <span className="text-sm font-semibold text-slate-900">{formatCurrency(p.valor)}</span>
                     </div>
                   ))}
                 </div>
@@ -155,7 +155,7 @@ const ModalConfirmacaoFinanceira: React.FC<Props> = ({ pedido, onClose, onConfir
           </div>
         </div>
 
-        <div className="p-8 border-t border-slate-100 bg-slate-50">
+        <div className="p-6 border-t border-slate-100 bg-slate-50">
           <button
             onClick={() => {
               if (!selectedCondicaoId) return alert('Selecione uma condição.');
@@ -167,7 +167,7 @@ const ModalConfirmacaoFinanceira: React.FC<Props> = ({ pedido, onClose, onConfir
               onConfirm({ condicao: condicaoParaEnviar, contaId: selectedContaId });
             }}
             disabled={isLoading || !selectedCondicaoId}
-            className="w-full py-5 bg-indigo-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-indigo-700 shadow-2xl transition-all disabled:opacity-30 flex items-center justify-center"
+            className="w-full py-5 bg-indigo-600 text-white rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-indigo-700 shadow-sm transition-all disabled:opacity-30 flex items-center justify-center"
           >
             {isLoading ? 'Confirmando Operação...' : 'Gerar Títulos e Confirmar Pedido'}
           </button>

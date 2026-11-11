@@ -32,6 +32,9 @@ export const ContasReceberService = {
         )
       `, { count: 'exact' })
       .eq('tipo', 'RECEBER')
+      // As contas das vendas em lote são administradas em Lotes, não nesta lista.
+      // Filtrar no banco também mantém contagem e paginação livres desses títulos.
+      .is('lote_id', null)
       .neq('status', 'CANCELADO')
       .or('categoria_id.not.is.null,pedido_id.not.is.null,venda_pedido_id.not.is.null');
 

@@ -17,7 +17,7 @@ const PagarCard: React.FC<Props> = ({ titulo, onOpenDetails, onDelete }) => {
     return (
         <div
             onClick={() => onOpenDetails(titulo)}
-            className="group bg-white p-5 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl hover:border-indigo-100 transition-all cursor-pointer relative overflow-hidden"
+            className="group bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-sm hover:border-indigo-100 transition-all cursor-pointer relative overflow-hidden"
         >
             {/* Background Decor */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110" />
@@ -25,7 +25,7 @@ const PagarCard: React.FC<Props> = ({ titulo, onOpenDetails, onDelete }) => {
             {/* Header: Status & Vencimento */}
             <div className="flex justify-between items-start mb-4 relative z-10">
                 <span
-                    className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${isPago
+                    className={`px-3 py-1 rounded-full text-xs font-medium normal-case tracking-normal border ${isPago
                         ? 'bg-emerald-50 text-emerald-600 border-emerald-100'
                         : isVencido
                             ? 'bg-rose-50 text-rose-600 border-rose-100'
@@ -35,8 +35,8 @@ const PagarCard: React.FC<Props> = ({ titulo, onOpenDetails, onDelete }) => {
                     {isPago ? 'Pago' : isVencido ? 'Vencido' : 'Pendente'}
                 </span>
                 <div className="text-right">
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Vencimento</p>
-                    <p className={`text-xs font-bold ${isVencido ? 'text-rose-600' : 'text-slate-600'}`}>
+                    <p className="text-xs font-medium text-slate-500 normal-case tracking-normal">Vencimento</p>
+                    <p className={`text-xs font-medium ${isVencido ? 'text-rose-600' : 'text-slate-600'}`}>
                         {new Date(titulo.data_vencimento).toLocaleDateString('pt-BR')}
                     </p>
                 </div>
@@ -45,49 +45,49 @@ const PagarCard: React.FC<Props> = ({ titulo, onOpenDetails, onDelete }) => {
             {/* Vehicle Info Section - Dark Theme Alignment */}
             <div className="mb-4">
                 {titulo.veiculo ? (
-                    <div className="bg-slate-900 rounded-2xl p-4 shadow-lg relative overflow-hidden group-hover:bg-indigo-950 transition-colors">
+                    <div className="bg-slate-50 rounded-2xl p-4 shadow-sm relative overflow-hidden group-hover:bg-slate-100 transition-colors">
                         <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500 rounded-full blur-[80px] opacity-20"></div>
                         <div className="relative z-10 flex justify-between items-center">
                             <div>
-                                <p className="text-[8px] text-indigo-400 font-black uppercase tracking-[0.2em] mb-0.5">Veículo</p>
-                                <h4 className="text-white font-black text-sm uppercase truncate max-w-[140px]">
+                                <p className="text-xs text-indigo-600 font-medium normal-case tracking-normal mb-0.5">Veículo</p>
+                                <h4 className="text-slate-900 font-semibold text-sm normal-case truncate max-w-[140px]">
                                     {titulo.veiculo.montadora?.nome} {titulo.veiculo.modelo?.nome}
                                 </h4>
                             </div>
-                            <div className="bg-white/10 px-2.5 py-1 rounded-lg border border-white/20">
-                                <p className="text-white font-black text-[11px] tracking-widest uppercase">{titulo.veiculo.placa}</p>
+                            <div className="bg-white px-2.5 py-1 rounded-lg border border-slate-200">
+                                <p className="text-slate-900 font-medium text-xs tracking-normal normal-case">{titulo.veiculo.placa}</p>
                             </div>
                         </div>
                     </div>
                 ) : titulo.origem_tipo === 'PEDIDO_COMPRA' || titulo.origem_tipo === 'DESPESA_VEICULO' ? (
                     <div className="bg-slate-100 rounded-2xl p-4 border border-slate-200 group-hover:border-indigo-200 transition-colors">
-                        <p className="text-[8px] text-slate-400 font-black uppercase tracking-[0.2em] mb-0.5">Veículo (Ref. Descrição)</p>
-                        <h4 className="text-slate-900 font-black text-sm uppercase truncate">
+                        <p className="text-xs text-slate-500 font-medium normal-case tracking-normal mb-0.5">Veículo (Ref. Descrição)</p>
+                        <h4 className="text-slate-900 font-semibold text-sm normal-case truncate">
                             {titulo.descricao}
                         </h4>
                     </div>
                 ) : (
                     <div className="h-14 border border-dashed border-slate-200 rounded-2xl flex items-center justify-center">
-                        <p className="text-[9px] text-slate-300 font-bold uppercase tracking-widest italic">Sem veículo vinculado</p>
+                        <p className="text-xs text-slate-300 font-medium normal-case tracking-normal italic">Sem veículo vinculado</p>
                     </div>
                 )}
             </div>
 
             {/* Favorecido & Ref */}
             <div className="mb-6">
-                <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Favorecido / Descrição</p>
-                <p className="text-sm font-bold text-slate-800 line-clamp-1 uppercase">
+                <p className="text-xs font-medium text-slate-500 normal-case tracking-normal">Favorecido / Descrição</p>
+                <p className="text-sm font-semibold text-slate-800 line-clamp-1 normal-case">
                     {titulo.parceiro?.nome || titulo.descricao}
                 </p>
-                <p className="text-[10px] text-slate-400 font-medium">Ref: {titulo.documento_ref || 'N/D'}</p>
+                <p className="text-xs text-slate-500 font-medium">Ref: {titulo.documento_ref || 'N/D'}</p>
             </div>
 
             {/* Footer: Valores */}
             <div className="flex items-end justify-between pt-4 border-t border-slate-50">
                 <div>
-                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Valor do Título</p>
+                    <p className="text-xs font-medium text-slate-500 normal-case tracking-normal">Valor do Título</p>
                     <div className="flex items-baseline gap-1">
-                        <p className="text-xl font-black text-slate-900 leading-none">{fmt(titulo.valor_total)}</p>
+                        <p className="text-xl font-semibold text-slate-900 leading-none">{fmt(titulo.valor_total)}</p>
                     </div>
                 </div>
 
@@ -97,7 +97,7 @@ const PagarCard: React.FC<Props> = ({ titulo, onOpenDetails, onDelete }) => {
                             e.stopPropagation();
                             onOpenDetails(titulo);
                         }}
-                        className="p-2.5 bg-slate-900 text-white rounded-xl hover:bg-slate-800 transition-all shadow-md active:scale-95"
+                        className="p-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all shadow-sm active:scale-100"
                         title="Ver Detalhes"
                     >
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -112,7 +112,7 @@ const PagarCard: React.FC<Props> = ({ titulo, onOpenDetails, onDelete }) => {
                                 e.stopPropagation();
                                 onDelete(titulo.id);
                             }}
-                            className="p-2.5 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-100 transition-all active:scale-95"
+                            className="p-2.5 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-100 transition-all active:scale-100"
                             title="Excluir"
                         >
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

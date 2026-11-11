@@ -66,18 +66,18 @@ const ModalConfirmMontadora: React.FC<ModalConfirmMontadoraProps> = ({ nome, mon
   };
 
   return createPortal(
-    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-slate-900/70 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="bg-white w-full max-w-md rounded-[2rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+    <div data-drivecar-ui className="fixed inset-0 z-[200] flex items-center justify-center bg-slate-900/70 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-white w-full max-w-md rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 duration-200">
         <div className="px-8 pt-6 pb-4 border-b border-slate-100">
-          <span className="inline-flex items-center gap-1 text-[9px] font-black text-emerald-600 uppercase tracking-widest bg-emerald-50 px-2 py-0.5 rounded-lg mb-1">
+          <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 normal-case tracking-normal bg-emerald-50 px-2 py-0.5 rounded-lg mb-1">
             ⚡ Consulta de Placa
           </span>
-          <h2 className="text-xl font-black text-slate-900 uppercase tracking-tighter">Montadora</h2>
+          <h2 className="text-xl font-semibold text-slate-900 normal-case tracking-normal">Montadora</h2>
           <p className="text-xs text-slate-500 mt-1">Esta marca não foi identificada. Confirme para criar ou selecione uma existente.</p>
         </div>
-        <div className="p-8 space-y-4">
+        <div className="p-6 space-y-4">
           <div>
-            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1">Selecionar Existente</label>
+            <label className="block text-xs font-semibold text-slate-500 normal-case tracking-normal mb-2 ml-1">Selecionar Existente</label>
             <select
               value={selectedMontadoraId}
               onChange={e => {
@@ -85,7 +85,7 @@ const ModalConfirmMontadora: React.FC<ModalConfirmMontadoraProps> = ({ nome, mon
                 if (e.target.value) setNomeFinal('');
                 else setNomeFinal(nome);
               }}
-              className="w-full border border-slate-200 rounded-2xl px-5 py-3 text-sm font-bold text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full border border-slate-200 rounded-xl px-5 py-3 text-sm font-medium text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500"
             >
               <option value="">-- Nova Montadora --</option>
               {montadoras.map(m => (
@@ -96,21 +96,21 @@ const ModalConfirmMontadora: React.FC<ModalConfirmMontadoraProps> = ({ nome, mon
           
           {!selectedMontadoraId && (
             <div className="animate-in fade-in slide-in-from-top-2 duration-300">
-              <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 ml-1 mt-4">Nome da Nova Montadora</label>
+              <label className="block text-xs font-semibold text-slate-500 normal-case tracking-normal mb-2 ml-1 mt-4">Nome da Nova Montadora</label>
               <input
                 type="text"
                 value={nomeFinal}
                 onChange={e => setNomeFinal(e.target.value.toUpperCase())}
-                className="w-full border border-slate-200 rounded-2xl px-5 py-3 text-sm font-bold text-slate-900 uppercase outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full border border-slate-200 rounded-xl px-5 py-3 text-sm font-medium text-slate-900 uppercase outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
           )}
 
           <div className="flex gap-3 justify-end pt-2 mt-4">
-            <button onClick={onClose} disabled={saving} className="px-6 py-3 text-slate-500 text-xs font-black uppercase tracking-widest hover:bg-slate-50 rounded-xl">
+            <button onClick={onClose} disabled={saving} className="px-6 py-3 text-slate-500 text-xs font-semibold normal-case tracking-normal hover:bg-slate-50 rounded-xl">
               Cancelar
             </button>
-            <button onClick={handleSave} disabled={saving || (!selectedMontadoraId && !nomeFinal.trim())} className="px-8 py-3 bg-indigo-600 text-white text-xs font-black uppercase tracking-widest rounded-xl shadow-lg shadow-indigo-200 hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-2">
+            <button onClick={handleSave} disabled={saving || (!selectedMontadoraId && !nomeFinal.trim())} className="px-8 py-3 bg-indigo-600 text-white text-xs font-semibold normal-case tracking-normal rounded-xl shadow-sm shadow-indigo-200 hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-2">
               {saving ? <><div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" /> Salvando...</> : (selectedMontadoraId ? 'Confirmar' : 'Cadastrar Montadora')}
             </button>
           </div>
@@ -129,29 +129,29 @@ interface ModalConfirmTipoProps {
 
 const ModalConfirmTipo: React.FC<ModalConfirmTipoProps> = ({ tipos, onConfirm, onClose }) => {
   return createPortal(
-    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-slate-900/70 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="bg-white w-full max-w-md rounded-[2rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+    <div data-drivecar-ui className="fixed inset-0 z-[200] flex items-center justify-center bg-slate-900/70 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-white w-full max-w-md rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 duration-200">
         <div className="px-8 pt-6 pb-4 border-b border-slate-100">
-          <span className="inline-flex items-center gap-1 text-[9px] font-black text-emerald-600 uppercase tracking-widest bg-emerald-50 px-2 py-0.5 rounded-lg mb-1">
+          <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 normal-case tracking-normal bg-emerald-50 px-2 py-0.5 rounded-lg mb-1">
             ⚡ Consulta de Placa
           </span>
-          <h2 className="text-xl font-black text-slate-900 uppercase tracking-tighter">Tipo do Veículo</h2>
+          <h2 className="text-xl font-semibold text-slate-900 normal-case tracking-normal">Tipo do Veículo</h2>
           <p className="text-xs text-slate-500 mt-1">Selecione o tipo de carroceria deste veículo.</p>
         </div>
-        <div className="p-8">
+        <div className="p-6">
           <div className="grid grid-cols-2 gap-3">
             {tipos.map(tipo => (
               <button
                 key={tipo.id}
                 onClick={() => onConfirm(tipo)}
-                className="px-4 py-4 bg-slate-50 border-2 border-slate-200 rounded-2xl text-sm font-black text-slate-700 uppercase tracking-wide hover:border-indigo-500 hover:bg-indigo-50 hover:text-indigo-600 transition-all active:scale-95"
+                className="px-4 py-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-semibold text-slate-700 normal-case tracking-wide hover:border-indigo-500 hover:bg-indigo-50 hover:text-indigo-600 transition-all active:scale-95"
               >
                 {tipo.nome}
               </button>
             ))}
           </div>
           <div className="flex justify-end pt-4 mt-4 border-t border-slate-100">
-            <button onClick={onClose} className="px-6 py-3 text-slate-500 text-xs font-black uppercase tracking-widest hover:bg-slate-50 rounded-xl">
+            <button onClick={onClose} className="px-6 py-3 text-slate-500 text-xs font-semibold normal-case tracking-normal hover:bg-slate-50 rounded-xl">
               Cancelar
             </button>
           </div>
@@ -424,7 +424,7 @@ const EstoqueFormPage: React.FC = () => {
     <div className="pb-32 bg-slate-50 min-h-screen animate-in fade-in duration-500 relative">
 
       {toast && (
-        <div className={`fixed top-6 right-6 z-[250] px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 animate-in slide-in-from-right duration-300 border backdrop-blur-md ${toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' :
+        <div className={`fixed top-6 right-6 z-[250] px-6 py-4 rounded-2xl shadow-sm flex items-center space-x-3 animate-in slide-in-from-right duration-300 border backdrop-blur-sm ${toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' :
           toast.type === 'warning' ? 'bg-amber-100 text-amber-800 border-amber-300' :
             'bg-rose-600 text-white border-rose-400/50'
           }`}>
@@ -440,10 +440,10 @@ const EstoqueFormPage: React.FC = () => {
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
             </button>
             <div>
-              <h1 className="text-2xl font-black text-slate-900 uppercase tracking-tighter leading-none">
+              <h1 className="text-2xl font-semibold text-slate-900 normal-case tracking-normal leading-none">
                 {id ? 'Editar Veículo' : 'Adicionar Veículo'}
               </h1>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">
+              <p className="text-xs font-bold text-slate-400 normal-case tracking-normal mt-1">
                 {pedidoId ? 'Contexto: Pedido de Compra' : 'Gestão de Estoque'}
               </p>
             </div>
@@ -451,7 +451,7 @@ const EstoqueFormPage: React.FC = () => {
           <button
             onClick={handleSubmit}
             disabled={isSaving}
-            className="px-8 py-3 bg-indigo-600 text-white font-black text-xs uppercase tracking-widest rounded-xl hover:bg-indigo-700 shadow-xl transition-all active:scale-95 disabled:opacity-50"
+            className="px-8 py-3 bg-indigo-600 text-white font-semibold text-xs normal-case tracking-normal rounded-xl hover:bg-indigo-700 shadow-sm transition-all active:scale-95 disabled:opacity-50"
           >
             {isSaving ? 'Salvando...' : 'Salvar Ficha'}
           </button>

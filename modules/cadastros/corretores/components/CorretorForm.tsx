@@ -68,22 +68,22 @@ const CorretorForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSubmi
   }, []);
 
   const content = (
-    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 border border-slate-200">
+    <div data-drivecar-ui className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-white w-full max-w-2xl rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 duration-200 border border-slate-200">
 
         {/* Header */}
-        <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+        <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-200">
+            <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-600 shadow-sm shadow-none">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
             </div>
             <div>
-              <h2 className="text-xl font-black text-slate-900 uppercase tracking-tighter">
+              <h2 className="text-xl font-semibold text-slate-900 normal-case tracking-tight">
                 {initialData ? 'Editar Corretor' : 'Novo Corretor'}
               </h2>
-              <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1">Dados Cadastrais</p>
+              <p className="text-slate-500 text-xs font-medium normal-case tracking-normal mt-1">Dados Cadastrais</p>
             </div>
           </div>
           <button onClick={onClose} disabled={isSaving} className="p-2 hover:bg-white rounded-full transition-all text-slate-400">
@@ -93,29 +93,29 @@ const CorretorForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSubmi
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-8 space-y-6">
+        <form onSubmit={handleSubmit} className="p-6 space-y-6">
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Nome *</label>
+              <label className="block text-xs font-medium text-slate-500 normal-case mb-2 tracking-normal ml-1">Nome *</label>
               <input
                 autoFocus
                 name="nome"
                 value={formData.nome}
                 onChange={handleChange}
                 disabled={isSaving}
-                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 font-bold text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 font-medium text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
                 required
               />
             </div>
             <div>
-              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Sobrenome *</label>
+              <label className="block text-xs font-medium text-slate-500 normal-case mb-2 tracking-normal ml-1">Sobrenome *</label>
               <input
                 name="sobrenome"
                 value={formData.sobrenome}
                 onChange={handleChange}
                 disabled={isSaving}
-                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 font-bold text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 font-medium text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
                 required
               />
             </div>
@@ -123,26 +123,26 @@ const CorretorForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSubmi
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">CPF</label>
+              <label className="block text-xs font-medium text-slate-500 normal-case mb-2 tracking-normal ml-1">CPF</label>
               <input
                 name="cpf"
                 value={formData.cpf}
                 onChange={handleChange}
                 disabled={isSaving}
                 placeholder="000.000.000-00"
-                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 font-mono font-bold text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 font-mono font-medium text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
                 maxLength={14}
               />
             </div>
             <div>
-              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Telefone</label>
+              <label className="block text-xs font-medium text-slate-500 normal-case mb-2 tracking-normal ml-1">Telefone</label>
               <input
                 name="telefone"
                 value={formData.telefone}
                 onChange={handleChange}
                 disabled={isSaving}
                 placeholder="(00) 00000-0000"
-                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 font-bold text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 font-medium text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
               />
             </div>
           </div>
@@ -153,7 +153,7 @@ const CorretorForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSubmi
                 <input type="checkbox" name="ativo" checked={formData.ativo} onChange={handleChange} className="sr-only peer" />
                 <div className="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
               </div>
-              <span className={`text-xs font-black uppercase tracking-wider ${formData.ativo ? 'text-emerald-600' : 'text-slate-400'}`}>
+              <span className={`text-xs font-medium normal-case tracking-normal ${formData.ativo ? 'text-emerald-600' : 'text-slate-500'}`}>
                 {formData.ativo ? 'Corretor Ativo' : 'Corretor Inativo'}
               </span>
             </label>
@@ -162,14 +162,14 @@ const CorretorForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSubmi
               <button
                 type="button"
                 onClick={onClose}
-                className="px-6 py-3 text-slate-500 font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 rounded-xl"
+                className="px-6 py-3 text-slate-500 font-semibold normal-case text-xs tracking-normal hover:bg-slate-50 rounded-xl"
               >
                 Cancelar
               </button>
               <button
                 type="submit"
                 disabled={isSaving}
-                className="px-8 py-3 bg-indigo-600 text-white rounded-xl font-black uppercase text-[10px] tracking-widest shadow-lg shadow-indigo-100 disabled:opacity-50 flex items-center hover:bg-indigo-700 transition-all"
+                className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold normal-case text-xs tracking-normal shadow-sm shadow-none disabled:opacity-50 flex items-center hover:bg-indigo-700 transition-all"
               >
                 {isSaving ? 'Salvando...' : 'Salvar Dados'}
               </button>

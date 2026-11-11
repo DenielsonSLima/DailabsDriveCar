@@ -97,12 +97,12 @@ const ModeloForm: React.FC<FormProps> = ({ initialData, isSaving, onClose, onSub
   }, []);
 
   const content = (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="bg-white w-full max-w-xl rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div data-drivecar-ui className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-white w-full max-w-xl rounded-2xl shadow-sm overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+        <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50">
           <div>
-            <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tighter">
+            <h2 className="text-2xl font-semibold text-slate-900 normal-case tracking-tight">
               {initialData?.id ? 'Editar Modelo' : 'Novo Modelo'}
             </h2>
             <p className="text-slate-500 text-xs">Vincule o modelo a uma marca, tipo e adicione uma imagem.</p>
@@ -114,14 +114,14 @@ const ModeloForm: React.FC<FormProps> = ({ initialData, isSaving, onClose, onSub
           </button>
         </div>
 
-        <form onSubmit={handleFormSubmit} className="p-8 space-y-6 overflow-y-auto">
+        <form onSubmit={handleFormSubmit} className="p-6 space-y-6 overflow-y-auto">
           {/* Foto Section */}
           <div className="flex flex-col items-center">
-            <label className="block text-[10px] font-black text-slate-400 uppercase mb-4 tracking-widest self-start ml-1">Foto do Modelo (Opcional)</label>
+            <label className="block text-xs font-medium text-slate-500 normal-case mb-4 tracking-normal self-start ml-1">Foto do Modelo (Opcional)</label>
             <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" className="hidden" />
             <div
               onClick={() => !isSaving && fileInputRef.current?.click()}
-              className={`w-full h-40 border-2 border-dashed rounded-[2rem] flex items-center justify-center transition-all overflow-hidden ${isSaving ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+              className={`w-full h-40 border-2 border-dashed rounded-2xl flex items-center justify-center transition-all overflow-hidden ${isSaving ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
                 } ${formData.foto_url ? 'border-indigo-200 bg-white' : 'border-slate-200 bg-slate-50 hover:bg-slate-100 hover:border-indigo-300'
                 }`}
             >
@@ -134,7 +134,7 @@ const ModeloForm: React.FC<FormProps> = ({ initialData, isSaving, onClose, onSub
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                     </svg>
                   </div>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Upload Imagem</p>
+                  <p className="text-xs font-medium text-slate-500 normal-case tracking-normal">Upload Imagem</p>
                 </div>
               )}
             </div>
@@ -142,7 +142,7 @@ const ModeloForm: React.FC<FormProps> = ({ initialData, isSaving, onClose, onSub
 
           <div className="space-y-4">
             <div>
-              <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Nome do Modelo *</label>
+              <label className="block text-xs font-medium text-slate-500 normal-case mb-2 tracking-normal ml-1">Nome do Modelo *</label>
               <input
                 type="text"
                 name="nome"
@@ -150,21 +150,21 @@ const ModeloForm: React.FC<FormProps> = ({ initialData, isSaving, onClose, onSub
                 onChange={handleChange}
                 required
                 disabled={isSaving}
-                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3 text-sm font-bold text-[#111827] focus:ring-2 focus:ring-indigo-500 outline-none transition-all disabled:opacity-50"
+                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3 text-sm font-medium text-[#111827] focus:ring-2 focus:ring-indigo-500 outline-none transition-all disabled:opacity-50"
                 placeholder="Ex: Corolla, Civic, Onix..."
               />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Montadora *</label>
+                <label className="block text-xs font-medium text-slate-500 normal-case mb-2 tracking-normal ml-1">Montadora *</label>
                 <select
                   name="montadora_id"
                   value={formData.montadora_id || ''}
                   onChange={handleChange}
                   required
                   disabled={isSaving || loadingOptions}
-                  className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3 text-sm font-bold text-[#111827] focus:ring-2 focus:ring-indigo-500 outline-none transition-all appearance-none disabled:opacity-50"
+                  className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3 text-sm font-medium text-[#111827] focus:ring-2 focus:ring-indigo-500 outline-none transition-all appearance-none disabled:opacity-50"
                 >
                   <option value="">Marca...</option>
                   {montadoras.map(m => (
@@ -174,14 +174,14 @@ const ModeloForm: React.FC<FormProps> = ({ initialData, isSaving, onClose, onSub
               </div>
 
               <div>
-                <label className="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest ml-1">Tipo de Veículo *</label>
+                <label className="block text-xs font-medium text-slate-500 normal-case mb-2 tracking-normal ml-1">Tipo de Veículo *</label>
                 <select
                   name="tipo_veiculo_id"
                   value={formData.tipo_veiculo_id || ''}
                   onChange={handleChange}
                   required
                   disabled={isSaving || loadingOptions}
-                  className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3 text-sm font-bold text-[#111827] focus:ring-2 focus:ring-indigo-500 outline-none transition-all appearance-none disabled:opacity-50"
+                  className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3 text-sm font-medium text-[#111827] focus:ring-2 focus:ring-indigo-500 outline-none transition-all appearance-none disabled:opacity-50"
                 >
                   <option value="">Categoria...</option>
                   {tipos.map(t => (
@@ -197,14 +197,14 @@ const ModeloForm: React.FC<FormProps> = ({ initialData, isSaving, onClose, onSub
               type="button"
               onClick={onClose}
               disabled={isSaving}
-              className="px-8 py-3 text-slate-500 text-xs font-black uppercase tracking-widest hover:bg-slate-50 rounded-2xl disabled:opacity-30"
+              className="px-6 py-3 text-slate-500 text-xs font-semibold normal-case tracking-normal hover:bg-slate-50 rounded-2xl disabled:opacity-30"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={isSaving}
-              className="px-10 py-3 bg-indigo-600 text-white text-xs font-black uppercase tracking-widest rounded-2xl hover:bg-indigo-700 shadow-xl shadow-indigo-100 transition-all flex items-center justify-center min-w-[180px] disabled:opacity-50 active:scale-95"
+              className="px-6 py-3 bg-indigo-600 text-white text-xs font-semibold normal-case tracking-normal rounded-2xl hover:bg-indigo-700 shadow-sm shadow-none transition-all flex items-center justify-center min-w-[180px] disabled:opacity-50 active:scale-100"
             >
               {isSaving ? 'Salvando...' : (initialData?.id ? 'Atualizar Modelo' : 'Cadastrar Modelo')}
             </button>

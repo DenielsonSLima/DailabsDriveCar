@@ -37,7 +37,7 @@ const PerformanceBaseTable: React.FC<Props> = ({ headers, children, footer, vari
             <div className="overflow-x-auto">
                 <table className="w-full text-left">
                     <thead className="bg-slate-50 border-b border-slate-100">
-                        <tr className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                        <tr className="text-xs font-semibold text-slate-400 normal-case tracking-normal">
                             {headers.map((h, i) => (
                                 <th key={i} className={`px-5 py-4 ${i === headers.length - 1 ? 'text-right' : ''}`}>
                                     {h}

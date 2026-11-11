@@ -79,7 +79,7 @@ const PublicContact: React.FC<Props> = React.memo(({ telefone, contato_titulo, c
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:justify-items-end">
 
                         {/* Bloco de Atendimento */}
-                        <div className="bg-white/5 border border-white/10 p-8 rounded-[2rem] backdrop-blur-sm space-y-4 w-full max-w-sm">
+                        <div className="bg-white/5 border border-white/10 p-8 rounded-2xl backdrop-blur-sm space-y-4 w-full max-w-sm">
                             <div className="flex items-center space-x-3 text-orange-500">
                                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -93,7 +93,7 @@ const PublicContact: React.FC<Props> = React.memo(({ telefone, contato_titulo, c
                         </div>
 
                         {/* Bloco de Localização */}
-                        <div className="bg-white/5 border border-white/10 p-8 rounded-[2rem] backdrop-blur-sm space-y-4 w-full max-w-sm">
+                        <div className="bg-white/5 border border-white/10 p-8 rounded-2xl backdrop-blur-sm space-y-4 w-full max-w-sm">
                             <div className="flex items-center space-x-3 text-blue-400">
                                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -113,9 +113,9 @@ const PublicContact: React.FC<Props> = React.memo(({ telefone, contato_titulo, c
                                 href={whatsappUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="group relative flex items-center justify-between bg-white/10 hover:bg-white text-white hover:text-[#0a2540] p-6 lg:p-8 rounded-[2rem] font-black uppercase tracking-[0.2em] text-xs transition-all border border-white/20 hover:border-white hover:-translate-y-1 active:scale-95 shadow-xl backdrop-blur-md"
+                                className="group relative flex items-center justify-between bg-white/10 hover:bg-white text-white hover:text-[#0a2540] p-6 lg:p-8 rounded-2xl font-black uppercase tracking-[0.2em] text-xs transition-all border border-white/20 hover:border-white hover:-translate-y-1 active:scale-95 shadow-sm backdrop-blur-md"
                             >
-                                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-green-500/20 opacity-0 group-hover:opacity-100 transition-opacity rounded-[2rem]"></div>
+                                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-green-500/20 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl"></div>
 
                                 <div className="relative flex items-center space-x-5 z-10">
                                     <div className="w-14 h-14 bg-[#25D366] text-white rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">

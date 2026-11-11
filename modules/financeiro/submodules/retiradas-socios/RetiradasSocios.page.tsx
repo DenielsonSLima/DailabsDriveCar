@@ -106,23 +106,23 @@ const RetiradasSociosPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 relative">
+    <div className="space-y-6 animate-in fade-in duration-200 relative">
       {toast && (
-        <div className={`fixed top-6 right-6 z-[200] px-6 py-4 rounded-2xl shadow-2xl animate-in slide-in-from-right duration-300 border backdrop-blur-md ${toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' : 'bg-rose-600 text-white'
+        <div data-drivecar-ui className={`fixed top-6 right-6 z-[200] px-6 py-4 rounded-2xl shadow-sm animate-in slide-in-from-right duration-200 border backdrop-blur-md ${toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' : 'bg-rose-600 text-white'
           }`}>
-          <span className="font-bold text-sm tracking-tight">{toast.message}</span>
+          <span className="font-semibold text-sm tracking-tight">{toast.message}</span>
         </div>
       )}
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h2 className="text-3xl font-black text-slate-900 uppercase tracking-tighter leading-none">Retiradas de Sócios</h2>
-          <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mt-2">Distribuição de dividendos e pró-labore</p>
+          <h2 className="text-3xl font-semibold text-slate-900 normal-case tracking-tight leading-none">Retiradas de Sócios</h2>
+          <p className="text-slate-500 text-xs font-medium normal-case tracking-normal mt-2">Distribuição de dividendos e pró-labore</p>
         </div>
 
         <button
           onClick={handleNew}
-          className="px-8 py-4 bg-amber-600 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-amber-700 transition-all shadow-xl active:scale-95 flex items-center shadow-amber-200"
+          className="px-6 py-4 bg-amber-600 text-white rounded-2xl text-xs font-semibold normal-case tracking-normal hover:bg-amber-700 transition-all shadow-sm active:scale-100 flex items-center shadow-none"
         >
           <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -134,8 +134,8 @@ const RetiradasSociosPage: React.FC = () => {
       <RetiradasKpis retiradas={retiradas} saldosSocios={saldosSocios} />
 
       <div className="flex bg-white p-1.5 rounded-2xl border border-slate-200 w-fit shadow-sm">
-        <button onClick={() => setActiveTab('MES_ATUAL')} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'MES_ATUAL' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Mês Atual</button>
-        <button onClick={() => setActiveTab('OUTROS')} className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'OUTROS' ? 'bg-slate-900 text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}>Todos os Meses</button>
+        <button onClick={() => setActiveTab('MES_ATUAL')} className={`px-6 py-2.5 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all ${activeTab === 'MES_ATUAL' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Mês Atual</button>
+        <button onClick={() => setActiveTab('OUTROS')} className={`px-6 py-2.5 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all ${activeTab === 'OUTROS' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Todos os Meses</button>
       </div>
 
       <RetiradasFilters
@@ -146,7 +146,7 @@ const RetiradasSociosPage: React.FC = () => {
         setGroupBy={setGroupBy}
       />
 
-      <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden min-h-[400px]">
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden min-h-[400px]">
         <RetiradasList
           items={processedData}
           loading={loading}

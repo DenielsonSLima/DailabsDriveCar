@@ -126,27 +126,27 @@ const MontadorasPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500 relative pb-20">
+    <div className="space-y-6 animate-in fade-in duration-200 relative pb-8">
       {toast && (
-        <div className={`fixed top-6 right-6 z-[210] px-6 py-3 rounded-2xl shadow-2xl flex items-center space-x-3 animate-in slide-in-from-right duration-300 ${toast.type === 'success' ? 'bg-slate-900 text-white border-l-4 border-emerald-500' : 'bg-rose-600 text-white'
+        <div data-drivecar-ui className={`fixed top-6 right-6 z-[210] px-6 py-3 rounded-2xl shadow-sm flex items-center space-x-3 animate-in slide-in-from-right duration-200 ${toast.type === 'success' ? 'bg-slate-900 text-white border-l-4 border-emerald-500' : 'bg-rose-600 text-white'
           }`}>
           <div className={toast.type === 'success' ? 'text-emerald-500' : 'text-white'}>
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <span className="font-bold text-sm tracking-tight">{toast.message}</span>
+          <span className="font-semibold text-sm tracking-tight">{toast.message}</span>
         </div>
       )}
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Montadoras</h1>
+          <h1 className="text-3xl font-semibold text-slate-900">Montadoras</h1>
           <p className="text-slate-500 mt-1">Gestão de fabricantes e marcas globais.</p>
         </div>
         <button
           onClick={handleOpenAdd}
-          className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-sm font-black uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 flex items-center"
+          className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-sm font-semibold normal-case tracking-normal hover:bg-indigo-700 transition-all shadow-sm shadow-none flex items-center"
         >
           <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -157,11 +157,11 @@ const MontadorasPage: React.FC = () => {
 
       <MontadorasKpis total={totalCount} />
 
-      <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden p-8 min-h-[500px]">
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden p-6 min-h-[500px]">
         {/* Header da Listagem - Busca e Tabs */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-10">
           <div className="relative flex-1 max-w-md">
-            <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+            <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-500">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
@@ -171,7 +171,7 @@ const MontadorasPage: React.FC = () => {
               placeholder="Buscar montadora pelo nome..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-2xl py-3 pl-11 pr-4 text-sm font-bold text-[#111827] focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
+              className="w-full bg-white border border-slate-200 rounded-2xl py-3 pl-11 pr-4 text-sm font-medium text-[#111827] focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
             />
           </div>
 
@@ -179,7 +179,7 @@ const MontadorasPage: React.FC = () => {
           <div className="flex p-1 bg-slate-100 rounded-2xl w-fit">
             <button
               onClick={() => setDisplayStatus('active')}
-              className={`px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${displayStatus === 'active'
+              className={`px-6 py-2 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all ${displayStatus === 'active'
                 ? 'bg-white text-indigo-600 shadow-sm'
                 : 'text-slate-500 hover:text-slate-700'
                 }`}
@@ -188,7 +188,7 @@ const MontadorasPage: React.FC = () => {
             </button>
             <button
               onClick={() => setDisplayStatus('inactive')}
-              className={`px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${displayStatus === 'inactive'
+              className={`px-6 py-2 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all ${displayStatus === 'inactive'
                 ? 'bg-white text-rose-600 shadow-sm'
                 : 'text-slate-500 hover:text-slate-700'
                 }`}
@@ -201,16 +201,16 @@ const MontadorasPage: React.FC = () => {
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 space-y-4">
             <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-slate-400 font-medium uppercase text-[10px] tracking-widest">Carregando catálogo...</p>
+            <p className="text-slate-500 font-medium normal-case text-xs tracking-normal">Carregando catálogo...</p>
           </div>
         ) : montadoras.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mb-4 text-slate-200">
+            <div className="w-20 h-20 bg-slate-50 rounded-2xl flex items-center justify-center mb-4 text-slate-200">
               <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
               </svg>
             </div>
-            <p className="text-slate-400 text-sm font-medium">
+            <p className="text-slate-500 text-sm font-medium">
               {displayStatus === 'active' ? 'Nenhuma montadora ativa encontrada.' : 'Nenhuma montadora inativa.'}
             </p>
           </div>
@@ -231,7 +231,7 @@ const MontadorasPage: React.FC = () => {
         {/* Paginação */}
         {!loading && totalPages > 1 && (
           <div className="flex items-center justify-between mt-8 pt-6 border-t border-slate-100">
-            <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">
+            <p className="text-xs text-slate-500 font-medium normal-case tracking-normal">
               Página <span className="text-slate-900">{currentPage}</span> de <span className="text-slate-900">{totalPages}</span>
             </p>
             <div className="flex items-center space-x-2">
@@ -245,7 +245,7 @@ const MontadorasPage: React.FC = () => {
                 </svg>
               </button>
 
-              <button className="w-10 h-10 rounded-xl text-xs font-black bg-indigo-600 text-white shadow-lg shadow-indigo-200 scale-110 transition-all">
+              <button className="w-10 h-10 rounded-xl text-xs font-semibold bg-indigo-600 text-white shadow-sm shadow-none scale-110 transition-all">
                 {currentPage}
               </button>
 

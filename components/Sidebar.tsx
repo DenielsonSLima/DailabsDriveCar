@@ -94,20 +94,20 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
       {/* Overlay Mobile */}
       {isMobileOpen && (
         <div
-          className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[60] md:hidden"
+          className="fixed inset-0 bg-slate-900/35 backdrop-blur-sm z-[60] md:hidden"
           onClick={() => setIsMobileOpen?.(false)}
         />
       )}
 
       <aside
         aria-label="Menu principal"
-        className={`app-sidebar fixed left-0 top-0 h-dvh bg-slate-900 text-white transition-[width,transform] duration-200 motion-reduce:transition-none z-[70] flex flex-col
+        className={`app-sidebar fixed left-0 top-0 h-dvh bg-slate-900 text-slate-200 border-r border-slate-800 transition-[width,transform] duration-200 motion-reduce:transition-none z-[70] flex flex-col
           ${sidebarExpanded ? 'w-60' : 'w-20'}
           ${isMobileOpen ? 'translate-x-0 md:transform-none' : '-translate-x-full md:transform-none'}
         `}
       >
       <div className="h-16 shrink-0 px-4 flex items-center justify-between border-b border-slate-800">
-        <div className={`flex items-center space-x-2.5 overflow-hidden ${sidebarExpanded ? 'opacity-100 w-auto' : 'opacity-0 w-0'}`}>
+        <div className={`flex min-w-0 items-center space-x-2.5 overflow-hidden ${sidebarExpanded ? 'opacity-100 w-auto' : 'opacity-0 w-0'}`}>
           <div className="flex-shrink-0">
             <img
               src="/logos/dailabs_logo.png"
@@ -115,9 +115,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
               className="w-8 h-8 object-contain"
             />
           </div>
-          <div className="flex flex-col">
+          <div className="flex min-w-0 flex-col">
             <span className="font-semibold text-lg tracking-tight leading-none text-white">Dailabs</span>
-            <span className="text-[9px] text-slate-400 font-medium whitespace-nowrap">Creative AI & Softwares</span>
+            <span className="text-[11px] text-slate-400 font-medium truncate">Creative AI & Softwares</span>
           </div>
         </div>
         <button
@@ -130,7 +130,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
             }
           }}
           aria-label={sidebarExpanded ? "Recolher menu" : "Expandir menu"}
-          className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+          className="shrink-0 p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
         >
           <svg className="w-5 h-5 md:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -158,7 +158,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
                   onClick={() => toggleExpand(item.label)}
                   aria-expanded={isExpanded && sidebarExpanded}
                   title={!sidebarExpanded ? item.label : undefined}
-                  className={`flex items-center min-h-11 md:min-h-10 px-3 py-2 rounded-lg text-sm leading-5 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 group w-full text-left ${isActive ? 'bg-slate-800 text-white font-medium' : 'text-slate-200 font-normal hover:bg-slate-800 hover:text-white'
+                  className={`flex items-center min-h-11 md:min-h-10 px-3 py-2 rounded-lg text-sm leading-5 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 group w-full text-left ${isActive ? 'bg-indigo-500/20 text-indigo-100 font-medium ring-1 ring-inset ring-indigo-400/20' : 'text-slate-300 font-normal hover:bg-slate-800 hover:text-white'
                     }`}
                 >
                   <svg className={`w-5 h-5 shrink-0 ${sidebarExpanded ? 'mr-3' : 'mx-auto'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -173,7 +173,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
                     </svg>
                   )}
                   {!sidebarExpanded && (
-                    <div className="absolute left-16 px-3 py-2 bg-slate-800 text-white text-xs font-bold rounded-lg shadow-xl border border-slate-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-[100] pointer-events-none flex items-center">
+                    <div className="absolute left-16 px-3 py-2 bg-slate-800 text-white text-xs font-medium rounded-lg shadow-sm border border-slate-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-[100] pointer-events-none flex items-center">
                       {item.label}
                       <div className="absolute w-2 h-2 bg-slate-800 border-l border-b border-slate-700 transform rotate-45 -left-1 top-1/2 -translate-y-1/2"></div>
                     </div>
@@ -185,7 +185,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
                   title={!sidebarExpanded ? item.label : undefined}
                   onClick={() => setIsMobileOpen?.(false)}
                   className={({ isActive }) =>
-                    `flex items-center min-h-11 md:min-h-10 px-3 py-2 rounded-lg text-sm leading-5 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 group ${isActive ? 'bg-[#004691] text-white font-medium' : 'text-slate-200 font-normal hover:bg-slate-800 hover:text-white'
+                    `flex items-center min-h-11 md:min-h-10 px-3 py-2 rounded-lg text-sm leading-5 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 group ${isActive ? 'bg-indigo-500/20 text-indigo-100 font-medium ring-1 ring-inset ring-indigo-400/20' : 'text-slate-300 font-normal hover:bg-slate-800 hover:text-white'
                     }`
                   }
                 >
@@ -196,7 +196,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
                     {item.label}
                   </span>
                   {!sidebarExpanded && (
-                    <div className="absolute left-16 px-3 py-2 bg-slate-800 text-white text-xs font-bold rounded-lg shadow-xl border border-slate-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-[100] pointer-events-none flex items-center">
+                    <div className="absolute left-16 px-3 py-2 bg-slate-800 text-white text-xs font-medium rounded-lg shadow-sm border border-slate-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-[100] pointer-events-none flex items-center">
                       {item.label}
                       <div className="absolute w-2 h-2 bg-slate-800 border-l border-b border-slate-700 transform rotate-45 -left-1 top-1/2 -translate-y-1/2"></div>
                     </div>
@@ -212,7 +212,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
                       to={child.path}
                       onClick={() => setIsMobileOpen?.(false)}
                       className={({ isActive }) =>
-                        `block px-2 py-2 text-xs leading-4 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${isActive ? 'text-white font-medium bg-[#004691]/50' : 'text-slate-300 font-normal hover:text-white hover:bg-slate-800/50'
+                        `block px-2 py-2 text-xs leading-4 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 ${isActive ? 'text-indigo-200 font-medium bg-indigo-500/15' : 'text-slate-300 font-normal hover:text-white hover:bg-slate-800'
                         }`
                       }
                     >
@@ -227,14 +227,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
       </nav>
 
       <div className="shrink-0 p-3 border-t border-slate-800">
-        <div className={`flex items-center rounded-xl border border-slate-700/60 bg-slate-800/50 ${sidebarExpanded ? 'gap-2.5 p-2.5' : 'flex-col gap-2 py-2'}`}>
-          <div className="w-8 h-8 shrink-0 rounded-lg bg-[#004691] flex items-center justify-center text-xs font-semibold uppercase">
+        <div className={`flex items-center rounded-xl border border-slate-700/60 bg-slate-800/60 ${sidebarExpanded ? 'gap-2.5 p-2.5' : 'flex-col gap-2 py-2'}`}>
+          <div className="w-8 h-8 shrink-0 rounded-lg bg-indigo-500/20 text-indigo-200 flex items-center justify-center text-xs font-semibold normal-case">
             {profile?.nome?.charAt(0) || 'U'}
           </div>
           {sidebarExpanded && (
             <div className="flex-1 min-w-0">
               <p className="text-xs leading-4 font-semibold truncate text-white">{profile?.nome || 'Usuário'}</p>
-              <p className="mt-0.5 flex items-center gap-1.5 text-[10px] leading-4 text-slate-400">
+              <p className="mt-0.5 flex items-center gap-1.5 text-xs leading-4 text-slate-400">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                 {profile?.role || 'Sessão ativa'}
               </p>
@@ -244,7 +244,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
             onClick={() => setShowLogoutConfirm(true)}
             title="Sair do sistema"
             aria-label="Sair do sistema"
-            className="shrink-0 p-2 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+            className="shrink-0 p-2 rounded-lg text-slate-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />

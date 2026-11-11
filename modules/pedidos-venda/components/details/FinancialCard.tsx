@@ -25,23 +25,23 @@ const FinancialCard: React.FC<Props> = ({ pedido, valorVendaEfetivo, onAddPaymen
   const saldoRestante = Math.max(0, valorVendaEfetivo - totalLiquidado);
 
   return (
-    <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm p-8 animate-in slide-in-from-bottom-6 duration-700 w-full">
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 animate-in slide-in-from-bottom-6 duration-700 w-full">
       {/* Header do Card com Botão de Ação */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
         <div>
-          <h3 className="text-xl font-black text-slate-900 uppercase tracking-tighter flex items-center">
+          <h3 className="text-xl font-semibold text-slate-900 normal-case tracking-normal flex items-center">
             <svg className="w-6 h-6 mr-3 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
             Composição do Recebimento
           </h3>
-          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Detalhamento financeiro da entrada de capital</p>
+          <p className="text-xs text-slate-400 font-bold normal-case tracking-normal mt-1">Detalhamento financeiro da entrada de capital</p>
         </div>
 
         {!pedido.lote_id && !isSaving && pedido.status === 'RASCUNHO' && (
           <button
             onClick={() => setIsModalOpen(true)}
-            className="px-6 py-3 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-lg active:scale-95 flex items-center"
+            className="px-6 py-3 bg-slate-900 text-white rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-emerald-600 transition-all shadow-sm active:scale-95 flex items-center"
           >
             <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -53,30 +53,30 @@ const FinancialCard: React.FC<Props> = ({ pedido, valorVendaEfetivo, onAddPaymen
 
       {/* Grid de Informações Principais Lado a Lado */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100 shadow-inner group hover:border-indigo-200 transition-colors">
-          <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Data da Venda</p>
-          <p className="text-xl font-black text-slate-800">{formatDate(pedido.data_venda)}</p>
+        <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 shadow-inner group hover:border-indigo-200 transition-colors">
+          <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-1">Data da Venda</p>
+          <p className="text-xl font-semibold text-slate-800">{formatDate(pedido.data_venda)}</p>
         </div>
 
-        <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100 shadow-inner group hover:border-indigo-200 transition-colors">
-          <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Forma Principal</p>
-          <p className="text-xl font-black text-slate-800 uppercase truncate" title={pedido.forma_pagamento?.nome}>
+        <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 shadow-inner group hover:border-indigo-200 transition-colors">
+          <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-1">Forma Principal</p>
+          <p className="text-xl font-semibold text-slate-800 normal-case truncate" title={pedido.forma_pagamento?.nome}>
             {pedido.forma_pagamento?.nome || 'A Combinar'}
           </p>
         </div>
 
-        <div className="bg-emerald-600 p-6 rounded-3xl text-white shadow-xl shadow-emerald-100 relative overflow-hidden group">
+        <div className="bg-emerald-600 p-6 rounded-2xl text-white shadow-sm shadow-emerald-100 relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
-          <p className="text-[9px] font-black uppercase tracking-widest opacity-70 mb-1">
+          <p className="text-xs font-semibold normal-case tracking-normal opacity-70 mb-1">
             {pedido.is_consignado ? 'Comissão da Empresa' : 'Valor Total Negociado'}
           </p>
-          <h4 className="text-2xl font-black tracking-tight">{formatCurrency(valorVendaEfetivo)}</h4>
+          <h4 className="text-2xl font-semibold tracking-tight">{formatCurrency(valorVendaEfetivo)}</h4>
         </div>
       </div>
 
       {/* Indicador de Quitação */}
       <div className="mb-8 px-1">
-        <div className="flex justify-between items-center text-[10px] font-black uppercase mb-2">
+        <div className="flex justify-between items-center text-xs font-semibold normal-case mb-2">
           <span className="text-slate-400">{isConcluido ? 'Recebido no financeiro' : 'Composição do pagamento'}</span>
           <span className={saldoRestante <= 0 ? 'text-emerald-500' : 'text-indigo-500'}>
             {formatCurrency(totalRecebido)} de {formatCurrency(valorVendaEfetivo)}
@@ -89,7 +89,7 @@ const FinancialCard: React.FC<Props> = ({ pedido, valorVendaEfetivo, onAddPaymen
           ></div>
         </div>
         {saldoRestante > 0 && (
-          <p className="text-[9px] font-black text-rose-500 uppercase mt-2 flex items-center">
+          <p className="text-xs font-semibold text-rose-500 normal-case mt-2 flex items-center">
             <svg className="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
             {isConcluido ? 'Saldo a receber' : 'Falta compor'}: {formatCurrency(saldoRestante)}
           </p>
@@ -97,10 +97,10 @@ const FinancialCard: React.FC<Props> = ({ pedido, valorVendaEfetivo, onAddPaymen
       </div>
 
       {/* Tabela de Lançamentos */}
-      <div className="border border-slate-100 rounded-[2rem] overflow-hidden shadow-sm">
+      <div className="border border-slate-100 rounded-2xl overflow-hidden shadow-sm">
         <table className="w-full text-left border-collapse">
           <thead className="bg-slate-50 border-b border-slate-100">
-            <tr className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+            <tr className="text-xs font-semibold text-slate-400 normal-case tracking-normal">
               <th className="px-6 py-5">Lançado em</th>
               <th className="px-6 py-5">Vencimento</th>
               <th className="px-6 py-5">Condição de Recebimento</th>
@@ -118,15 +118,15 @@ const FinancialCard: React.FC<Props> = ({ pedido, valorVendaEfetivo, onAddPaymen
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex flex-col">
-                      <span className="text-xs font-black text-slate-900 uppercase tracking-tight">{formatDate(p.data_recebimento)}</span>
-                      <span className="text-[9px] font-bold text-slate-400 uppercase">Vencimento</span>
+                      <span className="text-xs font-semibold text-slate-900 normal-case tracking-tight">{formatDate(p.data_recebimento)}</span>
+                      <span className="text-xs font-bold text-slate-400 normal-case">Vencimento</span>
                     </div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex flex-col">
-                      <span className="text-xs font-black text-slate-900 uppercase tracking-tight">{(p as any).forma_pagamento?.nome}</span>
+                      <span className="text-xs font-semibold text-slate-900 normal-case tracking-tight">{(p as any).forma_pagamento?.nome}</span>
                       {p.condicao_id && (
-                        <span className="text-[9px] font-bold text-indigo-500 uppercase">{(p as any).condicao?.nome}</span>
+                        <span className="text-xs font-bold text-indigo-500 normal-case">{(p as any).condicao?.nome}</span>
                       )}
                     </div>
                   </td>
@@ -134,15 +134,15 @@ const FinancialCard: React.FC<Props> = ({ pedido, valorVendaEfetivo, onAddPaymen
                     {p.conta_bancaria_id ? (
                       <div className="flex items-center space-x-2">
                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
-                        <span className="text-[10px] font-bold text-slate-600 uppercase">
+                        <span className="text-xs font-bold text-slate-600 normal-case">
                           {(p as any).conta_bancaria?.banco_nome} • {(p as any).conta_bancaria?.conta}
                         </span>
                       </div>
                     ) : (
-                      <span className="text-[10px] font-bold text-slate-300 uppercase italic">Não vinculada</span>
+                      <span className="text-xs font-bold text-slate-300 normal-case italic">Não vinculada</span>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-sm font-black text-slate-800 text-right">
+                  <td className="px-6 py-4 text-sm font-semibold text-slate-800 text-right">
                     {formatCurrency(p.valor)}
                   </td>
                   {!pedido.lote_id && pedido.status === 'RASCUNHO' && (
@@ -163,7 +163,7 @@ const FinancialCard: React.FC<Props> = ({ pedido, valorVendaEfetivo, onAddPaymen
                 <td colSpan={!pedido.lote_id && pedido.status === 'RASCUNHO' ? 6 : 5} className="px-6 py-16 text-center">
                   <div className="flex flex-col items-center opacity-30">
                     <svg className="w-12 h-12 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
-                    <p className="text-xs font-black uppercase tracking-widest">Nenhum recebimento estruturado.</p>
+                    <p className="text-xs font-semibold normal-case tracking-normal">Nenhum recebimento estruturado.</p>
                   </div>
                 </td>
               </tr>

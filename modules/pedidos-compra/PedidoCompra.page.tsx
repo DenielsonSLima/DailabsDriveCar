@@ -84,12 +84,12 @@ const PedidoCompraPage: React.FC = () => {
     <div className="space-y-6 animate-in fade-in duration-500 pb-20">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 tracking-tighter">Pedidos de Compra</h1>
-          <p className="text-slate-500 mt-1 uppercase text-[10px] font-black tracking-widest">Gestão de aquisições de frota</p>
+          <h1 className="text-3xl font-bold text-slate-900 tracking-normal">Pedidos de Compra</h1>
+          <p className="text-slate-500 mt-1 normal-case text-xs font-semibold tracking-normal">Gestão de aquisições de frota</p>
         </div>
         <button
           onClick={() => navigate('/pedidos-compra/novo')}
-          className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-sm font-black uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg active:scale-95 flex items-center"
+          className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-sm font-semibold normal-case tracking-normal hover:bg-indigo-700 transition-all shadow-sm active:scale-95 flex items-center"
         >
           <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
           Novo Pedido
@@ -103,11 +103,11 @@ const PedidoCompraPage: React.FC = () => {
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${activeTab === tab ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+            className={`px-6 py-2 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all flex items-center gap-2 ${activeTab === tab ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
           >
             {tab === 'EFETIVADOS' ? 'Efetivados' : tab === 'RASCUNHO' ? 'Rascunhos' : 'Ver Todos'}
             {tab === 'RASCUNHO' && draftCount > 0 && (
-              <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${activeTab === 'RASCUNHO' ? 'bg-amber-100 text-amber-600' : 'bg-slate-200 text-slate-500'}`}>
+              <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${activeTab === 'RASCUNHO' ? 'bg-amber-100 text-amber-600' : 'bg-slate-200 text-slate-500'}`}>
                 {draftCount}
               </span>
             )}
@@ -138,7 +138,7 @@ const PedidoCompraPage: React.FC = () => {
       {/* Pagination */}
       {!isLoadingList && totalPages > 1 && (
         <div className="flex items-center justify-between mt-8 pt-6 border-t border-slate-100">
-          <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">
+          <p className="text-xs text-slate-400 font-bold normal-case tracking-normal">
             Página <span className="text-slate-900">{currentPage}</span> de <span className="text-slate-900">{totalPages}</span>
             <span className="ml-2 opacity-50">({totalCount} pedidos)</span>
           </p>
@@ -146,21 +146,21 @@ const PedidoCompraPage: React.FC = () => {
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              className="p-3 rounded-2xl hover:bg-slate-50 text-slate-400 hover:text-indigo-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              className="p-3 rounded-xl hover:bg-slate-50 text-slate-400 hover:text-indigo-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
 
-            <button className="w-10 h-10 rounded-xl text-xs font-black bg-indigo-600 text-white shadow-lg shadow-indigo-200 scale-110 transition-all">
+            <button className="w-10 h-10 rounded-xl text-xs font-semibold bg-indigo-600 text-white shadow-sm shadow-indigo-200 scale-110 transition-all">
               {currentPage}
             </button>
 
             <button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="p-3 rounded-2xl hover:bg-slate-50 text-slate-400 hover:text-indigo-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              className="p-3 rounded-xl hover:bg-slate-50 text-slate-400 hover:text-indigo-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

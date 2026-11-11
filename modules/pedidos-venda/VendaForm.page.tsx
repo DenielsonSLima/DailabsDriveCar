@@ -154,12 +154,12 @@ const VendaFormPage: React.FC = () => {
   if (isLoading) return (
     <div className="flex flex-col items-center justify-center py-40">
       <div className="w-10 h-10 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin mb-4"></div>
-      <p className="text-slate-400 font-black uppercase text-[10px] tracking-widest">Preparando Pedido...</p>
+      <p className="text-slate-400 font-semibold normal-case text-xs tracking-normal">Preparando Pedido...</p>
     </div>
   );
 
   if (pedidoOriginal?.lote_id) return (
-    <div className="max-w-4xl mx-auto p-8 space-y-4 bg-white rounded-2xl">
+    <div className="max-w-4xl mx-auto p-6 space-y-4 bg-white rounded-2xl">
       <p>Esta venda é gerenciada no lote de origem.</p>
       <button onClick={() => navigate(`/lotes/${pedidoOriginal.lote_id}`)} className="px-5 py-3 bg-indigo-600 text-white rounded-xl">Gerenciar lote</button>
     </div>

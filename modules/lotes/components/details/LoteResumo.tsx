@@ -37,9 +37,9 @@ function ResumoValor({ label, value, hint, tone = 'neutral' }: {
   const color = { neutral: 'text-slate-900', indigo: 'text-indigo-600', emerald: 'text-emerald-600', rose: 'text-rose-600' }[tone];
   return (
     <div className="min-w-0">
-      <dt className="text-[10px] font-black uppercase tracking-widest text-slate-400">{label}</dt>
+      <dt className="text-xs font-semibold normal-case tracking-normal text-slate-400">{label}</dt>
       <dd className="mt-1">
-        <p className={`break-words text-lg font-black tracking-tight tabular-nums ${color}`}>{value}</p>
+        <p className={`break-words text-lg font-semibold tracking-tight tabular-nums ${color}`}>{value}</p>
         {hint && <p className="mt-1 text-xs leading-relaxed text-slate-500">{hint}</p>}
       </dd>
     </div>
@@ -48,7 +48,7 @@ function ResumoValor({ label, value, hint, tone = 'neutral' }: {
 
 function Atalho({ children, onClick }: { children: React.ReactNode; onClick: () => void }) {
   return (
-    <button type="button" onClick={onClick} className="inline-flex min-h-10 items-center gap-2 rounded-xl px-2 text-xs font-bold text-indigo-600 hover:bg-indigo-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+    <button type="button" onClick={onClick} className="inline-flex min-h-10 items-center gap-2 rounded-xl px-2 text-xs font-semibold text-indigo-600 hover:bg-indigo-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
       {children}<ArrowRight size={14} aria-hidden="true" />
     </button>
   );
@@ -100,8 +100,8 @@ export default function LoteResumo({ detalhes, stats, onEncerrar, canClose, onNa
         </LoteSection>
       </div>
 
-      <details className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm">
-        <summary className="cursor-pointer p-5 text-sm font-black text-slate-900 focus-visible:outline focus-visible:outline-indigo-600 sm:px-6">Caixa e contas do lote</summary>
+      <details className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <summary className="cursor-pointer p-5 text-sm font-semibold text-slate-900 focus-visible:outline focus-visible:outline-indigo-600 sm:px-6">Caixa e contas do lote</summary>
         <div className="border-t border-slate-100 p-5 sm:p-6">
           <p className="text-xs leading-relaxed text-slate-500">O fluxo de caixa mostra somente o dinheiro recebido e pago. A saída para comprar estoque não representa, por si só, prejuízo.</p>
           <dl className="mt-4 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
@@ -115,8 +115,8 @@ export default function LoteResumo({ detalhes, stats, onEncerrar, canClose, onNa
         </div>
       </details>
 
-      <details className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm">
-        <summary className="cursor-pointer p-5 text-sm font-black text-slate-900 focus-visible:outline focus-visible:outline-indigo-600 sm:px-6">Evolução dos custos das vendas</summary>
+      <details className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <summary className="cursor-pointer p-5 text-sm font-semibold text-slate-900 focus-visible:outline focus-visible:outline-indigo-600 sm:px-6">Evolução dos custos das vendas</summary>
         <div className="border-t border-slate-100 p-5 sm:p-6">
           <p className="text-xs leading-relaxed text-slate-500">A referência da venda é preservada. Novas despesas podem alterar o custo e o lucro atualizado enquanto o lote estiver aberto.</p>
           <dl className="mt-4 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
@@ -128,9 +128,9 @@ export default function LoteResumo({ detalhes, stats, onEncerrar, canClose, onNa
         </div>
       </details>
 
-      <section aria-label="Encerramento do lote" className="flex flex-col gap-4 rounded-[2rem] border border-slate-200 bg-white p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+      <section aria-label="Encerramento do lote" className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
         <div className="min-w-0">
-          <h2 className="text-sm font-black uppercase tracking-tight text-slate-900">{detalhes.lote.encerrado ? 'Lote encerrado' : 'Encerramento do lote'}</h2>
+          <h2 className="text-sm font-semibold normal-case tracking-tight text-slate-900">{detalhes.lote.encerrado ? 'Lote encerrado' : 'Encerramento do lote'}</h2>
           <p className="mt-1 max-w-3xl text-xs leading-relaxed text-slate-500">
             {detalhes.lote.encerrado ? 'O histórico de unidades, custos e movimentações permanece disponível nas abas.' : canClose ? 'Todas as unidades foram vendidas e as contas estão quitadas. O lote pode ser encerrado.' : 'Disponível após a venda de todas as unidades e a quitação das contas do lote.'}
           </p>

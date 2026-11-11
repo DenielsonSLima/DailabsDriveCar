@@ -58,13 +58,13 @@ const PurchasePartnersResultKpis: React.FC<Props> = ({ pedido }) => {
   if (stats.length === 0) return null;
 
   return (
-    <div className="bg-white border border-slate-200 rounded-[2rem] shadow-sm animate-in slide-in-from-top-4 duration-500 overflow-hidden">
+    <div className="bg-white border border-slate-200 rounded-2xl shadow-sm animate-in slide-in-from-top-4 duration-500 overflow-hidden">
       <div className="bg-slate-50/50 border-b border-slate-100 px-6 py-3 flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <div className="w-1 h-3 bg-indigo-600 rounded-full"></div>
-          <h3 className="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em]">Composição Societária do Investimento</h3>
+          <h3 className="text-xs font-semibold text-slate-500 normal-case tracking-normal">Composição Societária do Investimento</h3>
         </div>
-        <span className="text-[8px] font-black bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-lg uppercase tracking-widest">
+        <span className="text-xs font-semibold bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-lg normal-case tracking-normal">
           {stats.length} {stats.length === 1 ? 'Sócio' : 'Sócios'}
         </span>
       </div>
@@ -75,17 +75,17 @@ const PurchasePartnersResultKpis: React.FC<Props> = ({ pedido }) => {
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
               {/* Partner Info */}
               <div className="flex items-center space-x-3 lg:w-1/4 min-w-[200px]">
-                <div className="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-black text-sm shadow-md shadow-indigo-100 uppercase shrink-0">
+                <div className="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-semibold text-sm shadow-md shadow-indigo-100 normal-case shrink-0">
                   {socio.nome.charAt(0)}
                 </div>
                 <div className="min-w-0">
-                  <h4 className="text-sm font-black text-slate-900 uppercase tracking-tight truncate">
+                  <h4 className="text-sm font-semibold text-slate-900 normal-case tracking-tight truncate">
                     {socio.nome}
                   </h4>
                   <div className="flex items-center space-x-2">
-                    <p className="text-[8px] font-bold text-indigo-500 uppercase tracking-widest">Investidor Ativo</p>
-                    <span className="text-[10px] font-black text-slate-300">•</span>
-                    <span className="text-[10px] font-black text-indigo-600">{Number(socio.porcentagem).toFixed(2)}%</span>
+                    <p className="text-xs font-bold text-indigo-500 normal-case tracking-normal">Investidor Ativo</p>
+                    <span className="text-xs font-semibold text-slate-300">•</span>
+                    <span className="text-xs font-semibold text-indigo-600">{Number(socio.porcentagem).toFixed(2)}%</span>
                   </div>
                 </div>
               </div>
@@ -103,13 +103,13 @@ const PurchasePartnersResultKpis: React.FC<Props> = ({ pedido }) => {
               {/* Financial KPIs - Compacted */}
               <div className="grid grid-cols-2 md:flex md:items-center gap-6 md:gap-8">
                 <div className="flex flex-col">
-                  <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Aporte</p>
-                  <p className="text-xs font-black text-slate-700">{formatCurrency(socio.investido)}</p>
+                  <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-0.5">Aporte</p>
+                  <p className="text-xs font-semibold text-slate-700">{formatCurrency(socio.investido)}</p>
                 </div>
 
                 <div className="flex flex-col">
-                  <p className="text-[8px] font-black text-indigo-400 uppercase tracking-widest mb-0.5">Lucro Est.</p>
-                  <p className="text-xs font-black text-slate-700">{formatCurrency(socio.retorno)}</p>
+                  <p className="text-xs font-semibold text-indigo-400 normal-case tracking-normal mb-0.5">Lucro Est.</p>
+                  <p className="text-xs font-semibold text-slate-700">{formatCurrency(socio.retorno)}</p>
                 </div>
 
                 <div className="col-span-2 md:col-span-1">
@@ -118,7 +118,7 @@ const PurchasePartnersResultKpis: React.FC<Props> = ({ pedido }) => {
                     <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                       <path d={socio.margem >= 0 ? "M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" : "M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6"} />
                     </svg>
-                    <span className="text-[10px] font-black uppercase tracking-tight">{socio.margem.toFixed(1)}% Margem Ref.</span>
+                    <span className="text-xs font-semibold normal-case tracking-tight">{socio.margem.toFixed(1)}% Margem Ref.</span>
                   </div>
                 </div>
               </div>

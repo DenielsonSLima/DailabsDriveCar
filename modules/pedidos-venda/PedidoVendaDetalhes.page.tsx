@@ -277,7 +277,7 @@ const PedidoVendaDetalhesPage: React.FC = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh]">
         <div className="w-12 h-12 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
-        <p className="mt-4 text-slate-400 font-black uppercase text-[10px] tracking-widest">Sincronizando Venda...</p>
+        <p className="mt-4 text-slate-400 font-semibold normal-case text-xs tracking-normal">Sincronizando Venda...</p>
       </div>
     );
   }
@@ -287,7 +287,7 @@ const PedidoVendaDetalhesPage: React.FC = () => {
 
       {/* Toast Notification */}
       {toast && (
-        <div className={`fixed top-6 right-6 z-[300] px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 animate-in slide-in-from-right duration-300 border backdrop-blur-md ${toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' : 'bg-rose-600 text-white border-rose-400/50'
+        <div className={`fixed top-6 right-6 z-[300] px-6 py-4 rounded-2xl shadow-sm flex items-center space-x-3 animate-in slide-in-from-right duration-300 border backdrop-blur-sm ${toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' : 'bg-rose-600 text-white border-rose-400/50'
           }`}>
           <span className="font-bold text-sm tracking-tight">{toast.message}</span>
         </div>
@@ -315,7 +315,7 @@ const PedidoVendaDetalhesPage: React.FC = () => {
       <VendaAnalyticsKpis pedido={pedido} />
 
       {/* 5. Ativo Negociado (Padrão Grid Fixo 380px) */}
-      <section ref={vehicleSectionRef} className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm p-6 md:p-8">
+      <section ref={vehicleSectionRef} className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 md:p-6">
         <VeiculosVendaList
           pedido={pedido}
           veiculosDisponiveis={veiculosDisponiveis}

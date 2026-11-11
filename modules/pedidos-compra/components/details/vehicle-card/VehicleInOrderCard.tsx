@@ -46,14 +46,14 @@ const VehicleInOrderCard: React.FC<Props> = ({ veiculo, pedidoId, isConcluido, o
   };
 
   return (
-    <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm relative overflow-hidden transition-all duration-500 hover:shadow-xl hover:border-indigo-300 group animate-in slide-in-from-bottom-4">
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden transition-all duration-500 hover:shadow-sm hover:border-indigo-300 group animate-in slide-in-from-bottom-4">
 
       {/* Barra de Ações Flutuante */}
       <div className="absolute top-6 right-6 z-20 flex space-x-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
         {!isConcluido && (
           <button
             onClick={handleEdit}
-            className="p-3 bg-white border border-slate-200 text-indigo-500 rounded-2xl hover:bg-indigo-600 hover:text-white transition-all shadow-lg active:scale-95"
+            className="p-3 bg-white border border-slate-200 text-indigo-500 rounded-xl hover:bg-indigo-600 hover:text-white transition-all shadow-sm active:scale-95"
             title="Editar Ficha Técnica"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -65,7 +65,7 @@ const VehicleInOrderCard: React.FC<Props> = ({ veiculo, pedidoId, isConcluido, o
         {!isConcluido && (
           <button
             onClick={(e) => { e.stopPropagation(); onUnlink(veiculo.id); }}
-            className="p-3 bg-white border border-slate-200 text-rose-500 rounded-2xl hover:bg-rose-500 hover:text-white transition-all shadow-lg active:scale-95"
+            className="p-3 bg-white border border-slate-200 text-rose-500 rounded-xl hover:bg-rose-500 hover:text-white transition-all shadow-sm active:scale-95"
             title="Remover do Pedido"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>

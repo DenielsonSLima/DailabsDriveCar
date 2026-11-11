@@ -32,7 +32,7 @@ const PublicBrands: React.FC<Props> = React.memo(({ montadoras }) => {
             <button
               key={m.id}
               onClick={() => handleBrandClick(m.id)}
-              className="group bg-white border border-slate-100 rounded-[2.5rem] p-8 flex flex-col items-center justify-center text-center hover:border-orange-200 hover:shadow-[0_20px_50px_-20px_rgba(249,115,22,0.15)] transition-all duration-500 cursor-pointer relative overflow-hidden active:scale-95 focus:outline-none focus:ring-4 focus:ring-orange-500/20"
+              className="group bg-white border border-slate-100 rounded-2xl p-8 flex flex-col items-center justify-center text-center hover:border-orange-200 hover:shadow-[0_20px_50px_-20px_rgba(249,115,22,0.15)] transition-all duration-500 cursor-pointer relative overflow-hidden active:scale-95 focus:outline-none focus:ring-4 focus:ring-orange-500/20"
             >
               {/* Logo sem grayscale e com scale no hover */}
               <div className="h-16 w-full flex items-center justify-center mb-4 transition-transform duration-500 transform group-hover:scale-125">

@@ -22,7 +22,7 @@ const EstoquePublicoList: React.FC<Props> = ({ veiculos, isGrouped }) => {
     const list = veiculos as IVeiculo[];
     if (list.length === 0) {
       return (
-        <div className="py-32 text-center bg-white rounded-[3rem] border border-slate-200 border-dashed animate-in fade-in duration-500">
+        <div className="py-32 text-center bg-white rounded-2xl border border-slate-200 border-dashed animate-in fade-in duration-500">
           <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6 text-slate-200">
              <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
           </div>

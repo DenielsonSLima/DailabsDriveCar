@@ -88,7 +88,7 @@ const AboutUs: React.FC<Props> = React.memo(({ subtitulo, titulo, paragrafos, im
           </div>
 
           <div className="relative w-full h-full min-h-[320px]">
-            <div className="w-full h-full rounded-[2rem] overflow-hidden shadow-2xl ring-4 ring-slate-50">
+            <div className="w-full h-full rounded-2xl overflow-hidden shadow-sm ring-4 ring-slate-50">
               {/* Imagem Institucional (Fachada) */}
               <img src={imgSrc} className="w-full h-full object-cover" alt="Fachada" />
             </div>

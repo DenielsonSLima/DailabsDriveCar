@@ -60,7 +60,7 @@ const FormasPagamentoList: React.FC<Props> = ({ items, onEdit, onDelete }) => {
         const style = getMovimentacaoStyle(item.tipo_movimentacao);
         
         return (
-          <div key={item.id} className="group relative bg-white rounded-[2rem] border border-slate-100 p-6 shadow-sm hover:shadow-xl hover:border-indigo-200 transition-all duration-300 flex flex-col justify-between h-full">
+          <div key={item.id} className="group relative bg-white rounded-2xl border border-slate-100 p-6 shadow-sm hover:shadow-sm hover:border-indigo-200 transition-all duration-200 flex flex-col justify-between h-full">
             
             <div className="space-y-4">
               {/* Header */}
@@ -70,22 +70,22 @@ const FormasPagamentoList: React.FC<Props> = ({ items, onEdit, onDelete }) => {
                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={style.icon} />
                    </svg>
                 </div>
-                <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border ${style.border} ${style.bg} ${style.text}`}>
+                <span className={`px-2.5 py-1 rounded-lg text-xs font-medium normal-case tracking-normal border ${style.border} ${style.bg} ${style.text}`}>
                   {style.label}
                 </span>
               </div>
 
               <div>
-                <h3 className="font-black text-slate-900 text-lg leading-tight mb-1">
+                <h3 className="font-semibold text-slate-900 text-lg leading-tight mb-1">
                   {item.nome}
                 </h3>
                 {item.ativo ? (
-                  <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest flex items-center">
+                  <span className="text-xs font-medium text-emerald-500 normal-case tracking-normal flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></div>
                     Ativo
                   </span>
                 ) : (
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center">
+                  <span className="text-xs font-medium text-slate-500 normal-case tracking-normal flex items-center">
                     <div className="w-1.5 h-1.5 rounded-full bg-slate-300 mr-1.5"></div>
                     Inativo
                   </span>
@@ -97,20 +97,20 @@ const FormasPagamentoList: React.FC<Props> = ({ items, onEdit, onDelete }) => {
               {/* Detalhes Financeiros */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Destino</span>
-                  <span className={`text-xs font-bold px-2 py-0.5 rounded-md ${getDestinoBadgeColor(item.destino_lancamento)}`}>
+                  <span className="text-xs font-medium text-slate-500 normal-case tracking-normal">Destino</span>
+                  <span className={`text-xs font-medium px-2 py-0.5 rounded-md ${getDestinoBadgeColor(item.destino_lancamento)}`}>
                     {formatDestino(item.destino_lancamento)}
                   </span>
                 </div>
                 
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Parcelamento</span>
+                  <span className="text-xs font-medium text-slate-500 normal-case tracking-normal">Parcelamento</span>
                   {item.permite_parcelamento ? (
-                    <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-100">
+                    <span className="text-xs font-medium text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-100">
                       Até {item.qtd_max_parcelas}x
                     </span>
                   ) : (
-                    <span className="text-xs font-bold text-slate-500 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-100">
+                    <span className="text-xs font-medium text-slate-500 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-100">
                       Não
                     </span>
                   )}
@@ -120,7 +120,7 @@ const FormasPagamentoList: React.FC<Props> = ({ items, onEdit, onDelete }) => {
               {/* Observações */}
               {item.observacoes && (
                 <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 mt-2">
-                  <p className="text-[10px] text-slate-500 italic leading-relaxed line-clamp-2">
+                  <p className="text-xs text-slate-500 italic leading-relaxed line-clamp-2">
                     "{item.observacoes}"
                   </p>
                 </div>

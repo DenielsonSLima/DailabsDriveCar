@@ -18,7 +18,7 @@ const PedidosFilters: React.FC<Props> = ({ filtros, onChange, socios = [], corre
   };
 
   return (
-    <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm mb-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mb-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
       <div className="flex flex-col xl:flex-row gap-6">
 
         {/* Busca Textual */}
@@ -33,7 +33,7 @@ const PedidosFilters: React.FC<Props> = ({ filtros, onChange, socios = [], corre
             placeholder="Buscar pedido, veículo ou fornecedor..."
             value={filtros.busca}
             onChange={(e) => handleChange('busca', e.target.value)}
-            className="w-full bg-white border border-slate-200 rounded-2xl py-3.5 pl-10 pr-4 text-sm font-bold focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all placeholder:font-medium text-[#111827]"
+            className="w-full bg-white border border-slate-200 rounded-xl py-3.5 pl-10 pr-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all placeholder:font-medium text-[#111827]"
           />
         </div>
 
@@ -46,7 +46,7 @@ const PedidosFilters: React.FC<Props> = ({ filtros, onChange, socios = [], corre
               type="date"
               value={filtros.dataInicio}
               onChange={(e) => handleChange('dataInicio', e.target.value)}
-              className="bg-white text-xs font-bold text-[#111827] outline-none px-2 py-1.5 cursor-pointer"
+              className="bg-white text-xs font-medium text-[#111827] outline-none px-2 py-1.5 cursor-pointer"
               title="Data Início"
             />
             <span className="text-slate-300">-</span>
@@ -54,7 +54,7 @@ const PedidosFilters: React.FC<Props> = ({ filtros, onChange, socios = [], corre
               type="date"
               value={filtros.dataFim}
               onChange={(e) => handleChange('dataFim', e.target.value)}
-              className="bg-white text-xs font-bold text-[#111827] outline-none px-2 py-1.5 cursor-pointer"
+              className="bg-white text-xs font-medium text-[#111827] outline-none px-2 py-1.5 cursor-pointer"
               title="Data Fim"
             />
           </div>
@@ -66,7 +66,7 @@ const PedidosFilters: React.FC<Props> = ({ filtros, onChange, socios = [], corre
             <select
               value={filtros.socioId}
               onChange={(e) => handleChange('socioId', e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-bold outline-none focus:ring-2 focus:ring-indigo-500/20 cursor-pointer text-[#111827]"
+              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-medium outline-none focus:ring-2 focus:ring-indigo-500/20 cursor-pointer text-[#111827]"
             >
               <option value="">Todos os Sócios</option>
               {socios.map(s => <option key={s.id} value={s.id!}>{s.nome}</option>)}
@@ -78,7 +78,7 @@ const PedidosFilters: React.FC<Props> = ({ filtros, onChange, socios = [], corre
             <select
               value={filtros.corretorId}
               onChange={(e) => handleChange('corretorId', e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-bold outline-none focus:ring-2 focus:ring-indigo-500/20 cursor-pointer text-[#111827]"
+              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-medium outline-none focus:ring-2 focus:ring-indigo-500/20 cursor-pointer text-[#111827]"
             >
               <option value="">Todos Corretores</option>
               {corretores.map(c => <option key={c.id} value={c.id}>{c.nome} {c.sobrenome}</option>)}
