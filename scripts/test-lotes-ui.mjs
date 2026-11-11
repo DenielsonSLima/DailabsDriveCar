@@ -31,7 +31,7 @@ export const catalogos = {
 };
 function title(data) {
   const paid = data.valor_pago || 0;
-  return { id: id('titulo'), descricao: '', tipo: 'PAGAR', status: paid === data.valor_total ? 'PAGO' : paid > 0 ? 'PARCIAL' : 'PENDENTE',
+  return { id: id('titulo'), lote_id: 'demo-lote', descricao: '', tipo: 'PAGAR', status: paid === data.valor_total ? 'PAGO' : paid > 0 ? 'PARCIAL' : 'PENDENTE',
     valor_pago: paid, valor_liquidado: paid, valor_pendente: Math.round((data.valor_total - paid) * 100) / 100,
     data_emissao: today(), data_vencimento: today(), parcela_numero: 1, parcela_total: 1, created_at: new Date().toISOString(), ...data };
 }
@@ -162,6 +162,9 @@ const view = (aba = 'resumo') => <QueryClientProvider client={client}><MemoryRou
 
 function offlinePlugin(ssr = false) {
   return { name: 'lotes-offline-only', setup(bundler) {
+    // Financeiro interactions have their own focused harness; never import remote services here.
+    bundler.onLoad({ filter: /lotes\.financeiro\.service\.ts$/ }, () => ({ contents: 'export const LoteFinanceiroService = { getRecebimento: async () => { throw new Error("Histórico não configurado nesta prévia"); } };', loader: 'ts' }));
+    bundler.onLoad({ filter: /(?:ModalBaixa|ReceberQuickView)\.tsx$/ }, () => ({ contents: 'export default function OfflineFinanceModal() { return null; }', loader: 'tsx' }));
     bundler.onLoad({ filter: /modules\/lotes\/lotes\.service\.ts$/ }, () => ({ contents: mockService, loader: 'ts' }));
     bundler.onLoad({ filter: /lib\/supabase\.ts$/ }, () => { throw new Error('The UI harness must never import the real Supabase client.'); });
     if (ssr) bundler.onLoad({ filter: /modules\/lotes\/components\/LoteUi\.tsx$/ }, async args => ({
@@ -261,6 +264,12 @@ console.log('OK: abas isoladas, contas por origem, médias sem canceladas/rascun
     await mkdir(target, { recursive: true });
     const bundle = await build({ stdin: { resolveDir: root, loader: 'tsx', contents: `${sharedImports}
 import { createRoot } from 'react-dom/client';
+if (new URLSearchParams(location.search).has('populated')) {
+  const data = new Date().toLocaleDateString('en-CA');
+  await LotesService.registrarDespesa('demo-lote', { descricao: 'Frete de demonstração', valor_total: 10000, categoria_id: 'frete', data_vencimento: data, pago_agora: true }, 'preview-despesa');
+  for (let index = 0; index < 4; index++) await LotesService.registrarVenda('demo-lote', { cliente_id: 'cliente', quantidade: 2, valor_total: 18000, data_venda: data, pagamentos: [{ valor: 18000, data_recebimento: data, conta_bancaria_id: null, forma_pagamento_id: 'pix' }] }, 'preview-venda-' + index);
+  seed();
+}
 createRoot(document.getElementById('lote-preview')).render(view());
 ` }, bundle: true, platform: 'browser', format: 'esm', outfile: join(target, 'lote-preview.js'), logLevel: 'silent', metafile: true,
       define: { 'process.env.NODE_ENV': '"development"' }, plugins: [offlinePlugin()] });

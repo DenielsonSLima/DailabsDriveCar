@@ -14,9 +14,10 @@ interface ReceberQuickViewProps {
     titulo: ITituloReceber;
     isOpen: boolean;
     onClose: () => void;
+    readOnly?: boolean;
 }
 
-const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onClose }) => {
+const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onClose, readOnly = false }) => {
     const queryClient = useQueryClient();
     const [refreshKey, setRefreshKey] = useState(0);
 
@@ -314,7 +315,7 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                         )}
                     </div>
 
-                    {titulo.origem_tipo === 'MANUAL' && titulo.venda_pedido_id && (
+                    {!readOnly && titulo.origem_tipo === 'MANUAL' && titulo.venda_pedido_id && (
                         <button
                             onClick={() => handleEditLoan(titulo)}
                             className="w-full px-4 py-3 rounded-xl text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition-colors"
@@ -387,7 +388,7 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                     ) : null}
 
                     {/* Lançamento Adicional / Empréstimo */}
-                    {(titulo as any).venda_pedido_id && (
+                    {!readOnly && (titulo as any).venda_pedido_id && (
                         <div className="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100/50">
                             <div className="flex items-center justify-between">
                                 <div>
@@ -549,7 +550,7 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                                                 </div>
                                             </div>
 
-                                            <div className="flex items-center sm:flex-col gap-1 border-t sm:border-t-0 sm:border-l border-indigo-100 pt-3 sm:pt-0 sm:pl-3">
+                                            <div hidden={readOnly} className={readOnly ? 'hidden' : "flex items-center sm:flex-col gap-1 border-t sm:border-t-0 sm:border-l border-indigo-100 pt-3 sm:pt-0 sm:pl-3"}>
                                                 <button 
                                                     onClick={() => handleEditLoan(sub)}
                                                     className="flex-1 sm:flex-none p-2 text-indigo-400 hover:text-indigo-600 rounded-lg transition-colors bg-white/50 border border-slate-200/50 hover:bg-indigo-50 hover:border-indigo-200 flex justify-center items-center"
@@ -651,7 +652,7 @@ const ReceberQuickView: React.FC<ReceberQuickViewProps> = ({ titulo, isOpen, onC
                                                     </div>
                                                 </div>
                                             )}
-                                            {editandoId !== t.id && (
+                                            {!readOnly && editandoId !== t.id && (
                                                 <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-all">
                                                     <button
                                                         onClick={() => handleStartEdit(t)}
