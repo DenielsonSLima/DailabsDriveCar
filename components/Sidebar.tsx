@@ -101,7 +101,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
 
       <aside
         aria-label="Menu principal"
-        style={{ fontFamily: "Outfit, Inter, system-ui, sans-serif", letterSpacing: "0.01em" }}
+        style={{ fontFamily: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", letterSpacing: "normal" }}
         className={`app-sidebar fixed left-0 top-0 h-dvh bg-[#11151c] text-slate-200 border-r border-white/[0.06] transition-[width,transform] duration-200 motion-reduce:transition-none z-[70] flex flex-col
           ${sidebarExpanded ? 'w-60' : 'w-20'}
           ${isMobileOpen ? 'translate-x-0 md:transform-none' : '-translate-x-full md:transform-none'}
