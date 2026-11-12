@@ -65,9 +65,9 @@ const FormMontadora: React.FC<FormProps> = ({ initialData, isSaving, onClose, on
   const content = (
     <div data-drivecar-ui className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-white w-full max-w-lg rounded-2xl shadow-sm overflow-hidden">
-        <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+        <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
           <div>
-            <h2 className="text-2xl font-semibold text-slate-900 normal-case tracking-tight">
+            <h2 className="dc-modal-title">
               {initialData ? 'Editar Marca' : 'Nova Montadora'}
             </h2>
             <p className="text-slate-500 text-xs">A logo será exibida em todo o sistema e site.</p>
@@ -79,7 +79,7 @@ const FormMontadora: React.FC<FormProps> = ({ initialData, isSaving, onClose, on
           </button>
         </div>
 
-        <form onSubmit={handleFormSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleFormSubmit} className="p-4 space-y-6">
           {/* Logo Section */}
           <div className="flex flex-col items-center">
             <label className="block text-xs font-medium text-slate-500 normal-case mb-4 tracking-normal self-start ml-1">Logo da Montadora</label>
@@ -91,7 +91,7 @@ const FormMontadora: React.FC<FormProps> = ({ initialData, isSaving, onClose, on
                 }`}
             >
               {formData.logo_url ? (
-                <img src={formData.logo_url} className="max-h-full max-w-full object-contain p-6" alt="Logo Preview" />
+                <img src={formData.logo_url} className="max-h-full max-w-full object-contain p-4" alt="Logo Preview" />
               ) : (
                 <div className="text-center">
                   <svg className="w-10 h-10 mx-auto text-slate-300 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">

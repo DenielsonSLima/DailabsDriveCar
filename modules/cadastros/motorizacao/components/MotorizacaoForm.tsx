@@ -31,9 +31,9 @@ const MotorizacaoForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSu
   const content = (
     <div data-drivecar-ui className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-white w-full max-w-md rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 duration-200">
-        <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+        <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
           <div>
-            <h2 className="text-xl font-semibold text-slate-900 normal-case tracking-tight">
+            <h2 className="dc-modal-title">
               {initialData ? 'Editar Motor' : 'Nova Motorização'}
             </h2>
             <p className="text-slate-500 text-xs font-medium normal-case tracking-normal mt-1">Potência e Cilindrada</p>
@@ -45,7 +45,7 @@ const MotorizacaoForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSu
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="p-4 space-y-6">
           <div>
             <label className="block text-xs font-medium text-slate-500 normal-case mb-2 tracking-normal ml-1">Descrição do Motor</label>
             <input

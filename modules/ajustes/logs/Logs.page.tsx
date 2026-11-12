@@ -35,27 +35,27 @@ const LogsPage: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="dc-page">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-6">
-          <div className="flex items-center justify-between h-20">
+      <div className="w-full">
+        <div className="w-full">
+          <div className="dc-page-header">
             <div className="flex items-center gap-4">
               <button 
                 onClick={() => navigate('/ajustes')}
-                className="p-2 hover:bg-gray-100 rounded-xl transition-all text-gray-400 hover:text-gray-600"
+                className="dc-button hover:bg-gray-100 transition-all text-gray-400 hover:text-gray-600"
               >
                 <ChevronLeft className="w-6 h-6" />
               </button>
               <div>
-                <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">Logs de Sistema</h1>
-                <p className="text-sm text-gray-500 font-medium">Trilha de auditoria e histórico de alterações</p>
+                <h1 className="dc-page-title text-gray-900">Logs de Sistema</h1>
+                <p className="dc-page-subtitle">Trilha de auditoria e histórico de alterações</p>
               </div>
             </div>
             <button 
               onClick={loadLogs}
               disabled={loading}
-              className="p-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-all shadow-sm text-gray-500 disabled:opacity-50"
+              className="dc-button bg-white border border-gray-200 hover:bg-gray-50 transition-all shadow-sm text-gray-500 disabled:opacity-50"
             >
               <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
             </button>
@@ -63,9 +63,9 @@ const LogsPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-6 py-6 w-full space-y-6">
+      <div className="w-full space-y-6">
         {/* Filters */}
-        <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 flex flex-col md:flex-row gap-4">
+        <div className="dc-filterbar flex flex-col md:flex-row">
           <div className="relative flex-1">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
               <Search className="w-5 h-5" />
@@ -73,7 +73,7 @@ const LogsPage: React.FC = () => {
             <input
               type="text"
               placeholder="Buscar por usuário, ação ou o que foi alterado..."
-              className="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-xl leading-5 bg-gray-50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent sm:text-sm transition-all"
+              className="dc-input block w-full pl-10 pr-3 border border-gray-200 bg-gray-50 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -83,15 +83,15 @@ const LogsPage: React.FC = () => {
         {/* Table */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
+            <table className="dc-table min-w-full divide-y divide-slate-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 normal-case tracking-normal">Data/Hora</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 normal-case tracking-normal">Usuário</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 normal-case tracking-normal">O que mudou?</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 normal-case tracking-normal">Módulo</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 normal-case tracking-normal">Tipo</th>
-                  <th className="px-6 py-4 text-right text-xs font-medium text-gray-500 normal-case tracking-normal">Detalhes</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 normal-case tracking-normal">Data/Hora</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 normal-case tracking-normal">Usuário</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 normal-case tracking-normal">O que mudou?</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 normal-case tracking-normal">Módulo</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 normal-case tracking-normal">Tipo</th>
+                  <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 normal-case tracking-normal">Detalhes</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 bg-white">
@@ -111,10 +111,10 @@ const LogsPage: React.FC = () => {
                 ) : (
                   filteredLogs.map((log) => (
                     <tr key={log.id} className="hover:bg-gray-50/80 transition-colors border-l-4 border-transparent hover:border-indigo-500">
-                      <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500 font-medium">
+                      <td className="px-4 py-3 whitespace-nowrap text-xs text-gray-500 font-medium">
                         {new Date(log.created_at).toLocaleString('pt-BR')}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 py-3 whitespace-nowrap">
                         <div className="flex flex-col">
                           <span className="text-sm font-semibold text-gray-900">
                             {log.user_display_name}
@@ -122,17 +122,17 @@ const LogsPage: React.FC = () => {
                           <span className="text-xs text-gray-500">{log.profiles?.email || '-'}</span>
                         </div>
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-4 py-3">
                         <span className="text-sm font-semibold text-gray-700">
                           {log.summary}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 py-3 whitespace-nowrap">
                         <span className="bg-gray-100 px-2 py-1 rounded text-xs font-medium text-gray-500 normal-case tracking-normal">
                           {log.translated_table}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-4 py-3 whitespace-nowrap">
                         <span className={`inline-flex px-2 py-1 rounded-lg text-xs font-medium normal-case ${
                           log.action === 'INSERT' ? 'bg-green-100 text-green-700' :
                           log.action === 'UPDATE' ? 'bg-blue-100 text-blue-700' :
@@ -141,10 +141,10 @@ const LogsPage: React.FC = () => {
                           {log.translated_action}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right">
+                      <td className="px-4 py-3 whitespace-nowrap text-right">
                         <button
                           onClick={() => setSelectedLog(log)}
-                          className="p-2 text-indigo-500 hover:bg-indigo-50 rounded-lg transition-all"
+                          className="dc-button text-indigo-500 hover:bg-indigo-50 transition-all"
                           title="Ver detalhes"
                         >
                           <Eye className="w-5 h-5 text-indigo-600" />

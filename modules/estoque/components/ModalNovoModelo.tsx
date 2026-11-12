@@ -66,14 +66,14 @@ const ModalNovoModelo: React.FC<Props> = ({
 
     return createPortal(
         <div data-drivecar-ui className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="bg-white w-full max-w-md rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="dc-modal bg-white w-full max-w-md rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 duration-200">
                 {/* Header */}
                 <div className="px-8 pt-8 pb-6 flex items-center justify-between border-b border-slate-100">
                     <div>
                         <span className="text-xs font-semibold text-indigo-500 normal-case tracking-normal">Cadastro Rápido</span>
-                        <h2 className="text-xl font-semibold text-slate-900 normal-case tracking-normal">Novo Modelo</h2>
+                        <h2 className="dc-modal-title text-xl font-semibold text-slate-900 normal-case tracking-normal">Novo Modelo</h2>
                     </div>
-                    <button onClick={onClose} disabled={mutation.isPending} className="p-2 hover:bg-slate-100 rounded-full transition-all text-slate-400">
+                    <button onClick={onClose} disabled={mutation.isPending} className="dc-button p-2 hover:bg-slate-100 rounded-full transition-all text-slate-600">
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
@@ -91,7 +91,7 @@ const ModalNovoModelo: React.FC<Props> = ({
                             required
                             disabled={mutation.isPending}
                             placeholder="Ex: COROLLA, CIVIC..."
-                            className="w-full border border-slate-200 rounded-xl px-5 py-3 text-sm font-medium text-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition-all uppercase"
+                            className="dc-input w-full border border-slate-200 rounded-xl px-5 py-3 text-sm font-medium text-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition-all normal-case"
                         />
                     </div>
                     {/* Montadora */}
@@ -102,7 +102,7 @@ const ModalNovoModelo: React.FC<Props> = ({
                             onChange={e => setMontadoraId(e.target.value)}
                             required
                             disabled={loading || mutation.isPending}
-                            className="w-full border border-slate-200 rounded-xl px-5 py-3 text-sm font-medium text-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none appearance-none"
+                            className="dc-input w-full border border-slate-200 rounded-xl px-5 py-3 text-sm font-medium text-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none appearance-none"
                         >
                             <option value="">{loading ? 'Carregando...' : 'Selecione a marca...'}</option>
                             {montadoras.map(m => <option key={m.id} value={m.id}>{m.nome}</option>)}
@@ -116,7 +116,7 @@ const ModalNovoModelo: React.FC<Props> = ({
                             onChange={e => setTipoId(e.target.value)}
                             required
                             disabled={loading || mutation.isPending}
-                            className="w-full border border-slate-200 rounded-xl px-5 py-3 text-sm font-medium text-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none appearance-none"
+                            className="dc-input w-full border border-slate-200 rounded-xl px-5 py-3 text-sm font-medium text-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none appearance-none"
                         >
                             <option value="">{loading ? 'Carregando...' : 'Selecione o tipo...'}</option>
                             {tipos.map(t => <option key={t.id} value={t.id}>{t.nome}</option>)}
@@ -129,14 +129,14 @@ const ModalNovoModelo: React.FC<Props> = ({
                             type="button"
                             onClick={onClose}
                             disabled={mutation.isPending}
-                            className="px-6 py-3 text-slate-500 text-xs font-semibold normal-case tracking-normal hover:bg-slate-50 rounded-xl transition-all"
+                            className="dc-button px-6 py-3 text-slate-500 text-xs font-semibold normal-case tracking-normal hover:bg-slate-50 rounded-xl transition-all"
                         >
                             Cancelar
                         </button>
                         <button
                             type="submit"
                             disabled={mutation.isPending || !nome.trim() || !montadoraId || !tipoId}
-                            className="px-8 py-3 bg-indigo-600 text-white text-xs font-semibold normal-case tracking-normal rounded-xl shadow-sm shadow-indigo-200 hover:bg-indigo-700 transition-all disabled:opacity-50 flex items-center gap-2"
+                            className="dc-button px-8 py-3 bg-indigo-600 text-white text-xs font-semibold normal-case tracking-normal rounded-xl shadow-sm shadow-indigo-200 hover:bg-indigo-700 transition-all disabled:opacity-50 flex items-center gap-2"
                         >
                             {mutation.isPending ? (
                                 <><div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" /> Salvando...</>

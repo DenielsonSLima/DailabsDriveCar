@@ -9,8 +9,8 @@ interface Props {
 const VehicleCard: React.FC<Props> = ({ veiculo }) => {
   if (!veiculo) {
     return (
-      <div className="bg-white rounded-2xl border-2 border-dashed border-slate-200 p-6 text-center shadow-sm">
-        <p className="text-slate-400 font-bold normal-case text-xs tracking-normal">Nenhum veículo vinculado.</p>
+      <div className="bg-white rounded-2xl border-2 border-dashed border-slate-200 p-4 text-center shadow-sm">
+        <p className="text-slate-400 font-semibold normal-case text-xs tracking-normal">Nenhum veículo vinculado.</p>
       </div>
     );
   }
@@ -31,27 +31,27 @@ const VehicleCard: React.FC<Props> = ({ veiculo }) => {
               {veiculo.placa || 'SEM PLACA'}
             </div>
          </div>
-         <div className="md:col-span-8 p-6">
+         <div className="md:col-span-8 p-4">
             <p className="text-xs font-semibold text-indigo-500 normal-case tracking-normal mb-1">{v.montadora?.nome}</p>
-            <h2 className="text-3xl font-semibold text-slate-900 normal-case tracking-normal">{v.modelo?.nome}</h2>
+            <h2 className="dc-section-title font-semibold text-slate-900 normal-case tracking-normal">{v.modelo?.nome}</h2>
             <p className="text-sm font-medium text-slate-500 mb-6">{v.versao?.nome}</p>
-            
+
             <div className="grid grid-cols-2 gap-4">
                <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
                   <p className="text-xs font-semibold text-slate-400 normal-case mb-0.5">KM</p>
-                  <p className="text-xs font-bold text-slate-800">{veiculo.km?.toLocaleString() || '0'} km</p>
+                  <p className="text-xs font-semibold text-slate-800">{veiculo.km?.toLocaleString() || '0'} km</p>
                </div>
                <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
                   <p className="text-xs font-semibold text-slate-400 normal-case mb-0.5">Câmbio</p>
-                  <p className="text-xs font-bold text-slate-800 normal-case">{veiculo.transmissao}</p>
+                  <p className="text-xs font-semibold text-slate-800 normal-case">{veiculo.transmissao}</p>
                </div>
                <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
                   <p className="text-xs font-semibold text-slate-400 normal-case mb-0.5">Motor</p>
-                  <p className="text-xs font-bold text-slate-800">{veiculo.motorizacao}</p>
+                  <p className="text-xs font-semibold text-slate-800">{veiculo.motorizacao}</p>
                </div>
                <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
                   <p className="text-xs font-semibold text-slate-400 normal-case mb-0.5">Ano/Mod</p>
-                  <p className="text-xs font-bold text-slate-800">{veiculo.ano_fabricacao}/{veiculo.ano_modelo}</p>
+                  <p className="text-xs font-semibold text-slate-800">{veiculo.ano_fabricacao}/{veiculo.ano_modelo}</p>
                </div>
             </div>
          </div>

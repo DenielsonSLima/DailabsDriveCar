@@ -33,21 +33,21 @@ const ReceberKpis: React.FC<Props> = ({ kpis }) => {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in slide-in-from-top-4 duration-200">
+    <div className="dc-kpi-grid">
       {stats.map((s, idx) => (
-        <div key={idx} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between group hover:border-indigo-300 transition-all">
+        <div key={idx} className="dc-kpi-card bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between group hover:border-indigo-300 transition-all">
           <div>
-            <p className="text-slate-500 text-xs font-medium normal-case tracking-normal">{s.label}</p>
+            <p className="dc-kpi-label text-slate-500 text-xs font-medium normal-case tracking-normal">{s.label}</p>
             {s.value !== undefined ? (
-              <h3 className={`text-2xl font-semibold mt-1 ${s.color === 'rose' ? 'text-rose-600' : s.color === 'amber' ? 'text-amber-600' : 'text-slate-900'}`}>
+              <h3 className={`dc-kpi-value text-2xl font-semibold mt-1 ${s.color === 'rose' ? 'text-rose-600' : s.color === 'amber' ? 'text-amber-600' : 'text-slate-900'}`}>
                 {formatCurrency(s.value)}
               </h3>
             ) : (
               <div className="h-8 w-32 bg-slate-100 animate-pulse rounded-lg mt-1" />
             )}
           </div>
-          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${s.color === 'blue' ? 'bg-slate-100 text-slate-600' : s.color === 'emerald' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className={`w-8 h-8 shrink-0 ml-3 rounded-xl flex items-center justify-center ${s.color === 'blue' ? 'bg-slate-100 text-slate-600' : s.color === 'emerald' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={s.icon} />
             </svg>
           </div>

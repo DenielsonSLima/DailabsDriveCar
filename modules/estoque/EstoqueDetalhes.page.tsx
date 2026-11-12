@@ -113,7 +113,7 @@ const EstoqueDetalhesPage: React.FC = () => {
   }
 
   return (
-    <div className="pb-20 animate-in fade-in duration-500 max-w-screen-2xl mx-auto px-4 md:px-8">
+    <div className="pb-20 animate-in fade-in duration-500 dc-page min-w-0 max-w-screen-2xl mx-auto">
 
       <HeaderDetails
         veiculo={veiculo}
@@ -121,10 +121,10 @@ const EstoqueDetalhesPage: React.FC = () => {
         onEdit={handleEdit}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-10">
+      <div className="grid min-w-0 grid-cols-1 lg:grid-cols-12 gap-4 items-start mb-10">
 
         {/* COLUNA ESQUERDA - Identificação, Mídia e Features */}
-        <div className="lg:col-span-7 space-y-6">
+        <div className="min-w-0 lg:col-span-7 space-y-4">
           <VehicleQuickInfoCard veiculo={veiculo} />
           <GalleryCard fotos={veiculo.fotos || []} />
           <FeaturesCard
@@ -135,7 +135,7 @@ const EstoqueDetalhesPage: React.FC = () => {
         </div>
 
         {/* COLUNA DIREITA - Financeiro e Specs Básicas */}
-        <div className="lg:col-span-5 space-y-6 sticky top-6">
+        <div className="min-w-0 lg:col-span-5 space-y-4 lg:sticky lg:top-6">
           <FinancialCard veiculo={veiculo} />
           <SpecsCard veiculo={veiculo} cores={cores} />
         </div>

@@ -72,7 +72,7 @@ const CorretorForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSubmi
       <div className="bg-white w-full max-w-2xl rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 duration-200 border border-slate-200">
 
         {/* Header */}
-        <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+        <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-600 shadow-sm shadow-none">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -80,7 +80,7 @@ const CorretorForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSubmi
               </svg>
             </div>
             <div>
-              <h2 className="text-xl font-semibold text-slate-900 normal-case tracking-tight">
+              <h2 className="dc-modal-title">
                 {initialData ? 'Editar Corretor' : 'Novo Corretor'}
               </h2>
               <p className="text-slate-500 text-xs font-medium normal-case tracking-normal mt-1">Dados Cadastrais</p>
@@ -93,7 +93,7 @@ const CorretorForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSubmi
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="p-4 space-y-6">
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -104,7 +104,7 @@ const CorretorForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSubmi
                 value={formData.nome}
                 onChange={handleChange}
                 disabled={isSaving}
-                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 font-medium text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 font-medium text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all dc-input"
                 required
               />
             </div>
@@ -115,7 +115,7 @@ const CorretorForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSubmi
                 value={formData.sobrenome}
                 onChange={handleChange}
                 disabled={isSaving}
-                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 font-medium text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 font-medium text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all dc-input"
                 required
               />
             </div>
@@ -130,7 +130,7 @@ const CorretorForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSubmi
                 onChange={handleChange}
                 disabled={isSaving}
                 placeholder="000.000.000-00"
-                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 font-mono font-medium text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 font-mono font-medium text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all dc-input"
                 maxLength={14}
               />
             </div>
@@ -142,7 +142,7 @@ const CorretorForm: React.FC<Props> = ({ initialData, isSaving, onClose, onSubmi
                 onChange={handleChange}
                 disabled={isSaving}
                 placeholder="(00) 00000-0000"
-                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 font-medium text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 font-medium text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all dc-input"
               />
             </div>
           </div>

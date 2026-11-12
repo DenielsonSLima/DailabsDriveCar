@@ -23,8 +23,8 @@ const PagarFilters: React.FC<Props> = ({ filtros, onChange, categorias }) => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6 animate-in fade-in duration-200">
-      <div className="flex flex-col xl:flex-row gap-6 items-end">
+    <div className="dc-filterbar bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-6 animate-in fade-in duration-200">
+      <div className="flex flex-col xl:flex-row gap-4 items-end">
 
         {/* Busca por Descrição / Documento */}
         <div className="flex-1 w-full relative">
@@ -40,7 +40,7 @@ const PagarFilters: React.FC<Props> = ({ filtros, onChange, categorias }) => {
               placeholder="Descrição ou documento de referência..."
               value={filtros.busca}
               onChange={(e) => handleChange('busca', e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-2xl py-3 pl-10 pr-4 text-sm font-medium text-[#111827] focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
+              className="dc-input w-full bg-white border border-slate-200 rounded-xl py-3 pl-10 pr-4 text-sm font-medium text-[#111827] focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
             />
           </div>
         </div>
@@ -48,19 +48,19 @@ const PagarFilters: React.FC<Props> = ({ filtros, onChange, categorias }) => {
         {/* Período de Vencimento */}
         <div className="w-full xl:w-auto">
           <label className="block text-xs font-medium text-slate-500 normal-case mb-1.5 ml-1 tracking-normal">Período de Vencimento</label>
-          <div className="flex items-center space-x-2 bg-white border border-slate-200 rounded-2xl p-1 shadow-inner">
+          <div className="flex items-center space-x-2 bg-white border border-slate-200 rounded-xl p-1 shadow-inner">
             <input
               type="date"
               value={filtros.dataInicio}
               onChange={e => handleChange('dataInicio', e.target.value)}
-              className="bg-transparent text-xs font-medium text-[#111827] px-3 py-2 outline-none cursor-pointer"
+              className="dc-input bg-transparent text-xs font-medium text-[#111827] px-3 py-2 outline-none cursor-pointer"
             />
             <span className="text-slate-300 font-medium text-xs">ATÉ</span>
             <input
               type="date"
               value={filtros.dataFim}
               onChange={e => handleChange('dataFim', e.target.value)}
-              className="bg-transparent text-xs font-medium text-[#111827] px-3 py-2 outline-none cursor-pointer"
+              className="dc-input bg-transparent text-xs font-medium text-[#111827] px-3 py-2 outline-none cursor-pointer"
             />
           </div>
         </div>
@@ -71,7 +71,7 @@ const PagarFilters: React.FC<Props> = ({ filtros, onChange, categorias }) => {
           <select
             value={filtros.categoriaId}
             onChange={e => handleChange('categoriaId', e.target.value)}
-            className="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3 text-xs font-medium text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500/20 cursor-pointer appearance-none"
+            className="dc-input w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-xs font-medium text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500/20 cursor-pointer appearance-none"
           >
             <option value="">Todas Categorias</option>
             {categorias.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
@@ -84,7 +84,7 @@ const PagarFilters: React.FC<Props> = ({ filtros, onChange, categorias }) => {
           <select
             value={filtros.status}
             onChange={e => handleChange('status', e.target.value)}
-            className="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3 text-xs font-medium text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500/20 cursor-pointer appearance-none"
+            className="dc-input w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-xs font-medium text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500/20 cursor-pointer appearance-none"
           >
             <option value="">Todos Status</option>
             <option value="PENDENTE">Apenas Pendentes</option>
@@ -96,7 +96,7 @@ const PagarFilters: React.FC<Props> = ({ filtros, onChange, categorias }) => {
 
         <button
           onClick={handleClear}
-          className="px-6 py-3 bg-slate-100 text-slate-400 text-xs font-semibold normal-case tracking-normal rounded-2xl hover:bg-slate-200 transition-all active:scale-100 flex items-center shrink-0"
+          className="dc-button px-4 py-3 bg-slate-100 text-slate-400 text-xs font-semibold normal-case tracking-normal rounded-xl hover:bg-slate-200 transition-all active:scale-100 flex items-center shrink-0"
         >
           Limpar Filtros
         </button>

@@ -153,14 +153,14 @@ const PublicFooter: React.FC<Props> = ({ empresa }) => {
             </div>
           </div>
 
-          {/* CRÉDITOS DAILABS À DIREITA */}
+          {/* Identidade da plataforma, preservando dados da loja acima. */}
           <div className="opacity-40 group cursor-default hover:opacity-100 transition-all flex items-center space-x-2">
-            <span className="text-[7px] font-bold uppercase tracking-[0.3em] text-blue-100/50">Developed by</span>
+            <span className="text-[7px] font-bold uppercase tracking-[0.3em] text-blue-100/50">Plataforma</span>
             <div className="flex items-center space-x-2">
-              <img src="/logos/dailabs_logo.png" alt="Dailabs" className="h-5 w-auto brightness-0 invert" />
+              <img src="/brand/arkhen-symbol.svg" alt="Arkhen Drive Car" className="h-7 w-7 object-contain" />
               <div className="flex flex-col leading-none">
-                <span className="text-[9px] font-black uppercase tracking-tighter text-white">DAILABS</span>
-                <span className="text-[5px] font-bold uppercase tracking-widest text-blue-400">Creative AI & Softwares</span>
+                <span className="text-[9px] font-black uppercase tracking-tighter text-white">ARKHEN</span>
+                <span className="text-[5px] font-bold uppercase tracking-widest text-blue-400">Drive Car</span>
               </div>
             </div>
           </div>

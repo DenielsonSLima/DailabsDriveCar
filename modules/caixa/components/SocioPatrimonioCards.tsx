@@ -20,12 +20,12 @@ const SocioPatrimonioCards: React.FC<Props> = ({ socios }) => {
     const totalPatrimonioLiquido = socios[0]?.total_patrimonio_liquido_todos || 0;
 
     return (
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+        <div className="dc-panel">
             {/* Header */}
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
                 <div>
-                    <h3 className="text-sm font-semibold text-slate-400 normal-case tracking-normal">Patrimônio Consolidado por Sócio</h3>
-                    <p className="text-xs text-slate-400 font-bold normal-case mt-1 tracking-normal">Soma de veículos em estoque + ativos cadastrados</p>
+                    <h3 className="dc-section-title">Patrimônio Consolidado por Sócio</h3>
+                    <p className="text-xs text-slate-400 font-semibold normal-case mt-1 tracking-normal">Soma de veículos em estoque + ativos cadastrados</p>
                 </div>
                 <div className="flex items-center gap-3">
                     <span className="px-3 py-1.5 bg-slate-900 rounded-xl text-xs font-semibold normal-case tracking-normal text-white border border-slate-800">
@@ -35,18 +35,18 @@ const SocioPatrimonioCards: React.FC<Props> = ({ socios }) => {
             </div>
 
             {/* Totais rápidos */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                <div className="bg-indigo-50 rounded-2xl p-4 border border-indigo-100/50">
+            <div className="dc-kpi-grid mb-4">
+                <div className="dc-kpi-card">
                     <p className="text-xs font-semibold text-indigo-400 normal-case tracking-normal mb-1">Total no Estoque</p>
-                    <p className="text-lg font-semibold text-indigo-900">{fmt(totalEmEstoque)}</p>
+                    <p className="dc-kpi-value">{fmt(totalEmEstoque)}</p>
                 </div>
-                <div className="bg-emerald-50 rounded-2xl p-4 border border-emerald-100/50">
+                <div className="dc-kpi-card">
                     <p className="text-xs font-semibold text-emerald-400 normal-case tracking-normal mb-1">Total em Outros Ativos</p>
-                    <p className="text-lg font-semibold text-emerald-900">{fmt(totalEmPatrimonio)}</p>
+                    <p className="dc-kpi-value">{fmt(totalEmPatrimonio)}</p>
                 </div>
-                <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200">
+                <div className="dc-kpi-card">
                     <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-1">Participação Média</p>
-                    <p className="text-lg font-semibold text-slate-900">{socios.length > 0 ? (100 / socios.length).toFixed(0) : 0}% <span className="text-xs font-bold text-slate-400">por sócio</span></p>
+                    <p className="text-lg font-semibold text-slate-900">{socios.length > 0 ? (100 / socios.length).toFixed(0) : 0}% <span className="text-xs font-semibold text-slate-400">por sócio</span></p>
                 </div>
             </div>
 
@@ -70,7 +70,7 @@ const SocioPatrimonioCards: React.FC<Props> = ({ socios }) => {
                                 className={`group rounded-2xl border transition-all overflow-hidden ${isExpanded ? 'bg-white border-indigo-200 shadow-sm' : 'bg-slate-50 border-slate-100 hover:bg-slate-100/50'}`}
                             >
                                 <div
-                                    className="p-4 md:p-6 cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-4"
+                                    className="p-4 md:p-4 cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-4"
                                     onClick={() => setExpandedSocio(isExpanded ? null : s.socio_id)}
                                 >
                                     <div className="flex items-center space-x-4">
@@ -80,7 +80,7 @@ const SocioPatrimonioCards: React.FC<Props> = ({ socios }) => {
                                         <div>
                                             <h4 className="text-xs font-semibold normal-case text-slate-800 tracking-wide">{s.nome}</h4>
                                             <div className="flex items-center gap-2 mt-1">
-                                                <span className="text-xs font-bold text-slate-400 normal-case tracking-normal">Participação:</span>
+                                                <span className="text-xs font-semibold text-slate-400 normal-case tracking-normal">Participação:</span>
                                                 <span className="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-lg border border-indigo-100/50">
                                                     {s.porcentagem_participacao?.toFixed(2) || "0.00"}%
                                                 </span>
@@ -88,23 +88,23 @@ const SocioPatrimonioCards: React.FC<Props> = ({ socios }) => {
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center justify-between md:justify-end gap-8">
+                                    <div className="flex items-center justify-between md:justify-end gap-6">
                                         <div className="hidden sm:block">
                                             <div className="flex items-center gap-6">
                                                 <div className="text-right">
                                                     <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-0.5">Veículos</p>
-                                                    <p className="text-xs font-bold text-slate-700">{fmt(s.valor_investido || 0)}</p>
+                                                    <p className="dc-kpi-value">{fmt(s.valor_investido || 0)}</p>
                                                 </div>
                                                 <div className="text-right">
                                                     <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-0.5">Outros Ativos</p>
-                                                    <p className="text-xs font-bold text-slate-700">{fmt(s.valor_patrimonio_pessoal || 0)}</p>
+                                                    <p className="dc-kpi-value">{fmt(s.valor_patrimonio_pessoal || 0)}</p>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div className="text-right pl-6 border-l border-slate-200">
                                             <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-0.5">Patrimônio Total</p>
-                                            <p className="text-base font-semibold text-slate-900 leading-tight">{fmt(patrimonioTotalSocio)}</p>
+                                            <p className="dc-kpi-value">{fmt(patrimonioTotalSocio)}</p>
                                         </div>
 
                                         <div className={`p-2 rounded-xl transition-colors ${isExpanded ? 'bg-indigo-50 text-indigo-600' : 'bg-slate-200/50 text-slate-400'}`}>
@@ -123,10 +123,10 @@ const SocioPatrimonioCards: React.FC<Props> = ({ socios }) => {
                                                     <div className="space-y-1.5">
                                                         {s.veiculos.map((v, vIdx) => (
                                                             <div key={`v-${vIdx}`} className="flex items-center justify-between text-xs bg-white px-3 py-2.5 rounded-xl border border-slate-100 shadow-sm">
-                                                                <span className="font-bold text-slate-700 truncate mr-2">
+                                                                <span className="font-semibold text-slate-700 truncate mr-2">
                                                                     {v.montadora} {v.modelo} {v.versao}
                                                                 </span>
-                                                                <span className="font-semibold text-slate-800 shrink-0">{fmt(v.valor)}</span>
+                                                                <span className="dc-kpi-value">{fmt(v.valor)}</span>
                                                             </div>
                                                         ))}
                                                     </div>
@@ -142,8 +142,8 @@ const SocioPatrimonioCards: React.FC<Props> = ({ socios }) => {
                                                     <div className="space-y-1.5">
                                                         {s.patrimonio_pessoal.map((p, pIdx) => (
                                                             <div key={`p-${pIdx}`} className="flex items-center justify-between text-xs bg-white px-3 py-2.5 rounded-xl border border-slate-100 shadow-sm">
-                                                                <span className="font-bold text-slate-700 truncate mr-2">{p.descricao}</span>
-                                                                <span className="font-semibold text-slate-800 shrink-0">{fmt(p.valor)}</span>
+                                                                <span className="font-semibold text-slate-700 truncate mr-2">{p.descricao}</span>
+                                                                <span className="dc-kpi-value">{fmt(p.valor)}</span>
                                                             </div>
                                                         ))}
                                                     </div>

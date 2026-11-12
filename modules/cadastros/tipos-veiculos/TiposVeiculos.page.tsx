@@ -98,7 +98,7 @@ const TiposVeiculosPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200 relative">
+    <div className="dc-page animate-in fade-in duration-200 relative">
       {/* Toast Notification */}
       {toast && (
         <div data-drivecar-ui className={`fixed top-6 right-6 z-[220] px-6 py-3 rounded-2xl shadow-sm flex items-center space-x-3 animate-in slide-in-from-right duration-200 ${toast.type === 'success' ? 'bg-slate-900 text-white border-l-4 border-emerald-500' : 'bg-rose-600 text-white'
@@ -114,8 +114,8 @@ const TiposVeiculosPage: React.FC = () => {
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-semibold text-slate-900">Tipos de Veículos</h1>
-          <p className="text-slate-500 mt-1">Categorias: Sedan, Hatch, SUV, Pickup, etc.</p>
+          <h1 className="dc-page-title">Tipos de Veículos</h1>
+          <p className="dc-page-subtitle">Categorias: Sedan, Hatch, SUV, Pickup, etc.</p>
         </div>
         <div className="flex p-1 bg-slate-100 rounded-2xl w-fit">
           <button
@@ -146,7 +146,7 @@ const TiposVeiculosPage: React.FC = () => {
         </button>
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 min-h-[400px]">
+      <div className="dc-panel min-h-[400px]">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 space-y-4">
             <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
@@ -225,9 +225,9 @@ const TiposVeiculosPage: React.FC = () => {
       {isOpen && (
         <div data-drivecar-ui className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white w-full max-w-md rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+            <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
               <div>
-                <h2 className="text-xl font-semibold text-slate-900 normal-case tracking-tight">
+                <h2 className="dc-modal-title">
                   {editing ? 'Editar Categoria' : 'Nova Categoria'}
                 </h2>
                 <p className="text-slate-500 text-xs font-medium normal-case tracking-normal mt-1">Defina o tipo veicular</p>
@@ -239,7 +239,7 @@ const TiposVeiculosPage: React.FC = () => {
               </button>
             </div>
 
-            <form onSubmit={handleSave} className="p-6 space-y-6">
+            <form onSubmit={handleSave} className="p-4 space-y-6">
               <div>
                 <label className="block text-xs font-medium text-slate-500 normal-case mb-2 tracking-normal ml-1">Nome da Categoria</label>
                 <input

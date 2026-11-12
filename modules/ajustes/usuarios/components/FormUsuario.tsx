@@ -107,10 +107,10 @@ const FormUsuario: React.FC<FormUsuarioProps> = ({ initialData, onSubmit, onCanc
   };
 
   return (
-    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm animate-in slide-in-from-bottom-4 duration-200">
+    <div className="dc-panel animate-in slide-in-from-bottom-4 duration-200">
       <div className="flex justify-between items-start mb-8">
         <div>
-          <h3 className="text-xl font-semibold text-slate-900 normal-case tracking-normal">
+          <h3 className="dc-modal-title">
             {initialData ? 'Editar Acesso' : 'Novo Usuário do Sistema'}
           </h3>
           <p className="text-slate-500 text-sm">Defina as credenciais e permissões do colaborador.</p>
@@ -142,7 +142,7 @@ const FormUsuario: React.FC<FormUsuarioProps> = ({ initialData, onSubmit, onCanc
               name="nome"
               value={formData.nome}
               onChange={handleChange}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3  focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium dc-input"
               required
             />
           </div>
@@ -153,7 +153,7 @@ const FormUsuario: React.FC<FormUsuarioProps> = ({ initialData, onSubmit, onCanc
               name="sobrenome"
               value={formData.sobrenome}
               onChange={handleChange}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3  focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium dc-input"
             />
           </div>
         </div>
@@ -166,7 +166,7 @@ const FormUsuario: React.FC<FormUsuarioProps> = ({ initialData, onSubmit, onCanc
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3  focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium dc-input"
               required
             />
           </div>
@@ -177,7 +177,7 @@ const FormUsuario: React.FC<FormUsuarioProps> = ({ initialData, onSubmit, onCanc
               name="cpf"
               value={formData.cpf}
               onChange={handleChange}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-mono"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3  focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-mono dc-input"
               placeholder="000.000.000-00"
             />
           </div>
@@ -193,7 +193,7 @@ const FormUsuario: React.FC<FormUsuarioProps> = ({ initialData, onSubmit, onCanc
                   name="senha"
                   value={formData.senha}
                   onChange={handleChange}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-mono"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3  focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-mono dc-input"
                 />
                 <button
                   type="button"
@@ -269,7 +269,7 @@ const FormUsuario: React.FC<FormUsuarioProps> = ({ initialData, onSubmit, onCanc
               name="role"
               value={formData.role}
               onChange={handleChange}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium appearance-none"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3  focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium appearance-none dc-input"
             >
               <option value="ADMIN">Administrador Full</option>
               <option value="GESTOR">Gestor de Módulo</option>
@@ -284,7 +284,7 @@ const FormUsuario: React.FC<FormUsuarioProps> = ({ initialData, onSubmit, onCanc
               name="telefone"
               value={formData.telefone}
               onChange={handleChange}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3  focus:ring-2 focus:ring-indigo-500 outline-none transition-all dc-input"
               placeholder="(00) 00000-0000"
             />
           </div>

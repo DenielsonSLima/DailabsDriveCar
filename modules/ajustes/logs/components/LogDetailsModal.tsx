@@ -84,11 +84,11 @@ const LogDetailsModal: React.FC<LogDetailsModalProps> = ({ log, onClose }) => {
   return (
     <div data-drivecar-ui className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md transition-all animate-in fade-in duration-200" onClick={onClose}>
       <div 
-        className="bg-white rounded-2xl shadow-sm w-full max-w-5xl max-h-[95vh] overflow-hidden flex flex-col border border-white/20 animate-in zoom-in-95 duration-200"
+        className="bg-white rounded-2xl shadow-sm w-full max-w-5xl max-h-[95vh] overflow-hidden flex flex-col border border-white/20 animate-in zoom-in-95 duration-200 dc-modal"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-white">
+        <div className="dc-modal-header border-b border-slate-200 flex flex-wrap gap-3 items-center justify-between bg-slate-50">
           <div className="flex items-center gap-4">
             <div className={`p-3 rounded-2xl ${
               log.action === 'INSERT' ? 'bg-green-50 text-green-600' :
@@ -98,7 +98,7 @@ const LogDetailsModal: React.FC<LogDetailsModalProps> = ({ log, onClose }) => {
               <History className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-2xl font-semibold text-gray-900 tracking-tight">Detalhes do Evento</h3>
+              <h3 className="dc-modal-title">Detalhes do Evento</h3>
               <p className="text-sm text-gray-500 font-medium">Visualizando trilha de auditoria completa</p>
             </div>
           </div>
@@ -131,7 +131,7 @@ const LogDetailsModal: React.FC<LogDetailsModalProps> = ({ log, onClose }) => {
         </div>
 
         {/* Content */}
-        <div className="p-6 overflow-y-auto space-y-6 custom-scrollbar bg-white">
+        <div className="p-4 overflow-y-auto space-y-6 custom-scrollbar bg-white">
           {/* Info Grid */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="bg-gray-50 p-5 rounded-2xl border border-gray-100">
@@ -164,7 +164,7 @@ const LogDetailsModal: React.FC<LogDetailsModalProps> = ({ log, onClose }) => {
           </div>
 
           {/* User Feedback Summary */}
-          <div className="bg-indigo-50 border border-indigo-100 p-6 rounded-2xl flex items-start gap-4">
+          <div className="bg-indigo-50 border border-indigo-100 p-4 rounded-2xl flex items-start gap-4">
             <div className="p-2 bg-slate-100 rounded-xl text-slate-600">
               <FileText className="w-5 h-5" />
             </div>
@@ -186,14 +186,14 @@ const LogDetailsModal: React.FC<LogDetailsModalProps> = ({ log, onClose }) => {
             {viewMode === 'pretty' ? (
               <div className="space-y-3">
                 {diffItems.length === 0 ? (
-                  <div className="flex items-center gap-3 p-6 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
+                  <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
                     <AlertCircle className="w-6 h-6 text-gray-400" />
                     <p className="text-gray-500 font-medium">Nenhuma alteração de valor detectada nos campos principais.</p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 gap-3">
                     {diffItems.map((item, idx) => (
-                      <div key={idx} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-6 group hover:border-indigo-100 hover:bg-gray-50/30 transition-all">
+                      <div key={idx} className="dc-panel border-gray-100 flex items-center gap-6 group hover:border-indigo-100 hover:bg-gray-50/30 transition-all">
                         <div className="w-32 lg:w-48 flex-shrink-0">
                           <p className="text-xs font-medium text-gray-400 normal-case tracking-normal mb-1">Campo</p>
                           <p className="text-sm font-semibold text-gray-800">{item.label}</p>
@@ -254,7 +254,7 @@ const LogDetailsModal: React.FC<LogDetailsModalProps> = ({ log, onClose }) => {
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end">
+        <div className="p-4 border-t border-gray-100 bg-gray-50 flex justify-end">
           <button
             onClick={onClose}
             className="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-2xl hover:bg-indigo-700 transition-all shadow-sm shadow-none active:scale-100"

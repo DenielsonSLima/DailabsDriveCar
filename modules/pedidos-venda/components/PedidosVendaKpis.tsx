@@ -54,89 +54,56 @@ const PedidosVendaKpis: React.FC<Props> = ({ pedidos }) => {
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-700">
-
-      {/* 1. TOP CARDS (3 COLUNAS) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-          <p className="text-slate-500 text-xs font-semibold normal-case tracking-normal">Faturamento Bruto (VGV)</p>
-          <h3 className="text-2xl font-semibold text-slate-900 mt-1">{formatCurrency(stats.vgvTotal)}</h3>
-          <p className="text-xs text-slate-400 font-bold normal-case mt-2">{stats.count} Veículos Vendidos</p>
+    <div className="space-y-3">
+      <div className="dc-kpi-grid">
+        <div className="dc-kpi-card">
+          <p className="dc-kpi-label">Faturamento Bruto (VGV)</p>
+          <h3 className="dc-kpi-value">{formatCurrency(stats.vgvTotal)}</h3>
+          <p className="dc-kpi-hint">{stats.count} Veículos Vendidos</p>
         </div>
-
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-          <p className="text-slate-500 text-xs font-semibold normal-case tracking-normal">Custo Total dos Ativos</p>
-          <h3 className="text-2xl font-semibold text-slate-700 mt-1">{formatCurrency(stats.custoTotal)}</h3>
-          <p className="text-xs text-slate-400 font-bold normal-case mt-2">Compra + Preparação</p>
+        <div className="dc-kpi-card">
+          <p className="dc-kpi-label">Custo Total dos Ativos</p>
+          <h3 className="dc-kpi-value">{formatCurrency(stats.custoTotal)}</h3>
+          <p className="dc-kpi-hint">Compra + Preparação</p>
         </div>
-
-        <div className="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-sm">
-          <p className="text-slate-400 text-xs font-semibold normal-case tracking-normal">Resultado bruto das vendas</p>
-          <h3 className="text-2xl font-semibold text-emerald-400 mt-1">{formatCurrency(stats.lucroBrutoTotal)}</h3>
-          <div className="mt-2 flex items-center space-x-2">
-            <div className="bg-emerald-500 text-white px-2 py-0.5 rounded text-xs font-semibold normal-case">
-              M. {stats.vgvTotal > 0 ? ((stats.lucroBrutoTotal / stats.vgvTotal) * 100).toFixed(1) : 0}%
-            </div>
-          </div>
+        <div className="dc-kpi-card">
+          <p className="dc-kpi-label">Resultado bruto das vendas</p>
+          <h3 className="dc-kpi-value">{formatCurrency(stats.lucroBrutoTotal)}</h3>
+          <p className="dc-kpi-hint">Margem: {stats.vgvTotal > 0 ? ((stats.lucroBrutoTotal / stats.vgvTotal) * 100).toFixed(1) : 0}%</p>
+        </div>
+        <div className="dc-kpi-card">
+          <p className="dc-kpi-label">Ticket por unidade</p>
+          <h3 className="dc-kpi-value">{formatCurrency(stats.ticketMedio)}</h3>
+          <p className="dc-kpi-hint">Baseado em faturamento bruto</p>
         </div>
       </div>
-
-      {/* 2. DASHBOARD AREA (ESTILO ESTOQUE) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-        {/* Ticket Médio Card */}
-        <div className="lg:col-span-4">
-          <div className="bg-indigo-700 rounded-2xl p-6 text-white h-full relative overflow-hidden shadow-sm">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-[80px]"></div>
-            <p className="text-xs font-semibold text-indigo-200 normal-case tracking-normal mb-4">Métrica de Saída</p>
-            <h2 className="text-2xl font-semibold tracking-normal normal-case mb-2">Ticket por unidade</h2>
-            <p className="text-2xl sm:text-3xl font-semibold text-white tracking-tight">{formatCurrency(stats.ticketMedio)}</p>
-            <div className="mt-8 pt-8 border-t border-white/10">
-              <p className="text-xs font-bold text-indigo-300 normal-case tracking-normal text-center">Baseado em faturamento bruto</p>
-            </div>
-          </div>
+      <section className="dc-panel">
+        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-3">
+          <h3 className="dc-section-title">Participação por sócio</h3>
+          <p className="dc-section-subtitle">Divisão real do lucro bruto gerado no período</p>
         </div>
-
-        {/* Lista de Sócios (O QUE VOCÊ PEDIU) */}
-        <div className="lg:col-span-8 bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h3 className="text-lg font-semibold text-slate-900 normal-case tracking-normal">PARTICIPAÇÃO POR SÓCIO</h3>
-              <p className="text-xs text-slate-400 font-bold normal-case mt-1">Divisão real do lucro bruto gerado no período</p>
-            </div>
-          </div>
-
-          <div className="space-y-6">
-            {stats.rankingSocios.length === 0 ? (
-              <div className="py-12 text-center text-slate-300 italic normal-case font-semibold text-xs tracking-normal border-2 border-dashed border-slate-100 rounded-2xl">Sem dados societários nas vendas atuais</div>
-            ) : (
-              stats.rankingSocios.map((s, idx) => (
-                <div key={idx} className="group">
-                  <div className="flex items-end justify-between mb-2">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-xs font-semibold normal-case shadow-sm">{s.nome.charAt(0)}</div>
-                      <div>
-                        <p className="text-xs font-semibold text-slate-800 normal-case truncate max-w-[180px]">{s.nome}</p>
-                        <p className="text-xs text-slate-400 font-bold normal-case">{s.count} {s.count === 1 ? 'Unidade' : 'Unidades'}</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm font-semibold text-emerald-600 leading-none">{formatCurrency(s.lucroReal)}</p>
-                      <p className="text-xs font-semibold text-slate-400 normal-case mt-1">{s.percentNoLucro.toFixed(1)}% do Lucro Total</p>
-                    </div>
-                  </div>
-                  <div className="h-3 w-full bg-slate-100 rounded-full overflow-hidden p-0.5 shadow-inner">
-                    <div
-                      className="h-full bg-emerald-500 rounded-full transition-all duration-1000 ease-out shadow-sm"
-                      style={{ width: `${s.percentNoLucro}%` }}
-                    ></div>
-                  </div>
+        <div className="dc-partners">
+          {stats.rankingSocios.length === 0 ? (
+            <p className="dc-section-subtitle">Sem dados societários nas vendas atuais</p>
+          ) : (
+            stats.rankingSocios.map((s, idx) => (
+              <div key={idx} className="min-w-0">
+                <div className="flex flex-wrap justify-between items-baseline gap-x-3 gap-y-1 text-sm text-slate-700">
+                  <span className="break-words">{s.nome}</span>
+                  <span className="font-semibold tabular-nums">{formatCurrency(s.lucroReal)}</span>
                 </div>
-              ))
-            )}
-          </div>
+                <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden my-2">
+                  <div className="h-full bg-indigo-400 rounded-full transition-all" style={{ width: `${s.percentNoLucro}%` }} />
+                </div>
+                <div className="flex flex-wrap justify-between gap-2 dc-section-subtitle">
+                  <span>{s.count} {s.count === 1 ? 'Unidade' : 'Unidades'}</span>
+                  <span>{s.percentNoLucro.toFixed(1)}% do Lucro Total</span>
+                </div>
+              </div>
+            ))
+          )}
         </div>
-      </div>
+      </section>
     </div>
   );
 };

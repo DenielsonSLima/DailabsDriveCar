@@ -1,0 +1,1494 @@
+{
+  "schemaVersion": 1,
+  "baseCommit": "85c3c13",
+  "policy": {
+    "offlineOnly": true,
+    "blockAllMutations": true,
+    "neverClick": [
+      "salvar",
+      "enviar",
+      "confirmar",
+      "reset",
+      "backup",
+      "exportar",
+      "conectar",
+      "publicar",
+      "excluir",
+      "remover",
+      "baixar"
+    ],
+    "safeActionsRequireHandlerReview": true
+  },
+  "existingCoverageCorrections": [
+    {
+      "scene": "cidades",
+      "path": "/cadastros/cidades",
+      "route": "/cadastros/cidades"
+    },
+    {
+      "scene": "ajustes-contas",
+      "path": "/ajustes/contas-bancarias",
+      "route": "/ajustes/contas-bancarias"
+    }
+  ],
+  "scenes": {
+    "cadastros-montadoras": {
+      "file": "cadastros/montadoras/Montadoras",
+      "path": "/cadastros/montadoras",
+      "route": "/cadastros/montadoras",
+      "existingCoverage": false,
+      "safeActions": [
+        {
+          "text": "Cancelar",
+          "title": "",
+          "handler": "{onClose}",
+          "file": "modules/cadastros/montadoras/components/FormMontadora.tsx",
+          "line": 122,
+          "scope": "offline synthetic fixture only",
+          "execute": true
+        },
+        {
+          "text": "Nova Montadora",
+          "title": "",
+          "handler": "{handleOpenAdd}",
+          "file": "modules/cadastros/montadoras/Montadoras.page.tsx",
+          "line": 147,
+          "scope": "offline synthetic fixture only",
+          "execute": true
+        }
+      ],
+      "mockDependencies": [
+        {
+          "file": "modules/cadastros/montadoras/montadoras.service.ts",
+          "calls": [
+            "MontadorasService.getPaginated",
+            "MontadorasService.remove",
+            "MontadorasService.reactivate",
+            "MontadorasService.save"
+          ]
+        },
+        {
+          "file": "lib/storage.service.ts",
+          "calls": [
+            "StorageService.uploadImage"
+          ]
+        }
+      ],
+      "sourceFiles": [
+        "modules/cadastros/montadoras/Montadoras.page.tsx",
+        "modules/cadastros/montadoras/components/MontadoraCard.tsx",
+        "modules/cadastros/montadoras/components/FormMontadora.tsx",
+        "modules/cadastros/montadoras/components/MontadorasKpis.tsx",
+        "components/ConfirmModal.tsx"
+      ],
+      "notes": [],
+      "formPresentation": "modal",
+      "verifiedSequence": [
+        "Nova Montadora",
+        "Cancelar"
+      ],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise.",
+        "getPaginated requires {data:[],count:0,currentPage:1,totalPages:1}; not []. Helper provides synthetic record."
+      ]
+    },
+    "cadastros-tipos-veiculos": {
+      "file": "cadastros/tipos-veiculos/TiposVeiculos",
+      "path": "/cadastros/tipos-veiculos",
+      "route": "/cadastros/tipos-veiculos",
+      "existingCoverage": false,
+      "safeActions": [
+        {
+          "text": "Cancelar",
+          "title": "",
+          "handler": "{() => setIsOpen(false)}",
+          "file": "modules/cadastros/tipos-veiculos/TiposVeiculos.page.tsx",
+          "line": 256,
+          "scope": "offline synthetic fixture only",
+          "execute": false
+        }
+      ],
+      "mockDependencies": [
+        {
+          "file": "modules/cadastros/tipos-veiculos/tipos-veiculos.service.ts",
+          "calls": [
+            "TiposVeiculosService.getAll",
+            "TiposVeiculosService.subscribe",
+            "TiposVeiculosService.save",
+            "TiposVeiculosService.remove",
+            "TiposVeiculosService.reactivate"
+          ]
+        }
+      ],
+      "sourceFiles": [
+        "modules/cadastros/tipos-veiculos/TiposVeiculos.page.tsx",
+        "components/ConfirmModal.tsx"
+      ],
+      "notes": [],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise."
+      ]
+    },
+    "cadastros-modelos": {
+      "file": "cadastros/modelos/Modelos",
+      "path": "/cadastros/modelos",
+      "route": "/cadastros/modelos",
+      "existingCoverage": false,
+      "safeActions": [
+        {
+          "text": "Cancelar",
+          "title": "",
+          "handler": "{onClose}",
+          "file": "modules/cadastros/modelos/components/ModeloForm.tsx",
+          "line": 196,
+          "scope": "offline synthetic fixture only",
+          "execute": false
+        },
+        {
+          "text": "Novo Modelo",
+          "title": "",
+          "handler": "{handleOpenAdd}",
+          "file": "modules/cadastros/modelos/Modelos.page.tsx",
+          "line": 239,
+          "scope": "offline synthetic fixture only",
+          "execute": false
+        }
+      ],
+      "mockDependencies": [
+        {
+          "file": "modules/cadastros/modelos/modelos.service.ts",
+          "calls": [
+            "MontadorasService.getAll",
+            "TiposVeiculosService.getAll",
+            "ModelosService.getByMontadora",
+            "ModelosService.subscribe",
+            "ModelosService.remove",
+            "ModelosService.reactivate",
+            "ModelosService.save"
+          ]
+        },
+        {
+          "file": "modules/cadastros/montadoras/montadoras.service.ts",
+          "calls": [
+            "MontadorasService.getAll",
+            "TiposVeiculosService.getAll",
+            "ModelosService.getByMontadora",
+            "ModelosService.subscribe",
+            "ModelosService.remove",
+            "ModelosService.reactivate",
+            "ModelosService.save"
+          ]
+        },
+        {
+          "file": "modules/cadastros/tipos-veiculos/tipos-veiculos.service.ts",
+          "calls": [
+            "MontadorasService.getAll",
+            "TiposVeiculosService.getAll",
+            "ModelosService.getByMontadora",
+            "ModelosService.subscribe",
+            "ModelosService.remove",
+            "ModelosService.reactivate",
+            "ModelosService.save"
+          ]
+        },
+        {
+          "file": "modules/cadastros/montadoras/montadoras.service.ts",
+          "calls": [
+            "MontadorasService.getAll",
+            "TiposVeiculosService.getAll",
+            "StorageService.uploadImage"
+          ]
+        },
+        {
+          "file": "modules/cadastros/tipos-veiculos/tipos-veiculos.service.ts",
+          "calls": [
+            "MontadorasService.getAll",
+            "TiposVeiculosService.getAll",
+            "StorageService.uploadImage"
+          ]
+        },
+        {
+          "file": "lib/storage.service.ts",
+          "calls": [
+            "MontadorasService.getAll",
+            "TiposVeiculosService.getAll",
+            "StorageService.uploadImage"
+          ]
+        }
+      ],
+      "sourceFiles": [
+        "modules/cadastros/modelos/Modelos.page.tsx",
+        "modules/cadastros/modelos/components/ModelosList.tsx",
+        "modules/cadastros/modelos/components/ModeloForm.tsx",
+        "components/ConfirmModal.tsx"
+      ],
+      "notes": [],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise."
+      ]
+    },
+    "cadastros-versoes": {
+      "file": "cadastros/versoes/Versoes",
+      "path": "/cadastros/versoes",
+      "route": "/cadastros/versoes",
+      "existingCoverage": false,
+      "safeActions": [
+        {
+          "text": "Cancelar",
+          "title": "",
+          "handler": "{onClose}",
+          "file": "modules/cadastros/versoes/components/VersionForm.tsx",
+          "line": 188,
+          "scope": "offline synthetic fixture only",
+          "execute": false
+        },
+        {
+          "text": "Nova Versão",
+          "title": "",
+          "handler": "{() => { setEditingVersao(null); setIsFormOpen(true); }}",
+          "file": "modules/cadastros/versoes/components/VersionManager.tsx",
+          "line": 178,
+          "scope": "offline synthetic fixture only",
+          "execute": false
+        },
+        {
+          "text": "",
+          "title": "\"Editar\"",
+          "handler": "{() => { setEditingVersao(v); setIsFormOpen(true); }}",
+          "file": "modules/cadastros/versoes/components/VersionManager.tsx",
+          "line": 340,
+          "scope": "offline synthetic fixture only",
+          "execute": false
+        }
+      ],
+      "mockDependencies": [
+        {
+          "file": "modules/cadastros/modelos/modelos.service.ts",
+          "calls": [
+            "ModelosService.getAll",
+            "MontadorasService.getAll",
+            "TiposVeiculosService.getAll"
+          ]
+        },
+        {
+          "file": "modules/cadastros/montadoras/montadoras.service.ts",
+          "calls": [
+            "ModelosService.getAll",
+            "MontadorasService.getAll",
+            "TiposVeiculosService.getAll"
+          ]
+        },
+        {
+          "file": "modules/cadastros/tipos-veiculos/tipos-veiculos.service.ts",
+          "calls": [
+            "ModelosService.getAll",
+            "MontadorasService.getAll",
+            "TiposVeiculosService.getAll"
+          ]
+        },
+        {
+          "file": "modules/cadastros/versoes/versoes.service.ts",
+          "calls": [
+            "VersoesService.getByModelo",
+            "VersoesService.subscribe",
+            "VersoesService.save",
+            "VersoesService.remove",
+            "VersoesService.reactivate"
+          ]
+        },
+        {
+          "file": "modules/cadastros/motorizacao/motorizacao.service.ts",
+          "calls": [
+            "MotorizacaoService.getAll",
+            "CombustivelService.getAll",
+            "TransmissaoService.getAll"
+          ]
+        },
+        {
+          "file": "modules/cadastros/combustivel/combustivel.service.ts",
+          "calls": [
+            "MotorizacaoService.getAll",
+            "CombustivelService.getAll",
+            "TransmissaoService.getAll"
+          ]
+        },
+        {
+          "file": "modules/cadastros/transmissao/transmissao.service.ts",
+          "calls": [
+            "MotorizacaoService.getAll",
+            "CombustivelService.getAll",
+            "TransmissaoService.getAll"
+          ]
+        }
+      ],
+      "sourceFiles": [
+        "modules/cadastros/versoes/Versoes.page.tsx",
+        "modules/cadastros/versoes/components/VersionManager.tsx",
+        "modules/cadastros/versoes/components/VersionForm.tsx",
+        "components/ConfirmModal.tsx"
+      ],
+      "notes": [],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise."
+      ]
+    },
+    "cadastros-caracteristicas": {
+      "file": "cadastros/caracteristicas/Caracteristicas",
+      "path": "/cadastros/caracteristicas",
+      "route": "/cadastros/caracteristicas",
+      "existingCoverage": false,
+      "safeActions": [
+        {
+          "text": "Cancelar",
+          "title": "",
+          "handler": "{onClose}",
+          "file": "modules/cadastros/caracteristicas/components/CaracteristicaForm.tsx",
+          "line": 62,
+          "scope": "offline synthetic fixture only",
+          "execute": false
+        },
+        {
+          "text": "Nova Característica",
+          "title": "",
+          "handler": "{handleOpenAdd}",
+          "file": "modules/cadastros/caracteristicas/Caracteristicas.page.tsx",
+          "line": 124,
+          "scope": "offline synthetic fixture only",
+          "execute": false
+        }
+      ],
+      "mockDependencies": [
+        {
+          "file": "modules/cadastros/caracteristicas/caracteristicas.service.ts",
+          "calls": [
+            "CaracteristicasService.getAll",
+            "CaracteristicasService.subscribe",
+            "CaracteristicasService.remove",
+            "CaracteristicasService.reactivate",
+            "CaracteristicasService.save"
+          ]
+        }
+      ],
+      "sourceFiles": [
+        "modules/cadastros/caracteristicas/Caracteristicas.page.tsx",
+        "modules/cadastros/caracteristicas/components/CaracteristicaForm.tsx",
+        "modules/cadastros/caracteristicas/components/CaracteristicasList.tsx",
+        "components/ConfirmModal.tsx"
+      ],
+      "notes": [],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise."
+      ]
+    },
+    "cadastros-opcionais": {
+      "file": "cadastros/opcionais/Opcionais",
+      "path": "/cadastros/opcionais",
+      "route": "/cadastros/opcionais",
+      "existingCoverage": false,
+      "safeActions": [
+        {
+          "text": "Cancelar",
+          "title": "",
+          "handler": "{onClose}",
+          "file": "modules/cadastros/opcionais/components/OpcionaisForm.tsx",
+          "line": 62,
+          "scope": "offline synthetic fixture only",
+          "execute": false
+        },
+        {
+          "text": "Novo Opcional",
+          "title": "",
+          "handler": "{handleOpenAdd}",
+          "file": "modules/cadastros/opcionais/Opcionais.page.tsx",
+          "line": 124,
+          "scope": "offline synthetic fixture only",
+          "execute": false
+        }
+      ],
+      "mockDependencies": [
+        {
+          "file": "modules/cadastros/opcionais/opcionais.service.ts",
+          "calls": [
+            "OpcionaisService.getAll",
+            "OpcionaisService.subscribe",
+            "OpcionaisService.remove",
+            "OpcionaisService.reactivate",
+            "OpcionaisService.save"
+          ]
+        }
+      ],
+      "sourceFiles": [
+        "modules/cadastros/opcionais/Opcionais.page.tsx",
+        "modules/cadastros/opcionais/components/OpcionaisForm.tsx",
+        "modules/cadastros/opcionais/components/OpcionaisList.tsx",
+        "components/ConfirmModal.tsx"
+      ],
+      "notes": [],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise."
+      ]
+    },
+    "cadastros-cores": {
+      "file": "cadastros/cores/Cores",
+      "path": "/cadastros/cores",
+      "route": "/cadastros/cores",
+      "existingCoverage": false,
+      "safeActions": [
+        {
+          "text": "Cancelar",
+          "title": "",
+          "handler": "{onClose}",
+          "file": "modules/cadastros/cores/components/CoresForm.tsx",
+          "line": 93,
+          "scope": "offline synthetic fixture only",
+          "execute": false
+        },
+        {
+          "text": "Nova Cor",
+          "title": "",
+          "handler": "{handleOpenAdd}",
+          "file": "modules/cadastros/cores/Cores.page.tsx",
+          "line": 124,
+          "scope": "offline synthetic fixture only",
+          "execute": false
+        }
+      ],
+      "mockDependencies": [
+        {
+          "file": "modules/cadastros/cores/cores.service.ts",
+          "calls": [
+            "CoresService.getAll",
+            "CoresService.subscribe",
+            "CoresService.remove",
+            "CoresService.reactivate",
+            "CoresService.save"
+          ]
+        }
+      ],
+      "sourceFiles": [
+        "modules/cadastros/cores/Cores.page.tsx",
+        "modules/cadastros/cores/components/CoresForm.tsx",
+        "modules/cadastros/cores/components/CoresList.tsx",
+        "components/ConfirmModal.tsx"
+      ],
+      "notes": [],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise."
+      ]
+    },
+    "cadastros-motorizacao": {
+      "file": "cadastros/motorizacao/Motorizacao",
+      "path": "/cadastros/motorizacao",
+      "route": "/cadastros/motorizacao",
+      "existingCoverage": false,
+      "safeActions": [
+        {
+          "text": "Cancelar",
+          "title": "",
+          "handler": "{onClose}",
+          "file": "modules/cadastros/motorizacao/components/MotorizacaoForm.tsx",
+          "line": 62,
+          "scope": "offline synthetic fixture only",
+          "execute": false
+        },
+        {
+          "text": "Novo Motor",
+          "title": "",
+          "handler": "{handleOpenAdd}",
+          "file": "modules/cadastros/motorizacao/Motorizacao.page.tsx",
+          "line": 124,
+          "scope": "offline synthetic fixture only",
+          "execute": false
+        }
+      ],
+      "mockDependencies": [
+        {
+          "file": "modules/cadastros/motorizacao/motorizacao.service.ts",
+          "calls": [
+            "MotorizacaoService.getAll",
+            "MotorizacaoService.subscribe",
+            "MotorizacaoService.remove",
+            "MotorizacaoService.reactivate",
+            "MotorizacaoService.save"
+          ]
+        }
+      ],
+      "sourceFiles": [
+        "modules/cadastros/motorizacao/Motorizacao.page.tsx",
+        "modules/cadastros/motorizacao/components/MotorizacaoForm.tsx",
+        "modules/cadastros/motorizacao/components/MotorizacaoList.tsx",
+        "components/ConfirmModal.tsx"
+      ],
+      "notes": [],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise."
+      ]
+    },
+    "cadastros-combustivel": {
+      "file": "cadastros/combustivel/Combustivel",
+      "path": "/cadastros/combustivel",
+      "route": "/cadastros/combustivel",
+      "existingCoverage": false,
+      "safeActions": [
+        {
+          "text": "Cancelar",
+          "title": "",
+          "handler": "{onClose}",
+          "file": "modules/cadastros/combustivel/components/CombustivelForm.tsx",
+          "line": 62,
+          "scope": "offline synthetic fixture only",
+          "execute": false
+        },
+        {
+          "text": "Novo Combustível",
+          "title": "",
+          "handler": "{handleOpenAdd}",
+          "file": "modules/cadastros/combustivel/Combustivel.page.tsx",
+          "line": 124,
+          "scope": "offline synthetic fixture only",
+          "execute": false
+        }
+      ],
+      "mockDependencies": [
+        {
+          "file": "modules/cadastros/combustivel/combustivel.service.ts",
+          "calls": [
+            "CombustivelService.getAll",
+            "CombustivelService.subscribe",
+            "CombustivelService.remove",
+            "CombustivelService.reactivate",
+            "CombustivelService.save"
+          ]
+        }
+      ],
+      "sourceFiles": [
+        "modules/cadastros/combustivel/Combustivel.page.tsx",
+        "modules/cadastros/combustivel/components/CombustivelForm.tsx",
+        "modules/cadastros/combustivel/components/CombustivelList.tsx",
+        "components/ConfirmModal.tsx"
+      ],
+      "notes": [],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise."
+      ]
+    },
+    "cadastros-transmissao": {
+      "file": "cadastros/transmissao/Transmissao",
+      "path": "/cadastros/transmissao",
+      "route": "/cadastros/transmissao",
+      "existingCoverage": false,
+      "safeActions": [
+        {
+          "text": "Cancelar",
+          "title": "",
+          "handler": "{onClose}",
+          "file": "modules/cadastros/transmissao/components/TransmissaoForm.tsx",
+          "line": 62,
+          "scope": "offline synthetic fixture only",
+          "execute": false
+        },
+        {
+          "text": "Nova Transmissão",
+          "title": "",
+          "handler": "{handleOpenAdd}",
+          "file": "modules/cadastros/transmissao/Transmissao.page.tsx",
+          "line": 124,
+          "scope": "offline synthetic fixture only",
+          "execute": false
+        }
+      ],
+      "mockDependencies": [
+        {
+          "file": "modules/cadastros/transmissao/transmissao.service.ts",
+          "calls": [
+            "TransmissaoService.getAll",
+            "TransmissaoService.subscribe",
+            "TransmissaoService.remove",
+            "TransmissaoService.reactivate",
+            "TransmissaoService.save"
+          ]
+        }
+      ],
+      "sourceFiles": [
+        "modules/cadastros/transmissao/Transmissao.page.tsx",
+        "modules/cadastros/transmissao/components/TransmissaoForm.tsx",
+        "modules/cadastros/transmissao/components/TransmissaoList.tsx",
+        "components/ConfirmModal.tsx"
+      ],
+      "notes": [],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise."
+      ]
+    },
+    "cadastros-formas-pagamento": {
+      "file": "cadastros/formas-pagamento/FormasPagamento",
+      "path": "/cadastros/formas-pagamento",
+      "route": "/cadastros/formas-pagamento",
+      "existingCoverage": false,
+      "safeActions": [
+        {
+          "text": "Cancelar",
+          "title": "",
+          "handler": "{onClose}",
+          "file": "modules/cadastros/formas-pagamento/components/FormasPagamentoForm.tsx",
+          "line": 241,
+          "scope": "offline synthetic fixture only",
+          "execute": true
+        },
+        {
+          "text": "Nova Forma",
+          "title": "",
+          "handler": "{handleOpenAdd}",
+          "file": "modules/cadastros/formas-pagamento/FormasPagamento.page.tsx",
+          "line": 115,
+          "scope": "offline synthetic fixture only",
+          "execute": true
+        }
+      ],
+      "mockDependencies": [
+        {
+          "file": "modules/cadastros/formas-pagamento/formas-pagamento.service.ts",
+          "calls": [
+            "FormasPagamentoService.getAll",
+            "FormasPagamentoService.subscribe",
+            "FormasPagamentoService.remove",
+            "FormasPagamentoService.save"
+          ]
+        }
+      ],
+      "sourceFiles": [
+        "modules/cadastros/formas-pagamento/FormasPagamento.page.tsx",
+        "modules/cadastros/formas-pagamento/components/FormasPagamentoForm.tsx",
+        "modules/cadastros/formas-pagamento/components/FormasPagamentoList.tsx",
+        "components/ConfirmModal.tsx"
+      ],
+      "notes": [],
+      "formPresentation": "modal",
+      "verifiedSequence": [
+        "Nova Forma",
+        "Cancelar"
+      ],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise."
+      ]
+    },
+    "cadastros-condicoes-pagamento": {
+      "file": "cadastros/condicoes-pagamento/CondicoesPagamento",
+      "path": "/cadastros/condicoes-pagamento",
+      "route": "/cadastros/condicoes-pagamento",
+      "existingCoverage": false,
+      "safeActions": [],
+      "mockDependencies": [
+        {
+          "file": "modules/cadastros/formas-pagamento/formas-pagamento.service.ts",
+          "calls": [
+            "FormasPagamentoService.getAll"
+          ]
+        },
+        {
+          "file": "modules/cadastros/condicoes-pagamento/condicoes-pagamento.service.ts",
+          "calls": [
+            "CondicoesPagamentoService.subscribe",
+            "CondicoesPagamentoService.getByFormaPagamento",
+            "CondicoesPagamentoService.remove",
+            "CondicoesPagamentoService.toggleStatus",
+            "CondicoesPagamentoService.save"
+          ]
+        }
+      ],
+      "sourceFiles": [
+        "modules/cadastros/condicoes-pagamento/CondicoesPagamento.page.tsx",
+        "modules/cadastros/condicoes-pagamento/components/ConditionManager.tsx"
+      ],
+      "notes": [],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise."
+      ]
+    },
+    "cadastros-condicoes-recebimento": {
+      "file": "cadastros/condicoes-recebimento/CondicoesRecebimento",
+      "path": "/cadastros/condicoes-recebimento",
+      "route": "/cadastros/condicoes-recebimento",
+      "existingCoverage": false,
+      "safeActions": [],
+      "mockDependencies": [
+        {
+          "file": "modules/cadastros/formas-pagamento/formas-pagamento.service.ts",
+          "calls": [
+            "FormasPagamentoService.getAll"
+          ]
+        },
+        {
+          "file": "modules/cadastros/condicoes-recebimento/condicoes-recebimento.service.ts",
+          "calls": [
+            "CondicoesRecebimentoService.subscribe",
+            "CondicoesRecebimentoService.getByFormaPagamento",
+            "CondicoesRecebimentoService.remove",
+            "CondicoesRecebimentoService.toggleStatus",
+            "CondicoesRecebimentoService.save"
+          ]
+        }
+      ],
+      "sourceFiles": [
+        "modules/cadastros/condicoes-recebimento/CondicoesRecebimento.page.tsx",
+        "modules/cadastros/condicoes-recebimento/components/ReceiptConditionManager.tsx"
+      ],
+      "notes": [],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise."
+      ]
+    },
+    "cadastros-corretores": {
+      "file": "cadastros/corretores/Corretores",
+      "path": "/cadastros/corretores",
+      "route": "/cadastros/corretores",
+      "existingCoverage": false,
+      "safeActions": [
+        {
+          "text": "Cancelar",
+          "title": "",
+          "handler": "{onClose}",
+          "file": "modules/cadastros/corretores/components/CorretorForm.tsx",
+          "line": 162,
+          "scope": "offline synthetic fixture only",
+          "execute": false
+        },
+        {
+          "text": "Novo Corretor",
+          "title": "",
+          "handler": "{handleOpenAdd}",
+          "file": "modules/cadastros/corretores/Corretores.page.tsx",
+          "line": 136,
+          "scope": "offline synthetic fixture only",
+          "execute": false
+        }
+      ],
+      "mockDependencies": [
+        {
+          "file": "modules/cadastros/corretores/corretores.service.ts",
+          "calls": [
+            "CorretoresService.getAll",
+            "CorretoresService.subscribe",
+            "CorretoresService.remove",
+            "CorretoresService.save"
+          ]
+        }
+      ],
+      "sourceFiles": [
+        "modules/cadastros/corretores/Corretores.page.tsx",
+        "modules/cadastros/corretores/components/CorretorForm.tsx",
+        "modules/cadastros/corretores/components/CorretorList.tsx",
+        "components/ConfirmModal.tsx"
+      ],
+      "notes": [],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise."
+      ]
+    },
+    "cadastros-tipos-despesas": {
+      "file": "cadastros/tipos-despesas/TiposDespesas",
+      "path": "/cadastros/tipos-despesas",
+      "route": "/cadastros/tipos-despesas",
+      "existingCoverage": false,
+      "safeActions": [
+        {
+          "text": "Cancelar",
+          "title": "",
+          "handler": "{onClose}",
+          "file": "modules/cadastros/tipos-despesas/components/GroupForm.tsx",
+          "line": 59,
+          "scope": "offline synthetic fixture only",
+          "execute": false
+        },
+        {
+          "text": "Cancelar",
+          "title": "",
+          "handler": "{onClose}",
+          "file": "modules/cadastros/tipos-despesas/components/CategoryForm.tsx",
+          "line": 59,
+          "scope": "offline synthetic fixture only",
+          "execute": false
+        }
+      ],
+      "mockDependencies": [
+        {
+          "file": "modules/cadastros/tipos-despesas/tipos-despesas.service.ts",
+          "calls": [
+            "TiposDespesasService.subscribe",
+            "TiposDespesasService.getByTipo",
+            "TiposDespesasService.saveGrupo",
+            "TiposDespesasService.saveCategoria",
+            "TiposDespesasService.deleteGrupo",
+            "TiposDespesasService.deleteCategoria"
+          ]
+        }
+      ],
+      "sourceFiles": [
+        "modules/cadastros/tipos-despesas/TiposDespesas.page.tsx",
+        "modules/cadastros/tipos-despesas/components/ExpenseManager.tsx",
+        "modules/cadastros/tipos-despesas/components/GroupForm.tsx",
+        "modules/cadastros/tipos-despesas/components/CategoryForm.tsx",
+        "components/ConfirmModal.tsx"
+      ],
+      "notes": [],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise."
+      ]
+    },
+    "relatorios-vendas": {
+      "file": "relatorios/pages/RelatorioVendas",
+      "path": "/relatorios/vendas",
+      "route": "/relatorios/vendas",
+      "existingCoverage": false,
+      "safeActions": [],
+      "mockDependencies": [
+        {
+          "file": "modules/ajustes/empresa/empresa.service.ts",
+          "calls": [
+            "EmpresaService.getDadosEmpresa",
+            "MarcaDaguaService.getConfig",
+            "RelatoriosService.getVendedoresAtivos",
+            "RelatoriosService.getVendasParaRelatorio"
+          ]
+        },
+        {
+          "file": "modules/ajustes/marca-dagua/marca-dagua.service.ts",
+          "calls": [
+            "EmpresaService.getDadosEmpresa",
+            "MarcaDaguaService.getConfig",
+            "RelatoriosService.getVendedoresAtivos",
+            "RelatoriosService.getVendasParaRelatorio"
+          ]
+        },
+        {
+          "file": "modules/relatorios/relatorios.service.ts",
+          "calls": [
+            "EmpresaService.getDadosEmpresa",
+            "MarcaDaguaService.getConfig",
+            "RelatoriosService.getVendedoresAtivos",
+            "RelatoriosService.getVendasParaRelatorio"
+          ]
+        }
+      ],
+      "sourceFiles": [
+        "modules/relatorios/pages/RelatorioVendas.page.tsx",
+        "modules/relatorios/components/RelatoriosQuickPreview.tsx"
+      ],
+      "notes": [],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise."
+      ]
+    },
+    "relatorios-estoque": {
+      "file": "relatorios/pages/RelatorioEstoque",
+      "path": "/relatorios/estoque",
+      "route": "/relatorios/estoque",
+      "existingCoverage": false,
+      "safeActions": [],
+      "mockDependencies": [
+        {
+          "file": "modules/ajustes/empresa/empresa.service.ts",
+          "calls": [
+            "EmpresaService.getDadosEmpresa",
+            "MarcaDaguaService.getConfig",
+            "RelatoriosService.getEstoqueParaRelatorio"
+          ]
+        },
+        {
+          "file": "modules/ajustes/marca-dagua/marca-dagua.service.ts",
+          "calls": [
+            "EmpresaService.getDadosEmpresa",
+            "MarcaDaguaService.getConfig",
+            "RelatoriosService.getEstoqueParaRelatorio"
+          ]
+        },
+        {
+          "file": "modules/relatorios/relatorios.service.ts",
+          "calls": [
+            "EmpresaService.getDadosEmpresa",
+            "MarcaDaguaService.getConfig",
+            "RelatoriosService.getEstoqueParaRelatorio"
+          ]
+        }
+      ],
+      "sourceFiles": [
+        "modules/relatorios/pages/RelatorioEstoque.page.tsx",
+        "modules/relatorios/components/RelatoriosQuickPreview.tsx"
+      ],
+      "notes": [],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise."
+      ]
+    },
+    "relatorios-financeiro": {
+      "file": "relatorios/pages/RelatorioFinanceiro",
+      "path": "/relatorios/financeiro",
+      "route": "/relatorios/financeiro",
+      "existingCoverage": false,
+      "safeActions": [],
+      "mockDependencies": [
+        {
+          "file": "modules/ajustes/empresa/empresa.service.ts",
+          "calls": [
+            "EmpresaService.getDadosEmpresa",
+            "MarcaDaguaService.getConfig",
+            "FinanceiroService.getHistoricoTotals",
+            "FinanceiroService.getHistoricoGeral"
+          ]
+        },
+        {
+          "file": "modules/ajustes/marca-dagua/marca-dagua.service.ts",
+          "calls": [
+            "EmpresaService.getDadosEmpresa",
+            "MarcaDaguaService.getConfig",
+            "FinanceiroService.getHistoricoTotals",
+            "FinanceiroService.getHistoricoGeral"
+          ]
+        },
+        {
+          "file": "modules/financeiro/financeiro.service.ts",
+          "calls": [
+            "EmpresaService.getDadosEmpresa",
+            "MarcaDaguaService.getConfig",
+            "FinanceiroService.getHistoricoTotals",
+            "FinanceiroService.getHistoricoGeral"
+          ]
+        }
+      ],
+      "sourceFiles": [
+        "modules/relatorios/pages/RelatorioFinanceiro.page.tsx",
+        "modules/relatorios/components/RelatoriosQuickPreview.tsx"
+      ],
+      "notes": [],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise."
+      ]
+    },
+    "relatorios-auditoria": {
+      "file": "relatorios/pages/RelatorioAuditoria",
+      "path": "/relatorios/auditoria",
+      "route": "/relatorios/auditoria",
+      "existingCoverage": false,
+      "safeActions": [],
+      "mockDependencies": [
+        {
+          "file": "modules/ajustes/empresa/empresa.service.ts",
+          "calls": [
+            "EmpresaService.getDadosEmpresa",
+            "MarcaDaguaService.getConfig",
+            "LogsService.fetchLogs"
+          ]
+        },
+        {
+          "file": "modules/ajustes/marca-dagua/marca-dagua.service.ts",
+          "calls": [
+            "EmpresaService.getDadosEmpresa",
+            "MarcaDaguaService.getConfig",
+            "LogsService.fetchLogs"
+          ]
+        },
+        {
+          "file": "modules/ajustes/logs/logs.service.ts",
+          "calls": [
+            "EmpresaService.getDadosEmpresa",
+            "MarcaDaguaService.getConfig",
+            "LogsService.fetchLogs"
+          ]
+        }
+      ],
+      "sourceFiles": [
+        "modules/relatorios/pages/RelatorioAuditoria.page.tsx",
+        "modules/relatorios/components/RelatoriosQuickPreview.tsx"
+      ],
+      "notes": [],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise."
+      ]
+    },
+    "relatorios-comissoes": {
+      "file": "relatorios/pages/RelatorioComissoes",
+      "path": "/relatorios/comissoes",
+      "route": "/relatorios/comissoes",
+      "existingCoverage": false,
+      "safeActions": [],
+      "mockDependencies": [
+        {
+          "file": "modules/ajustes/empresa/empresa.service.ts",
+          "calls": [
+            "EmpresaService.getDadosEmpresa",
+            "MarcaDaguaService.getConfig",
+            "RelatoriosService.getVendedoresAtivos",
+            "RelatoriosService.getComissoesParaRelatorio"
+          ]
+        },
+        {
+          "file": "modules/ajustes/marca-dagua/marca-dagua.service.ts",
+          "calls": [
+            "EmpresaService.getDadosEmpresa",
+            "MarcaDaguaService.getConfig",
+            "RelatoriosService.getVendedoresAtivos",
+            "RelatoriosService.getComissoesParaRelatorio"
+          ]
+        },
+        {
+          "file": "modules/relatorios/relatorios.service.ts",
+          "calls": [
+            "EmpresaService.getDadosEmpresa",
+            "MarcaDaguaService.getConfig",
+            "RelatoriosService.getVendedoresAtivos",
+            "RelatoriosService.getComissoesParaRelatorio"
+          ]
+        }
+      ],
+      "sourceFiles": [
+        "modules/relatorios/pages/RelatorioComissoes.page.tsx",
+        "modules/relatorios/components/RelatoriosQuickPreview.tsx"
+      ],
+      "notes": [],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise."
+      ]
+    },
+    "relatorios-servicos": {
+      "file": "relatorios/pages/RelatorioServicos",
+      "path": "/relatorios/servicos",
+      "route": "/relatorios/servicos",
+      "existingCoverage": false,
+      "safeActions": [],
+      "mockDependencies": [
+        {
+          "file": "modules/ajustes/empresa/empresa.service.ts",
+          "calls": [
+            "EmpresaService.getDadosEmpresa",
+            "MarcaDaguaService.getConfig",
+            "RelatoriosService.getServicosParaRelatorio"
+          ]
+        },
+        {
+          "file": "modules/ajustes/marca-dagua/marca-dagua.service.ts",
+          "calls": [
+            "EmpresaService.getDadosEmpresa",
+            "MarcaDaguaService.getConfig",
+            "RelatoriosService.getServicosParaRelatorio"
+          ]
+        },
+        {
+          "file": "modules/relatorios/relatorios.service.ts",
+          "calls": [
+            "EmpresaService.getDadosEmpresa",
+            "MarcaDaguaService.getConfig",
+            "RelatoriosService.getServicosParaRelatorio"
+          ]
+        }
+      ],
+      "sourceFiles": [
+        "modules/relatorios/pages/RelatorioServicos.page.tsx",
+        "modules/relatorios/components/RelatoriosQuickPreview.tsx"
+      ],
+      "notes": [],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise."
+      ]
+    },
+    "relatorios-extrato-bancario": {
+      "file": "relatorios/pages/RelatorioExtratoBancario",
+      "path": "/relatorios/extrato-bancario",
+      "route": "/relatorios/extrato-bancario",
+      "existingCoverage": false,
+      "safeActions": [],
+      "mockDependencies": [
+        {
+          "file": "modules/financeiro/financeiro.service.ts",
+          "calls": [
+            "EmpresaService.getDadosEmpresa",
+            "MarcaDaguaService.getConfig",
+            "FinanceiroService.getContasBancarias",
+            "FinanceiroService.getExtratoPorConta"
+          ]
+        },
+        {
+          "file": "modules/ajustes/empresa/empresa.service.ts",
+          "calls": [
+            "EmpresaService.getDadosEmpresa",
+            "MarcaDaguaService.getConfig",
+            "FinanceiroService.getContasBancarias",
+            "FinanceiroService.getExtratoPorConta"
+          ]
+        },
+        {
+          "file": "modules/ajustes/marca-dagua/marca-dagua.service.ts",
+          "calls": [
+            "EmpresaService.getDadosEmpresa",
+            "MarcaDaguaService.getConfig",
+            "FinanceiroService.getContasBancarias",
+            "FinanceiroService.getExtratoPorConta"
+          ]
+        }
+      ],
+      "sourceFiles": [
+        "modules/relatorios/pages/RelatorioExtratoBancario.page.tsx",
+        "modules/relatorios/components/RelatoriosQuickPreview.tsx"
+      ],
+      "notes": [],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise."
+      ]
+    },
+    "relatorios-conciliacao-patrimonial": {
+      "file": "relatorios/pages/RelatorioPatrimonioConciliacao",
+      "path": "/relatorios/conciliacao-patrimonial",
+      "route": "/relatorios/conciliacao-patrimonial",
+      "existingCoverage": false,
+      "safeActions": [],
+      "mockDependencies": [
+        {
+          "file": "modules/ajustes/empresa/empresa.service.ts",
+          "calls": [
+            "EmpresaService.getDadosEmpresa",
+            "MarcaDaguaService.getConfig",
+            "RelatoriosService.getConciliacaoPatrimonial"
+          ]
+        },
+        {
+          "file": "modules/ajustes/marca-dagua/marca-dagua.service.ts",
+          "calls": [
+            "EmpresaService.getDadosEmpresa",
+            "MarcaDaguaService.getConfig",
+            "RelatoriosService.getConciliacaoPatrimonial"
+          ]
+        },
+        {
+          "file": "modules/relatorios/relatorios.service.ts",
+          "calls": [
+            "EmpresaService.getDadosEmpresa",
+            "MarcaDaguaService.getConfig",
+            "RelatoriosService.getConciliacaoPatrimonial"
+          ]
+        }
+      ],
+      "sourceFiles": [
+        "modules/relatorios/pages/RelatorioPatrimonioConciliacao.page.tsx",
+        "modules/relatorios/components/RelatoriosQuickPreview.tsx"
+      ],
+      "notes": [],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise.",
+        "getConciliacaoPatrimonial requires {inicial:{},final:{},transacoes:[],patrimonio_inicial:0,patrimonio_final:0,total_entradas:0,total_saidas:0}."
+      ]
+    },
+    "ajustes-empresa": {
+      "file": "ajustes/empresa/Empresa",
+      "path": "/ajustes/empresa",
+      "route": "/ajustes/empresa",
+      "existingCoverage": false,
+      "safeActions": [],
+      "mockDependencies": [
+        {
+          "file": "modules/ajustes/empresa/empresa.service.ts",
+          "calls": [
+            "EmpresaService.subscribe",
+            "EmpresaService.getDadosEmpresa",
+            "EmpresaService.saveDadosEmpresa",
+            "EmpresaService.consultarCNPJ"
+          ]
+        }
+      ],
+      "sourceFiles": [
+        "modules/ajustes/empresa/Empresa.page.tsx",
+        "modules/ajustes/empresa/components/FormEmpresa.tsx"
+      ],
+      "notes": [],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise."
+      ]
+    },
+    "ajustes-marca-dagua": {
+      "file": "ajustes/marca-dagua/MarcaDagua",
+      "path": "/ajustes/marca-dagua",
+      "route": "/ajustes/marca-dagua",
+      "existingCoverage": false,
+      "safeActions": [],
+      "mockDependencies": [
+        {
+          "file": "modules/ajustes/marca-dagua/marca-dagua.service.ts",
+          "calls": [
+            "MarcaDaguaService.subscribe",
+            "MarcaDaguaService.getConfig",
+            "MarcaDaguaService.saveConfig"
+          ]
+        }
+      ],
+      "sourceFiles": [
+        "modules/ajustes/marca-dagua/MarcaDagua.page.tsx",
+        "modules/ajustes/marca-dagua/components/WatermarkForm.tsx",
+        "modules/ajustes/marca-dagua/components/WatermarkPreview.tsx"
+      ],
+      "notes": [],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise."
+      ]
+    },
+    "ajustes-logs": {
+      "file": "ajustes/logs/Logs",
+      "path": "/ajustes/logs",
+      "route": "/ajustes/logs",
+      "existingCoverage": false,
+      "safeActions": [
+        {
+          "text": "Entendido",
+          "title": "",
+          "handler": "{onClose}",
+          "file": "modules/ajustes/logs/components/LogDetailsModal.tsx",
+          "line": 258,
+          "scope": "offline synthetic fixture only",
+          "execute": false
+        }
+      ],
+      "mockDependencies": [
+        {
+          "file": "modules/ajustes/logs/logs.service.ts",
+          "calls": [
+            "LogsService.fetchLogs"
+          ]
+        },
+        {
+          "file": "modules/ajustes/logs/logs.service.ts",
+          "calls": []
+        }
+      ],
+      "sourceFiles": [
+        "modules/ajustes/logs/Logs.page.tsx",
+        "modules/ajustes/logs/components/LogDetailsModal.tsx"
+      ],
+      "notes": [],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise."
+      ]
+    },
+    "ajustes-socios": {
+      "file": "ajustes/socios/Socios",
+      "path": "/ajustes/socios",
+      "route": "/ajustes/socios",
+      "existingCoverage": false,
+      "safeActions": [
+        {
+          "text": "Novo Sócio",
+          "title": "",
+          "handler": "{handleOpenAdd}",
+          "file": "modules/ajustes/socios/Socios.page.tsx",
+          "line": 135,
+          "scope": "offline synthetic fixture only",
+          "execute": true
+        },
+        {
+          "text": "Cancelar",
+          "handler": "onCancel -> setIsFormOpen(false)",
+          "execute": true,
+          "scope": "offline synthetic fixture only"
+        }
+      ],
+      "mockDependencies": [
+        {
+          "file": "modules/ajustes/socios/socios.service.ts",
+          "calls": [
+            "SociosService.subscribe",
+            "SociosService.getAll",
+            "SociosService.save",
+            "SociosService.delete",
+            "SociosService.toggleStatus"
+          ]
+        }
+      ],
+      "sourceFiles": [
+        "modules/ajustes/socios/Socios.page.tsx",
+        "modules/ajustes/socios/components/ListSocios.tsx",
+        "modules/ajustes/socios/components/FormSocio.tsx"
+      ],
+      "notes": [],
+      "formPresentation": "inline",
+      "verifiedSequence": [
+        "Novo Sócio",
+        "Cancelar"
+      ],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise."
+      ]
+    },
+    "ajustes-usuarios": {
+      "file": "ajustes/usuarios/Usuarios",
+      "path": "/ajustes/usuarios",
+      "route": "/ajustes/usuarios",
+      "existingCoverage": false,
+      "safeActions": [
+        {
+          "text": "Novo Perfil",
+          "title": "",
+          "handler": "{handleOpenAdd}",
+          "file": "modules/ajustes/usuarios/Usuarios.page.tsx",
+          "line": 136,
+          "scope": "offline synthetic fixture only",
+          "execute": true
+        },
+        {
+          "text": "Cancelar",
+          "handler": "onCancel -> setIsFormOpen(false)",
+          "execute": true,
+          "scope": "offline synthetic fixture only"
+        }
+      ],
+      "mockDependencies": [
+        {
+          "file": "modules/ajustes/usuarios/usuarios.service.ts",
+          "calls": [
+            "UsuariosService.subscribeToChanges",
+            "UsuariosService.unsubscribeFromChanges",
+            "UsuariosService.getAll",
+            "UsuariosService.save",
+            "UsuariosService.delete",
+            "UsuariosService.toggleStatus"
+          ]
+        },
+        {
+          "file": "modules/auth/auth.service.ts",
+          "calls": [
+            "AuthService.getUserIdentities",
+            "AuthService.linkGoogleAccount"
+          ]
+        }
+      ],
+      "sourceFiles": [
+        "modules/ajustes/usuarios/Usuarios.page.tsx",
+        "modules/ajustes/usuarios/components/ListUsuarios.tsx",
+        "modules/ajustes/usuarios/components/FormUsuario.tsx",
+        "modules/auth/components/GoogleAccountLinkCard.tsx"
+      ],
+      "notes": [],
+      "formPresentation": "inline",
+      "verifiedSequence": [
+        "Novo Perfil",
+        "Cancelar"
+      ],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise.",
+        "Auth store must contain synthetic ADMIN user to show Novo Perfil. AuthService.getUserIdentities returns []; do not connect/link Google."
+      ]
+    },
+    "ajustes-backup": {
+      "file": "ajustes/backup/Backup",
+      "path": "/ajustes/backup",
+      "route": "/ajustes/backup",
+      "existingCoverage": false,
+      "safeActions": [],
+      "mockDependencies": [],
+      "sourceFiles": [
+        "modules/ajustes/backup/Backup.page.tsx",
+        "modules/ModulePlaceholder.tsx"
+      ],
+      "notes": [
+        "Render only. Do not press any action.",
+        "ModulePlaceholder only; no service calls in current page."
+      ],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise."
+      ]
+    },
+    "ajustes-api-reset": {
+      "file": "ajustes/api-reset/ApiReset",
+      "path": "/ajustes/api-reset",
+      "route": "/ajustes/api-reset",
+      "existingCoverage": false,
+      "safeActions": [],
+      "mockDependencies": [],
+      "sourceFiles": [
+        "modules/ajustes/api-reset/ApiReset.page.tsx",
+        "modules/ModulePlaceholder.tsx"
+      ],
+      "notes": [
+        "Render only. Do not press any action.",
+        "ModulePlaceholder only; no service calls in current page."
+      ],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise."
+      ]
+    },
+    "ajustes-saldo-inicial": {
+      "file": "ajustes/saldo-inicial/SaldoInicial",
+      "path": "/ajustes/saldo-inicial",
+      "route": "/ajustes/saldo-inicial",
+      "existingCoverage": false,
+      "safeActions": [],
+      "mockDependencies": [
+        {
+          "file": "modules/ajustes/contas-bancarias/contas.service.ts",
+          "calls": [
+            "ContasBancariasService.subscribe",
+            "ContasBancariasService.getAll",
+            "ContasBancariasService.setSaldoInicial"
+          ]
+        }
+      ],
+      "sourceFiles": [
+        "modules/ajustes/saldo-inicial/SaldoInicial.page.tsx"
+      ],
+      "notes": [],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise."
+      ]
+    },
+    "ajustes-financeiro": {
+      "file": "financeiro/submodules/ajustes/AjustesFinanceiro",
+      "path": "/ajustes/financeiro",
+      "route": "/ajustes/financeiro",
+      "existingCoverage": false,
+      "safeActions": [],
+      "mockDependencies": [
+        {
+          "file": "modules/ajustes/ajustes.service.ts",
+          "calls": [
+            "AjustesCentralService.getSettings",
+            "AjustesCentralService.updateSettings"
+          ]
+        }
+      ],
+      "sourceFiles": [
+        "modules/financeiro/submodules/ajustes/AjustesFinanceiro.page.tsx"
+      ],
+      "notes": [],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise.",
+        "getSettings returns {}; NEVER click toggle, which calls updateSettings immediately."
+      ]
+    },
+    "ajustes-site-publico": {
+      "file": "editor-site/EditorSite",
+      "path": "/ajustes/site-publico",
+      "route": "/ajustes/site-publico",
+      "existingCoverage": false,
+      "safeActions": [],
+      "mockDependencies": [
+        {
+          "file": "modules/editor-site/editor-site.service.ts",
+          "calls": [
+            "EditorSiteService.getSiteContent",
+            "EditorSiteService.updateSiteContent"
+          ]
+        }
+      ],
+      "sourceFiles": [
+        "modules/editor-site/EditorSite.page.tsx"
+      ],
+      "notes": [],
+      "mockNotes": [
+        "All service modules must be intercepted. Mutation methods listed in dependencies are forbidden, not actions to exercise.",
+        "Use getAdminMockSource: real getSiteContent can INSERT fallback record; generic [] breaks hero_slides.map."
+      ]
+    }
+  },
+  "removedByOwnerRequest": [
+    "/marketing",
+    "/marketing/anuncios",
+    "/marketing/anuncios/novo",
+    "/marketing/feed",
+    "/marketing/stories"
+  ]
+}

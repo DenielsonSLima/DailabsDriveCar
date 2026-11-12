@@ -6,15 +6,15 @@ import FipeConsultModal from './FipeConsultModal';
 const ShortcutItem = ({ to, label, icon, color, description, onClick }: { to?: string, label: string, icon: React.ReactNode, color: string, description: string, onClick?: () => void }) => {
   const content = (
     <>
-      <div className={`w-10 h-10 shrink-0 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600   transition-all duration-500`}>
+      <div className={`w-9 h-9 shrink-0 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600   transition-all duration-500`}>
         {icon}
       </div>
       <div>
         <h4 className="text-sm font-semibold text-slate-900 normal-case tracking-tight group-hover:text-indigo-600 transition-colors">{label}</h4>
         <p className="text-xs font-medium text-slate-500 normal-case tracking-normal mt-0.5">{description}</p>
       </div>
-      <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity translate-x-2 group-hover:translate-x-0 group-hover:duration-500">
-        <svg className="w-5 h-5 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div className="ml-auto shrink-0 text-slate-400 transition-colors group-hover:text-indigo-600">
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
         </svg>
       </div>
@@ -25,7 +25,7 @@ const ShortcutItem = ({ to, label, icon, color, description, onClick }: { to?: s
     return (
       <button 
         onClick={onClick}
-        className="group w-full flex items-center gap-3 p-4 bg-white rounded-2xl border border-slate-200/60 shadow-sm hover:shadow-sm hover:border-slate-300 transition-all duration-500 text-left"
+        className="dc-panel group w-full flex items-center gap-3 hover:shadow-sm hover:border-slate-300 transition-all duration-500 text-left"
       >
         {content}
       </button>
@@ -35,7 +35,7 @@ const ShortcutItem = ({ to, label, icon, color, description, onClick }: { to?: s
   return (
     <NavLink
       to={to || '#'}
-      className="group flex items-center gap-3 p-4 bg-white rounded-2xl border border-slate-200/60 shadow-sm hover:shadow-sm hover:border-slate-300 transition-all duration-500"
+      className="dc-panel group flex items-center gap-3 hover:shadow-sm hover:border-slate-300 transition-all duration-500"
     >
       {content}
     </NavLink>
@@ -46,12 +46,13 @@ const QuickShortcuts: React.FC = () => {
   const [isFipeModalOpen, setIsFipeModalOpen] = useState(false);
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="pl-3 border-l-2 border-indigo-400 mb-2">
-        <h3 className="text-lg font-semibold text-slate-900 tracking-tight normal-case">Fluxo Ágil</h3>
-        <p className="text-xs font-medium text-slate-500 normal-case tracking-normal mt-1">Atalhos para operações frequentes</p>
+    <div className="space-y-3">
+      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        <h3 className="dc-section-title">Acesso rápido</h3>
+        <p className="dc-section-subtitle">Atalhos para operações frequentes</p>
       </div>
 
+      <div className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
       <ShortcutItem
         onClick={() => setIsFipeModalOpen(true)}
         label="Consulta Fipe"
@@ -97,6 +98,8 @@ const QuickShortcuts: React.FC = () => {
           </svg>
         }
       />
+
+      </div>
 
       <FipeConsultModal 
         isOpen={isFipeModalOpen} 

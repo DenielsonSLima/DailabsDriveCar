@@ -68,7 +68,7 @@ const ParceiroIdentificationForm: React.FC<Props> = ({
                             value={formData.documento || ''}
                             onChange={onChange}
                             maxLength={formData.pessoa_tipo === PessoaTipo.FISICA ? 14 : 18}
-                            className="flex-1 bg-white border border-slate-200 rounded-xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-mono font-medium text-slate-900"
+                            className="flex-1 bg-white border border-slate-200 rounded-xl px-5 py-3  focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-mono font-medium text-slate-900 dc-input"
                             placeholder={formData.pessoa_tipo === PessoaTipo.FISICA ? "000.000.000-00" : "00.000.000/0000-00"}
                         />
                         {formData.pessoa_tipo === PessoaTipo.JURIDICA && (
@@ -102,7 +102,7 @@ const ParceiroIdentificationForm: React.FC<Props> = ({
                         value={formData.nome || ''}
                         onChange={onChange}
                         required
-                        className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium text-slate-900"
+                        className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3  focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium text-slate-900 dc-input"
                     />
                 </div>
 
@@ -115,7 +115,7 @@ const ParceiroIdentificationForm: React.FC<Props> = ({
                             id="razao_social"
                             value={formData.razao_social || ''}
                             onChange={onChange}
-                            className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-slate-900"
+                            className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3  focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-slate-900 dc-input"
                         />
                     </div>
                 )}
@@ -127,7 +127,7 @@ const ParceiroIdentificationForm: React.FC<Props> = ({
                         id="tipo"
                         value={formData.tipo}
                         onChange={onChange}
-                        className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium appearance-none text-slate-900"
+                        className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3  focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium appearance-none text-slate-900 dc-input"
                     >
                         <option value={TipoParceiro.CLIENTE}>Cliente</option>
                         <option value={TipoParceiro.FORNECEDOR}>Fornecedor</option>

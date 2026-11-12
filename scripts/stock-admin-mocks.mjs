@@ -1,0 +1,19 @@
+// Offline visual fixtures only. Chain BEFORE generic service mocks; never access a real backend.
+const pixel='data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="80" height="60"%3E%3Crect width="80" height="60" fill="%23e2e8f0"/%3E%3C/svg%3E';
+const site={id:'demo-site',hero_source:'slides',hero_slides:[{title:'Título demonstrativo',subtitle:'Conteúdo sintético para revisão visual',image_url:pixel}],sobre_titulo:'Nossa empresa',sobre_subtitulo:'Exemplo',sobre_paragrafos:['Texto demonstrativo sem dados reais.'],sobre_imagem_url:pixel,sobre_cards:[{titulo:'Atendimento',descricao:'Conteúdo demonstrativo'}],contato_titulo:'Fale conosco',contato_subtitulo:'Contato demonstrativo',contato_descricao:'Informações sintéticas',contato_horario_semana:'08h às 17h',contato_horario_sabado:'08h às 12h'};
+const brand={id:'demo-brand',nome:'Marca demonstrativa',ativo:true,logo_url:pixel};
+export function getAdminMockSource(file){
+ let name,methods;
+ if(file.endsWith('/editor-site.service.ts')){name='EditorSiteService';methods={getSiteContent:site};}
+ else if(file.endsWith('/formas-pagamento.service.ts')){name='FormasPagamentoService';methods={getAll:[{id:'demo-pix',nome:'PIX demonstrativo',tipo_movimentacao:'AMBOS',destino_lancamento:'CAIXA',permite_parcelamento:false,qtd_max_parcelas:1,ativo:true,created_at:'2026-01-01T12:00:00Z'}]};}
+ else if(file.endsWith('/corretores.service.ts')){name='CorretoresService';methods={getAll:[]};}
+ else if(file.endsWith('/tipos-despesas.service.ts')){name='TiposDespesasService';methods={getByTipo:[{id:'demo-expense-group',nome:'Grupo demonstrativo',tipo:'FIXA',categorias:[{id:'demo-category',grupo_id:'demo-expense-group',nome:'Categoria demonstrativa'}]}]};}
+ else if(file.endsWith('/socios.service.ts')){name='SociosService';methods={getAll:[{id:'demo-partner',nome:'Sócio demonstrativo',cpf:'',telefone:'',ativo:true,patrimonio:[{id:'demo-asset',descricao:'Ativo demonstrativo',valor:1000,data:'2026-01-01'}]}]};}
+ else if(file.endsWith('/empresa.service.ts')){name='EmpresaService';methods={getDadosEmpresa:{id:'demo-company',organization_id:'demo-org',cnpj:'',razao_social:'Empresa demonstrativa',nome_fantasia:'Empresa demonstrativa',inscricao_estadual:'',email:'',telefone:'',website:'',cep:'',logradouro:'',numero:'',complemento:'',bairro:'',cidade:'',uf:'',logo_url:'',stories_frame_url:'',feed_frame_url:''}};}
+ else if(file.endsWith('/contas.service.ts')){name='ContasBancariasService';const account={id:'demo-bank',banco_nome:'Conta demonstrativa',banco_codigo:'',titular:'Empresa demonstrativa',agencia:'',conta:'',tipo:'CORRENTE',cor_cartao:'#6366f1',saldo_inicial:15000,data_saldo_inicial:'2026-01-01T12:00:00Z',saldo_atual:18000,permite_negativo:false,ativo:true,created_at:'2026-01-01T12:00:00Z'};methods={getAll:[account],getById:account};}
+ else if(file.endsWith('/montadoras.service.ts')){name='MontadorasService';methods={getAll:[brand],getPaginated:{data:[brand],count:1,currentPage:1,totalPages:1},getKpis:{total:1}};}
+ else if(file.endsWith('/modelos.service.ts')){name='ModelosService';methods={getAll:[{id:'demo-model',nome:'Modelo demonstrativo',montadora_id:brand.id,tipo_veiculo_id:'demo-type',ativo:true}],getByMontadora:[]};}
+ else if(file.endsWith('/relatorios.service.ts')){name='RelatoriosService';methods={getVendasParaRelatorio:[],getEstoqueParaRelatorio:[],getServicosParaRelatorio:[],getVendedoresAtivos:[],getComissoesParaRelatorio:[],getConciliacaoPatrimonial:{inicial:{},final:{},transacoes:[],patrimonio_inicial:0,patrimonio_final:0,total_entradas:0,total_saidas:0}};}
+ else return null;
+ return `const data=${JSON.stringify(methods)};const noop=()=>{};export const ${name}=new Proxy({}, {get(_,key){if(String(key).includes('subscribe'))return ()=>Object.assign(noop,{unsubscribe:noop});if(key in data)return async()=>structuredClone(data[key]);return ()=>{throw Error('Read-only admin QA: unsupported or mutation '+String(key))}}});`;
+}

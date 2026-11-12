@@ -28,7 +28,7 @@ const ReceberCard: React.FC<ReceberCardProps> = ({ titulo, onBaixa, onDelete, on
     return (
         <div
             onClick={() => onClick(titulo)}
-            className="group bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-sm hover:border-indigo-200 transition-all cursor-pointer flex flex-col h-full active:scale-[0.98]"
+            className="dc-panel group bg-white rounded-xl border border-slate-200 p-4 hover:shadow-sm hover:border-indigo-200 transition-all cursor-pointer flex flex-col h-full active:scale-[0.98]"
         >
             {/* Header: Status and Date */}
             <div className="flex justify-between items-start mb-6">
@@ -52,12 +52,12 @@ const ReceberCard: React.FC<ReceberCardProps> = ({ titulo, onBaixa, onDelete, on
             <div className="flex-1 space-y-4">
                 {/* Vehicle Info - Highlithed for quick identification */}
                 {titulo.veiculo ? (
-                    <div className="bg-slate-50 rounded-2xl p-4 shadow-sm relative overflow-hidden group-hover:bg-slate-100 transition-colors">
+                    <div className="bg-slate-50 rounded-xl p-4 shadow-sm relative overflow-hidden group-hover:bg-slate-100 transition-colors">
                         <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500 rounded-full blur-[80px] opacity-20"></div>
                         <div className="relative z-10 flex justify-between items-center">
                             <div>
                                 <p className="text-xs text-indigo-600 font-medium normal-case tracking-normal mb-0.5">Veículo</p>
-                                <h4 className="text-slate-900 font-semibold text-sm normal-case truncate max-w-[140px]">
+                                <h4 className="dc-section-title text-slate-900 font-semibold text-sm normal-case truncate max-w-[140px]">
                                     {titulo.veiculo.montadora?.nome} {titulo.veiculo.modelo?.nome}
                                 </h4>
                             </div>
@@ -67,21 +67,21 @@ const ReceberCard: React.FC<ReceberCardProps> = ({ titulo, onBaixa, onDelete, on
                         </div>
                     </div>
                 ) : titulo.origem_tipo === 'OUTRO_CREDITO' ? (
-                    <div className="bg-slate-100 rounded-2xl p-4 border border-slate-200 group-hover:border-indigo-200 transition-colors">
+                    <div className="bg-slate-100 rounded-xl p-4 border border-slate-200 group-hover:border-indigo-200 transition-colors">
                         <p className="text-xs text-slate-500 font-medium normal-case tracking-normal mb-0.5">Veículo (Ref. Descrição)</p>
-                        <h4 className="text-slate-900 font-semibold text-sm normal-case truncate">
+                        <h4 className="dc-section-title text-slate-900 font-semibold text-sm normal-case truncate">
                             {titulo.descricao}
                         </h4>
                     </div>
                 ) : (
-                    <div className="h-14 border border-dashed border-slate-200 rounded-2xl flex items-center justify-center">
+                    <div className="h-14 border border-dashed border-slate-200 rounded-xl flex items-center justify-center">
                         <p className="text-xs text-slate-300 font-medium normal-case tracking-normal italic">Sem veículo vinculado</p>
                     </div>
                 )}
 
                 <div>
                     <p className="text-xs text-slate-500 font-medium normal-case tracking-normal mb-1">Cliente</p>
-                    <h3 className="text-sm font-semibold text-slate-900 normal-case truncate leading-tight">
+                    <h3 className="dc-section-title text-sm font-semibold text-slate-900 normal-case truncate leading-tight">
                         {titulo.parceiro?.nome || titulo.descricao}
                     </h3>
                     <p className="text-xs text-slate-500 font-medium">
@@ -113,14 +113,14 @@ const ReceberCard: React.FC<ReceberCardProps> = ({ titulo, onBaixa, onDelete, on
                 {titulo.status !== 'PAGO' && (
                     <button
                         onClick={() => onBaixa(titulo)}
-                        className="flex-1 py-3 bg-emerald-600 text-white rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-emerald-700 transition-all shadow-sm shadow-none active:scale-100"
+                        className="dc-button flex-1 py-3 bg-emerald-600 text-white rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-emerald-700 transition-all shadow-sm shadow-none active:scale-100"
                     >
                         Baixar Título
                     </button>
                 )}
                 <button
                     onClick={() => onDelete(titulo.id)}
-                    className="p-3 text-slate-300 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all"
+                    className="dc-button p-3 text-slate-300 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all"
                 >
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />

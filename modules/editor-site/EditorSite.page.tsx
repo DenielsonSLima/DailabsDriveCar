@@ -19,11 +19,11 @@ const Toast: React.FC<{ message: string; type: 'success' | 'error'; onClose: () 
 
 // ─── Section Header ───
 const SectionHeader: React.FC<{ icon: React.ReactNode; label: string; title: string }> = ({ icon, label, title }) => (
-  <div className="flex items-center space-x-4 mb-8">
-    <div className="w-12 h-12 bg-gradient-to-br from-indigo-600 to-blue-700 rounded-2xl flex items-center justify-center shadow-sm shadow-indigo-600/20">{icon}</div>
+  <div className="flex items-center gap-3 mb-4">
+    <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">{icon}</div>
     <div>
       <p className="text-xs font-semibold text-indigo-500 normal-case tracking-normal">{label}</p>
-      <h2 className="text-2xl font-semibold text-slate-900 tracking-tight">{title}</h2>
+      <h2 className="dc-section-title">{title}</h2>
     </div>
   </div>
 );
@@ -33,9 +33,9 @@ const Field: React.FC<{ label: string; value: string; onChange: (v: string) => v
   <div className="space-y-1.5">
     <label className="text-xs font-semibold text-slate-500 normal-case tracking-normal">{label}</label>
     {multiline ? (
-      <textarea value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} rows={rows || 3} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all resize-none" />
+      <textarea value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} rows={rows || 3} className="w-full p-3 bg-white border border-slate-200 rounded-xl text-sm text-slate-800 focus:ring-2 focus:ring-indigo-500/30 resize-y" />
     ) : (
-      <input type="text" value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400 transition-all" />
+      <input type="text" value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} className="dc-input w-full px-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
     )}
   </div>
 );
@@ -131,7 +131,7 @@ const EditorSitePage: React.FC = () => {
   // ─── Loading State ───
   if (loading) {
     return (
-      <div className="space-y-6 animate-in fade-in duration-500">
+      <div className="dc-page animate-in fade-in duration-500">
         <div className="flex items-center space-x-4">
           <div className="w-12 h-12 bg-slate-200 rounded-2xl animate-pulse" />
           <div className="space-y-2">
@@ -164,18 +164,18 @@ const EditorSitePage: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
+    <div className="dc-page animate-in fade-in duration-500">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="dc-page-header">
         <div>
           <p className="text-xs font-semibold text-indigo-500 normal-case tracking-normal mb-1">Gerenciador de Conteúdo</p>
-          <h1 className="text-3xl font-semibold text-slate-900 tracking-tight">Editor do Site</h1>
-          <p className="text-slate-500 text-sm mt-1">Edite os textos, imagens e frases do site público.</p>
+          <h1 className="dc-page-title">Editor do Site</h1>
+          <p className="dc-page-subtitle">Edite os textos, imagens e frases do site público.</p>
         </div>
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-2xl font-semibold text-xs normal-case tracking-normal hover:from-indigo-700 hover:to-blue-700 transition-all shadow-sm shadow-indigo-600/20 disabled:opacity-50 "
+          className="dc-button flex items-center gap-2 bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50"
         >
           {saving ? (
             <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /><span>Salvando...</span></>
@@ -186,12 +186,12 @@ const EditorSitePage: React.FC = () => {
       </div>
 
       {/* Tabs */}
-      <div className="flex space-x-2 bg-slate-100 p-1.5 rounded-2xl">
+      <div className="dc-tabs">
         {tabs.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center space-x-2 px-5 py-3 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all flex-1 justify-center ${activeTab === tab.id ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+            className={`dc-tab flex items-center gap-2 ${activeTab === tab.id ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
           >
             {tab.icon}
             <span>{tab.label}</span>
@@ -201,7 +201,7 @@ const EditorSitePage: React.FC = () => {
 
       {/* ═══════════ TAB: HERO / BANNER ═══════════ */}
       {activeTab === 'hero' && (
-        <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
+        <div className="dc-panel">
           <SectionHeader
             icon={<svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>}
             label="Seção Principal"
@@ -277,7 +277,7 @@ const EditorSitePage: React.FC = () => {
       {activeTab === 'sobre' && (
         <div className="space-y-6">
           {/* Títulos */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
+          <div className="dc-panel">
             <SectionHeader
               icon={<svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>}
               label="Institucional"
@@ -299,7 +299,7 @@ const EditorSitePage: React.FC = () => {
           </div>
 
           {/* Parágrafos */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
+          <div className="dc-panel">
             <div className="flex items-center justify-between mb-6">
               <p className="text-xs font-semibold text-slate-600 normal-case tracking-normal">Parágrafos Descritivos</p>
               <button onClick={addParagrafo} className="flex items-center space-x-1 text-xs font-semibold text-indigo-600 normal-case tracking-normal hover:text-indigo-800 transition-colors">
@@ -322,7 +322,7 @@ const EditorSitePage: React.FC = () => {
           </div>
 
           {/* Cards */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
+          <div className="dc-panel">
             <p className="text-xs font-semibold text-slate-600 normal-case tracking-normal mb-6">Cards de Destaque</p>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {conteudo.sobre_cards.map((card, i) => (
@@ -344,7 +344,7 @@ const EditorSitePage: React.FC = () => {
 
       {/* ═══════════ TAB: CONTATO ═══════════ */}
       {activeTab === 'contato' && (
-        <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
+        <div className="dc-panel">
           <SectionHeader
             icon={<svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>}
             label="Comunicação"

@@ -22,12 +22,13 @@ try {
   const result = await build({ stdin: { resolveDir: process.cwd(), loader: 'tsx', contents: `
     import React from 'react'; import { createRoot } from 'react-dom/client';
     import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-    import LoteFinanceiro from './modules/lotes/components/details/LoteFinanceiro';
+    import {MemoryRouter,useNavigate,useLocation} from 'react-router-dom';
+    function Probe(){globalThis.__navigate=useNavigate();globalThis.__location=useLocation().search;return null;} import LoteFinanceiro from './modules/lotes/components/details/LoteFinanceiro';
     const initial = ${JSON.stringify(details)};
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
     globalThis.__refresh = 0;
     function App() { const [data, setData] = React.useState(initial); return <QueryClientProvider client={client}><LoteFinanceiro detalhes={data} canCreate={true} onUpdated={() => {if(globalThis.__failRefresh) throw new Error('offline refresh'); globalThis.__refresh++; setData({...data, titulos: data.titulos.map(t => t.id === 'aberto' ? {...t, valor_pago:100, status:'PAGO'} : t)});}} /></QueryClientProvider>; }
-    createRoot(document.getElementById('root')).render(<App/>);
+    createRoot(document.getElementById('root')).render(<MemoryRouter initialEntries={['/?aba=financeiro']}><Probe/><App/></MemoryRouter>);
   ` }, bundle: true, write: false, format: 'iife', logLevel: 'silent', plugins: [{ name: 'offline', setup(b) {
     b.onLoad({ filter: /lotes\.financeiro\.service\.ts$/ }, () => ({ loader: 'ts', contents: `export const LoteFinanceiroService = { getRecebimento: async (lote,id) => {globalThis.__history=[lote,id]; return {id};} };` }));
     b.onLoad({ filter: /ModalBaixa\.tsx$/ }, () => ({ loader: 'tsx', contents: `import React from 'react'; export default ({titulo,onSuccess,onClose}) => <div role="dialog"><span>Baixa {titulo.id}</span><button onClick={onSuccess}>Confirmar teste</button><button onClick={onClose}>Cancelar teste</button></div>;` }));
@@ -35,17 +36,17 @@ try {
     b.onLoad({ filter: /lib\/supabase\.ts$/ }, () => { throw new Error('Real Supabase forbidden'); });
   } }] });
   window.eval(result.outputFiles[0].text);
-  const flush = () => new Promise(r => setTimeout(r, 50));
+  const flush = () => new Promise(r => setTimeout(r, 100));
   const click = async text => { const btn = [...window.document.querySelectorAll('button')].find(b => b.textContent.includes(text)); assert.ok(btn, text); btn.click(); await flush(); };
   const text = () => window.document.body.textContent;
   await flush(); assert.match(text(), /Em aberto/); assert.equal(window.document.querySelectorAll('section > div.grid > button').length, 1);
-  await click('Cliente teste'); assert.equal(window.document.activeElement.tagName, 'H3'); assert.match(text(), /Voltar ao financeiro/); assert.match(text(), /Caminho|Venda #10/);
-  await click('Histórico de recebimentos'); await flush(); assert.match(text(), /somente leitura/); assert.deepEqual(Array.from(window.__history), ['lote','aberto']);
-  await click('Fechar histórico'); await click('Registrar recebimento'); await click('Cancelar teste'); assert.match(text(), /Voltar ao financeiro/); assert.equal(window.__refresh, 0);
-  window.__failRefresh = true; await click('Registrar recebimento'); await click('Confirmar teste'); assert.equal(window.__refresh, 0);
-  assert.match(text(), /Atualize o saldo/); assert.equal([...window.document.querySelectorAll('button')].find(b => b.textContent.includes('Registrar recebimento')).disabled, true);
-  window.__failRefresh = false; await click('Atualizar saldo'); assert.equal(window.__refresh, 1); assert.doesNotMatch(text(), /Registrar recebimento/);
-  await click('Voltar ao financeiro'); assert.match(text(), /Nenhum recebimento em aberto/); await click('Quitados'); assert.equal(window.document.querySelectorAll('section > div.grid > button').length, 2);
+  await click('Cliente teste'); assert.match(window.__location,/recebimento=aberto/); assert.equal(window.document.activeElement.tagName, 'H3'); assert.match(text(), /Voltar ao financeiro/); assert.match(text(), /Caminho|Venda #10/);
+  await flush(); assert.match(text(), /Histórico de recebimentos/); assert.deepEqual(Array.from(window.__history), ['lote','aberto']);
+  await click('Baixar título'); assert.match(window.__location,/acao=baixar/); window.__navigate(-1); await flush(); assert.equal(window.document.querySelector('[role=dialog]'),null); window.__navigate(1); await flush(); assert.ok(window.document.querySelector('[role=dialog]')); await click('Cancelar teste'); assert.doesNotMatch(window.__location,/acao=baixar/); assert.match(text(), /Voltar ao financeiro/); assert.equal(window.__refresh, 0);
+  window.__failRefresh = true; await click('Baixar título'); await click('Confirmar teste'); assert.equal(window.__refresh, 0);
+  assert.match(text(), /Atualize o saldo/); assert.equal([...window.document.querySelectorAll('button')].find(b => b.textContent.includes('Baixar título')).disabled, true);
+  window.__failRefresh = false; await click('Atualizar saldo'); assert.equal(window.__refresh, 1); assert.doesNotMatch(text(), /Baixar título/);
+  await click('Voltar ao financeiro'); assert.doesNotMatch(window.__location,/recebimento=/); assert.match(text(), /Nenhum recebimento em aberto/); await click('Quitados'); assert.equal(window.document.querySelectorAll('section > div.grid > button').length, 2);
   window.happyDOM.abort();
   console.log('PASS: lote financeiro isolation, balances, navigation, history, cancel and post-payment refresh (offline).');
 } finally { await rm(temp, { recursive: true, force: true }); }

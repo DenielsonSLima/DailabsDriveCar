@@ -125,7 +125,7 @@ const ModelosList: React.FC<ListProps> = ({ agrupados, loading, onEdit, onDelete
                     </div>
 
                     {/* Info */}
-                    <div className="p-6 text-center">
+                    <div className="p-4 text-center">
                       <h4 className="font-semibold text-slate-800 normal-case tracking-tight text-xl">{modelo.nome}</h4>
                       <div className="flex items-center justify-center space-x-2 mt-2">
                         <span className="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>

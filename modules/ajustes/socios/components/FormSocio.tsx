@@ -91,10 +91,10 @@ const FormSocio: React.FC<FormSocioProps> = ({ initialData, onSubmit, onCancel }
   };
 
   return (
-    <div className="bg-white p-6 rounded-2xl border border-slate-200 mb-8 shadow-sm animate-in slide-in-from-top duration-200">
+    <div className="dc-panel mb-8 animate-in slide-in-from-top duration-200">
       <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-100">
         <div>
-          <h3 className="text-xl font-semibold text-slate-900 normal-case tracking-tight">
+          <h3 className="dc-modal-title">
             {initialData ? 'Editar Sócio' : 'Novo Investidor'}
           </h3>
           <p className="text-slate-500 text-xs font-medium normal-case tracking-normal mt-1">
@@ -117,7 +117,7 @@ const FormSocio: React.FC<FormSocioProps> = ({ initialData, onSubmit, onCancel }
               name="nome"
               value={formData.nome}
               onChange={handleChange}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium text-slate-800"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4  focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium text-slate-800 dc-input"
               placeholder="Ex: João Silva"
               required
               autoFocus
@@ -131,7 +131,7 @@ const FormSocio: React.FC<FormSocioProps> = ({ initialData, onSubmit, onCancel }
               name="cpf"
               value={formData.cpf}
               onChange={handleChange}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-mono font-medium tracking-wide"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4  focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-mono font-medium tracking-wide dc-input"
               placeholder="000.000.000-00"
               maxLength={14}
               required
@@ -145,7 +145,7 @@ const FormSocio: React.FC<FormSocioProps> = ({ initialData, onSubmit, onCancel }
               name="telefone"
               value={formData.telefone}
               onChange={handleChange}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4  focus:ring-2 focus:ring-indigo-500 outline-none transition-all dc-input"
               placeholder="(00) 00000-0000"
             />
           </div>
@@ -180,7 +180,7 @@ const FormSocio: React.FC<FormSocioProps> = ({ initialData, onSubmit, onCancel }
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mb-6 bg-slate-50 p-6 rounded-2xl border border-slate-100">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mb-6 bg-slate-50 p-4 rounded-2xl border border-slate-100">
           <div className="md:col-span-7">
             <label className="block text-xs font-medium text-slate-500 normal-case mb-1.5 ml-1 tracking-normal">Descrição do Ativo</label>
             <input
@@ -216,7 +216,7 @@ const FormSocio: React.FC<FormSocioProps> = ({ initialData, onSubmit, onCancel }
 
         <div className="space-y-2">
           {formData.patrimonio?.map((item) => (
-            <div key={item.id} className="flex items-center justify-between bg-white border border-slate-100 p-4 rounded-xl hover:border-slate-200 transition-all group">
+            <div key={item.id} className="dc-panel flex items-center justify-between hover:border-slate-200 transition-all group">
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>

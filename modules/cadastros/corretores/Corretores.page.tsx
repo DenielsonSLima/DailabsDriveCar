@@ -107,7 +107,7 @@ const CorretoresPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200 relative">
+    <div className="dc-page animate-in fade-in duration-200 relative">
       {toast && (
         <div data-drivecar-ui className={`fixed top-6 right-6 z-[200] px-6 py-4 rounded-2xl shadow-sm flex items-center space-x-3 animate-in slide-in-from-right duration-200 border backdrop-blur-md ${toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' :
             toast.type === 'info' ? 'bg-indigo-600/95 text-white border-indigo-400/50' :
@@ -128,7 +128,7 @@ const CorretoresPage: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center space-x-2">
-            <h1 className="text-3xl font-semibold text-slate-900 tracking-tight">Corretores</h1>
+            <h1 className="dc-page-title">Corretores</h1>
             <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-medium normal-case tracking-normal rounded-md animate-pulse">Realtime</span>
           </div>
           <p className="text-slate-500 mt-1">Gerencie a equipe comercial e parceiros de venda.</p>
@@ -139,7 +139,7 @@ const CorretoresPage: React.FC = () => {
         </button>
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 min-h-[500px]">
+      <div className="dc-panel min-h-[500px]">
         <div className="mb-8 relative max-w-md">
           <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-500">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>

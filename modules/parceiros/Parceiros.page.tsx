@@ -174,12 +174,12 @@ const ParceirosPage: React.FC = () => {
   const totalPages = response?.totalPages || 1;
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500 relative pb-20">
+    <div className="dc-page animate-in fade-in duration-500 relative pb-20">
       {/* Toast */}
       {toast && (
         <div className={`fixed top-6 right-6 z-[200] px-6 py-4 rounded-2xl shadow-sm flex items-center space-x-3 animate-in slide-in-from-right duration-300 border backdrop-blur-sm ${toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' : 'bg-rose-600 text-white border-rose-400/50'
           }`}>
-          <span className="font-bold text-sm tracking-tight">{toast.message}</span>
+          <span className="font-semibold text-sm tracking-tight">{toast.message}</span>
         </div>
       )}
 
@@ -188,7 +188,7 @@ const ParceirosPage: React.FC = () => {
         <div className="flex items-start space-x-4">
           <div>
             <div className="flex items-center space-x-2">
-              <h1 className="text-3xl font-bold text-slate-900 tracking-normal">Gestão de Parceiros</h1>
+              <h1 className="dc-page-title">Gestão de Parceiros</h1>
               <div className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-semibold normal-case tracking-normal rounded-md animate-pulse">
                 Online
               </div>
@@ -209,7 +209,7 @@ const ParceirosPage: React.FC = () => {
 
       <ParceirosKpis stats={stats} />
 
-      <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm relative overflow-hidden">
+      <div className="dc-panel relative overflow-hidden">
         <ParceirosFilters
           activeTab={activeTab}
           setActiveTab={setActiveTab}
@@ -229,7 +229,7 @@ const ParceirosPage: React.FC = () => {
         {/* Pagination Controls */}
         {!isLoadingList && totalPages > 1 && (
           <div className="flex items-center justify-between mt-8 pt-6 border-t border-slate-100">
-            <p className="text-xs text-slate-400 font-bold normal-case tracking-normal">
+            <p className="text-xs text-slate-400 font-semibold normal-case tracking-normal">
               Página <span className="text-slate-900">{currentPage}</span> de <span className="text-slate-900">{totalPages}</span>
             </p>
             <div className="flex items-center space-x-2">

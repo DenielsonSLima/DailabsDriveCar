@@ -19,12 +19,12 @@ const HeaderVenda: React.FC<Props> = ({ pedido, onBack, onEdit, onConfirm, onDel
   const isRascunho = pedido.status === 'RASCUNHO';
 
   return (
-    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm animate-in slide-in-from-top-4 duration-500">
-      <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
-        <div className="flex items-center space-x-6 w-full lg:w-auto">
+    <div className="dc-panel animate-in slide-in-from-top-4 duration-500">
+      <div className="dc-page-header">
+        <div className="flex items-center gap-3 w-full lg:w-auto">
           <button
             onClick={onBack}
-            className="group p-3.5 bg-slate-50 border border-slate-100 rounded-xl hover:bg-emerald-50 hover:text-emerald-600 text-slate-400 transition-all shrink-0 shadow-sm"
+            className="dc-button group p-3.5 bg-slate-50 border border-slate-100 rounded-xl hover:bg-emerald-50 hover:text-emerald-600 text-slate-400 transition-all shrink-0 shadow-sm"
           >
             <svg className="w-6 h-6 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -42,18 +42,18 @@ const HeaderVenda: React.FC<Props> = ({ pedido, onBack, onEdit, onConfirm, onDel
                 {isConcluido ? 'FATURADA' : pedido.status === 'CANCELADO' ? 'CANCELADA' : 'RASCUNHO'}
               </span>
             </div>
-            <h1 className="text-3xl font-semibold text-slate-900 normal-case tracking-normal leading-none">
+            <h1 className="dc-page-title">
               {pedido.cliente?.nome || 'CLIENTE NÃO INFORMADO'}
             </h1>
           </div>
         </div>
 
-        <div className="flex items-center gap-3 w-full lg:w-auto justify-end border-t lg:border-t-0 border-slate-50 pt-4 lg:pt-0">
-          {pedido.lote_id && <button onClick={onManageLote} className="px-6 py-4 bg-indigo-600 text-white rounded-xl text-xs font-semibold">Gerenciar lote</button>}
+        <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto justify-end border-t lg:border-t-0 border-slate-50 pt-4 lg:pt-0">
+          {pedido.lote_id && <button onClick={onManageLote} className="dc-button px-4 py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-semibold">Gerenciar lote</button>}
           {!pedido.lote_id && <button
             onClick={onDelete}
             disabled={loadingAction}
-            className="px-6 py-4 text-rose-500 font-semibold text-xs normal-case tracking-normal rounded-xl hover:bg-rose-50 transition-all disabled:opacity-50"
+            className="dc-button px-4 py-2.5 text-rose-500 font-semibold text-xs normal-case tracking-normal rounded-xl hover:bg-rose-50 transition-all disabled:opacity-50"
           >
             Excluir
           </button>}
@@ -63,7 +63,7 @@ const HeaderVenda: React.FC<Props> = ({ pedido, onBack, onEdit, onConfirm, onDel
               <button
                 onClick={onEdit}
                 disabled={loadingAction}
-                className="px-6 py-4 bg-white border border-slate-200 text-slate-600 font-semibold text-xs normal-case tracking-normal rounded-xl hover:bg-slate-50 hover:text-indigo-600 transition-all flex items-center shadow-sm disabled:opacity-50"
+                className="dc-button px-4 py-2.5 bg-white border border-slate-200 text-slate-600 font-semibold text-xs normal-case tracking-normal rounded-xl hover:bg-slate-50 hover:text-indigo-600 transition-all flex items-center shadow-sm disabled:opacity-50"
               >
                 Editar Pedido
               </button>
@@ -71,7 +71,7 @@ const HeaderVenda: React.FC<Props> = ({ pedido, onBack, onEdit, onConfirm, onDel
               <button
                 onClick={onConfirm}
                 disabled={loadingAction || !canConfirm}
-                className={`px-8 py-4 text-white font-semibold text-xs normal-case tracking-normal rounded-xl shadow-sm transition-all active:scale-95 disabled:opacity-50 flex items-center ${canConfirm ? 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-200' : 'bg-slate-300 cursor-not-allowed'
+                className={`dc-button px-8 py-4 text-white font-semibold text-xs normal-case tracking-normal rounded-xl shadow-sm transition-all active:scale-95 disabled:opacity-50 flex items-center ${canConfirm ? 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-200' : 'bg-slate-300 cursor-not-allowed'
                   }`}
               >
                 {loadingAction && <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2" />}
@@ -81,14 +81,14 @@ const HeaderVenda: React.FC<Props> = ({ pedido, onBack, onEdit, onConfirm, onDel
           )}
 
           {isConcluido && (
-            <div className="px-8 py-4 bg-emerald-50 text-emerald-600 font-semibold text-xs normal-case tracking-normal rounded-xl border border-emerald-100 flex items-center">
+            <div className="px-4 py-2.5 bg-emerald-50 text-emerald-600 font-semibold text-xs normal-case tracking-normal rounded-xl border border-emerald-100 flex items-center">
               <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M5 13l4 4L19 7" /></svg>
               Venda Concluída
             </div>
           )}
 
           {isCancelado && (
-            <div className="px-8 py-4 bg-rose-50 text-rose-600 font-semibold text-xs normal-case tracking-normal rounded-xl border border-rose-100 flex items-center text-center">
+            <div className="px-4 py-2.5 bg-rose-50 text-rose-600 font-semibold text-xs normal-case tracking-normal rounded-xl border border-rose-100 flex items-center text-center">
               Venda Cancelada
             </div>
           )}

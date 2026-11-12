@@ -159,9 +159,9 @@ const VendaFormPage: React.FC = () => {
   );
 
   if (pedidoOriginal?.lote_id) return (
-    <div className="max-w-4xl mx-auto p-6 space-y-4 bg-white rounded-2xl">
+    <div className="max-w-4xl mx-auto p-4 space-y-4 bg-white rounded-2xl">
       <p>Esta venda é gerenciada no lote de origem.</p>
-      <button onClick={() => navigate(`/lotes/${pedidoOriginal.lote_id}`)} className="px-5 py-3 bg-indigo-600 text-white rounded-xl">Gerenciar lote</button>
+      <button onClick={() => navigate(`/lotes/${pedidoOriginal.lote_id}`)} className="dc-button px-5 py-2.5 bg-indigo-600 text-white rounded-xl">Gerenciar lote</button>
     </div>
   );
 

@@ -97,3 +97,101 @@
     animation-iteration-count: 1 !important;
   }
 }
+
+/* Shared density contract derived from EstoqueDashboard. Screen-only and explicitly
+   opted in: public pages and printable/report content are not restyled. */
+@media screen {
+  [data-drivecar-ui] .dc-page { min-width: 0; }
+  [data-drivecar-ui] .dc-page > :not([hidden]) ~ :not([hidden]) { margin-top: 24px; }
+  [data-drivecar-ui] .dc-page-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  [data-drivecar-ui] .dc-page-title { margin: 0; font-size: 30px; line-height: 36px; font-weight: 700; letter-spacing: normal; text-transform: none; color: #0f172a; }
+  [data-drivecar-ui] .dc-page-subtitle { margin-top: 4px; font-size: 14px; line-height: 20px; font-weight: 400; letter-spacing: normal; text-transform: none; color: #475569; }
+  [data-drivecar-ui] .dc-kpi-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; align-items: stretch; }
+  [data-drivecar-ui] .dc-kpi-card { min-width: 0; min-height: 102px; padding: 14px 16px; border: 1px solid #e2e8f0; border-radius: 12px; background: #fff; color: #0f172a; box-shadow: 0 1px 3px rgb(15 23 42 / .04); }
+  [data-drivecar-ui] .dc-kpi-label { margin: 0; font-size: 13px; line-height: 18px; font-weight: 500; letter-spacing: normal; text-transform: none; color: #475569; }
+  [data-drivecar-ui] .dc-kpi-value { margin-top: 4px; font-size: 20px; line-height: 28px; font-weight: 600; letter-spacing: -.025em; text-transform: none; color: #0f172a; font-variant-numeric: tabular-nums; overflow-wrap: normal; word-break: normal; white-space: normal; text-overflow: clip; }
+  [data-drivecar-ui] .dc-kpi-value:is(.text-indigo-600,.text-indigo-700) { color: #4f46e5; }
+  [data-drivecar-ui] .dc-kpi-value:is(.text-emerald-400,.text-emerald-500,.text-emerald-600,.text-emerald-700,.text-green-600) { color: #047857; }
+  [data-drivecar-ui] .dc-kpi-value:is(.text-rose-400,.text-rose-500,.text-rose-600,.text-rose-700,.text-red-600) { color: #be123c; }
+  [data-drivecar-ui] .dc-kpi-value:is(.text-amber-500,.text-amber-600,.text-orange-500,.text-orange-600) { color: #b45309; }
+  [data-drivecar-ui] .dc-kpi-hint { margin-top: 4px; font-size: 13px; line-height: 18px; font-weight: 400; letter-spacing: normal; text-transform: none; color: #475569; }
+  [data-drivecar-ui] .dc-panel { min-width: 0; padding: 16px; border: 1px solid #e2e8f0; border-radius: 12px; background: #fff; box-shadow: 0 1px 3px rgb(15 23 42 / .04); }
+  [data-drivecar-ui] .dc-section-title { font-size: 14px; line-height: 20px; font-weight: 600; letter-spacing: normal; text-transform: none; color: #0f172a; }
+  [data-drivecar-ui] .dc-section-subtitle { font-size: 13px; line-height: 18px; font-weight: 400; letter-spacing: normal; text-transform: none; color: #475569; }
+  [data-drivecar-ui] .dc-partners { display: grid; grid-template-columns: minmax(0,1fr); gap: 16px; }
+  [data-drivecar-ui] .dc-partners > :not([hidden]) { min-width: 0; margin-top: 0; margin-bottom: 0; }
+  [data-drivecar-ui] .dc-tabs { display: flex; flex-wrap: wrap; align-items: center; width: fit-content; max-width: 100%; padding: 4px; gap: 4px; border: 0; border-radius: 16px; background: #f1f5f9; box-shadow: none; }
+  [data-drivecar-ui] .dc-tab { min-height: 38px; padding: 10px 16px; border: 0; border-radius: 12px; font-size: 13px; line-height: 18px; font-weight: 600; letter-spacing: normal; text-transform: none; color: #475569; background: transparent; box-shadow: none; }
+  [data-drivecar-ui] .dc-tab:is([aria-pressed='true'],[aria-selected='true'],[data-active='true'],.bg-white,.bg-indigo-600,.bg-indigo-700) { color: #4f46e5; background: #fff; box-shadow: 0 1px 3px rgb(15 23 42 / .08); }
+  [data-drivecar-ui] .dc-tab > svg { width: 16px; height: 16px; flex-shrink: 0; }
+  [data-drivecar-ui] .dc-filterbar { min-width: 0; padding: 16px; gap: 12px; border: 1px solid #e2e8f0; border-radius: 12px; background: #fff; box-shadow: 0 1px 3px rgb(15 23 42 / .04); }
+  [data-drivecar-ui] .dc-button { min-height: 40px; padding-top: 8px; padding-bottom: 8px; border-radius: 8px; font-size: 13px; line-height: 20px; font-weight: 600; letter-spacing: normal; text-transform: none; }
+  [data-drivecar-ui] .dc-button > svg { width: 16px; height: 16px; flex-shrink: 0; }
+  [data-drivecar-ui] .dc-input { box-sizing: border-box; min-width: 0; min-height: 40px; height: 40px; padding-top: 8px; padding-bottom: 8px; border-radius: 8px; font-size: 14px; line-height: 20px; font-weight: 400; letter-spacing: normal; background: #fff; color: #111827; }
+  [data-drivecar-ui] textarea.dc-input { height: auto; min-height: 80px; }
+  [data-drivecar-ui] .dc-input::placeholder { color: #64748b; opacity: 1; }
+  [data-drivecar-ui] .dc-modal { min-width: 0; max-height: calc(100dvh - 32px); border-radius: 16px; background: #fff; color: #0f172a; }
+  [data-drivecar-ui] .dc-modal-header { padding: 16px; border-bottom: 1px solid #e2e8f0; background: #fff; color: #0f172a; }
+  [data-drivecar-ui] .dc-modal-title { font-size: 20px; line-height: 28px; font-weight: 600; letter-spacing: normal; text-transform: none; color: #0f172a; }
+  [data-drivecar-ui] .dc-modal-body { min-height: 0; padding: 16px; overflow-y: auto; }
+  [data-drivecar-ui] .dc-modal-footer { padding: 16px; border-top: 1px solid #e2e8f0; background: #fff; }
+  [data-drivecar-ui] .dc-table :is(th,td) { padding: 10px 12px; font-size: 13px; line-height: 18px; }
+  [data-drivecar-ui] .dc-table th { font-weight: 600; text-transform: none; letter-spacing: normal; }
+}
+@media screen and (min-width: 640px) {
+  [data-drivecar-ui] .dc-kpi-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media screen and (min-width: 768px) {
+  [data-drivecar-ui] .dc-partners { grid-template-columns: repeat(3,minmax(0,1fr)); }
+}
+@media screen and (min-width: 1280px) {
+  [data-drivecar-ui] .dc-kpi-grid { grid-template-columns: repeat(4,minmax(0,1fr)); }
+}
+@media screen and (max-width: 767px) {
+  [data-drivecar-ui] .dc-page-header { align-items: stretch; flex-direction: column; }
+  [data-drivecar-ui] .dc-page-title { font-size: 24px; line-height: 32px; }
+  [data-drivecar-ui] :is(.dc-button,.dc-tab) { min-height: 44px; }
+  [data-drivecar-ui] .dc-input { min-height: 44px; height: 44px; font-size: 16px; }
+  [data-drivecar-ui] textarea.dc-input { height: auto; min-height: 88px; }
+}
+@media screen {
+  /* Framed sections own padding in their header/body, rather than twice. */
+  [data-drivecar-ui] .dc-panel.dc-panel-frame { padding: 0; }
+}
+@media screen {
+  [data-drivecar-ui] { -webkit-font-smoothing: auto; -moz-osx-font-smoothing: auto; }
+  [data-drivecar-ui] :is(.text-xs,[class~='text-[10px]'],[class~='text-[11px]']):not(#print-content *,#print-content-wrapper *,.print-container *,[data-drivecar-document] *) { font-size: 13px; line-height: 18px; }
+  [data-drivecar-ui] :is(#print-content,#print-content-wrapper,.print-container,[data-drivecar-document]) { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+}
+
+@media screen {
+  /* Financeiro: owner-requested single-row exception; no other KPI/tab groups affected. */
+  [data-drivecar-ui] .finance-kpi-strip,
+  [data-drivecar-ui] .finance-tab-strip {
+    display: flex;
+    flex-wrap: nowrap;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+    scrollbar-color: #94a3b8 #f1f5f9;
+  }
+  [data-drivecar-ui] .finance-kpi-strip { gap: 8px; padding-bottom: 6px; }
+  [data-drivecar-ui] .finance-kpi-strip .dc-kpi-card {
+    flex: 1 0 148px;
+    min-width: max-content;
+    padding: 12px;
+    overflow: visible;
+  }
+  [data-drivecar-ui] .finance-kpi-strip .dc-kpi-value {
+    font-size: 18px;
+    line-height: 28px;
+    white-space: nowrap;
+  }
+  [data-drivecar-ui] .finance-tab-strip { padding: 4px 4px 8px; }
+  [data-drivecar-ui] .finance-tab-strip .dc-tab { flex: 0 0 auto; padding-inline: 12px; white-space: nowrap; }
+  [data-drivecar-ui] :is(.finance-kpi-strip,.finance-tab-strip):focus-visible { outline: 2px solid #6366f1; outline-offset: 3px; }
+  [data-drivecar-ui] .finance-scroll-hint { margin-top: 6px; font-size: 12px; line-height: 18px; color: #64748b; }
+}

@@ -19,19 +19,19 @@ const VeiculosPedidoList: React.FC<Props> = ({ pedido, onUnlink, isConcluido }) 
       {/* Header Interno do Bloco de Veículos */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-50 pb-6">
         <div>
-          <h3 className="text-xl font-[900] text-slate-900 normal-case tracking-normal flex items-center">
+          <h3 className="dc-section-title font-[900] text-slate-900 normal-case tracking-normal flex items-center">
             Inventário do Pedido
             <span className="ml-3 px-3 py-1 bg-indigo-600 text-white text-xs rounded-full font-semibold shadow-sm shadow-indigo-100">
               {veiculosList.length}
             </span>
           </h3>
-          <p className="text-xs text-slate-400 font-bold normal-case tracking-normal mt-1">Ativos vinculados a este contrato</p>
+          <p className="text-xs text-slate-400 font-semibold normal-case tracking-normal mt-1">Ativos vinculados a este contrato</p>
         </div>
-        
+
         {!isConcluido && (
-          <button 
+          <button
             onClick={() => navigate(`/pedidos-compra/${pedido.id}/adicionar-veiculo`)}
-            className="px-6 py-4 bg-indigo-600 text-white rounded-xl text-[11px] font-semibold normal-case tracking-normal hover:bg-indigo-700 transition-all shadow-sm shadow-indigo-100 flex items-center active:scale-95 group"
+            className="dc-button px-4 py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-indigo-700 transition-all shadow-sm shadow-indigo-100 flex items-center active:scale-95 group"
           >
             <div className="w-5 h-5 bg-white/20 rounded-lg flex items-center justify-center mr-3 group-hover:rotate-90 transition-transform">
                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
@@ -44,7 +44,7 @@ const VeiculosPedidoList: React.FC<Props> = ({ pedido, onUnlink, isConcluido }) 
       </div>
 
       {veiculosList.length === 0 ? (
-        <div 
+        <div
           onClick={() => !isConcluido && navigate(`/pedidos-compra/${pedido.id}/adicionar-veiculo`)}
           className="rounded-2xl border-4 border-dashed border-slate-100 p-20 text-center group hover:border-indigo-200 hover:bg-indigo-50/10 transition-all cursor-pointer"
         >
@@ -53,18 +53,18 @@ const VeiculosPedidoList: React.FC<Props> = ({ pedido, onUnlink, isConcluido }) 
                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
              </svg>
           </div>
-          <h4 className="text-xl font-semibold text-slate-400 normal-case tracking-normal group-hover:text-slate-900 transition-colors">Vincule um Ativo</h4>
-          <p className="text-slate-400 text-xs font-bold normal-case tracking-normal mt-2 opacity-60">Aguardando inclusão do veículo para composição do lote.</p>
+          <h4 className="dc-section-title font-semibold text-slate-400 normal-case tracking-normal group-hover:text-slate-900 transition-colors">Vincule um Ativo</h4>
+          <p className="text-slate-400 text-xs font-semibold normal-case tracking-normal mt-2 opacity-60">Aguardando inclusão do veículo para composição do lote.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-8">
+        <div className="grid grid-cols-1 gap-4">
           {veiculosList.map((v) => (
-            <VehicleInOrderCard 
-              key={v.id} 
-              veiculo={v} 
+            <VehicleInOrderCard
+              key={v.id}
+              veiculo={v}
               pedidoId={pedido.id}
-              isConcluido={isConcluido} 
-              onUnlink={onUnlink} 
+              isConcluido={isConcluido}
+              onUnlink={onUnlink}
             />
           ))}
         </div>

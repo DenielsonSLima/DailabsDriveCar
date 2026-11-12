@@ -25,7 +25,7 @@ const ExtratoTable: React.FC<Props> = ({ items, loading }) => {
   if (items.length === 0) {
     return (
       <div className="py-24 text-center">
-        <div className="w-20 h-20 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-slate-200">
+        <div className="w-20 h-20 bg-slate-50 rounded-xl flex items-center justify-center mx-auto mb-4 text-slate-200">
           <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
         </div>
         <p className="text-slate-500 font-medium normal-case text-xs tracking-normal">Sem movimentações no período selecionado</p>
@@ -128,23 +128,23 @@ const ExtratoTable: React.FC<Props> = ({ items, loading }) => {
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full text-left border-collapse">
+      <table className="dc-table w-full text-left border-collapse">
         <thead className="bg-slate-50 border-b border-slate-100">
           <tr className="text-xs font-semibold text-slate-400 normal-case tracking-normal">
-            <th className="px-6 py-3">Data</th>
-            <th className="px-6 py-3">Descrição / Origem</th>
-            <th className="px-6 py-3">Parceiro</th>
-            <th className="px-6 py-3 text-center">Tipo</th>
-            <th className="px-6 py-3 text-center">Status</th>
-            <th className="px-6 py-3 text-center">Forma / Parcela</th>
-            <th className="px-6 py-3 text-right">Valor</th>
+            <th className="px-4 py-3">Data</th>
+            <th className="px-4 py-3">Descrição / Origem</th>
+            <th className="px-4 py-3">Parceiro</th>
+            <th className="px-4 py-3 text-center">Tipo</th>
+            <th className="px-4 py-3 text-center">Status</th>
+            <th className="px-4 py-3 text-center">Forma / Parcela</th>
+            <th className="px-4 py-3 text-right">Valor</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-50">
           {items.map((h) => (
             <tr key={h.id} className={`hover:bg-slate-50/50 transition-colors group ${h.status === 'ATRASADO' ? 'bg-rose-50/30' : ''}`}>
               {/* Data */}
-              <td className="px-6 py-4">
+              <td className="px-4 py-4">
                 <span className="text-xs font-medium text-slate-600 whitespace-nowrap">{formatDate(h.data)}</span>
                 {h.data_emissao && h.data_emissao !== h.data && (
                   <p className="text-xs text-slate-500 mt-0.5">Emissão: {formatDate(h.data_emissao)}</p>
@@ -152,7 +152,7 @@ const ExtratoTable: React.FC<Props> = ({ items, loading }) => {
               </td>
 
               {/* Descrição + Badges */}
-              <td className="px-6 py-4 max-w-xs">
+              <td className="px-4 py-4 max-w-xs">
                 <div className="flex items-start space-x-2">
                   <span className={`w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0 ${getDotColor(h)}`}></span>
                   <div className="min-w-0">
@@ -174,28 +174,28 @@ const ExtratoTable: React.FC<Props> = ({ items, loading }) => {
               </td>
 
               {/* Parceiro */}
-              <td className="px-6 py-4">
+              <td className="px-4 py-4">
                 <span className="text-xs font-medium text-slate-600">
                   {h.parceiro_nome || '—'}
                 </span>
               </td>
 
               {/* Tipo Movimentação */}
-              <td className="px-6 py-4 text-center">
+              <td className="px-4 py-4 text-center">
                 <span className={`inline-block px-2 py-0.5 rounded-md text-xs font-medium normal-case tracking-tight border ${getTipoColor(h)}`}>
                   {getTipoLabel(h)}
                 </span>
               </td>
 
               {/* Status */}
-              <td className="px-6 py-4 text-center">
+              <td className="px-4 py-4 text-center">
                 <span className={`inline-block px-2 py-1 rounded-md text-xs font-medium normal-case tracking-tight ${getStatusColor(h)}`}>
                   {getStatusLabel(h)}
                 </span>
               </td>
 
               {/* Forma / Parcela */}
-              <td className="px-6 py-4 text-center">
+              <td className="px-4 py-4 text-center">
                 <div className="flex flex-col items-center">
                   <span className="text-xs font-medium text-slate-500 bg-white px-2 py-1 rounded border border-slate-100 whitespace-nowrap">
                     {h.forma_pagamento || 'DIRETO'}
@@ -212,7 +212,7 @@ const ExtratoTable: React.FC<Props> = ({ items, loading }) => {
               </td>
 
               {/* Valor */}
-              <td className="px-6 py-4 text-right">
+              <td className="px-4 py-4 text-right">
                 <span className={`text-sm font-semibold ${getValorColor(h)}`}>
                   {getValorPrefix(h)} {formatCurrency(h.source === 'TITULO' ? (h.valor_restante || h.valor) : h.valor)}
                 </span>

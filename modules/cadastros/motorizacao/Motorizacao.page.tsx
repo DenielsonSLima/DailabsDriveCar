@@ -102,7 +102,7 @@ const MotorizacaoPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200 relative">
+    <div className="dc-page animate-in fade-in duration-200 relative">
       {toast && (
         <div data-drivecar-ui className={`fixed top-6 right-6 z-[200] px-6 py-4 rounded-2xl shadow-sm flex items-center space-x-3 animate-in slide-in-from-right duration-200 border backdrop-blur-md ${
           toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' : 'bg-rose-600 text-white border-rose-400/50'
@@ -118,8 +118,8 @@ const MotorizacaoPage: React.FC = () => {
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-semibold text-slate-900 tracking-tight">Motorização</h1>
-          <p className="text-slate-500 mt-1">Gerencie os tipos de motores e cilindradas.</p>
+          <h1 className="dc-page-title">Motorização</h1>
+          <p className="dc-page-subtitle">Gerencie os tipos de motores e cilindradas.</p>
         </div>
         <button onClick={handleOpenAdd} className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-sm font-semibold normal-case tracking-normal hover:bg-indigo-700 transition-all shadow-sm active:scale-100 flex items-center">
           <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -129,7 +129,7 @@ const MotorizacaoPage: React.FC = () => {
         </button>
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 min-h-[500px]">
+      <div className="dc-panel min-h-[500px]">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-12">
           <div className="relative flex-1 max-w-md">
             <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-500">

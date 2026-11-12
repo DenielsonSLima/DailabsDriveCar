@@ -30,7 +30,7 @@ export default function LoteSaidas({ detalhes, stats, catalogos, canCreate, onRe
       <LoteSection title="Vendas e recebimentos" subtitle="Venda confirmada reduz a quantidade disponível; as baixas financeiras atualizam o saldo a receber." action={<button type="button" className={primaryClass} disabled={!canCreate || stats.disponiveis === 0} onClick={onRegistrar}>Registrar venda</button>}>
         {detalhes.vendas.length === 0 ? <LoteEmpty>Nenhuma venda registrada para este lote.</LoteEmpty> : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[800px]">
+            <table className="dc-table w-full min-w-[800px]">
               <caption className="sr-only">Vendas do lote</caption>
               <thead className="bg-slate-50"><tr>{['Venda / cliente', 'Data', 'Unidades', 'Vendido', 'Recebido', 'A receber', ''].map((label, index) => <th key={index} scope="col" className={tableThClass}>{label}</th>)}</tr></thead>
               <tbody className="divide-y divide-slate-100">{detalhes.vendas.map(venda => {
@@ -43,7 +43,7 @@ export default function LoteSaidas({ detalhes, stats, catalogos, canCreate, onRe
                     <td className={`${tableTdClass} whitespace-nowrap font-bold tabular-nums`}>{money(venda.valor_venda)}</td>
                     <td className={`${tableTdClass} whitespace-nowrap tabular-nums`}>{money(recebimentos.recebido)}</td>
                     <td className={`${tableTdClass} whitespace-nowrap tabular-nums`}>{money(recebimentos.aReceber)}</td>
-                    <td className={tableTdClass}>{venda.status === 'CONCLUIDO' && recebimentos.recebido === 0 && <button type="button" disabled={!canCreate} className="text-xs font-semibold text-rose-600 hover:underline focus-visible:outline focus-visible:outline-rose-600 disabled:opacity-50" onClick={() => onCancelar(venda.id)}>Cancelar venda</button>}{venda.status === 'CONCLUIDO' && recebimentos.recebido > 0 && <p className="max-w-48 text-xs leading-relaxed text-slate-500">Venda com recebimentos exige devolução financeira antes do cancelamento.</p>}</td>
+                    <td className={tableTdClass}>{venda.status === 'CONCLUIDO' && recebimentos.recebido === 0 && <button type="button" disabled={!canCreate} className="dc-button text-xs font-semibold text-rose-600 hover:underline focus-visible:outline focus-visible:outline-rose-600 disabled:opacity-50" onClick={() => onCancelar(venda.id)}>Cancelar venda</button>}{venda.status === 'CONCLUIDO' && recebimentos.recebido > 0 && <p className="max-w-48 text-xs leading-relaxed text-slate-500">Venda com recebimentos exige devolução financeira antes do cancelamento.</p>}</td>
                   </tr>
                 );
               })}</tbody>

@@ -48,7 +48,7 @@ const WatermarkForm: React.FC<FormProps> = ({ config, onSave, onChange, isSaving
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-6 h-full">
+    <div className="dc-panel space-y-6 h-full">
       <section className="space-y-6">
         <div>
           <label className="block text-xs font-medium text-slate-500 normal-case mb-4 tracking-normal ml-1">Arquivo da Logomarca</label>

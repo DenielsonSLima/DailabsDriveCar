@@ -44,16 +44,16 @@ const VendaSocioShareCard: React.FC<Props> = ({ pedidos, socioIdFiltro }) => {
   if (socioAnalytics.length === 0) return null;
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm animate-in slide-in-from-bottom-2">
+    <div className="dc-panel animate-in slide-in-from-bottom-2">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h3 className="text-lg font-semibold text-slate-900 normal-case tracking-normal flex items-center">
+          <h3 className="dc-section-title font-semibold text-slate-900 normal-case tracking-normal flex items-center">
             <svg className="w-5 h-5 mr-3 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
             Participação Societária nas Vendas
           </h3>
-          <p className="text-xs text-slate-400 font-bold normal-case mt-1">Divisão proporcional do VGV baseado nas cotas dos ativos</p>
+          <p className="text-xs text-slate-400 font-semibold normal-case mt-1">Divisão proporcional do VGV baseado nas cotas dos ativos</p>
         </div>
       </div>
 
@@ -78,7 +78,7 @@ const VendaSocioShareCard: React.FC<Props> = ({ pedidos, socioIdFiltro }) => {
                   <h4 className={`text-xs font-semibold normal-case truncate ${socioIdFiltro && socio.nome.includes(socioIdFiltro) ? 'text-white' : 'text-slate-900'}`}>
                     {socio.nome}
                   </h4>
-                  <p className={`text-xs font-bold normal-case ${socioIdFiltro && socio.nome.includes(socioIdFiltro) ? 'text-indigo-200' : 'text-slate-400'}`}>
+                  <p className={`text-xs font-semibold normal-case ${socioIdFiltro && socio.nome.includes(socioIdFiltro) ? 'text-indigo-200' : 'text-slate-400'}`}>
                     {socio.count} {socio.count === 1 ? 'Veículo' : 'Veículos'}
                   </p>
                 </div>

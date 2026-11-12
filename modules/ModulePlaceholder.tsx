@@ -20,8 +20,8 @@ const ModulePlaceholder: React.FC<ModulePlaceholderProps> = ({ title, descriptio
   const navigate = useNavigate();
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="dc-page space-y-6 animate-in fade-in duration-200">
+      <div className="dc-page-header">
         <div className="flex items-start space-x-4">
           {backPath && (
             <button 
@@ -34,8 +34,8 @@ const ModulePlaceholder: React.FC<ModulePlaceholderProps> = ({ title, descriptio
             </button>
           )}
           <div>
-            <h1 className="text-2xl sm:text-3xl font-semibold text-slate-900 tracking-tight">{title}</h1>
-            {description && <p className="text-sm text-slate-500 mt-1 leading-relaxed">{description}</p>}
+            <h1 className="dc-page-title">{title}</h1>
+            {description && <p className="dc-page-subtitle">{description}</p>}
           </div>
         </div>
       </div>
@@ -46,7 +46,7 @@ const ModulePlaceholder: React.FC<ModulePlaceholderProps> = ({ title, descriptio
             <div 
               key={idx}
               onClick={() => sub.path && navigate(sub.path)}
-              className={`p-5 bg-white border border-slate-200 rounded-xl shadow-sm transition-colors relative overflow-hidden ${
+              className={`dc-panel p-5 bg-white border border-slate-200 rounded-xl shadow-sm transition-colors relative overflow-hidden ${
                 sub.path ? 'cursor-pointer hover:border-indigo-300 hover:bg-indigo-50/30' : 'opacity-75'
               }`}
             >
@@ -57,7 +57,7 @@ const ModulePlaceholder: React.FC<ModulePlaceholderProps> = ({ title, descriptio
                   {sub.status === 'pronto' ? 'Disponível' : 'Em Breve'}
                 </div>
               </div>
-              <h3 className="text-base font-semibold text-slate-800 tracking-tight">{sub.label}</h3>
+              <h3 className="dc-section-title">{sub.label}</h3>
               {sub.path && (
                 <div className="mt-4 flex items-center text-indigo-600 text-xs font-medium">
                   <span>Acessar Módulo</span>

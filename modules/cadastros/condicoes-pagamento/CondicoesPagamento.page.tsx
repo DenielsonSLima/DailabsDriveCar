@@ -49,10 +49,10 @@ const CondicoesPagamentoPage: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200">
+    <div className="dc-page animate-in fade-in duration-200">
       <div>
-        <h1 className="text-3xl font-semibold text-slate-900 tracking-tight">Condições de Pagamento (Saídas)</h1>
-        <p className="text-slate-500 mt-1">Configure regras para **Pagar Fornecedores** e acertar **Consignações**.</p>
+        <h1 className="dc-page-title">Condições de Pagamento (Saídas)</h1>
+        <p className="dc-page-subtitle">Configure regras para **Pagar Fornecedores** e acertar **Consignações**.</p>
       </div>
 
       {loading ? (
@@ -63,7 +63,7 @@ const CondicoesPagamentoPage: React.FC = () => {
             <div 
               key={forma.id} 
               onClick={() => setSelectedForma(forma)}
-              className="group bg-white border border-slate-200 rounded-2xl p-6 cursor-pointer hover:border-indigo-400 hover:shadow-sm transition-all duration-200 relative overflow-hidden"
+              className="dc-panel group cursor-pointer hover:border-indigo-400 hover:shadow-sm transition-all duration-200 relative overflow-hidden"
             >
               <div className={`absolute top-0 right-0 p-3 rounded-bl-2xl text-xs font-semibold normal-case tracking-normal ${
                 forma.ativo ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-400'

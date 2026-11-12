@@ -117,7 +117,7 @@ const CidadesPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200 relative">
+    <div className="dc-page animate-in fade-in duration-200 relative">
       {toast && (
         <div data-drivecar-ui className={`fixed top-6 right-6 z-[200] px-6 py-4 rounded-2xl shadow-sm flex items-center space-x-3 animate-in slide-in-from-right duration-200 border backdrop-blur-md ${
           toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' : 'bg-rose-600 text-white border-rose-400/50'
@@ -133,8 +133,8 @@ const CidadesPage: React.FC = () => {
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-semibold text-slate-900 tracking-tight">Cidades e Estados</h1>
-          <p className="text-slate-500 mt-1">Gerencie a base territorial agrupada por UF.</p>
+          <h1 className="dc-page-title">Cidades e Estados</h1>
+          <p className="dc-page-subtitle">Gerencie a base territorial agrupada por UF.</p>
         </div>
         <button
           onClick={handleOpenAdd}
@@ -149,7 +149,7 @@ const CidadesPage: React.FC = () => {
 
       <CidadesKpis cidades={cidades} />
 
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden p-6 min-h-[500px]">
+      <div className="dc-panel overflow-hidden min-h-[500px]">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-12">
           <div className="relative flex-1 max-w-md">
             <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-500">

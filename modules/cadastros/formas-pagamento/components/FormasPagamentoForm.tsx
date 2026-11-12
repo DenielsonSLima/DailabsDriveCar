@@ -72,16 +72,16 @@ const FormasPagamentoForm: React.FC<Props> = ({ initialData, isSaving, onClose, 
 
   const content = (
     <div data-drivecar-ui className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white w-full max-w-3xl rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 duration-200 border border-slate-200 flex flex-col max-h-[90vh]">
+      <div className="bg-white w-full max-w-3xl rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 duration-200 border border-slate-200 flex flex-col max-h-[90vh] dc-modal">
 
         {/* Header */}
-        <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+        <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-600 shadow-sm shadow-none">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             </div>
             <div>
-              <h2 className="text-xl font-semibold text-slate-900 normal-case tracking-tight">
+              <h2 className="dc-modal-title">
                 {initialData ? 'Editar Regra' : 'Nova Regra Financeira'}
               </h2>
               <p className="text-slate-500 text-xs font-medium normal-case tracking-normal mt-1">Configuração de Pagamento/Recebimento</p>
@@ -114,7 +114,7 @@ const FormasPagamentoForm: React.FC<Props> = ({ initialData, isSaving, onClose, 
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 space-y-6">
 
           {/* Nome */}
           <div>
@@ -125,7 +125,7 @@ const FormasPagamentoForm: React.FC<Props> = ({ initialData, isSaving, onClose, 
               value={formData.nome}
               onChange={handleChange}
               disabled={isSaving}
-              className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 font-medium text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-lg"
+              className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 font-medium text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-lg dc-input"
               placeholder="Ex: Consignação, PIX, Dinheiro..."
               required
             />
@@ -168,7 +168,7 @@ const FormasPagamentoForm: React.FC<Props> = ({ initialData, isSaving, onClose, 
                   name="destino_lancamento"
                   value={formData.destino_lancamento}
                   onChange={handleChange}
-                  className="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3 text-sm font-medium text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all appearance-none cursor-pointer"
+                  className="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3  font-medium text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all appearance-none cursor-pointer dc-input"
                 >
                   <option value="CAIXA">Caixa Imediato (Disponível na hora)</option>
                   <option value="CONTAS_RECEBER">Contas a Receber (Gera título)</option>
@@ -215,7 +215,7 @@ const FormasPagamentoForm: React.FC<Props> = ({ initialData, isSaving, onClose, 
                   onChange={handleChange}
                   min={1}
                   max={120}
-                  className="w-full bg-white border-2 border-indigo-100 rounded-2xl px-4 py-2.5 text-sm font-medium text-indigo-700 outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                  className="w-full bg-white border-2 border-indigo-100 rounded-2xl px-4 py-2.5  font-medium text-indigo-700 outline-none focus:ring-2 focus:ring-indigo-500 transition-all dc-input"
                 />
               </div>
             )}
@@ -237,7 +237,7 @@ const FormasPagamentoForm: React.FC<Props> = ({ initialData, isSaving, onClose, 
 
         </form>
 
-        <div className="p-6 border-t border-slate-100 bg-slate-50 flex justify-end space-x-3">
+        <div className="p-4 border-t border-slate-100 bg-slate-50 flex justify-end space-x-3">
           <button
             type="button"
             onClick={onClose}

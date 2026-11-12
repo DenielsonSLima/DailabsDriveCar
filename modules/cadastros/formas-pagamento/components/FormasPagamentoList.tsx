@@ -60,7 +60,7 @@ const FormasPagamentoList: React.FC<Props> = ({ items, onEdit, onDelete }) => {
         const style = getMovimentacaoStyle(item.tipo_movimentacao);
         
         return (
-          <div key={item.id} className="group relative bg-white rounded-2xl border border-slate-100 p-6 shadow-sm hover:shadow-sm hover:border-indigo-200 transition-all duration-200 flex flex-col justify-between h-full">
+          <div key={item.id} className="dc-panel group relative hover:shadow-sm hover:border-indigo-200 transition-all duration-200 flex flex-col justify-between h-full">
             
             <div className="space-y-4">
               {/* Header */}

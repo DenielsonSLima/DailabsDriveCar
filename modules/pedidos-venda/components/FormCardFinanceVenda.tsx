@@ -37,23 +37,23 @@ const FormCardFinanceVenda: React.FC<Props> = ({ valorVenda, formaPagamentoId, f
   };
 
   return (
-    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm animate-in slide-in-from-bottom-4">
-      <h3 className="text-lg font-semibold text-slate-900 normal-case tracking-normal mb-8 flex items-center">
+    <div className="dc-panel animate-in slide-in-from-bottom-4">
+      <h3 className="dc-section-title font-semibold text-slate-900 normal-case tracking-normal mb-8 flex items-center">
         <span className="w-8 h-8 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mr-3 text-sm font-semibold">03</span>
         Negociação e Pagamento
       </h3>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-xs font-semibold text-slate-500 normal-case mb-2 tracking-normal ml-1">Preço Final de Venda</label>
           <div className="relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">R$</span>
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-semibold">R$</span>
             <input
               type="text"
               disabled={disabled}
               value={valorRaw}
               onChange={(e) => handleValueChange(e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 pl-12 text-2xl font-semibold text-emerald-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-sm hover:shadow-md"
+              className="dc-input w-full bg-white border border-slate-200 rounded-xl px-5 py-2.5 pl-12 text-2xl font-semibold text-emerald-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-sm hover:shadow-md"
             />
           </div>
         </div>
@@ -64,7 +64,7 @@ const FormCardFinanceVenda: React.FC<Props> = ({ valorVenda, formaPagamentoId, f
             value={formaPagamentoId}
             disabled={disabled}
             onChange={(e) => onChange({ forma_pagamento_id: e.target.value, data_vencimento: new Date().toISOString().split('T')[0] })}
-            className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 font-medium text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 appearance-none cursor-pointer shadow-sm hover:shadow-md transition-all"
+            className="dc-input w-full bg-white border border-slate-200 rounded-xl px-5 py-2.5 font-medium text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 appearance-none cursor-pointer shadow-sm hover:shadow-md transition-all"
           >
             <option value="">Selecione...</option>
             {formas.map(fp => <option key={fp.id} value={fp.id}>{fp.nome}</option>)}
@@ -72,7 +72,7 @@ const FormCardFinanceVenda: React.FC<Props> = ({ valorVenda, formaPagamentoId, f
         </div>
 
         {exigeVencimento && (
-          <div className="md:col-span-2 bg-rose-50 p-6 rounded-2xl border border-rose-100 flex flex-col md:flex-row items-center justify-between gap-4 animate-in slide-in-from-right duration-300">
+          <div className="md:col-span-2 bg-rose-50 p-4 rounded-2xl border border-rose-100 flex flex-col md:flex-row items-center justify-between gap-4 animate-in slide-in-from-right duration-300">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-rose-100 text-rose-600 rounded-xl flex items-center justify-center">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -87,7 +87,7 @@ const FormCardFinanceVenda: React.FC<Props> = ({ valorVenda, formaPagamentoId, f
               disabled={disabled}
               value={dataVencimento}
               onChange={e => onChange({ data_vencimento: e.target.value })}
-              className="bg-white border border-rose-200 rounded-xl px-5 py-3 font-medium text-rose-700 outline-none focus:ring-2 focus:ring-rose-500 shadow-sm"
+              className="dc-input bg-white border border-rose-200 rounded-xl px-5 py-2.5 font-medium text-rose-700 outline-none focus:ring-2 focus:ring-rose-500 shadow-sm"
             />
           </div>
         )}

@@ -22,17 +22,17 @@ const VendaPartnersResultKpis: React.FC<Props> = ({ pedido }) => {
 
   return (
     <div className="bg-white border border-slate-200 rounded-2xl shadow-sm animate-in slide-in-from-top-4 duration-500 overflow-hidden">
-      <div className="bg-slate-50 border-b border-slate-100 px-8 py-4 flex items-center justify-between">
+      <div className="bg-slate-50 border-b border-slate-100 px-4 py-2.5 flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <div className="w-1.5 h-4 bg-indigo-600 rounded-full"></div>
-          <h3 className="text-xs font-semibold text-slate-500 normal-case tracking-normal">Divisão de Capital e Retorno por Investidor</h3>
+          <h3 className="dc-section-title font-semibold text-slate-500 normal-case tracking-normal">Divisão de Capital e Retorno por Investidor</h3>
         </div>
         <span className="text-xs font-semibold bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-lg normal-case tracking-normal">
           {stats.length} {stats.length === 1 ? 'Sócio' : 'Sócios'}
         </span>
       </div>
 
-      <div className="p-6 space-y-8">
+      <div className="p-4 space-y-8">
         {stats.map((socio, idx) => (
           <div key={idx} className="group border-b border-slate-50 last:border-0 pb-8 last:pb-0">
             {/* Linha Superior: Nome e Barra */}
@@ -42,10 +42,10 @@ const VendaPartnersResultKpis: React.FC<Props> = ({ pedido }) => {
                   {socio.nome.charAt(0)}
                 </div>
                 <div className="min-w-0">
-                  <h4 className="text-base font-semibold text-slate-900 normal-case tracking-normal truncate">
+                  <h4 className="dc-section-title font-semibold text-slate-900 normal-case tracking-normal">
                     {socio.nome}
                   </h4>
-                  <p className="text-xs font-bold text-slate-400 normal-case tracking-normal">Share no Lote: {socio.porcentagem}%</p>
+                  <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal">Share no Lote: {socio.porcentagem}%</p>
                 </div>
               </div>
 
@@ -68,11 +68,11 @@ const VendaPartnersResultKpis: React.FC<Props> = ({ pedido }) => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pl-16">
               <div className="bg-slate-50 p-3 rounded-2xl border border-slate-100 group-hover:border-slate-200 transition-colors">
                 <p className="text-xs font-semibold text-slate-400 normal-case mb-1">Capital Investido</p>
-                <p className="text-sm font-semibold text-slate-700">{formatCurrency(socio.investido)}</p>
+                <p className="dc-kpi-value">{formatCurrency(socio.investido)}</p>
               </div>
               <div className="bg-emerald-50/40 p-3 rounded-2xl border border-emerald-100 group-hover:border-emerald-200 transition-colors">
                 <p className="text-xs font-semibold text-emerald-600 normal-case mb-1">Resultado bruto proporcional</p>
-                <p className="text-sm font-semibold text-emerald-700">{formatCurrency(socio.retorno)}</p>
+                <p className="dc-kpi-value">{formatCurrency(socio.retorno)}</p>
               </div>
               <div className="flex items-center px-4">
                 <div className={`px-4 py-2 rounded-xl border-2 flex items-center space-x-2 ${socio.margem >= 0 ? 'bg-white text-emerald-600 border-emerald-50' : 'bg-white text-rose-600 border-rose-50'

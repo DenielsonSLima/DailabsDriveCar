@@ -15,15 +15,15 @@ const AnalyticsKpiCard: React.FC<Props> = ({ label, valor, icon, color }) => {
   };
 
   return (
-    <div className="relative bg-white rounded-xl min-w-0 p-4 sm:p-5 border border-slate-200/60 shadow-sm hover:shadow-sm transition-all duration-500 group overflow-hidden">
+    <div className="dc-kpi-card">
       <div className={`hidden ${colorMap[color]} opacity-50`} />
       <div className="relative flex items-center gap-4">
         <div className={`w-9 h-9 shrink-0 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center shadow-sm transition-transform duration-500 text-slate-600`}>
           {icon}
         </div>
         <div>
-          <h3 className="text-xs font-semibold text-slate-500 normal-case tracking-normal leading-none mb-1">{label}</h3>
-          <p className="text-xl font-semibold text-slate-900 tracking-tight leading-none">{valor}</p>
+          <h3 className="dc-kpi-label">{label}</h3>
+          <p className="dc-kpi-value">{valor}</p>
         </div>
       </div>
     </div>

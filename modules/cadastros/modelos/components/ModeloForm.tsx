@@ -98,11 +98,11 @@ const ModeloForm: React.FC<FormProps> = ({ initialData, isSaving, onClose, onSub
 
   const content = (
     <div data-drivecar-ui className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white w-full max-w-xl rounded-2xl shadow-sm overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="bg-white w-full max-w-xl rounded-2xl shadow-sm overflow-hidden flex flex-col max-h-[90vh] dc-modal">
         {/* Header */}
-        <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+        <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
           <div>
-            <h2 className="text-2xl font-semibold text-slate-900 normal-case tracking-tight">
+            <h2 className="dc-modal-title">
               {initialData?.id ? 'Editar Modelo' : 'Novo Modelo'}
             </h2>
             <p className="text-slate-500 text-xs">Vincule o modelo a uma marca, tipo e adicione uma imagem.</p>
@@ -114,7 +114,7 @@ const ModeloForm: React.FC<FormProps> = ({ initialData, isSaving, onClose, onSub
           </button>
         </div>
 
-        <form onSubmit={handleFormSubmit} className="p-6 space-y-6 overflow-y-auto">
+        <form onSubmit={handleFormSubmit} className="p-4 space-y-6 overflow-y-auto">
           {/* Foto Section */}
           <div className="flex flex-col items-center">
             <label className="block text-xs font-medium text-slate-500 normal-case mb-4 tracking-normal self-start ml-1">Foto do Modelo (Opcional)</label>
@@ -150,7 +150,7 @@ const ModeloForm: React.FC<FormProps> = ({ initialData, isSaving, onClose, onSub
                 onChange={handleChange}
                 required
                 disabled={isSaving}
-                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3 text-sm font-medium text-[#111827] focus:ring-2 focus:ring-indigo-500 outline-none transition-all disabled:opacity-50"
+                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3  font-medium text-[#111827] focus:ring-2 focus:ring-indigo-500 outline-none transition-all disabled:opacity-50 dc-input"
                 placeholder="Ex: Corolla, Civic, Onix..."
               />
             </div>
@@ -164,7 +164,7 @@ const ModeloForm: React.FC<FormProps> = ({ initialData, isSaving, onClose, onSub
                   onChange={handleChange}
                   required
                   disabled={isSaving || loadingOptions}
-                  className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3 text-sm font-medium text-[#111827] focus:ring-2 focus:ring-indigo-500 outline-none transition-all appearance-none disabled:opacity-50"
+                  className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3  font-medium text-[#111827] focus:ring-2 focus:ring-indigo-500 outline-none transition-all appearance-none disabled:opacity-50 dc-input"
                 >
                   <option value="">Marca...</option>
                   {montadoras.map(m => (
@@ -181,7 +181,7 @@ const ModeloForm: React.FC<FormProps> = ({ initialData, isSaving, onClose, onSub
                   onChange={handleChange}
                   required
                   disabled={isSaving || loadingOptions}
-                  className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3 text-sm font-medium text-[#111827] focus:ring-2 focus:ring-indigo-500 outline-none transition-all appearance-none disabled:opacity-50"
+                  className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3  font-medium text-[#111827] focus:ring-2 focus:ring-indigo-500 outline-none transition-all appearance-none disabled:opacity-50 dc-input"
                 >
                   <option value="">Categoria...</option>
                   {tipos.map(t => (

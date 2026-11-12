@@ -258,7 +258,7 @@ const ExpenseManager: React.FC = () => {
                   {/* Corpo do Grupo (Lista de Categorias) */}
                   {isExpanded && (
                     <div className="px-5 pb-5 animate-in slide-in-from-top-2 duration-200">
-                      <div className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm">
+                      <div className="dc-panel">
                         <div className="flex justify-between items-center mb-4">
                           <p className="text-xs text-slate-500 font-medium normal-case tracking-normal ml-1">Itens do Grupo</p>
                           <button 

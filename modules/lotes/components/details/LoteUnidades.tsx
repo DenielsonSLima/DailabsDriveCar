@@ -15,7 +15,7 @@ export default function LoteUnidades({ unidades, encerrado, onIdentificar }: Pro
       <summary className="cursor-pointer p-4 text-sm font-semibold normal-case tracking-tight text-slate-900 focus-visible:outline focus-visible:outline-indigo-600">Unidades do lote <span className="ml-2 text-xs font-medium normal-case tracking-normal text-slate-500">{unidades.length} unidades · identificar quando necessário</span></summary>
       {unidades.length === 0 ? <LoteEmpty>Nenhuma unidade encontrada neste lote.</LoteEmpty> : (
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[650px]">
+          <table className="dc-table w-full min-w-[650px]">
             <caption className="sr-only">Unidades geradas pelo lote</caption>
             <thead className="bg-slate-50"><tr>{['Unidade', 'Identificação', 'Situação', 'Custo atualizado', ''].map((label, index) => <th key={index} scope="col" className={tableThClass}>{label}</th>)}</tr></thead>
             <tbody className="divide-y divide-slate-100">{unidades.map(unidade => (
@@ -24,7 +24,7 @@ export default function LoteUnidades({ unidades, encerrado, onIdentificar }: Pro
                 <td className={tableTdClass}>{unidade.placa || unidade.chassi || 'Ainda não informada'}</td>
                 <td className={tableTdClass}>{{ DISPONIVEL: 'Disponível', VENDIDO: 'Vendida', RESERVADO: 'Reservada', PREPARACAO: 'Em preparação' }[unidade.status]}</td>
                 <td className={`${tableTdClass} whitespace-nowrap tabular-nums`}>{money(Number(unidade.valor_custo) + Number(unidade.valor_custo_servicos || 0))}</td>
-                <td className={tableTdClass}><button type="button" disabled={encerrado} className="text-xs font-semibold text-indigo-600 hover:underline focus-visible:outline focus-visible:outline-indigo-600 disabled:opacity-50" onClick={() => onIdentificar(unidade)}>Identificar</button></td>
+                <td className={tableTdClass}><button type="button" disabled={encerrado} className="dc-button text-xs font-semibold text-indigo-600 hover:underline focus-visible:outline focus-visible:outline-indigo-600 disabled:opacity-50" onClick={() => onIdentificar(unidade)}>Identificar</button></td>
               </tr>
             ))}</tbody>
           </table>

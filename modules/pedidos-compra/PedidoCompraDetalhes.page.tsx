@@ -189,7 +189,7 @@ const PedidoCompraDetalhesPage: React.FC = () => {
       {toast && (
         <div className={`fixed top-6 right-6 z-[300] px-6 py-4 rounded-2xl shadow-sm flex items-center space-x-3 animate-in slide-in-from-right duration-300 border backdrop-blur-sm ${toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' : 'bg-rose-600 text-white border-rose-400/50'
           }`}>
-          <span className="font-bold text-sm tracking-tight">{toast.message}</span>
+          <span className="font-semibold text-sm tracking-tight">{toast.message}</span>
         </div>
       )}
 
@@ -218,7 +218,7 @@ const PedidoCompraDetalhesPage: React.FC = () => {
 
       <LotePedidoPanel pedido={pedido} />
 
-      {(!pedido.veiculos?.length || pedido.veiculos.some(v => !v.lote_id)) && <section className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+      {(!pedido.veiculos?.length || pedido.veiculos.some(v => !v.lote_id)) && <section className="dc-panel">
         <VeiculosPedidoList
           pedido={{ ...pedido, veiculos: pedido.veiculos?.filter(v => !v.lote_id) }}
           onUnlink={setUnlinkTargetId}
@@ -238,8 +238,8 @@ const PedidoCompraDetalhesPage: React.FC = () => {
         </section>
       )}
 
-      {pedido.veiculos?.some(unit => unit.lote_id) ? <section className="rounded-2xl border border-slate-200 bg-white p-6">
-        <h2 className="text-sm font-bold text-slate-900">Observações da compra</h2>
+      {pedido.veiculos?.some(unit => unit.lote_id) ? <section className="dc-panel">
+        <h2 className="dc-section-title font-semibold text-slate-900">Observações da compra</h2>
         <p className="mt-2 whitespace-pre-wrap text-sm text-slate-600">{pedido.observacoes || 'Nenhuma observação registrada.'}</p>
       </section> : <CardAnnotations
         initialValue={pedido.observacoes}

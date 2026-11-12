@@ -108,12 +108,12 @@ const RelatorioExtratoBancarioPage: React.FC = () => {
   const formatCur = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
 
   return (
-    <div className="space-y-6 pb-20 animate-in fade-in duration-500">
+    <div className="dc-page pb-20 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center space-x-4">
           <button
             onClick={() => navigate('/relatorios')}
-            className="p-3 bg-white border border-slate-200 rounded-2xl text-slate-500 hover:text-indigo-600 hover:border-indigo-100 transition-all shadow-sm group"
+            className="dc-button bg-white border border-slate-200 text-slate-500 hover:text-indigo-600 hover:border-indigo-100 transition-all shadow-sm group"
           >
             <svg className="w-6 h-6 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -121,14 +121,14 @@ const RelatorioExtratoBancarioPage: React.FC = () => {
           </button>
           <div>
             <p className="text-xs font-semibold text-indigo-500 normal-case tracking-normal">Relatórios / Financeiro</p>
-            <h1 className="text-3xl font-semibold text-slate-900 normal-case tracking-tight leading-none">Extrato Bancário</h1>
+            <h1 className="dc-page-title">Extrato Bancário</h1>
           </div>
         </div>
 
         {reportData && (
           <button
             onClick={() => setIsPreviewOpen(true)}
-            className="flex items-center space-x-2 px-6 py-3 bg-slate-900 text-white rounded-2xl font-semibold normal-case text-xs tracking-normal hover:bg-slate-800 transition-all shadow-sm shadow-slate-200"
+            className="dc-button flex items-center space-x-2 bg-slate-900 text-white normal-case tracking-normal hover:bg-slate-800 transition-all shadow-sm shadow-slate-200"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
             <span>Gerar Documento PDF</span>
@@ -136,14 +136,14 @@ const RelatorioExtratoBancarioPage: React.FC = () => {
         )}
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+      <div className="dc-panel">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10 items-end">
           <div>
             <label className="block text-xs font-semibold text-slate-400 normal-case mb-2 tracking-normal ml-1">Conta para Conciliação</label>
             <select
               value={filtros.contaId}
               onChange={e => setFiltros(prev => ({ ...prev, contaId: e.target.value }))}
-              className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3.5 text-sm font-bold focus:ring-2 focus:ring-indigo-500 outline-none appearance-none cursor-pointer"
+              className="dc-input w-full bg-slate-50 border border-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none appearance-none cursor-pointer"
               disabled={loadingContas}
             >
               {contas.map(c => (
@@ -154,15 +154,15 @@ const RelatorioExtratoBancarioPage: React.FC = () => {
           <div className="md:col-span-2">
             <label className="block text-xs font-semibold text-slate-400 normal-case mb-2 tracking-normal ml-1">Periodo Analítico</label>
             <div className="flex items-center space-x-2 bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
-              <input type="date" value={filtros.dataInicio} onChange={e => setFiltros(prev => ({ ...prev, dataInicio: e.target.value }))} className="flex-1 bg-transparent border-none px-4 py-2 text-sm font-bold focus:ring-0 outline-none" />
+              <input type="date" value={filtros.dataInicio} onChange={e => setFiltros(prev => ({ ...prev, dataInicio: e.target.value }))} className="dc-input flex-1 bg-transparent border-none focus:ring-0 outline-none" />
               <span className="text-slate-300 font-semibold text-xs normal-case">atp</span>
-              <input type="date" value={filtros.dataFim} onChange={e => setFiltros(prev => ({ ...prev, dataFim: e.target.value }))} className="flex-1 bg-transparent border-none px-4 py-2 text-sm font-bold focus:ring-0 outline-none" />
+              <input type="date" value={filtros.dataFim} onChange={e => setFiltros(prev => ({ ...prev, dataFim: e.target.value }))} className="dc-input flex-1 bg-transparent border-none focus:ring-0 outline-none" />
             </div>
           </div>
           <button
             onClick={fetchData}
             disabled={loading || !filtros.contaId}
-            className="px-6 py-4 bg-indigo-600 text-white rounded-2xl font-semibold normal-case text-xs tracking-normal shadow-sm shadow-indigo-100 hover:bg-indigo-700 transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
+            className="dc-button bg-indigo-600 text-white normal-case tracking-normal shadow-sm shadow-indigo-100 hover:bg-indigo-700 transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
           >
             {loading ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : <span>Conciliar Extrato</span>}
           </button>
@@ -176,22 +176,22 @@ const RelatorioExtratoBancarioPage: React.FC = () => {
         ) : reportData ? (
           <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* KPI GRID */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-1">Saldo Anterior</p>
-                <p className="text-xl font-semibold text-slate-900">{formatCur(reportData.saldoAnterior)}</p>
+            <div className="dc-kpi-grid">
+              <div className="dc-kpi-card">
+                <p className="dc-kpi-label">Saldo Anterior</p>
+                <p className="dc-kpi-value">{formatCur(reportData.saldoAnterior)}</p>
               </div>
-              <div className="bg-emerald-50 p-6 rounded-2xl border border-emerald-100">
-                <p className="text-xs font-semibold text-emerald-600 normal-case tracking-normal mb-1">Total Entradas</p>
-                <p className="text-xl font-semibold text-emerald-700">+{formatCur(reportData.totalReceitas)}</p>
+              <div className="dc-kpi-card">
+                <p className="dc-kpi-label">Total Entradas</p>
+                <p className="dc-kpi-value">+{formatCur(reportData.totalReceitas)}</p>
               </div>
-              <div className="bg-rose-50 p-6 rounded-2xl border border-rose-100">
-                <p className="text-xs font-semibold text-rose-600 normal-case tracking-normal mb-1">Total Saídas</p>
-                <p className="text-xl font-semibold text-rose-700">-{formatCur(reportData.totalDespesas)}</p>
+              <div className="dc-kpi-card">
+                <p className="dc-kpi-label">Total Saídas</p>
+                <p className="dc-kpi-value">-{formatCur(reportData.totalDespesas)}</p>
               </div>
-              <div className="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-sm text-white">
-                <p className="text-xs font-semibold text-indigo-300 normal-case tracking-normal mb-1 font-bold">Saldo do Período</p>
-                <p className="text-xl font-semibold">{formatCur(reportData.saldoFinal)}</p>
+              <div className="dc-kpi-card">
+                <p className="dc-kpi-label">Saldo do Período</p>
+                <p className="dc-kpi-value">{formatCur(reportData.saldoFinal)}</p>
               </div>
             </div>
 
@@ -214,10 +214,10 @@ const RelatorioExtratoBancarioPage: React.FC = () => {
                   ) : (
                     reportData.transacoes.map((t: any, i: number) => (
                       <tr key={i} className="hover:bg-slate-50/50 transition-colors">
-                        <td className="px-6 py-4 text-xs font-bold text-slate-400">{new Date(t.data).toLocaleDateString('pt-BR')}</td>
+                        <td className="px-6 py-4 text-xs font-semibold text-slate-400">{new Date(t.data).toLocaleDateString('pt-BR')}</td>
                         <td className="px-6 py-4">
                           <p className="text-sm font-semibold text-slate-900 normal-case tracking-tight">{t.descricao}</p>
-                          <p className="text-xs font-bold text-slate-400 normal-case">{t.tipo}</p>
+                          <p className="text-xs font-semibold text-slate-400 normal-case">{t.tipo}</p>
                         </td>
                         <td className={`px-6 py-4 text-sm font-semibold text-right ${t.tipo === 'ENTRADA' ? 'text-emerald-600' : 'text-rose-600'}`}>
                           {t.tipo === 'ENTRADA' ? '+' : '-'} {formatCur(t.valor)}
@@ -235,7 +235,7 @@ const RelatorioExtratoBancarioPage: React.FC = () => {
         ) : (
           <div className="py-32 flex flex-col items-center justify-center text-center space-y-2">
             <p className="text-slate-400 font-semibold normal-case text-xs tracking-normal">Nenhum extrato gerado</p>
-            <p className="text-slate-300 text-xs font-bold">Selecione uma conta e período, então clique em Conciliar Extrato.</p>
+            <p className="text-slate-300 text-xs font-semibold">Selecione uma conta e período, então clique em Conciliar Extrato.</p>
           </div>
         )}
       </div>

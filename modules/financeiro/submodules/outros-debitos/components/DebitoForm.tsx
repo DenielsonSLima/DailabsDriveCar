@@ -288,28 +288,28 @@ const DebitoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
 
   const content = (
     <div data-drivecar-ui className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white w-full max-w-lg rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 border border-slate-100 max-h-[90vh] flex flex-col">
+      <div className="dc-modal bg-white w-full max-w-lg rounded-xl shadow-sm overflow-hidden animate-in zoom-in-95 border border-slate-100 max-h-[90vh] flex flex-col">
         {/* Header */}
-        <div className="p-6 border-b border-slate-50 bg-rose-600 text-white shrink-0">
-          <h3 className="text-xl font-semibold normal-case tracking-tight">{isEditing ? 'Editar Débito' : 'Lançar Débito'}</h3>
+        <div className="dc-modal-header p-4 border-b border-slate-50 bg-rose-600 text-slate-900 shrink-0">
+          <h3 className="dc-modal-title text-xl font-semibold normal-case tracking-tight">{isEditing ? 'Editar Débito' : 'Lançar Débito'}</h3>
           <p className="text-xs font-medium normal-case tracking-normal opacity-80 mt-1">
             {isEditing ? 'Alterar dados do débito lançado' : 'Empréstimos, financiamentos e saídas extraordinárias'}
           </p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6 overflow-y-auto flex-1">
+        <form onSubmit={handleSubmit} className="p-4 space-y-6 overflow-y-auto flex-1">
 
           {/* Erro Inline */}
           {formError && (
-            <div className="flex items-start gap-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-2xl px-5 py-4 animate-in slide-in-from-top-2 duration-200">
+            <div className="flex items-start gap-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl px-5 py-4 animate-in slide-in-from-top-2 duration-200">
               <div className="w-5 h-5 rounded-full bg-rose-600 text-white flex items-center justify-center shrink-0 mt-0.5">
                 <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </div>
               <p className="text-xs font-medium leading-relaxed">{formError}</p>
-              <button type="button" onClick={() => setFormError(null)} className="ml-auto text-rose-400 hover:text-rose-600 transition-colors shrink-0">
+              <button type="button" onClick={() => setFormError(null)} className="dc-button ml-auto text-rose-400 hover:text-rose-600 transition-colors shrink-0">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
             </div>
@@ -325,7 +325,7 @@ const DebitoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
               value={formData.descricao}
               onChange={e => setFormData({ ...formData, descricao: e.target.value.toUpperCase() })}
               placeholder="Ex: Empréstimo bancário, financiamento, devolução cliente..."
-              className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3.5 font-medium text-[#111827] outline-none focus:ring-2 focus:ring-rose-500"
+              className="dc-input w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 font-medium text-[#111827] outline-none focus:ring-2 focus:ring-rose-500"
               required
             />
           </div>
@@ -338,7 +338,7 @@ const DebitoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
                 type="text"
                 value={valorFormatado}
                 onChange={handleCurrencyChange}
-                className="w-full bg-white border-2 border-rose-100 rounded-2xl px-5 py-3.5 text-lg font-medium text-rose-600 outline-none focus:border-rose-500 text-center"
+                className="dc-input w-full bg-white border-2 border-rose-100 rounded-xl px-5 py-3.5 text-lg font-medium text-rose-600 outline-none focus:border-rose-500 text-center"
                 required
               />
             </div>
@@ -348,7 +348,7 @@ const DebitoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
                 type="date"
                 value={formData.data_lancamento}
                 onChange={e => setFormData({ ...formData, data_lancamento: e.target.value })}
-                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3.5 font-medium text-[#111827] outline-none focus:ring-2 focus:ring-rose-500"
+                className="dc-input w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 font-medium text-[#111827] outline-none focus:ring-2 focus:ring-rose-500"
                 required
               />
             </div>
@@ -361,7 +361,7 @@ const DebitoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
               <select
                 value={formaPagamentoId}
                 onChange={e => { setFormaPagamentoId(e.target.value); setFormData(p => ({ ...p, conta_id: '' })); }}
-                className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-medium text-[#111827] outline-none appearance-none focus:ring-2 focus:ring-rose-500"
+                className="dc-input w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-medium text-[#111827] outline-none appearance-none focus:ring-2 focus:ring-rose-500"
               >
                 <option value="">Deixar pendente...</option>
                 {formasPagamento.map(f => <option key={f.id} value={f.id}>{f.nome}</option>)}
@@ -371,13 +371,13 @@ const DebitoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
 
           {/* 4a. À Vista: Conta de Saída */}
           {!isEditing && isVista && (
-            <div className="bg-rose-50 border border-rose-100 p-5 rounded-2xl animate-in slide-in-from-top-2 duration-200">
+            <div className="bg-rose-50 border border-rose-100 p-5 rounded-xl animate-in slide-in-from-top-2 duration-200">
               <label className="block text-xs font-medium text-rose-600 normal-case mb-3">Conta de Saída</label>
               <select
                 required
                 value={formData.conta_id}
                 onChange={e => setFormData({ ...formData, conta_id: e.target.value })}
-                className="w-full bg-white border border-rose-200 rounded-xl px-4 py-3 text-sm font-medium text-[#111827] outline-none appearance-none focus:ring-2 focus:ring-rose-500"
+                className="dc-input w-full bg-white border border-rose-200 rounded-xl px-4 py-3 text-sm font-medium text-[#111827] outline-none appearance-none focus:ring-2 focus:ring-rose-500"
               >
                 <option value="">Selecione a conta...</option>
                 {contas.map(c => <option key={c.id} value={c.id}>{c.banco_nome} - {c.titular} | Saldo: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(c.saldo_atual || 0)}</option>)}
@@ -388,7 +388,7 @@ const DebitoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
 
           {/* 4b. A Prazo: Condição + Data de Vencimento */}
           {!isEditing && isPrazo && (
-            <div className="bg-amber-50 border border-amber-100 p-5 rounded-2xl space-y-4 animate-in slide-in-from-top-2 duration-200">
+            <div className="bg-amber-50 border border-amber-100 p-5 rounded-xl space-y-4 animate-in slide-in-from-top-2 duration-200">
               <div>
                 <label className="block text-xs font-medium text-amber-700 normal-case mb-2 flex justify-between">
                   Condição de Pagamento
@@ -398,7 +398,7 @@ const DebitoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
                   required
                   value={condicaoId}
                   onChange={e => setCondicaoId(e.target.value)}
-                  className="w-full bg-white border border-amber-200 rounded-xl px-4 py-3 text-sm font-medium text-[#111827] outline-none appearance-none focus:ring-2 focus:ring-amber-500"
+                  className="dc-input w-full bg-white border border-amber-200 rounded-xl px-4 py-3 text-sm font-medium text-[#111827] outline-none appearance-none focus:ring-2 focus:ring-amber-500"
                 >
                   <option value="">{loadingCondicoes ? 'Buscando...' : 'Selecione a condição...'}</option>
                   {condicoes.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
@@ -411,7 +411,7 @@ const DebitoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
                   required
                   value={formData.data_vencimento}
                   onChange={e => setFormData({ ...formData, data_vencimento: e.target.value })}
-                  className="w-full bg-white border border-amber-200 rounded-xl px-4 py-3 font-medium text-[#111827] outline-none focus:ring-2 focus:ring-amber-500"
+                  className="dc-input w-full bg-white border border-amber-200 rounded-xl px-4 py-3 font-medium text-[#111827] outline-none focus:ring-2 focus:ring-amber-500"
                 />
               </div>
             </div>
@@ -427,20 +427,20 @@ const DebitoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
               value={formData.documento_ref}
               onChange={e => setFormData({ ...formData, documento_ref: e.target.value })}
               placeholder="Ex: Contrato-1234, NF-5678..."
-              className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3.5 font-medium text-[#111827] outline-none focus:ring-2 focus:ring-rose-500"
+              className="dc-input w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 font-medium text-[#111827] outline-none focus:ring-2 focus:ring-rose-500"
             />
           </div>
 
           {/* Divisão entre Sócios */}
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center">
-              <div className="w-10 h-10 rounded-2xl bg-slate-100 text-slate-600 flex items-center justify-center mr-4">
+              <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center mr-4">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-slate-800 normal-case tracking-tight">Divisão entre Sócios</h3>
+                <h3 className="dc-modal-title text-sm font-semibold text-slate-800 normal-case tracking-tight">Divisão entre Sócios</h3>
                 <p className="text-xs text-slate-500 font-medium">Selecione os sócios responsáveis pelo débito</p>
               </div>
             </div>
@@ -450,17 +450,17 @@ const DebitoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
           <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
             {/* Progress Bar */}
             {sociosVinculados.length > 0 && (
-              <div className="bg-slate-50 rounded-2xl p-4 text-slate-900">
+              <div className="bg-slate-50 rounded-xl p-4 text-slate-900">
                 <div className="flex justify-between items-end mb-3">
                   <div>
                     <p className="text-xs font-medium normal-case tracking-normal opacity-50">Alocado</p>
-                    <h4 className="text-xl font-semibold tracking-tight">
+                    <h4 className="dc-section-title text-xl font-semibold tracking-tight">
                       {totalPorcentagem.toFixed(1)}<span className="text-xs text-indigo-600 ml-0.5">%</span>
                     </h4>
                   </div>
                   <div className="text-right">
                     <p className="text-xs font-medium normal-case tracking-normal opacity-50">Livre</p>
-                    <h4 className={`text-xl font-semibold tracking-tight ${(100 - totalPorcentagem) <= 0.01 ? 'text-slate-600' : 'text-emerald-400'}`}>
+                    <h4 className={`dc-section-title text-xl font-semibold tracking-tight ${(100 - totalPorcentagem) <= 0.01 ? 'text-slate-600' : 'text-emerald-400'}`}>
                       {Math.max(0, 100 - totalPorcentagem).toFixed(1)}<span className="text-xs opacity-50 ml-0.5">%</span>
                     </h4>
                   </div>
@@ -482,21 +482,21 @@ const DebitoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
               <button
                 type="button"
                 onClick={dividirIgualmente}
-                className="w-full py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-2xl text-xs font-semibold normal-case tracking-normal border border-indigo-200/50 transition-all"
+                className="dc-button w-full py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-xl text-xs font-semibold normal-case tracking-normal border border-indigo-200/50 transition-all"
               >
                 ⚡ Dividir Igualmente
               </button>
             )}
 
             {/* Partner List */}
-            <div className="space-y-3 max-h-[200px] overflow-y-auto pr-1">
+            <div className="dc-modal-body space-y-3 max-h-[200px] overflow-y-auto pr-1">
               {sociosDisponiveis.map((socio) => {
                 const vinculado = sociosVinculados.find(v => v.socio_id === socio.id);
 
                 return (
                   <div
                     key={socio.id}
-                    className={`border-2 rounded-2xl p-4 transition-all duration-200 ${vinculado
+                    className={`border-2 rounded-xl p-4 transition-all duration-200 ${vinculado
                       ? 'bg-white border-indigo-100 shadow-sm'
                       : 'bg-slate-50/50 border-slate-100 opacity-60 hover:opacity-100'
                       }`}
@@ -506,7 +506,7 @@ const DebitoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
                         <button
                           type="button"
                           onClick={() => toggleSocio(socio)}
-                          className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all shrink-0 ${vinculado
+                          className={`dc-button w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all shrink-0 ${vinculado
                             ? 'bg-indigo-600 border-indigo-600 text-white shadow-sm'
                             : 'border-slate-200 bg-white hover:border-indigo-400'
                             }`}
@@ -525,7 +525,7 @@ const DebitoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
                               type="text"
                               value={new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(vinculado.valor)}
                               onChange={(e) => updateSocioValor(socio.id, e.target.value)}
-                              className="w-28 bg-white border border-slate-200 rounded-xl py-1.5 px-3 text-xs font-medium text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500 text-right shadow-sm"
+                              className="dc-input w-28 bg-white border border-slate-200 rounded-xl py-1.5 px-3 text-xs font-medium text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500 text-right shadow-sm"
                             />
                           </div>
                           <div className="relative">
@@ -534,7 +534,7 @@ const DebitoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
                               inputMode="decimal"
                               value={vinculado.porcentagem === 0 ? '' : vinculado.porcentagem.toString()}
                               onChange={(e) => updateSocioPorcentagem(socio.id, e.target.value)}
-                              className="w-16 bg-indigo-50/50 border border-indigo-100 rounded-xl py-1.5 pl-2 pr-6 text-xs font-medium text-indigo-600 outline-none focus:ring-2 focus:ring-indigo-500 text-right"
+                              className="dc-input w-16 bg-indigo-50/50 border border-indigo-100 rounded-xl py-1.5 pl-2 pr-6 text-xs font-medium text-indigo-600 outline-none focus:ring-2 focus:ring-indigo-500 text-right"
                               placeholder="0"
                             />
                             <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs font-medium text-indigo-400 opacity-50">%</span>
@@ -553,14 +553,14 @@ const DebitoForm: React.FC<Props> = ({ editData, onClose, onSuccess }) => {
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 py-4 text-slate-500 font-semibold text-xs normal-case bg-slate-50 rounded-2xl hover:bg-slate-100 transition-all"
+              className="dc-button flex-1 py-4 text-slate-500 font-semibold text-xs normal-case bg-slate-50 rounded-xl hover:bg-slate-100 transition-all"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={isSaving}
-              className="flex-1 py-4 bg-rose-600 text-white font-semibold text-xs normal-case tracking-normal rounded-2xl shadow-sm hover:bg-rose-700 transition-all flex items-center justify-center"
+              className="dc-button flex-1 py-4 bg-rose-600 text-white font-semibold text-xs normal-case tracking-normal rounded-xl shadow-sm hover:bg-rose-700 transition-all flex items-center justify-center"
             >
               {isSaving ? 'Gravando...' : isEditing ? 'Salvar Alterações' : 'Confirmar Débito'}
             </button>

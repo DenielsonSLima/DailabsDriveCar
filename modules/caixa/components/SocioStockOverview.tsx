@@ -15,11 +15,11 @@ const SocioStockOverview: React.FC<Props> = ({ socios }) => {
   }).format(v);
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm h-full">
-      <div className="flex items-center justify-between mb-8">
+    <div className="dc-panel h-full">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
         <div>
           <h3 className="text-sm font-semibold text-slate-400 normal-case tracking-normal">Exposição por Sócio</h3>
-          <p className="text-xs text-slate-400 font-bold normal-case mt-1 tracking-normal">Alocação de capital e lucro no período</p>
+          <p className="text-xs text-slate-400 font-semibold normal-case mt-1 tracking-normal">Alocação de capital e lucro no período</p>
         </div>
       </div>
 
@@ -44,7 +44,7 @@ const SocioStockOverview: React.FC<Props> = ({ socios }) => {
                   </div>
                   <div>
                     <h4 className="text-xs font-semibold normal-case text-slate-800 leading-none">{s.nome}</h4>
-                    <p className="text-xs font-bold text-slate-400 normal-case tracking-normal mt-1">
+                    <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mt-1">
                       {s.quantidade_carros} {s.quantidade_carros === 1 ? 'veículo' : 'veículos'} • {s.porcentagem_estoque.toFixed(1)}% do pátio
                     </p>
                   </div>
@@ -53,7 +53,7 @@ const SocioStockOverview: React.FC<Props> = ({ socios }) => {
                 <div className="flex items-center gap-6">
                   <div className="text-right">
                     <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-0.5">Investido</p>
-                    <p className="text-xs font-semibold text-slate-900">{fmt(s.valor_investido)}</p>
+                    <p className="dc-kpi-value">{fmt(s.valor_investido)}</p>
                   </div>
                   <div className="text-right border-l border-slate-200 pl-6">
                     <p className="text-xs font-semibold text-emerald-500 normal-case tracking-normal mb-0.5">Lucro</p>
@@ -71,9 +71,9 @@ const SocioStockOverview: React.FC<Props> = ({ socios }) => {
                   <div className="space-y-3">
                     {investmentByModel.sort((a, b) => b.valor - a.valor).slice(0, 4).map((m, mIdx) => (
                       <div key={mIdx} className="space-y-1 px-1">
-                        <div className="flex justify-between items-center text-xs font-bold normal-case tracking-normal">
+                        <div className="flex justify-between items-center text-xs font-semibold normal-case tracking-normal">
                           <span className="text-slate-600">{m.modelo}</span>
-                          <span className="text-slate-400">{fmt(m.valor)}</span>
+                          <span className="dc-kpi-value">{fmt(m.valor)}</span>
                         </div>
                         <div className="h-1 w-full bg-slate-100 rounded-full overflow-hidden">
                           <div

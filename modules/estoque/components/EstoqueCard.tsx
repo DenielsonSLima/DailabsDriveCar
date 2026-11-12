@@ -79,7 +79,7 @@ const EstoqueCard: React.FC<Props> = ({ veiculo, cores, onClick }) => {
   return (
     <div
       onClick={onClick}
-      className="group bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-sm hover:border-indigo-300 transition-all duration-300 cursor-pointer flex flex-col h-full transform hover:-translate-y-0.5"
+      className="dc-panel group bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-sm hover:border-indigo-300 transition-all duration-300 cursor-pointer flex flex-col h-full transform hover:-translate-y-0.5"
     >
       {/* Imagem / Carrossel */}
       <div className="aspect-[4/3] bg-slate-100 relative overflow-hidden shrink-0">
@@ -88,10 +88,10 @@ const EstoqueCard: React.FC<Props> = ({ veiculo, cores, onClick }) => {
             <img src={currentPhoto?.url} alt={veiculo.placa} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
             {fotos.length > 1 && (
               <div className="absolute inset-0 flex items-center justify-between px-4 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                <button onClick={handlePrev} className="p-2 rounded-full bg-black/20 backdrop-blur-sm text-white hover:bg-black/40 transition-all">
+                <button onClick={handlePrev} className="dc-button p-2 rounded-full bg-black/20 backdrop-blur-sm text-white hover:bg-black/40 transition-all">
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M15 19l-7-7 7-7" /></svg>
                 </button>
-                <button onClick={handleNext} className="p-2 rounded-full bg-black/20 backdrop-blur-sm text-white hover:bg-black/40 transition-all">
+                <button onClick={handleNext} className="dc-button p-2 rounded-full bg-black/20 backdrop-blur-sm text-white hover:bg-black/40 transition-all">
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M9 5l7 7-7 7" /></svg>
                 </button>
               </div>
@@ -124,7 +124,7 @@ const EstoqueCard: React.FC<Props> = ({ veiculo, cores, onClick }) => {
           <button
             onClick={handleToggleClick}
             disabled={isToggling}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold normal-case tracking-normal transition-all shadow-sm flex items-center gap-1.5 border ${localPublicado ? 'bg-emerald-600 text-white border-emerald-500' : 'bg-white/90 text-slate-400 border-slate-200'
+            className={`dc-button px-3 py-1.5 rounded-lg text-xs font-semibold normal-case tracking-normal transition-all shadow-sm flex items-center gap-1.5 border ${localPublicado ? 'bg-emerald-600 text-white border-emerald-500' : 'bg-white/90 text-slate-400 border-slate-200'
               }`}
           >
             <div className={`w-1.5 h-1.5 rounded-full ${localPublicado ? 'bg-white animate-pulse' : 'bg-slate-300'}`}></div>
@@ -133,7 +133,7 @@ const EstoqueCard: React.FC<Props> = ({ veiculo, cores, onClick }) => {
         </div>
 
         <div className="absolute bottom-3 left-3 z-10">
-          <div className="bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md border border-slate-200 text-xs font-mono font-bold text-slate-700 shadow-sm normal-case">
+          <div className="dc-panel bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md border border-slate-200 text-xs font-mono font-bold text-slate-700 shadow-sm normal-case">
             {veiculo.placa || 'SEM PLACA'}
           </div>
         </div>
@@ -151,13 +151,13 @@ const EstoqueCard: React.FC<Props> = ({ veiculo, cores, onClick }) => {
               </>
             )}
             <span className="text-slate-300 text-xs">•</span>
-            <span className="text-xs font-bold text-slate-400 normal-case">{veiculo.km.toLocaleString()} km</span>
+            <span className="text-xs font-bold text-slate-600 normal-case">{veiculo.km.toLocaleString()} km</span>
           </div>
 
           <h4 className="font-semibold text-slate-900 text-lg leading-tight line-clamp-2 normal-case tracking-normal">
             {v.montadora?.nome} {v.modelo?.nome}
           </h4>
-          <p className="text-[11px] text-slate-500 font-bold truncate mt-0.5 normal-case tracking-tight">
+          <p className="text-xs text-slate-500 font-bold truncate mt-0.5 normal-case tracking-tight">
             {v.versao?.nome || 'Versão Base'} {v.motorizacao} {v.combustivel}
           </p>
         </div>
@@ -165,7 +165,7 @@ const EstoqueCard: React.FC<Props> = ({ veiculo, cores, onClick }) => {
         <div className="mt-auto pt-4 border-t border-slate-50 flex items-end justify-between">
           <div>
             <div className="mb-2">
-              <p className="text-xs font-bold text-slate-400 normal-case tracking-normal mb-0.5">Investimento (Custo)</p>
+              <p className="text-xs font-bold text-slate-600 normal-case tracking-normal mb-0.5">Investimento (Custo)</p>
               <p className="text-sm font-semibold text-slate-700 tracking-tight">
                 {formatCurrency(
                   veiculo.is_consignado
@@ -174,7 +174,7 @@ const EstoqueCard: React.FC<Props> = ({ veiculo, cores, onClick }) => {
                 )}
               </p>
             </div>
-            <p className="text-xs font-bold text-slate-400 normal-case tracking-normal mb-0.5">Preço Venda</p>
+            <p className="text-xs font-bold text-slate-600 normal-case tracking-normal mb-0.5">Preço Venda</p>
             <p className="text-xl font-semibold text-emerald-600 tracking-tight">{formatCurrency(veiculo.valor_venda)}</p>
           </div>
 

@@ -73,18 +73,18 @@ const PerformancePage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 pb-20 animate-in fade-in duration-500">
+    <div className="dc-page pb-20 animate-in fade-in duration-500">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-semibold text-slate-900 normal-case tracking-tight">Performance</h1>
-          <p className="text-slate-500 text-xs font-bold normal-case tracking-normal mt-1">Visão completa da empresa por período</p>
+          <h1 className="dc-page-title">Performance</h1>
+          <p className="dc-page-subtitle">Visão completa da empresa por período</p>
         </div>
         <div className="flex items-center space-x-4">
           <button
             onClick={handleOpenPdf}
             disabled={loadingPdf}
-            className="flex items-center space-x-2 px-6 py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-indigo-700 transition-all shadow-sm  disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center space-x-2 px-6 py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-indigo-700 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loadingPdf ? (
               <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -101,18 +101,18 @@ const PerformancePage: React.FC = () => {
       </div>
 
       {/* Tabs */}
-      <div className="flex bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm gap-1.5">
+      <div className="dc-tabs">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center px-6 py-3.5 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all whitespace-nowrap ${activeTab === tab.id
-                ? 'bg-slate-900 text-white shadow-sm'
+            className={`dc-tab flex items-center ${activeTab === tab.id
+                ? 'bg-white text-indigo-600 shadow-sm'
                 : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
               }`}
           >
             <svg
-              className={`w-4 h-4 mr-2.5 ${activeTab === tab.id ? 'text-white' : 'text-slate-400'}`}
+              className={`w-4 h-4 mr-2.5 ${activeTab === tab.id ? 'text-indigo-600' : 'text-slate-400'}`}
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"

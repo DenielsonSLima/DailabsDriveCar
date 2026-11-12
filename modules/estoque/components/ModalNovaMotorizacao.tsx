@@ -33,13 +33,13 @@ const ModalNovaMotorizacao: React.FC<Props> = ({ onClose, onSuccess }) => {
 
     return createPortal(
         <div data-drivecar-ui className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="bg-white w-full max-w-sm rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="dc-modal bg-white w-full max-w-sm rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 duration-200">
                 <div className="px-6 pt-6 pb-4 flex items-center justify-between border-b border-slate-100">
                     <div>
                         <span className="text-xs font-semibold text-indigo-500 normal-case tracking-normal">Cadastro Rápido</span>
-                        <h2 className="text-lg font-semibold text-slate-900 normal-case tracking-normal">Nova Motorização</h2>
+                        <h2 className="dc-modal-title text-lg font-semibold text-slate-900 normal-case tracking-normal">Nova Motorização</h2>
                     </div>
-                    <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full transition-all text-slate-400">
+                    <button onClick={onClose} className="dc-button p-2 hover:bg-slate-100 rounded-full transition-all text-slate-600">
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
@@ -55,7 +55,7 @@ const ModalNovaMotorizacao: React.FC<Props> = ({ onClose, onSuccess }) => {
                             onChange={e => setNome(e.target.value.toUpperCase())}
                             required
                             placeholder="Ex: 1.0, 1.6 VVT-I, 2.0 TFSI..."
-                            className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition-all uppercase"
+                            className="dc-input w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-slate-900 focus:ring-2 focus:ring-indigo-500 outline-none transition-all normal-case"
                         />
                     </div>
 
@@ -63,14 +63,14 @@ const ModalNovaMotorizacao: React.FC<Props> = ({ onClose, onSuccess }) => {
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-4 py-2 text-slate-500 text-xs font-semibold normal-case tracking-normal hover:bg-slate-50 rounded-xl transition-all"
+                            className="dc-button px-4 py-2 text-slate-500 text-xs font-semibold normal-case tracking-normal hover:bg-slate-50 rounded-xl transition-all"
                         >
                             Cancelar
                         </button>
                         <button
                             type="submit"
                             disabled={mutation.isPending || !nome.trim()}
-                            className="px-6 py-2 bg-indigo-600 text-white text-xs font-semibold normal-case tracking-normal rounded-xl shadow-sm shadow-indigo-200 hover:bg-indigo-700 transition-all disabled:opacity-50 flex items-center gap-2"
+                            className="dc-button px-6 py-2 bg-indigo-600 text-white text-xs font-semibold normal-case tracking-normal rounded-xl shadow-sm shadow-indigo-200 hover:bg-indigo-700 transition-all disabled:opacity-50 flex items-center gap-2"
                         >
                             {mutation.isPending ? 'Salvando...' : 'Cadastrar'}
                         </button>

@@ -234,7 +234,7 @@ const RelatoriosQuickPreview: React.FC<Props> = ({ isOpen, onClose, title, child
             </span>
           </div>
           <div>
-            <h2 className="text-slate-900 font-semibold text-sm normal-case tracking-normal">{title}</h2>
+            <h2 className="dc-section-title">{title}</h2>
             <div className="flex items-center gap-2 mt-0.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
               <p className="text-xs text-slate-500 font-medium normal-case tracking-tight">Visualização de Pré-Impressão • <span className="text-indigo-600">Use "Salvar como PDF" no próximo passo</span></p>
@@ -263,7 +263,7 @@ const RelatoriosQuickPreview: React.FC<Props> = ({ isOpen, onClose, title, child
               )}
               <span>{isDownloading ? 'GERANDO PDF...' : 'BAIXAR PDF'}</span>
             </div>
-            <span className="text-xs opacity-70 font-bold">GERAR DOCUMENTO DIGITAL</span>
+            <span className="text-xs opacity-70 font-semibold">GERAR DOCUMENTO DIGITAL</span>
           </button>
 
           <button
@@ -301,7 +301,7 @@ const RelatoriosQuickPreview: React.FC<Props> = ({ isOpen, onClose, title, child
 
       {/* Footer Info */}
       <div data-drivecar-ui className="h-8 shrink-0 bg-white border-t border-slate-200 flex items-center justify-center print:hidden">
-        <p className="text-xs font-bold text-slate-600 normal-case tracking-normal">HCV Operating System - Report Generator v4.0</p>
+        <p className="text-xs font-semibold text-slate-600 normal-case tracking-normal">HCV Operating System - Report Generator v4.0</p>
       </div>
     </div>
   );

@@ -41,11 +41,6 @@ import PerformancePage from './modules/performance/Performance.page.tsx';
 import RelatoriosPage from './modules/relatorios/Relatorios.page.tsx';
 
 import AjustesPage from './modules/ajustes/Ajustes.page.tsx';
-import StoryGeneratorPage from './modules/marketing/StoryGenerator.page.tsx';
-import FeedGeneratorPage from './modules/marketing/FeedGenerator.page.tsx';
-import MarketingPage from './modules/marketing/Marketing.page.tsx';
-import AnuncioHubPage from './modules/marketing/AnuncioHub.page.tsx';
-import NovoAnuncioPage from './modules/marketing/NovoAnuncio.page.tsx';
 
 // Submódulos Relatórios
 import RelatorioVendasPage from './modules/relatorios/pages/RelatorioVendas.page.tsx';
@@ -352,8 +347,8 @@ const App: React.FC = () => {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="flex flex-col items-center space-y-4">
-          <div className="w-12 h-12 border-4 border-orange-600 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-slate-600 font-black text-[10px] uppercase tracking-[0.4em]">DAILABS DRIVERCAR</p>
+          <div className="w-12 h-12 border-4 border-slate-400 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-slate-200 font-semibold text-sm tracking-normal">Arkhen Drive Car</p>
         </div>
       </div>
     );
@@ -449,11 +444,6 @@ const App: React.FC = () => {
                   <Route path="/ajustes/financeiro" element={<AjustesFinanceiroPage />} />
                   <Route path="/ajustes/site-publico" element={<EditorSitePage />} />
 
-                  <Route path="/marketing" element={<MarketingPage />} />
-                  <Route path="/marketing/anuncios" element={<AnuncioHubPage />} />
-                  <Route path="/marketing/anuncios/novo" element={<NovoAnuncioPage />} />
-                  <Route path="/marketing/feed" element={<FeedGeneratorPage />} />
-                  <Route path="/marketing/stories" element={<StoryGeneratorPage />} />
 
                   <Route path="*" element={<Navigate to={window.innerWidth < 768 ? '/caixa' : '/inicio'} />} />
                 </Routes>

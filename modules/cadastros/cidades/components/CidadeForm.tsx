@@ -59,9 +59,9 @@ const CidadeForm: React.FC<FormProps> = ({ initialData, onClose, onSubmit }) => 
   const content = (
     <div data-drivecar-ui className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-white w-full max-w-2xl rounded-2xl shadow-sm overflow-hidden flex flex-col border border-slate-200 animate-in zoom-in-95 duration-200">
-        <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+        <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
           <div>
-            <h2 className="text-2xl font-semibold text-slate-900 normal-case tracking-tight">
+            <h2 className="dc-modal-title">
               {initialData ? 'Editar Cidade' : 'Nova Cidade'}
             </h2>
             <p className="text-slate-500 text-xs">Informe os dados básicos do município.</p>
@@ -73,7 +73,7 @@ const CidadeForm: React.FC<FormProps> = ({ initialData, onClose, onSubmit }) => 
           </button>
         </div>
 
-        <form onSubmit={(e) => { e.preventDefault(); onSubmit(formData); }} className="p-6 space-y-6">
+        <form onSubmit={(e) => { e.preventDefault(); onSubmit(formData); }} className="p-4 space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-6">
             <div className="sm:col-span-3">
               <label className="block text-xs font-medium text-slate-500 normal-case mb-2 tracking-normal ml-1">Nome do Município</label>
@@ -84,7 +84,7 @@ const CidadeForm: React.FC<FormProps> = ({ initialData, onClose, onSubmit }) => 
                 onChange={handleChange}
                 required
                 autoFocus
-                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 text-sm font-medium text-[#111827] focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+                className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4  font-medium text-[#111827] focus:ring-2 focus:ring-indigo-500 outline-none transition-all dc-input"
                 placeholder="Ex: São Paulo"
               />
             </div>
@@ -97,7 +97,7 @@ const CidadeForm: React.FC<FormProps> = ({ initialData, onClose, onSubmit }) => 
                   value={formData.uf}
                   onChange={handleChange}
                   required
-                  className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 text-sm font-medium text-[#111827] focus:ring-2 focus:ring-indigo-500 outline-none transition-all appearance-none cursor-pointer"
+                  className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4  font-medium text-[#111827] focus:ring-2 focus:ring-indigo-500 outline-none transition-all appearance-none cursor-pointer dc-input"
                 >
                   <option value="">...</option>
                   {ufs.map(item => (

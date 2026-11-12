@@ -50,14 +50,14 @@ const PedidoVendaCard: React.FC<Props> = ({ pedido, onClick }) => {
       className="group bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-sm hover:border-emerald-300 transition-all duration-500 cursor-pointer flex flex-col h-full animate-in fade-in"
     >
       {/* 1. Área de Mídia (Carrossel) */}
-      <div className="aspect-[16/10] bg-slate-900 relative overflow-hidden shrink-0">
+      <div className="aspect-[16/10] bg-slate-100 relative overflow-hidden shrink-0">
         {hasPhotos ? (
           <>
             <img src={currentPhoto?.url} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt="Veículo" />
             {fotos.length > 1 && (
               <div className="absolute inset-0 flex items-center justify-between px-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button onClick={handlePrev} className="p-2 rounded-full bg-black/20 backdrop-blur-sm text-white hover:bg-black/40 transition-all"><svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M15 19l-7-7m0 0l7-7m-7 7h18" /></svg></button>
-                <button onClick={handleNext} className="p-2 rounded-full bg-black/20 backdrop-blur-sm text-white hover:bg-black/40 transition-all"><svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M9 5l7 7-7 7" /></svg></button>
+                <button onClick={handlePrev} className="dc-button p-2 rounded-full bg-black/20 backdrop-blur-sm text-white hover:bg-black/40 transition-all"><svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M15 19l-7-7m0 0l7-7m-7 7h18" /></svg></button>
+                <button onClick={handleNext} className="dc-button p-2 rounded-full bg-black/20 backdrop-blur-sm text-white hover:bg-black/40 transition-all"><svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M9 5l7 7-7 7" /></svg></button>
               </div>
             )}
 
@@ -96,13 +96,13 @@ const PedidoVendaCard: React.FC<Props> = ({ pedido, onClick }) => {
         <div className="flex justify-between items-start mb-4">
           <div>
             <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-1">Pedido #{pedido.numero_venda || '---'}</p>
-            <p className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md inline-block normal-case">{formatDate(pedido.data_venda)}</p>
+            <p className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md inline-block normal-case">{formatDate(pedido.data_venda)}</p>
           </div>
           <div className="text-right min-w-0">
-            <h4 className="text-xs font-semibold text-slate-800 normal-case truncate max-w-[110px] leading-none">
+            <h4 className="dc-section-title font-semibold text-slate-800 normal-case max-w-[110px]">
               {pedido.lote_id ? `${getVendaUnits(pedido)} unidades do lote` : v?.modelo?.nome || 'Veículo N/D'}
             </h4>
-            <p className="text-xs font-bold text-slate-400 normal-case mt-1">
+            <p className="text-xs font-semibold text-slate-400 normal-case mt-1">
               {pedido.lote_id ? 'Venda de lote' : v?.montadora?.nome}
             </p>
           </div>
@@ -115,31 +115,31 @@ const PedidoVendaCard: React.FC<Props> = ({ pedido, onClick }) => {
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[11px] font-semibold text-slate-900 normal-case truncate leading-none mb-1">{cliente?.nome || 'Comprador N/D'}</p>
+              <p className="text-xs font-semibold text-slate-900 normal-case truncate leading-none mb-1">{cliente?.nome || 'Comprador N/D'}</p>
               <p className="text-xs font-mono text-slate-500 truncate mb-1">{cliente?.documento || 'Sem Documento'}</p>
-              <p className="text-xs font-bold text-slate-400 normal-case tracking-normal">{cliente?.cidade}/{cliente?.uf}</p>
+              <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal">{cliente?.cidade}/{cliente?.uf}</p>
             </div>
           </div>
         </div>
 
         {/* Grid Financeiro - ATUALIZADO COM PREÇO EFETIVO */}
-        <div className="grid grid-cols-2 gap-2 mb-4">
-          <div className="bg-slate-50 border border-slate-100 rounded-xl p-3">
-            <p className="text-[11px] font-semibold text-slate-400 normal-case tracking-normal mb-1">Investimento</p>
-            <p className="text-sm font-semibold text-slate-700 tabular-nums break-words">{formatCurrency(totalInvestido)}</p>
+        <div className="grid grid-cols-1 gap-2 mb-4">
+          <div className="bg-slate-50 border border-slate-100 rounded-xl p-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+            <p className="text-xs font-semibold text-slate-600 normal-case tracking-normal mb-1">Investimento</p>
+            <p className="text-sm font-semibold text-slate-700 tabular-nums whitespace-nowrap">{formatCurrency(totalInvestido)}</p>
           </div>
-          <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-3">
-            <p className="text-[11px] font-semibold text-emerald-600 normal-case tracking-normal mb-1">Venda Final</p>
-            <p className="text-sm font-semibold text-emerald-700 tabular-nums break-words">{formatCurrency(valorVendaEfetivo)}</p>
+          <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+            <p className="text-xs font-semibold text-emerald-600 normal-case tracking-normal mb-1">Venda Final</p>
+            <p className="text-sm font-semibold text-emerald-700 tabular-nums whitespace-nowrap">{formatCurrency(valorVendaEfetivo)}</p>
           </div>
-          <div className={`col-span-2 rounded-xl p-3 shadow-sm ${lucroBruto >= 0 ? 'bg-slate-900' : 'bg-rose-900'}`}>
+          <div className={`rounded-xl p-3 shadow-sm ${lucroBruto >= 0 ? 'bg-slate-900' : 'bg-rose-900'}`}>
             <div className="flex justify-between items-start">
-              <p className="text-[11px] font-semibold text-slate-400 normal-case tracking-normal mb-1">Margem</p>
-              <span className={`text-[11px] font-semibold px-1 rounded ${lucroBruto >= 0 ? 'bg-emerald-500 text-white' : 'bg-white text-rose-600'}`}>
+              <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-1">Margem</p>
+              <span className={`text-xs font-semibold px-1 rounded ${lucroBruto >= 0 ? 'bg-emerald-500 text-white' : 'bg-white text-rose-600'}`}>
                 {margemPercentual.toFixed(0)}%
               </span>
             </div>
-            <p className={`text-sm font-semibold tabular-nums break-words ${lucroBruto >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+            <p className={`text-sm font-semibold tabular-nums whitespace-nowrap ${lucroBruto >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
               {lucroBruto >= 0 ? '+' : ''}{formatCurrency(lucroBruto)}
             </p>
           </div>
@@ -154,13 +154,13 @@ const PedidoVendaCard: React.FC<Props> = ({ pedido, onClick }) => {
             {sociosNoLucro.length > 0 ? sociosNoLucro.map((s: any, idx: number) => (
               <div key={idx} className="flex items-center bg-slate-50 border border-slate-100 rounded-lg px-2 py-1 shadow-sm">
                 <div className="w-5 h-5 bg-indigo-600 text-white rounded flex items-center justify-center text-xs font-semibold normal-case shrink-0 mr-2">{s.nome.charAt(0)}</div>
-                <span className="text-xs font-semibold text-slate-700 mr-2 truncate max-w-[60px]">{s.nome.split(' ')[0]}</span>
+                <span title={s.nome} className="text-xs font-semibold text-slate-700 mr-2 truncate max-w-[60px]">{s.nome.split(' ')[0]}</span>
                 <span className={`text-xs font-semibold ${s.lucroProporcional >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
                   {formatCurrency(s.lucroProporcional)}
                 </span>
               </div>
             )) : (
-              <p className="text-xs text-slate-300 italic normal-case font-bold tracking-normal ml-1">Propriedade Integral</p>
+              <p className="text-xs text-slate-300 italic normal-case font-semibold tracking-normal ml-1">Propriedade Integral</p>
             )}
           </div>
         </div>

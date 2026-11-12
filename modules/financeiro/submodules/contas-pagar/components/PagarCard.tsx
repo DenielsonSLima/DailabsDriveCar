@@ -17,7 +17,7 @@ const PagarCard: React.FC<Props> = ({ titulo, onOpenDetails, onDelete }) => {
     return (
         <div
             onClick={() => onOpenDetails(titulo)}
-            className="group bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-sm hover:border-indigo-100 transition-all cursor-pointer relative overflow-hidden"
+            className="dc-panel group bg-white p-5 rounded-xl border border-slate-100 shadow-sm hover:shadow-sm hover:border-indigo-100 transition-all cursor-pointer relative overflow-hidden"
         >
             {/* Background Decor */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-110" />
@@ -45,12 +45,12 @@ const PagarCard: React.FC<Props> = ({ titulo, onOpenDetails, onDelete }) => {
             {/* Vehicle Info Section - Dark Theme Alignment */}
             <div className="mb-4">
                 {titulo.veiculo ? (
-                    <div className="bg-slate-50 rounded-2xl p-4 shadow-sm relative overflow-hidden group-hover:bg-slate-100 transition-colors">
+                    <div className="bg-slate-50 rounded-xl p-4 shadow-sm relative overflow-hidden group-hover:bg-slate-100 transition-colors">
                         <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500 rounded-full blur-[80px] opacity-20"></div>
                         <div className="relative z-10 flex justify-between items-center">
                             <div>
                                 <p className="text-xs text-indigo-600 font-medium normal-case tracking-normal mb-0.5">Veículo</p>
-                                <h4 className="text-slate-900 font-semibold text-sm normal-case truncate max-w-[140px]">
+                                <h4 className="dc-section-title text-slate-900 font-semibold text-sm normal-case truncate max-w-[140px]">
                                     {titulo.veiculo.montadora?.nome} {titulo.veiculo.modelo?.nome}
                                 </h4>
                             </div>
@@ -60,14 +60,14 @@ const PagarCard: React.FC<Props> = ({ titulo, onOpenDetails, onDelete }) => {
                         </div>
                     </div>
                 ) : titulo.origem_tipo === 'PEDIDO_COMPRA' || titulo.origem_tipo === 'DESPESA_VEICULO' ? (
-                    <div className="bg-slate-100 rounded-2xl p-4 border border-slate-200 group-hover:border-indigo-200 transition-colors">
+                    <div className="bg-slate-100 rounded-xl p-4 border border-slate-200 group-hover:border-indigo-200 transition-colors">
                         <p className="text-xs text-slate-500 font-medium normal-case tracking-normal mb-0.5">Veículo (Ref. Descrição)</p>
-                        <h4 className="text-slate-900 font-semibold text-sm normal-case truncate">
+                        <h4 className="dc-section-title text-slate-900 font-semibold text-sm normal-case truncate">
                             {titulo.descricao}
                         </h4>
                     </div>
                 ) : (
-                    <div className="h-14 border border-dashed border-slate-200 rounded-2xl flex items-center justify-center">
+                    <div className="h-14 border border-dashed border-slate-200 rounded-xl flex items-center justify-center">
                         <p className="text-xs text-slate-300 font-medium normal-case tracking-normal italic">Sem veículo vinculado</p>
                     </div>
                 )}
@@ -97,7 +97,7 @@ const PagarCard: React.FC<Props> = ({ titulo, onOpenDetails, onDelete }) => {
                             e.stopPropagation();
                             onOpenDetails(titulo);
                         }}
-                        className="p-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all shadow-sm active:scale-100"
+                        className="dc-button p-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all shadow-sm active:scale-100"
                         title="Ver Detalhes"
                     >
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -112,7 +112,7 @@ const PagarCard: React.FC<Props> = ({ titulo, onOpenDetails, onDelete }) => {
                                 e.stopPropagation();
                                 onDelete(titulo.id);
                             }}
-                            className="p-2.5 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-100 transition-all active:scale-100"
+                            className="dc-button p-2.5 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-100 transition-all active:scale-100"
                             title="Excluir"
                         >
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

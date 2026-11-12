@@ -35,7 +35,7 @@ const QuickPreviewModal: React.FC<Props> = ({ isOpen, onClose, onDownload, title
                     </div>
                     <div>
                         <h3 className="text-white font-semibold normal-case text-sm tracking-normal">{title}</h3>
-                        <p className="text-slate-400 text-xs font-bold normal-case tracking-normal">Visualização Pré-Impressão</p>
+                        <p className="text-slate-400 text-xs font-semibold normal-case tracking-normal">Visualização Pré-Impressão</p>
                     </div>
                 </div>
 
@@ -58,7 +58,7 @@ const QuickPreviewModal: React.FC<Props> = ({ isOpen, onClose, onDownload, title
             </div>
 
             {/* Document Area */}
-            <div className="flex-1 min-h-0 overflow-auto p-3 sm:p-6 flex justify-start md:justify-center bg-slate-800/50">
+            <div className="flex-1 min-h-0 overflow-auto p-3 sm:p-4 flex justify-start md:justify-center bg-slate-800/50">
                 <div className="bg-white shadow-sm rounded-sm w-[210mm] min-w-[210mm] min-h-[297mm] shrink-0 origin-top">
                     <div id="print-content">
                         {children}
@@ -68,7 +68,7 @@ const QuickPreviewModal: React.FC<Props> = ({ isOpen, onClose, onDownload, title
 
             {/* Footer Info */}
             <div className="h-10 bg-slate-900 border-t border-white/5 flex items-center justify-center">
-                <p className="text-xs font-bold text-slate-500 normal-case tracking-normal">HCV Operating System - Document Generator v4.0</p>
+                <p className="text-xs font-semibold text-slate-500 normal-case tracking-normal">HCV Operating System - Document Generator v4.0</p>
             </div>
         </div>,
         document.body

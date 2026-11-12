@@ -53,45 +53,45 @@ const VendaSocioResultCard: React.FC<Props> = ({ pedidos, socioIdFiltro }) => {
   if (!analytics) return null;
 
   return (
-    <div className="bg-indigo-600 rounded-2xl p-6 text-white shadow-sm shadow-indigo-200 animate-in zoom-in-95 duration-500 relative overflow-hidden">
+    <div className="dc-panel animate-in zoom-in-95 duration-500 relative overflow-hidden">
       <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
 
       <div className="relative z-10">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
-            <h3 className="text-xl font-semibold normal-case tracking-normal flex items-center">
-              <svg className="w-6 h-6 mr-3 text-indigo-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <h3 className="dc-section-title font-semibold normal-case tracking-normal flex items-center">
+              <svg className="w-6 h-6 mr-3 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
               Resultado Proporcional do Sócio
             </h3>
-            <p className="text-indigo-200 text-xs font-semibold normal-case tracking-normal mt-1">Valores baseados na cota de participação de cada veículo</p>
+            <p className="text-slate-600 text-xs font-semibold normal-case tracking-normal mt-1">Valores baseados na cota de participação de cada veículo</p>
           </div>
-          <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-2xl border border-white/10">
+          <div className="bg-slate-50 px-4 py-2 rounded-2xl border border-slate-200">
             <p className="text-xs font-semibold normal-case opacity-60">Representatividade no Lote</p>
             <p className="text-lg font-semibold">{analytics.participacaoNoLote.toFixed(1)}%</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div className="bg-white/10 p-5 rounded-2xl border border-white/5">
-            <p className="text-xs font-semibold normal-case tracking-normal text-indigo-200 mb-1">VGV Proporcional</p>
-            <p className="text-2xl font-semibold tracking-tight">{formatCurrency(analytics.vgvProporcional)}</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="dc-kpi-card">
+            <p className="text-xs font-semibold normal-case tracking-normal text-slate-600 mb-1">VGV Proporcional</p>
+            <p className="dc-kpi-value">{formatCurrency(analytics.vgvProporcional)}</p>
           </div>
 
-          <div className="bg-white/10 p-5 rounded-2xl border border-white/5">
-            <p className="text-xs font-semibold normal-case tracking-normal text-indigo-200 mb-1">Custo Proporcional</p>
-            <p className="text-2xl font-semibold tracking-tight">{formatCurrency(analytics.custoProporcional)}</p>
+          <div className="dc-kpi-card">
+            <p className="text-xs font-semibold normal-case tracking-normal text-slate-600 mb-1">Custo Proporcional</p>
+            <p className="dc-kpi-value">{formatCurrency(analytics.custoProporcional)}</p>
           </div>
 
-          <div className="bg-emerald-400 p-5 rounded-2xl shadow-sm border-2 border-emerald-300">
+          <div className="dc-kpi-card">
             <p className="text-xs font-semibold normal-case tracking-normal text-emerald-900 mb-1">Lucro do Sócio</p>
-            <p className="text-2xl font-semibold text-emerald-900 tracking-tight">{formatCurrency(analytics.lucroProporcional)}</p>
+            <p className="dc-kpi-value">{formatCurrency(analytics.lucroProporcional)}</p>
           </div>
 
-          <div className="bg-white/10 p-5 rounded-2xl border border-white/5">
-            <p className="text-xs font-semibold normal-case tracking-normal text-indigo-200 mb-1">Margem Real do Sócio</p>
-            <p className="text-2xl font-semibold tracking-tight">{analytics.margemSocio.toFixed(1)}%</p>
+          <div className="dc-kpi-card">
+            <p className="text-xs font-semibold normal-case tracking-normal text-slate-600 mb-1">Margem Real do Sócio</p>
+            <p className="dc-kpi-value">{analytics.margemSocio.toFixed(1)}%</p>
           </div>
         </div>
       </div>

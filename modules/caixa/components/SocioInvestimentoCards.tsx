@@ -20,12 +20,12 @@ const SocioInvestimentoCards: React.FC<Props> = ({ socios }) => {
   const totalLucro = socios.reduce((acc, s) => acc + s.lucro_periodo, 0);
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+    <div className="dc-panel">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
         <div>
           <h3 className="text-sm font-semibold text-slate-400 normal-case tracking-normal">Investimento por Sócio</h3>
-          <p className="text-xs text-slate-400 font-bold normal-case mt-1 tracking-normal">Capital alocado em veículos • Lucro do mês</p>
+          <p className="text-xs text-slate-400 font-semibold normal-case mt-1 tracking-normal">Capital alocado em veículos • Lucro do mês</p>
         </div>
         <div className="flex items-center gap-3">
           <span className="px-3 py-1.5 bg-indigo-50 rounded-xl text-xs font-semibold normal-case tracking-normal text-indigo-500 border border-indigo-100">
@@ -41,7 +41,7 @@ const SocioInvestimentoCards: React.FC<Props> = ({ socios }) => {
       <div className="grid grid-cols-3 gap-4 mb-8">
         <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
           <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-1">Total Investido</p>
-          <p className="text-lg font-semibold text-slate-900">{fmt(totalInvestido)}</p>
+          <p className="dc-kpi-value">{fmt(totalInvestido)}</p>
         </div>
         <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
           <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-1">Total Veículos</p>
@@ -71,7 +71,7 @@ const SocioInvestimentoCards: React.FC<Props> = ({ socios }) => {
             return (
               <div
                 key={s.socio_id}
-                className="group p-6 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-indigo-200 hover:shadow-sm transition-all relative overflow-hidden"
+                className="group p-4 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-indigo-200 hover:shadow-sm transition-all relative overflow-hidden"
               >
                 {/* Decorative gradient */}
                 <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500 rounded-full blur-[80px] opacity-5 -mr-10 -mt-10 group-hover:opacity-10 transition-opacity"></div>
@@ -85,7 +85,7 @@ const SocioInvestimentoCards: React.FC<Props> = ({ socios }) => {
                       </div>
                       <div>
                         <h4 className="text-xs font-semibold normal-case text-slate-800 tracking-wide">{s.nome}</h4>
-                        <p className="text-xs font-bold text-slate-400 normal-case tracking-normal">
+                        <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal">
                           {s.quantidade_carros} {s.quantidade_carros === 1 ? 'veículo' : 'veículos'}
                         </p>
                       </div>
@@ -111,7 +111,7 @@ const SocioInvestimentoCards: React.FC<Props> = ({ socios }) => {
                   <div className="grid grid-cols-2 gap-3 mb-4">
                     <div className="bg-white p-3 rounded-2xl border border-slate-100">
                       <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-0.5">Valor Investido</p>
-                      <p className="text-sm font-semibold text-slate-900">{fmt(s.valor_investido)}</p>
+                      <p className="dc-kpi-value">{fmt(s.valor_investido)}</p>
                     </div>
                     <div className={`p-3 rounded-2xl border ${s.lucro_periodo >= 0 ? 'bg-emerald-50 border-emerald-100' : 'bg-rose-50 border-rose-100'}`}>
                       <p className={`text-xs font-semibold normal-case tracking-normal mb-0.5 ${s.lucro_periodo >= 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
@@ -152,11 +152,11 @@ const SocioInvestimentoCards: React.FC<Props> = ({ socios }) => {
                                   </div>
                                 )}
                                 <div>
-                                  <span className="font-bold normal-case text-slate-700 block leading-tight">{v.modelo}</span>
+                                  <span className="font-semibold normal-case text-slate-700 block leading-tight">{v.modelo}</span>
                                   <span className="text-slate-400 text-xs normal-case tracking-normal">{v.placa}</span>
                                 </div>
                               </div>
-                              <span className="font-semibold text-slate-800">{fmt(v.valor)}</span>
+                              <span className="dc-kpi-value">{fmt(v.valor)}</span>
                             </div>
                           ))}
                         </div>

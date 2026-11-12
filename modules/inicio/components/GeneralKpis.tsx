@@ -22,23 +22,23 @@ const KpiCard: React.FC<KpiCardProps> = ({ label, valor, icon, color, sublabel }
   };
 
   return (
-    <div className={`relative bg-white rounded-xl min-w-0 p-4 sm:p-5 border border-slate-200/60 shadow-sm hover:shadow-sm  transition-all duration-500 group overflow-hidden`}>
+    <div className="dc-kpi-card relative">
       <div className={`hidden ${colorMap[color]} opacity-50`} />
 
-      <div className="relative flex items-center justify-between mb-3">
-        <div className={`w-9 h-9 shrink-0 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center shadow-sm transition-transform duration-500 text-slate-600`}>
+      <div className="absolute top-3.5 right-4">
+        <div className={`w-6 h-6 shrink-0 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center shadow-sm transition-transform duration-500 text-slate-600`}>
           {icon}
         </div>
 
       </div>
 
       <div className="relative">
-        <h3 className="text-[11px] font-semibold text-slate-500 normal-case tracking-normal mb-2 leading-none">{label}</h3>
-        <p className="text-xl font-semibold text-slate-900 tracking-tight leading-snug break-words tabular-nums">
+        <h3 className="dc-kpi-label pr-8">{label}</h3>
+        <p className="dc-kpi-value">
           {valor}
         </p>
         {sublabel && (
-          <p className="mt-2 text-xs font-medium text-slate-500 normal-case tracking-normal">
+          <p className="dc-kpi-hint">
             {sublabel}
           </p>
         )}
@@ -49,14 +49,14 @@ const KpiCard: React.FC<KpiCardProps> = ({ label, valor, icon, color, sublabel }
 
 const GeneralKpis: React.FC<{ stats: IDashboardStats }> = ({ stats }) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-4 gap-4">
+    <div className="dc-kpi-grid">
       <KpiCard
         label="Veículos em Estoque"
         valor={stats.totalEstoque}
         sublabel="Unidades Ativas"
         color="slate"
         icon={
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
           </svg>
         }
@@ -67,7 +67,7 @@ const GeneralKpis: React.FC<{ stats: IDashboardStats }> = ({ stats }) => {
         sublabel="Valor de Custo Total"
         color="emerald"
         icon={
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
           </svg>
         }
@@ -78,7 +78,7 @@ const GeneralKpis: React.FC<{ stats: IDashboardStats }> = ({ stats }) => {
         sublabel={`${stats.vendasMesAtual} Registros`}
         color="indigo"
         icon={
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
           </svg>
         }
@@ -89,7 +89,7 @@ const GeneralKpis: React.FC<{ stats: IDashboardStats }> = ({ stats }) => {
         sublabel={`${formatCurrency(stats.lucroRealizado)} Rec. / ${formatCurrency(stats.lucroProjetado)} Proj.`}
         color="amber"
         icon={
-          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
           </svg>
         }

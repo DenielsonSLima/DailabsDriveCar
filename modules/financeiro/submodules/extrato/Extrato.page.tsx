@@ -99,7 +99,7 @@ const ExtratoPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 pb-8">
+    <div className="dc-page space-y-6 pb-8">
 
       {/* 1. KPIs do Período */}
       <ExtratoKpis totals={totals} />
@@ -108,17 +108,17 @@ const ExtratoPage: React.FC = () => {
       <ExtratoFilters filtros={filtros} onChange={handleFiltrosChange} />
 
       {/* 3. Tabela Unificada */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden animate-in fade-in duration-200">
-        <div className="p-6 border-b border-slate-50 flex justify-between items-center bg-slate-50/50">
+      <div className="dc-panel dc-panel-frame bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden animate-in fade-in duration-200">
+        <div className="p-4 border-b border-slate-50 flex justify-between items-center bg-slate-50/50">
           <div>
-            <h2 className="text-xl font-semibold text-slate-900 normal-case tracking-tight">Histórico Geral de Movimentações</h2>
-            <p className="text-slate-500 text-xs font-medium normal-case tracking-normal mt-1">
+            <h2 className="dc-page-title text-xl font-semibold text-slate-900 normal-case tracking-tight">Histórico Geral de Movimentações</h2>
+            <p className="dc-page-subtitle text-slate-500 text-xs font-medium normal-case tracking-normal mt-1">
               Todas as entradas, saídas, contas a pagar e a receber — compras, vendas, despesas e transferências
             </p>
           </div>
           <button
             onClick={exportCSV}
-            className="px-5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold normal-case tracking-normal text-slate-500 hover:bg-slate-50 transition-all shadow-sm"
+            className="dc-button px-5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold normal-case tracking-normal text-slate-500 hover:bg-slate-50 transition-all shadow-sm"
           >
             Exportar para CSV
           </button>
@@ -130,7 +130,7 @@ const ExtratoPage: React.FC = () => {
 
         {/* Paginação */}
         {!loading && totalPages > 1 && (
-          <div className="flex items-center justify-between p-6 border-t border-slate-100 bg-slate-50/50">
+          <div className="flex items-center justify-between p-4 border-t border-slate-100 bg-slate-50/50">
             <p className="text-xs text-slate-500 font-medium normal-case tracking-normal">
               Página <span className="text-slate-900">{currentPage}</span> de <span className="text-slate-900">{totalPages}</span>
               <span className="ml-2 opacity-50">({totalCount} registros)</span>
@@ -139,21 +139,21 @@ const ExtratoPage: React.FC = () => {
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="p-2.5 rounded-xl hover:bg-white text-slate-400 hover:text-indigo-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm"
+                className="dc-button p-2.5 rounded-xl hover:bg-white text-slate-400 hover:text-indigo-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
 
-              <button className="w-8 h-8 rounded-lg text-xs font-semibold bg-indigo-600 text-white shadow-sm shadow-none flex items-center justify-center">
+              <button className="dc-button w-8 h-8 rounded-lg text-xs font-semibold bg-indigo-600 text-white shadow-sm shadow-none flex items-center justify-center">
                 {currentPage}
               </button>
 
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="p-2.5 rounded-xl hover:bg-white text-slate-400 hover:text-indigo-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm"
+                className="dc-button p-2.5 rounded-xl hover:bg-white text-slate-400 hover:text-indigo-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

@@ -16,7 +16,7 @@ const AIAssistant: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: 'Olá! Sou o **Nexus AI**. Como posso ajudar você com os dados do seu ERP hoje?',
+      content: 'Olá! Sou o **Assistente Arkhen**. Como posso ajudar você com os dados do seu ERP hoje?',
       timestamp: new Date()
     }
   ]);
@@ -99,7 +99,7 @@ const AIAssistant: React.FC = () => {
                 <Sparkles size={20} className="text-slate-300" />
               </div>
               <div>
-                <h3 className="font-medium text-lg leading-none">Nexus AI</h3>
+                <h3 className="font-medium text-lg leading-none">Assistente Arkhen</h3>
                 <span className="text-xs text-white font-medium normal-case tracking-normal">Inteligência RAG Ativa</span>
               </div>
             </div>
@@ -143,7 +143,7 @@ const AIAssistant: React.FC = () => {
               <div className="flex justify-start">
                 <div className="bg-white border border-slate-200 p-4 rounded-xl rounded-tl-none shadow-sm flex items-center space-x-2">
                   <Loader2 size={16} className="animate-spin text-[#004691]" />
-                  <span className="text-xs text-slate-500 font-medium italic">Nexus está consultando o ERP...</span>
+                  <span className="text-xs text-slate-500 font-medium italic">Arkhen está consultando o ERP...</span>
                 </div>
               </div>
             )}

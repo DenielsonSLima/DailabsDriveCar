@@ -47,7 +47,7 @@ function ResumoValor({ label, value, hint, tone = 'neutral' }: {
   const color = { neutral: 'text-slate-900', indigo: 'text-indigo-600', emerald: 'text-emerald-600', rose: 'text-rose-600' }[tone];
   return (
     <div className="min-w-0">
-      <dt className="text-xs font-semibold normal-case tracking-normal text-slate-400">{label}</dt>
+      <dt className="text-xs font-semibold normal-case tracking-normal text-slate-600">{label}</dt>
       <dd className="mt-1">
         <p className={`break-words text-lg font-semibold tracking-tight tabular-nums ${color}`}>{value}</p>
         {hint && <p className="mt-1 text-xs leading-relaxed text-slate-500">{hint}</p>}
@@ -58,7 +58,7 @@ function ResumoValor({ label, value, hint, tone = 'neutral' }: {
 
 function Atalho({ children, onClick }: { children: React.ReactNode; onClick: () => void }) {
   return (
-    <button type="button" onClick={onClick} className="inline-flex min-h-10 items-center gap-2 rounded-xl px-2 text-xs font-semibold text-indigo-600 hover:bg-indigo-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+    <button type="button" onClick={onClick} className="dc-button inline-flex min-h-10 items-center gap-2 rounded-xl px-2 text-xs font-semibold text-indigo-600 hover:bg-indigo-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
       {children}<ArrowRight size={14} aria-hidden="true" />
     </button>
   );
@@ -86,6 +86,17 @@ export default function LoteResumo({ detalhes, stats, onEncerrar, canClose, onNa
         <LoteMetric label="Lucro líquido do lote" value={money(lucros.liquido)} tone={lucros.liquido < 0 ? 'rose' : 'emerald'} hint="Resultado gerencial: bruto − todas as despesas do lote" />
         <LoteMetric label="Total vendido" value={money(stats.vendido)} hint={`${stats.vendidas} unidades vendidas · ${emEstoque} em estoque`} />
       </section>
+      {/* Médias visíveis: apresentação dos indicadores existentes, sem novo rateio. */}
+      <section aria-label="Médias do lote por unidade" className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <LoteMetric label="Venda média" value={mediaLabel(medias.venda)} tone="emerald" hint={medias.unidadesVendidas > 0 ? `Vendas confirmadas ÷ ${medias.unidadesVendidas} unidades vendidas` : 'Sem vendas confirmadas para calcular a média'} />
+        <LoteMetric label="Despesa média" value={mediaLabel(medias.despesa)} hint={medias.unidades > 0 ? `Todas as despesas ÷ ${medias.unidades} unidades do lote` : 'Sem unidades no lote para calcular a média'} />
+        <LoteMetric label="Compra média incluindo despesas" value={mediaLabel(medias.custo)} tone="indigo" hint={medias.unidades > 0 ? `(Compra + despesas) ÷ ${medias.unidades} unidades do lote; despesa média já incluída` : 'Sem unidades no lote para calcular a média'} />
+      </section>
+      <div className="dc-panel space-y-2 text-sm text-slate-600">
+        <h2 className="dc-section-title">Como interpretar as médias e o lucro</h2>
+        <p>Para a despesa média e a compra média incluindo despesas, o total de despesas é dividido por todas as unidades do lote, vendidas ou em estoque. A compra média incluindo despesas já contém a despesa média: não some novamente. Despesas específicas podem alterar o custo de cada unidade.</p>
+        <p>O resultado gerencial deduz todas as despesas lançadas do lote. O lucro médio divide esse resultado apenas pelas unidades vendidas. Por isso, com poucas vendas, o lucro médio pode ficar menor; isso não significa que as despesas foram rateadas somente nas unidades vendidas.</p>
+      </div>
       <div className="flex flex-wrap items-center gap-x-5 gap-y-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-500">
         <span><strong className="font-semibold text-slate-900">{emEstoque}</strong> unidades em estoque</span>
         <span><strong className="font-semibold text-emerald-700">{stats.disponiveis}</strong> disponíveis</span>
@@ -93,8 +104,8 @@ export default function LoteResumo({ detalhes, stats, onEncerrar, canClose, onNa
         <span className="sm:ml-auto">{stats.vendidas} de {stats.compradas} vendidas</span>
       </div>
       <section aria-label="Movimentação do lote" className="grid gap-3 lg:grid-cols-3">
-        {movimentos.map(item => <button key={item.tab} type="button" onClick={() => onNavigate(item.tab)} className="group min-w-0 rounded-xl border border-slate-200 bg-white p-4 text-left shadow-sm transition-colors hover:border-indigo-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-600">
-          <span className="flex items-center justify-between gap-2 text-sm font-semibold text-slate-800"><span className="flex items-center gap-2"><item.icon size={16} className="text-slate-400" aria-hidden="true" />{item.title}</span><ArrowRight size={15} className="text-slate-400 group-hover:text-indigo-600" aria-hidden="true" /></span>
+        {movimentos.map(item => <button key={item.tab} type="button" onClick={() => onNavigate(item.tab)} className="dc-button group min-w-0 rounded-xl border border-slate-200 bg-white p-4 text-left shadow-sm transition-colors hover:border-indigo-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-600">
+          <span className="flex items-center justify-between gap-2 text-sm font-semibold text-slate-800"><span className="flex items-center gap-2"><item.icon size={16} className="text-slate-600" aria-hidden="true" />{item.title}</span><ArrowRight size={15} className="text-slate-600 group-hover:text-indigo-600" aria-hidden="true" /></span>
           <span className="mt-2 block break-words text-xl font-semibold tabular-nums text-slate-900">{money(item.value)}</span>
           <span className="mt-0.5 block text-xs text-slate-500">{item.hint}</span>
           <span className="mt-3 grid grid-cols-2 gap-3 border-t border-slate-100 pt-3">{item.rows.map(([label, value]) => <span key={label} className="min-w-0"><span className="block text-xs text-slate-500">{label}</span><span className="mt-1 block break-words text-sm font-medium tabular-nums text-slate-700">{money(value)}</span></span>)}</span>
@@ -168,12 +179,12 @@ export default function LoteResumo({ detalhes, stats, onEncerrar, canClose, onNa
 
       <section aria-label="Encerramento do lote" className="flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
-          <h2 className="text-sm font-semibold normal-case tracking-tight text-slate-900">{detalhes.lote.encerrado ? 'Lote encerrado' : 'Encerramento do lote'}</h2>
+          <h2 className="dc-section-title text-sm font-semibold normal-case tracking-tight text-slate-900">{detalhes.lote.encerrado ? 'Lote encerrado' : 'Encerramento do lote'}</h2>
           <p className="mt-1 max-w-3xl text-xs leading-relaxed text-slate-500">
             {detalhes.lote.encerrado ? 'O histórico de unidades, custos e movimentações permanece disponível nas abas.' : canClose ? 'Todas as unidades foram vendidas e as contas estão quitadas. O lote pode ser encerrado.' : 'Disponível após a venda de todas as unidades e a quitação das contas do lote.'}
           </p>
         </div>
-        {!detalhes.lote.encerrado && <button type="button" disabled={!canClose} onClick={() => { if (canClose) onEncerrar(); }} className={`${secondaryClass} shrink-0 disabled:cursor-not-allowed`}>Encerrar lote</button>}
+        {!detalhes.lote.encerrado && <button type="button" disabled={!canClose} onClick={() => { if (canClose) onEncerrar(); }} className={`dc-button ${secondaryClass} shrink-0 disabled:cursor-not-allowed`}>Encerrar lote</button>}
       </section>
     </div>
   );

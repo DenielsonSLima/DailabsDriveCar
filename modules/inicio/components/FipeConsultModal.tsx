@@ -168,23 +168,23 @@ const FipeConsultModal: React.FC<FipeConsultModalProps> = ({ isOpen, onClose }) 
             toastData.type === 'warning' ? 'bg-amber-400' :
             'bg-white'
           }`} />
-          <span className="font-bold text-sm tracking-tight">{toastData.message}</span>
+          <span className="font-semibold text-sm tracking-tight">{toastData.message}</span>
         </div>
       )}
       
-      <div className="relative w-full max-w-4xl bg-white rounded-2xl shadow-lg border border-white overflow-hidden animate-in zoom-in-95 duration-500 flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-4xl bg-white rounded-2xl shadow-lg border border-white overflow-hidden animate-in zoom-in-95 duration-500 flex flex-col max-h-[90vh] dc-modal">
         
         {/* Header Orquestrador */}
-        <div className="px-6 py-4 bg-slate-50 text-slate-900 border-b border-slate-200 relative flex items-center justify-between shrink-0">
+        <div className="dc-modal-header bg-slate-50 text-slate-900 border-b border-slate-200 relative flex flex-wrap gap-3 items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center border border-slate-200">
               <Search className="w-5 h-5 text-slate-600" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-lg font-semibold normal-case tracking-tight">Valuation Express</h3>
+                <h3 className="dc-modal-title">Valuation Express</h3>
               </div>
-              <p className="text-xs font-bold text-slate-500 normal-case tracking-normal leading-none">Inteligência de Mercado</p>
+              <p className="text-xs font-semibold text-slate-500 normal-case tracking-normal leading-none">Inteligência de Mercado</p>
             </div>
           </div>
 
@@ -207,7 +207,7 @@ const FipeConsultModal: React.FC<FipeConsultModalProps> = ({ isOpen, onClose }) 
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6 pt-4">
+        <div className="flex-1 overflow-y-auto p-4 pt-4">
           {!result ? (
             loading ? (
               <FipeAnalysisLoading 
@@ -281,7 +281,7 @@ const FipeConsultModal: React.FC<FipeConsultModalProps> = ({ isOpen, onClose }) 
                     } 
                    });
                   }}
-                  className="bg-slate-900 hover:bg-black text-white px-10 py-4 rounded-xl font-semibold normal-case text-xs tracking-normal transition-all shadow-sm flex items-center gap-3 "
+                  className="bg-slate-900 hover:bg-black text-white px-10 py-4 rounded-xl font-semibold normal-case text-xs tracking-normal transition-all shadow-sm flex items-center gap-3"
                 >
                   Iniciar Pedido de Compra <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                 </button>

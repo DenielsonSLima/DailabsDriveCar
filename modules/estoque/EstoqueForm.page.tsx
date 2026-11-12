@@ -72,7 +72,7 @@ const ModalConfirmMontadora: React.FC<ModalConfirmMontadoraProps> = ({ nome, mon
           <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 normal-case tracking-normal bg-emerald-50 px-2 py-0.5 rounded-lg mb-1">
             ⚡ Consulta de Placa
           </span>
-          <h2 className="text-xl font-semibold text-slate-900 normal-case tracking-normal">Montadora</h2>
+          <h2 className="dc-section-title text-xl font-semibold text-slate-900 normal-case tracking-normal">Montadora</h2>
           <p className="text-xs text-slate-500 mt-1">Esta marca não foi identificada. Confirme para criar ou selecione uma existente.</p>
         </div>
         <div className="p-6 space-y-4">
@@ -85,7 +85,7 @@ const ModalConfirmMontadora: React.FC<ModalConfirmMontadoraProps> = ({ nome, mon
                 if (e.target.value) setNomeFinal('');
                 else setNomeFinal(nome);
               }}
-              className="w-full border border-slate-200 rounded-xl px-5 py-3 text-sm font-medium text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500"
+              className="dc-input w-full border border-slate-200 rounded-xl px-5 py-3 text-sm font-medium text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500"
             >
               <option value="">-- Nova Montadora --</option>
               {montadoras.map(m => (
@@ -101,16 +101,16 @@ const ModalConfirmMontadora: React.FC<ModalConfirmMontadoraProps> = ({ nome, mon
                 type="text"
                 value={nomeFinal}
                 onChange={e => setNomeFinal(e.target.value.toUpperCase())}
-                className="w-full border border-slate-200 rounded-xl px-5 py-3 text-sm font-medium text-slate-900 uppercase outline-none focus:ring-2 focus:ring-indigo-500"
+                className="dc-input w-full border border-slate-200 rounded-xl px-5 py-3 text-sm font-medium text-slate-900 normal-case outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
           )}
 
           <div className="flex gap-3 justify-end pt-2 mt-4">
-            <button onClick={onClose} disabled={saving} className="px-6 py-3 text-slate-500 text-xs font-semibold normal-case tracking-normal hover:bg-slate-50 rounded-xl">
+            <button onClick={onClose} disabled={saving} className="dc-button px-6 py-3 text-slate-500 text-xs font-semibold normal-case tracking-normal hover:bg-slate-50 rounded-xl">
               Cancelar
             </button>
-            <button onClick={handleSave} disabled={saving || (!selectedMontadoraId && !nomeFinal.trim())} className="px-8 py-3 bg-indigo-600 text-white text-xs font-semibold normal-case tracking-normal rounded-xl shadow-sm shadow-indigo-200 hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-2">
+            <button onClick={handleSave} disabled={saving || (!selectedMontadoraId && !nomeFinal.trim())} className="dc-button px-8 py-3 bg-indigo-600 text-white text-xs font-semibold normal-case tracking-normal rounded-xl shadow-sm shadow-indigo-200 hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-2">
               {saving ? <><div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" /> Salvando...</> : (selectedMontadoraId ? 'Confirmar' : 'Cadastrar Montadora')}
             </button>
           </div>
@@ -135,7 +135,7 @@ const ModalConfirmTipo: React.FC<ModalConfirmTipoProps> = ({ tipos, onConfirm, o
           <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 normal-case tracking-normal bg-emerald-50 px-2 py-0.5 rounded-lg mb-1">
             ⚡ Consulta de Placa
           </span>
-          <h2 className="text-xl font-semibold text-slate-900 normal-case tracking-normal">Tipo do Veículo</h2>
+          <h2 className="dc-section-title text-xl font-semibold text-slate-900 normal-case tracking-normal">Tipo do Veículo</h2>
           <p className="text-xs text-slate-500 mt-1">Selecione o tipo de carroceria deste veículo.</p>
         </div>
         <div className="p-6">
@@ -144,14 +144,14 @@ const ModalConfirmTipo: React.FC<ModalConfirmTipoProps> = ({ tipos, onConfirm, o
               <button
                 key={tipo.id}
                 onClick={() => onConfirm(tipo)}
-                className="px-4 py-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-semibold text-slate-700 normal-case tracking-wide hover:border-indigo-500 hover:bg-indigo-50 hover:text-indigo-600 transition-all active:scale-95"
+                className="dc-button px-4 py-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-semibold text-slate-700 normal-case tracking-normal hover:border-indigo-500 hover:bg-indigo-50 hover:text-indigo-600 transition-all active:scale-95"
               >
                 {tipo.nome}
               </button>
             ))}
           </div>
           <div className="flex justify-end pt-4 mt-4 border-t border-slate-100">
-            <button onClick={onClose} className="px-6 py-3 text-slate-500 text-xs font-semibold normal-case tracking-normal hover:bg-slate-50 rounded-xl">
+            <button onClick={onClose} className="dc-button px-6 py-3 text-slate-500 text-xs font-semibold normal-case tracking-normal hover:bg-slate-50 rounded-xl">
               Cancelar
             </button>
           </div>
@@ -433,17 +433,17 @@ const EstoqueFormPage: React.FC = () => {
       )}
 
       {/* Toolbar Superior */}
-      <div className="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200 px-6 py-4 shadow-sm">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+      <div className="sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-slate-200 px-4 py-4 shadow-sm">
+        <div className="dc-page-header max-w-7xl mx-auto">
           <div className="flex items-center space-x-4">
-            <button onClick={handleBack} className="p-2.5 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all text-slate-500">
+            <button onClick={handleBack} className="dc-button p-2.5 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all text-slate-500">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
             </button>
             <div>
-              <h1 className="text-2xl font-semibold text-slate-900 normal-case tracking-normal leading-none">
+              <h1 className="dc-page-title text-2xl font-semibold text-slate-900 normal-case tracking-normal leading-none">
                 {id ? 'Editar Veículo' : 'Adicionar Veículo'}
               </h1>
-              <p className="text-xs font-bold text-slate-400 normal-case tracking-normal mt-1">
+              <p className="dc-page-subtitle">
                 {pedidoId ? 'Contexto: Pedido de Compra' : 'Gestão de Estoque'}
               </p>
             </div>
@@ -451,14 +451,14 @@ const EstoqueFormPage: React.FC = () => {
           <button
             onClick={handleSubmit}
             disabled={isSaving}
-            className="px-8 py-3 bg-indigo-600 text-white font-semibold text-xs normal-case tracking-normal rounded-xl hover:bg-indigo-700 shadow-sm transition-all active:scale-95 disabled:opacity-50"
+            className="dc-button px-8 py-3 bg-indigo-600 text-white font-semibold text-xs normal-case tracking-normal rounded-xl hover:bg-indigo-700 shadow-sm transition-all active:scale-95 disabled:opacity-50"
           >
             {isSaving ? 'Salvando...' : 'Salvar Ficha'}
           </button>
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-6 mt-8 space-y-8">
+      <div className="min-w-0 max-w-7xl mx-auto mt-6 space-y-4">
         <FormCardIdentification formData={formData} onChange={handleUpdateField} onConsultaPlaca={handleConsultaPlaca} onNotification={showToast} />
         <FormCardGallery formData={formData} onChange={handleUpdateField} onNotification={showToast} />
         <FormCardFinance formData={formData} onChange={handleUpdateField} onNotification={showToast} isConsignacao={isConsignacao} />

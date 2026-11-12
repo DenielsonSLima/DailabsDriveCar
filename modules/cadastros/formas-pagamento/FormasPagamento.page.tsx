@@ -93,7 +93,7 @@ const FormasPagamentoPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200 relative">
+    <div className="dc-page animate-in fade-in duration-200 relative">
       {toast && (
         <div data-drivecar-ui className={`fixed top-6 right-6 z-[200] px-6 py-4 rounded-2xl shadow-sm flex items-center space-x-3 animate-in slide-in-from-right duration-200 border backdrop-blur-md ${
           toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' : 'bg-rose-600 text-white border-rose-400/50'
@@ -109,8 +109,8 @@ const FormasPagamentoPage: React.FC = () => {
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-semibold text-slate-900 tracking-tight">Formas de Pagamento</h1>
-          <p className="text-slate-500 mt-1">Configure PIX, Cartões, Boletos e lógicas financeiras.</p>
+          <h1 className="dc-page-title">Formas de Pagamento</h1>
+          <p className="dc-page-subtitle">Configure PIX, Cartões, Boletos e lógicas financeiras.</p>
         </div>
         <button onClick={handleOpenAdd} className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-sm font-semibold normal-case tracking-normal hover:bg-indigo-700 transition-all shadow-sm active:scale-100 flex items-center">
           <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -120,7 +120,7 @@ const FormasPagamentoPage: React.FC = () => {
         </button>
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 min-h-[500px]">
+      <div className="dc-panel min-h-[500px]">
         <div className="mb-8 relative max-w-md">
            <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-500">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>

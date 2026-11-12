@@ -22,7 +22,7 @@ const FipeSearchForm: React.FC<FipeSearchFormProps> = ({
   return (
     <div className="max-w-md mx-auto py-10 space-y-6 animate-in fade-in duration-500">
       <div className="text-center space-y-1">
-        <h2 className="text-2xl font-semibold text-slate-900 tracking-tight normal-case">QUAL A PLACA?</h2>
+        <h2 className="dc-section-title">QUAL A PLACA?</h2>
         <p className="text-xs text-slate-500 font-medium">Consulte Fipe, Chassi e Histórico.</p>
       </div>
 
@@ -44,7 +44,7 @@ const FipeSearchForm: React.FC<FipeSearchFormProps> = ({
           <button 
             disabled={loading || !placa || stats?.remaining === 0}
             onClick={onConsult}
-            className="bg-slate-900 hover:bg-black disabled:opacity-50 text-white px-6 rounded-xl font-semibold normal-case text-xs tracking-normal transition-all flex items-center gap-2 "
+            className="bg-slate-900 hover:bg-black disabled:opacity-50 text-white px-6 rounded-xl font-semibold normal-case text-xs tracking-normal transition-all flex items-center gap-2"
           >
             Analisar <ArrowRight className="w-4 h-4" />
           </button>
@@ -56,7 +56,7 @@ const FipeSearchForm: React.FC<FipeSearchFormProps> = ({
           <div className="w-1.5 h-1.5 bg-rose-500 rounded-full animate-pulse shrink-0" />
           <div>
             <p className="text-xs font-semibold text-rose-700 normal-case tracking-tight">Erro na Consulta</p>
-            <p className="text-[11px] font-medium text-rose-600/80 leading-tight">
+            <p className="text-xs font-medium text-rose-600/80 leading-tight">
               {errorStatus}
             </p>
           </div>
@@ -66,7 +66,7 @@ const FipeSearchForm: React.FC<FipeSearchFormProps> = ({
       <div className="flex items-center gap-3 p-4 bg-indigo-50/50 rounded-xl border border-indigo-100/30">
         <ShieldCheck className="w-5 h-5 text-indigo-600 shrink-0" />
         <p className="text-xs font-medium text-indigo-700/80 leading-tight normal-case tracking-tight">
-          Smart Cache Ativado: Consultas repetidas <span className="text-indigo-900 font-bold">não descontam do seu limite.</span>
+          Smart Cache Ativado: Consultas repetidas <span className="text-indigo-900 font-semibold">não descontam do seu limite.</span>
         </p>
       </div>
     </div>

@@ -89,7 +89,7 @@ const ContasBancariasPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200 relative">
+    <div className="dc-page animate-in fade-in duration-200 relative">
       {/* Toast Notification */}
       {toast && (
         <div data-drivecar-ui className={`fixed top-6 right-6 z-[250] px-6 py-4 rounded-2xl shadow-sm flex items-center space-x-3 animate-in slide-in-from-right duration-200 border backdrop-blur-md ${toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' :
@@ -115,7 +115,7 @@ const ContasBancariasPage: React.FC = () => {
           </button>
           <div>
             <div className="flex items-center space-x-2">
-              <h1 className="text-3xl font-semibold text-slate-900 tracking-tight">Contas Bancárias</h1>
+              <h1 className="dc-page-title">Contas Bancárias</h1>
               <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 text-xs font-medium normal-case tracking-normal rounded-md animate-pulse">Realtime</span>
             </div>
             <p className="text-slate-500 mt-1">Gerencie suas contas correntes e caixas.</p>
@@ -146,7 +146,7 @@ const ContasBancariasPage: React.FC = () => {
 
               {/* Card Face */}
               <div
-                className="p-6 h-full flex flex-col justify-between text-white min-h-[200px]"
+                className="p-4 h-full flex flex-col justify-between text-white min-h-[200px]"
                 style={{ background: `linear-gradient(135deg, ${conta.cor_cartao} 0%, ${conta.cor_cartao}dd 100%)` }}
               >
                 <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] pointer-events-none"></div>

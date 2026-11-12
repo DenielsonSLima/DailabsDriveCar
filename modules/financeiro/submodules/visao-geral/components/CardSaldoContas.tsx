@@ -8,17 +8,17 @@ interface Props {
 
 const CardSaldoContas: React.FC<Props> = ({ contas, isLoading = false }) => {
   return (
-    <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm h-full">
+    <div className="dc-panel bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
       <div className="flex flex-wrap justify-between items-center gap-3 mb-6">
-        <h3 className="text-sm font-semibold text-slate-600 normal-case tracking-normal">Disponibilidade por Carteira</h3>
-        <button className="text-xs font-semibold text-indigo-600 normal-case hover:underline">Gerenciar Contas</button>
+        <h3 className="dc-section-title text-sm font-semibold text-slate-600 normal-case tracking-normal">Disponibilidade por Carteira</h3>
+        <button className="dc-button text-xs font-semibold text-indigo-600 normal-case hover:underline">Gerenciar Contas</button>
       </div>
 
       <div className="space-y-4">
         {isLoading ? (
           // Skeletons de Loading
           Array.from({ length: 3 }).map((_, idx) => (
-            <div key={idx} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 animate-pulse">
+            <div key={idx} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 bg-slate-50 rounded-xl border border-slate-100 animate-pulse">
               <div className="flex min-w-0 items-center gap-3">
                 <div className="w-2 h-10 shrink-0 rounded-full bg-slate-200"></div>
                 <div className="space-y-2">
@@ -35,7 +35,7 @@ const CardSaldoContas: React.FC<Props> = ({ contas, isLoading = false }) => {
           </div>
         ) : (
           contas.map((item) => (
-            <div key={item.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-white hover:border-indigo-100 transition-all group">
+            <div key={item.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 bg-slate-50 rounded-xl border border-slate-100 hover:bg-white hover:border-indigo-100 transition-all group">
               <div className="flex min-w-0 items-center gap-3">
                 <div
                   className="w-2 h-10 shrink-0 rounded-full shadow-sm"

@@ -25,7 +25,7 @@ const PlusButton: React.FC<{ onClick: () => void; disabled?: boolean }> = ({ onC
     onClick={onClick}
     disabled={disabled}
     title="Cadastrar novo"
-    className="absolute right-3 top-[2.6rem] z-10 w-8 h-8 flex items-center justify-center rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 transition-all shadow-md shadow-indigo-200 disabled:opacity-30 disabled:cursor-not-allowed"
+    className="dc-button absolute right-3 top-[2.6rem] z-10 w-8 h-8 flex items-center justify-center rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 transition-all shadow-md shadow-indigo-200 disabled:opacity-30 disabled:cursor-not-allowed"
   >
     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
@@ -163,22 +163,22 @@ const FormCardIdentification: React.FC<Props> = ({ formData, onChange, onConsult
   const placaValida = placaLength >= 6 && placaLength <= 7;
 
   // Selects precisam de padding-right extra para não sobrepor o botão "+"
-  const selectCls = "w-full bg-white border border-slate-200 rounded-xl px-5 py-3 pr-14 text-sm font-bold text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 appearance-none transition-all disabled:bg-slate-50 disabled:opacity-50";
+  const selectCls = "dc-input w-full bg-white border border-slate-200 rounded-xl px-5 py-3 pr-14 text-sm font-bold text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 appearance-none transition-all disabled:bg-slate-50 disabled:opacity-50";
 
   return (
     <>
-      <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm animate-in slide-in-from-bottom-2">
-        <h3 className="text-lg font-semibold text-slate-900 normal-case tracking-normal mb-8 flex items-center">
+      <div className="dc-panel bg-white rounded-2xl p-6 border border-slate-200 shadow-sm animate-in slide-in-from-bottom-2">
+        <h3 className="dc-section-title text-lg font-semibold text-slate-900 normal-case tracking-normal mb-4 flex items-center">
           <span className="w-8 h-8 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center mr-3 text-sm">01</span>
           Identificação do Veículo
         </h3>
 
-        <div className="mb-8 grid grid-cols-1 lg:grid-cols-[minmax(240px,320px)_1fr] gap-6 items-stretch">
+        <div className="mb-4 grid grid-cols-1 lg:grid-cols-[minmax(240px,320px)_1fr] gap-4 items-stretch">
           <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
             <label className="block text-xs font-semibold text-slate-500 normal-case mb-4 ml-1 tracking-normal">Placa do Veículo</label>
             <div className="relative max-w-[280px] mx-auto">
               <div className="absolute top-0 left-0 w-full h-4 bg-blue-700 rounded-t-lg flex items-center justify-between px-2">
-                <span className="text-[6px] font-bold text-white">BRASIL</span>
+                <span className="text-xs font-bold text-white">BRASIL</span>
                 <div className="w-4 h-2.5 bg-green-500 opacity-20"></div>
               </div>
               <input
@@ -186,10 +186,10 @@ const FormCardIdentification: React.FC<Props> = ({ formData, onChange, onConsult
                 value={formData.placa || ''}
                 onChange={handlePlacaChange}
                 maxLength={7}
-                className="w-full bg-white border-2 border-slate-800 rounded-lg pt-6 pb-2 text-center text-4xl font-semibold uppercase tracking-normal text-slate-800 outline-none font-mono"
+                className="dc-input !h-16 !pt-6 !text-2xl w-full bg-white border-2 border-slate-800 rounded-lg pb-2 text-center font-semibold normal-case tracking-normal text-slate-800 outline-none font-mono"
                 placeholder="ABC1D23"
               />
-              <p className="text-xs text-center mt-2 text-slate-400 font-bold normal-case tracking-normal">
+              <p className="text-xs text-center mt-2 text-slate-600 font-bold normal-case tracking-normal">
                 Consulta por placa antiga ou Mercosul
               </p>
             </div>
@@ -199,7 +199,7 @@ const FormCardIdentification: React.FC<Props> = ({ formData, onChange, onConsult
                 type="button"
                 onClick={handleConsultarPlaca}
                 disabled={!placaValida || isConsultando}
-                className="px-6 py-3 bg-emerald-600 text-white text-xs font-semibold normal-case tracking-normal rounded-xl hover:bg-emerald-700 shadow-sm shadow-emerald-200 transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 flex items-center gap-2"
+                className="dc-button px-6 py-3 bg-emerald-600 text-white text-xs font-semibold normal-case tracking-normal rounded-xl hover:bg-emerald-700 shadow-sm shadow-emerald-200 transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 flex items-center gap-2"
               >
                 {isConsultando ? (
                   <>
@@ -232,14 +232,14 @@ const FormCardIdentification: React.FC<Props> = ({ formData, onChange, onConsult
               Ao consultar, o sistema já preenche chassi, cor e anos quando a API retornar esses dados, além de conduzir o cadastro de montadora, tipo, modelo e versão.
             </p>
             {formData.chassi && (
-              <p className="mt-4 text-xs font-semibold text-slate-400 normal-case tracking-normal">
+              <p className="mt-4 text-xs font-semibold text-slate-600 normal-case tracking-normal">
                 Chassi identificado: <span className="text-slate-700 font-mono">{formData.chassi}</span>
               </p>
             )}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           {/* Montadora */}
           <div className="relative">
             <label className="block text-xs font-semibold text-slate-500 normal-case mb-2 tracking-normal ml-1">Montadora</label>
@@ -349,20 +349,20 @@ const FormCardIdentification: React.FC<Props> = ({ formData, onChange, onConsult
               <span className="text-xs font-semibold bg-indigo-600 text-white px-2 py-0.5 rounded-lg normal-case">Vinculado</span>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-white p-3 rounded-xl shadow-sm border border-indigo-100/50">
-                <p className="text-xs font-bold text-slate-400 normal-case mb-0.5">Motorização</p>
+              <div className="dc-panel bg-white p-3 rounded-xl shadow-sm border border-indigo-100/50">
+                <p className="text-xs font-bold text-slate-600 normal-case mb-0.5">Motorização</p>
                 <p className="text-xs font-semibold text-indigo-600">{selectedVersao.motorizacao}</p>
               </div>
-              <div className="bg-white p-3 rounded-xl shadow-sm border border-indigo-100/50">
-                <p className="text-xs font-bold text-slate-400 normal-case mb-0.5">Combustível</p>
+              <div className="dc-panel bg-white p-3 rounded-xl shadow-sm border border-indigo-100/50">
+                <p className="text-xs font-bold text-slate-600 normal-case mb-0.5">Combustível</p>
                 <p className="text-xs font-semibold text-indigo-600">{selectedVersao.combustivel}</p>
               </div>
-              <div className="bg-white p-3 rounded-xl shadow-sm border border-indigo-100/50">
-                <p className="text-xs font-bold text-slate-400 normal-case mb-0.5">Transmissão</p>
+              <div className="dc-panel bg-white p-3 rounded-xl shadow-sm border border-indigo-100/50">
+                <p className="text-xs font-bold text-slate-600 normal-case mb-0.5">Transmissão</p>
                 <p className="text-xs font-semibold text-indigo-600">{selectedVersao.transmissao}</p>
               </div>
-              <div className="bg-white p-3 rounded-xl shadow-sm border border-indigo-100/50">
-                <p className="text-xs font-bold text-slate-400 normal-case mb-0.5">Anos Oficiais</p>
+              <div className="dc-panel bg-white p-3 rounded-xl shadow-sm border border-indigo-100/50">
+                <p className="text-xs font-bold text-slate-600 normal-case mb-0.5">Anos Oficiais</p>
                 <p className="text-xs font-semibold text-indigo-600">{selectedVersao.ano_fabricacao}/{selectedVersao.ano_modelo}</p>
               </div>
             </div>
