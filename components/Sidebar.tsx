@@ -136,7 +136,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
         </button>
       </div>
 
-      <nav className="flex-1 min-h-0 overflow-y-auto py-4 px-3 space-y-1 custom-scrollbar">
+      <nav className="flex-1 min-h-0 overflow-y-auto py-2 px-3 space-y-0.5 custom-scrollbar">
         {menuItems.map((item) => {
           const hasChildren = item.children && item.children.length > 0;
           const isExpanded = expanded === item.label;
@@ -145,7 +145,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
           return (
             <div key={item.path} className="flex flex-col">
               {sidebarExpanded && ['/inicio', '/estoque', '/caixa', '/ajustes'].includes(item.path) && (
-                <p className={`px-3 pb-2 text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 ${item.path === '/inicio' ? 'pt-0' : 'pt-5'}`}>
+                <p className={`px-3 pb-1 text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 ${item.path === '/inicio' ? 'pt-0' : 'pt-2'}`}>
                   {item.path === '/inicio' ? 'Principal' : item.path === '/estoque' ? 'Operação' : item.path === '/caixa' ? 'Gestão' : 'Sistema'}
                 </p>
               )}
@@ -154,7 +154,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
                   onClick={() => toggleExpand(item.label)}
                   aria-expanded={isExpanded && sidebarExpanded}
                   title={!sidebarExpanded ? item.label : undefined}
-                  className={`flex items-center min-h-11 md:min-h-10 px-3 py-2 rounded-lg text-[15px] leading-5 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 group w-full text-left ${isActive ? 'bg-white/[0.09] text-white font-medium ring-1 ring-inset ring-white/[0.08] shadow-sm' : 'text-slate-400 font-normal hover:bg-white/[0.045] hover:text-slate-100'
+                  className={`flex items-center min-h-11 md:min-h-9 px-3 py-1.5 rounded-lg text-[15px] leading-5 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 group w-full text-left ${isActive ? 'bg-white/[0.09] text-white font-medium ring-1 ring-inset ring-white/[0.08] shadow-sm' : 'text-slate-400 font-normal hover:bg-white/[0.045] hover:text-slate-100'
                     }`}
                 >
                   <svg className={`w-[18px] h-[18px] shrink-0 ${sidebarExpanded ? 'mr-3' : 'mx-auto'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -181,7 +181,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
                   title={!sidebarExpanded ? item.label : undefined}
                   onClick={() => setIsMobileOpen?.(false)}
                   className={({ isActive }) =>
-                    `flex items-center min-h-11 md:min-h-10 px-3 py-2 rounded-lg text-[15px] leading-5 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 group ${isActive ? 'bg-white/[0.09] text-white font-medium ring-1 ring-inset ring-white/[0.08] shadow-sm' : 'text-slate-400 font-normal hover:bg-white/[0.045] hover:text-slate-100'
+                    `flex items-center min-h-11 md:min-h-9 px-3 py-1.5 rounded-lg text-[15px] leading-5 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 group ${isActive ? 'bg-white/[0.09] text-white font-medium ring-1 ring-inset ring-white/[0.08] shadow-sm' : 'text-slate-400 font-normal hover:bg-white/[0.045] hover:text-slate-100'
                     }`
                   }
                 >
@@ -201,14 +201,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
               )}
 
               {hasChildren && isExpanded && sidebarExpanded && (
-                <div className="ml-5 pl-4 mt-2 space-y-0.5 border-l border-white/10">
+                <div className="ml-5 pl-4 mt-1 space-y-0.5 border-l border-white/10">
                   {item.children?.map((child) => (
                     <NavLink
                       key={child.path}
                       to={child.path}
                       onClick={() => setIsMobileOpen?.(false)}
                       className={({ isActive }) =>
-                        `block px-2 py-2 text-[13px] leading-5 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 ${isActive ? 'text-white font-medium bg-white/[0.07]' : 'text-slate-400 font-normal hover:text-white hover:bg-white/[0.045]'
+                        `block px-2 py-1.5 text-[13px] leading-5 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 ${isActive ? 'text-white font-medium bg-white/[0.07]' : 'text-slate-400 font-normal hover:text-white hover:bg-white/[0.045]'
                         }`
                       }
                     >
