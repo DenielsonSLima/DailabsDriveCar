@@ -1,0 +1,26 @@
+{
+  "id": "/",
+  "name": "Arkhen Drive Car",
+  "short_name": "Arkhen Drive Car",
+  "description": "Gestão de estoque, financeiro e vendas de veículos.",
+  "lang": "pt-BR",
+  "start_url": "/login",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/brand/arkhen-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/brand/arkhen-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

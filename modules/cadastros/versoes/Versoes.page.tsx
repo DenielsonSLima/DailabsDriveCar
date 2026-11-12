@@ -84,16 +84,16 @@ const VersoesPage: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200">
+    <div className="dc-page animate-in fade-in duration-200">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-semibold text-slate-900 tracking-tight">Versões Comerciais</h1>
-          <p className="text-slate-500 mt-1">Gerencie os pacotes e acabamentos vinculados a cada modelo.</p>
+          <h1 className="dc-page-title">Versões Comerciais</h1>
+          <p className="dc-page-subtitle">Gerencie os pacotes e acabamentos vinculados a cada modelo.</p>
         </div>
       </div>
 
       {/* Toolbar de Filtros e Agrupamento */}
-      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col lg:flex-row gap-6">
+      <div className="dc-panel flex flex-col lg:flex-row gap-6">
         <div className="flex-1 relative">
            <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-500">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -196,7 +196,7 @@ const VersoesPage: React.FC = () => {
                     <div 
                       key={m.id}
                       onClick={() => setSelectedModelo(m)}
-                      className="group bg-white border border-slate-200 rounded-2xl p-4 cursor-pointer hover:shadow-sm hover:border-indigo-400 transition-all duration-200 transform hover:translate-y-0"
+                      className="dc-panel group cursor-pointer hover:shadow-sm hover:border-indigo-400 transition-all duration-200 transform hover:translate-y-0"
                     >
                       <div className="aspect-video bg-slate-50 rounded-2xl mb-4 overflow-hidden relative">
                         {m.foto_url ? (

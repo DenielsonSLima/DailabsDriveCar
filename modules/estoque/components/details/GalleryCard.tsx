@@ -12,10 +12,10 @@ const GalleryCard: React.FC<GalleryCardProps> = ({ fotos }) => {
   const [activePhoto, setActivePhoto] = useState<string | null>(sortedPhotos.length > 0 ? sortedPhotos[0].url : null);
 
   return (
-    <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm mb-6">
+    <div className="dc-panel bg-white p-4 rounded-2xl border border-slate-200 shadow-sm mb-4">
       {/* Foto Principal - Altura 350px e Largura Limitada a 440px no container */}
       <div className="flex justify-center mb-4 bg-slate-50 rounded-2xl p-2">
-        <div className="w-full max-w-[440px] h-[350px] bg-slate-900 rounded-2xl overflow-hidden relative group shadow-sm">
+        <div className="w-full max-w-[440px] h-[220px] sm:h-[260px] bg-slate-900 rounded-2xl overflow-hidden relative group shadow-sm">
           {activePhoto ? (
             <img src={activePhoto} className="w-full h-full object-cover" alt="Veículo Destaque" />
           ) : (

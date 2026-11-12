@@ -6,7 +6,7 @@ import type { ILoteResumo } from './lotes.types';
 export default function EstoqueLotes({ lots }: { lots: ILoteResumo[] }) {
   if (!lots?.length) return (
     <div className="text-center py-20 px-6 bg-white rounded-2xl border border-slate-200 border-dashed">
-      <p className="text-slate-400 font-bold normal-case text-xs tracking-normal">Nenhum lote encontrado para os filtros atuais.</p>
+      <p className="text-slate-600 font-bold normal-case text-xs tracking-normal">Nenhum lote encontrado para os filtros atuais.</p>
     </div>
   );
 
@@ -31,16 +31,16 @@ export default function EstoqueLotes({ lots }: { lots: ILoteResumo[] }) {
           <div className="p-4 flex flex-col flex-1">
             <div className="mb-4">
               <p className="text-xs font-semibold text-indigo-500 normal-case tracking-normal mb-1">{lot.quantidade_inicial} unidades adquiridas</p>
-              <h3 className="font-semibold text-slate-900 text-base leading-tight line-clamp-2 normal-case tracking-normal" title={lot.descricao}>{lot.descricao}</h3>
+              <h3 className="dc-section-title font-semibold text-slate-900 text-base leading-tight line-clamp-2 normal-case tracking-normal" title={lot.descricao}>{lot.descricao}</h3>
             </div>
 
             <div className="mt-auto pt-4 border-t border-slate-50 grid grid-cols-2 gap-4">
               <div>
-                <p className="text-xs font-bold text-slate-400 normal-case tracking-normal mb-0.5">Disponíveis</p>
+                <p className="text-xs font-bold text-slate-600 normal-case tracking-normal mb-0.5">Disponíveis</p>
                 <p className="text-xl font-semibold text-emerald-600 tracking-tight">{lot.quantidade_disponivel}</p>
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-400 normal-case tracking-normal mb-0.5">Vendidas</p>
+                <p className="text-xs font-bold text-slate-600 normal-case tracking-normal mb-0.5">Vendidas</p>
                 <p className="text-xl font-semibold text-slate-700 tracking-tight">{lot.quantidade_vendida}</p>
               </div>
             </div>

@@ -11,7 +11,7 @@ interface Props {
 
 const FormCardHeader: React.FC<Props> = ({ id, isSaving, isLocked, onBack, onSave }) => {
   return (
-    <div className="flex flex-col md:flex-row md:items-center justify-between bg-white p-6 rounded-2xl border border-slate-200 shadow-sm shadow-slate-200/50 animate-in fade-in duration-700">
+    <div className="flex flex-col md:flex-row md:items-center justify-between dc-panel shadow-slate-200/50 animate-in fade-in duration-700">
       <div>
         <div className="flex items-center space-x-2 mb-1">
            <span className={`w-2 h-2 rounded-full ${isLocked ? 'bg-slate-400' : 'bg-indigo-500 animate-pulse'}`}></span>
@@ -19,7 +19,7 @@ const FormCardHeader: React.FC<Props> = ({ id, isSaving, isLocked, onBack, onSav
              Gestão de Ativos
            </p>
         </div>
-        <h1 className="text-3xl font-semibold text-slate-900 normal-case tracking-normal">
+        <h1 className="dc-page-title">
           {id ? 'Editar Registro' : 'Nova Intenção de Compra'}
         </h1>
         <p className="text-sm font-medium text-slate-400">
@@ -27,17 +27,17 @@ const FormCardHeader: React.FC<Props> = ({ id, isSaving, isLocked, onBack, onSav
         </p>
       </div>
       <div className="flex items-center gap-4 mt-6 md:mt-0">
-        <button 
-          onClick={onBack} 
-          className="px-6 py-4 text-slate-400 font-semibold normal-case text-xs tracking-normal hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-all"
+        <button
+          onClick={onBack}
+          className="dc-button px-4 py-2.5 text-slate-400 font-semibold normal-case text-xs tracking-normal hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-all"
         >
           Voltar
         </button>
-        
-        <button 
-          onClick={onSave} 
-          disabled={isSaving} 
-          className="px-10 py-4 bg-slate-900 text-white rounded-xl font-semibold text-xs normal-case tracking-normal shadow-sm shadow-slate-400 hover:bg-indigo-600 active:scale-95 disabled:opacity-50 transition-all flex items-center group"
+
+        <button
+          onClick={onSave}
+          disabled={isSaving}
+          className="dc-button px-10 py-2.5 bg-slate-900 text-white rounded-xl font-semibold text-xs normal-case tracking-normal shadow-sm shadow-slate-400 hover:bg-indigo-600 active:scale-95 disabled:opacity-50 transition-all flex items-center group"
         >
           {isSaving ? (
             <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin mr-3"></div>

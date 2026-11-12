@@ -38,7 +38,7 @@ const ParceiroAddressForm: React.FC<Props> = ({ formData, onChange }) => {
                         id="cep"
                         value={formData.cep || ''}
                         onChange={onChange}
-                        className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none text-slate-900 font-medium"
+                        className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3  focus:ring-2 focus:ring-indigo-500 outline-none text-slate-900 font-medium dc-input"
                         placeholder="00000-000"
                     />
                 </div>
@@ -50,7 +50,7 @@ const ParceiroAddressForm: React.FC<Props> = ({ formData, onChange }) => {
                         id="logradouro"
                         value={formData.logradouro || ''}
                         onChange={onChange}
-                        className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none text-slate-900"
+                        className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3  focus:ring-2 focus:ring-indigo-500 outline-none text-slate-900 dc-input"
                     />
                 </div>
                 <div className="md:col-span-1">
@@ -61,7 +61,7 @@ const ParceiroAddressForm: React.FC<Props> = ({ formData, onChange }) => {
                         id="numero"
                         value={formData.numero || ''}
                         onChange={onChange}
-                        className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none text-slate-900"
+                        className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3  focus:ring-2 focus:ring-indigo-500 outline-none text-slate-900 dc-input"
                     />
                 </div>
                 <div className="md:col-span-1">
@@ -73,7 +73,7 @@ const ParceiroAddressForm: React.FC<Props> = ({ formData, onChange }) => {
                         value={formData.uf || ''}
                         onChange={onChange}
                         maxLength={2}
-                        className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none uppercase text-center font-semibold text-slate-900"
+                        className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3  focus:ring-2 focus:ring-indigo-500 outline-none normal-case text-center font-semibold text-slate-900 dc-input"
                     />
                 </div>
                 <div className="md:col-span-2">
@@ -84,7 +84,7 @@ const ParceiroAddressForm: React.FC<Props> = ({ formData, onChange }) => {
                         id="bairro"
                         value={formData.bairro || ''}
                         onChange={onChange}
-                        className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none text-slate-900"
+                        className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3  focus:ring-2 focus:ring-indigo-500 outline-none text-slate-900 dc-input"
                     />
                 </div>
                 <div className="md:col-span-2">
@@ -95,7 +95,7 @@ const ParceiroAddressForm: React.FC<Props> = ({ formData, onChange }) => {
                         id="cidade"
                         value={formData.cidade || ''}
                         onChange={onChange}
-                        className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none text-slate-900 font-medium"
+                        className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3  focus:ring-2 focus:ring-indigo-500 outline-none text-slate-900 font-medium dc-input"
                     />
                 </div>
                 <div className="md:col-span-2">
@@ -106,7 +106,7 @@ const ParceiroAddressForm: React.FC<Props> = ({ formData, onChange }) => {
                         id="complemento"
                         value={formData.complemento || ''}
                         onChange={onChange}
-                        className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none text-slate-900"
+                        className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3  focus:ring-2 focus:ring-indigo-500 outline-none text-slate-900 dc-input"
                     />
                 </div>
             </div>

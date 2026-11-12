@@ -56,65 +56,27 @@ const PedidosKpis: React.FC<Props> = ({ pedidos }) => {
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 animate-in fade-in slide-in-from-top-4 duration-700">
-
-      {/* KPI 1: Valor Total de Compra (Negociado) */}
-      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden group hover:border-indigo-300 transition-all">
-        <div className="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-          <div className="w-16 h-16 bg-indigo-600 rounded-full blur-xl"></div>
-        </div>
-        <p className="text-slate-500 text-xs font-semibold normal-case tracking-normal relative z-10">Total Negociado (Compras)</p>
-        <h3 className="text-2xl font-semibold text-slate-900 mt-1 relative z-10 tracking-tight">
-          {formatCurrency(stats.totalCompra)}
-        </h3>
-        <div className="mt-2 flex items-center space-x-1 relative z-10">
-          <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
-          <span className="text-xs text-slate-400 font-bold normal-case">{stats.qtd} Negociações</span>
-        </div>
+    <div className="dc-kpi-grid">
+      <div className="dc-kpi-card">
+        <p className="dc-kpi-label">Total Negociado (Compras)</p>
+        <h3 className="dc-kpi-value">{formatCurrency(stats.totalCompra)}</h3>
+        <p className="dc-kpi-hint">{stats.qtd} Negociações</p>
       </div>
-
-      {/* KPI 2: Custo Total (Com Serviços) */}
-      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden group hover:border-amber-300 transition-all">
-        <p className="text-slate-500 text-xs font-semibold normal-case tracking-normal relative z-10">Estoque (Custo + Serviços)</p>
-        <h3 className="text-2xl font-semibold text-amber-600 mt-1 relative z-10 tracking-tight">
-          {formatCurrency(stats.totalComServicos)}
-        </h3>
-        <div className="mt-2 flex items-center space-x-1 relative z-10">
-          <span className="text-xs text-slate-400 font-bold normal-case">
-            Add. Serviços: <span className="text-amber-600">{formatCurrency(stats.deltaServicos)}</span>
-          </span>
-        </div>
+      <div className="dc-kpi-card">
+        <p className="dc-kpi-label">Estoque (Custo + Serviços)</p>
+        <h3 className="dc-kpi-value">{formatCurrency(stats.totalComServicos)}</h3>
+        <p className="dc-kpi-hint">Add. Serviços: {formatCurrency(stats.deltaServicos)}</p>
       </div>
-
-      {/* KPI 3: Total Investido (Global) */}
-      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden group hover:border-emerald-300 transition-all">
-        <div className="flex justify-between items-start">
-          <div>
-            <p className="text-slate-500 text-xs font-semibold normal-case tracking-normal">Capital Comprometido</p>
-            <h3 className="text-3xl font-semibold text-emerald-600 mt-1 tracking-tight">{formatCurrency(stats.totalInvestido)}</h3>
-          </div>
-        </div>
-        <div className="mt-3 text-xs font-medium text-slate-400 bg-slate-50 inline-block px-2 py-1 rounded-md">
-          Compras + Rascunhos
-        </div>
+      <div className="dc-kpi-card">
+        <p className="dc-kpi-label">Capital Comprometido</p>
+        <h3 className="dc-kpi-value">{formatCurrency(stats.totalInvestido)}</h3>
+        <p className="dc-kpi-hint">Compras + Rascunhos</p>
       </div>
-
-      {/* KPI 4: Ticket Médio */}
-      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden group hover:border-blue-300 transition-all">
-        <div className="flex justify-between items-start">
-          <div>
-            <p className="text-slate-500 text-xs font-semibold normal-case tracking-normal">Ticket Médio (Compra)</p>
-            <h3 className="text-2xl font-semibold text-slate-900 mt-1 tracking-tight">{formatCurrency(stats.ticketMedio)}</h3>
-          </div>
-          <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-600">
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
-          </div>
-        </div>
-        <div className="mt-3 text-xs font-medium text-slate-400">
-          Média por Veículo
-        </div>
+      <div className="dc-kpi-card">
+        <p className="dc-kpi-label">Ticket Médio (Compra)</p>
+        <h3 className="dc-kpi-value">{formatCurrency(stats.ticketMedio)}</h3>
+        <p className="dc-kpi-hint">Média por Veículo</p>
       </div>
-
     </div>
   );
 };

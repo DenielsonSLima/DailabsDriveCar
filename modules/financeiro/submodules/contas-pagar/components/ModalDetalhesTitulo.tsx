@@ -102,35 +102,35 @@ const ModalDetalhesTitulo: React.FC<Props> = ({ titulo, onClose, onPagar }) => {
             onClick={(e) => e.stopPropagation()}
         >
             <div 
-                className="bg-white w-full max-w-2xl rounded-2xl shadow-sm flex flex-col animate-in zoom-in-95 duration-200 border border-slate-200 max-h-[90vh]"
+                className="dc-modal bg-white w-full max-w-2xl rounded-xl shadow-sm flex flex-col animate-in zoom-in-95 duration-200 border border-slate-200 max-h-[90vh]"
                 onClick={(e) => e.stopPropagation()}
             >
 
                 {/* Header */}
-                <div className="px-6 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                <div className="dc-modal-header px-4 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                     <div>
-                        <h3 className="text-lg font-semibold text-slate-900 normal-case tracking-tight">Detalhes do Título</h3>
+                        <h3 className="dc-modal-title text-lg font-semibold text-slate-900 normal-case tracking-tight">Detalhes do Título</h3>
                         <p className="text-xs text-slate-500 font-medium normal-case tracking-normal mt-0.5">Ref: {titulo.documento_ref || 'N/D'}</p>
                     </div>
-                    <button onClick={onClose} className="p-2 hover:bg-slate-200 rounded-full transition-colors text-slate-400 hover:text-slate-600">
+                    <button onClick={onClose} className="dc-button p-2 hover:bg-slate-200 rounded-full transition-colors text-slate-400 hover:text-slate-600">
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
                     </button>
                 </div>
 
-                <div className="p-6 space-y-6 overflow-y-auto flex-1">
+                <div className="dc-modal-body p-4 space-y-6 overflow-y-auto flex-1">
                     {/* Resumo de Valores */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                        <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
                             <p className="text-xs font-medium text-slate-500 normal-case tracking-normal mb-1">Valor Total</p>
                             <p className="text-lg font-semibold text-slate-900">{fmt(titulo.valor_total)}</p>
                         </div>
-                        <div className="bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100">
+                        <div className="bg-emerald-50/50 p-4 rounded-xl border border-emerald-100">
                             <p className="text-xs font-medium text-emerald-600 normal-case tracking-normal mb-1">Valor Pago</p>
                             <p className="text-lg font-semibold text-emerald-700">
                                 {fmt(pagamentos.reduce((acc, p) => acc + Number(p.valor), 0))}
                             </p>
                         </div>
-                        <div className="bg-rose-50/50 p-4 rounded-2xl border border-rose-100">
+                        <div className="bg-rose-50/50 p-4 rounded-xl border border-rose-100">
                             <p className="text-xs font-medium text-rose-600 normal-case tracking-normal mb-1">Valor em Aberto</p>
                             <p className="text-lg font-semibold text-rose-700">
                                 {fmt(Math.max(0, titulo.valor_total + (titulo.valor_acrescimo || 0) - pagamentos.reduce((acc, p) => acc + Number(p.valor), 0) - (titulo.valor_desconto || 0)))}
@@ -141,13 +141,13 @@ const ModalDetalhesTitulo: React.FC<Props> = ({ titulo, onClose, onPagar }) => {
                     {(titulo.valor_desconto > 0 || titulo.valor_acrescimo > 0) && (
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             {titulo.valor_desconto > 0 && (
-                                <div className="bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                                <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
                                     <p className="text-xs font-medium text-slate-500 normal-case tracking-normal mb-1">Descontos Aplicados</p>
                                     <p className="text-sm font-semibold text-emerald-600">-{fmt(titulo.valor_desconto)}</p>
                                 </div>
                             )}
                             {titulo.valor_acrescimo > 0 && (
-                                <div className="bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                                <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
                                     <p className="text-xs font-medium text-slate-500 normal-case tracking-normal mb-1">Acréscimos (Juros)</p>
                                     <p className="text-sm font-semibold text-rose-600">+{fmt(titulo.valor_acrescimo)}</p>
                                 </div>
@@ -158,29 +158,29 @@ const ModalDetalhesTitulo: React.FC<Props> = ({ titulo, onClose, onPagar }) => {
                     {/* Veículo Vinculado - Premium Dark Theme Alignment */}
                     {titulo.veiculo || titulo.origem_tipo === 'PEDIDO_COMPRA' || titulo.origem_tipo === 'DESPESA_VEICULO' ? (
                         <div className="animate-in fade-in zoom-in-95 duration-200">
-                            <div className="bg-slate-50 p-6 rounded-2xl shadow-sm relative overflow-hidden group border border-slate-200">
+                            <div className="bg-slate-50 p-4 rounded-xl shadow-sm relative overflow-hidden group border border-slate-200">
                                 <div className="absolute top-0 right-0 w-40 h-40 bg-indigo-500 rounded-full blur-[100px] opacity-20 group-hover:opacity-30 transition-opacity"></div>
                                 <div className="relative z-10 flex justify-between items-center">
                                     <div>
                                         <p className="text-xs text-indigo-600 font-medium normal-case tracking-normal mb-1.5">Veículo Vinculado</p>
                                         {titulo.veiculo ? (
                                             <>
-                                                <h4 className="text-2xl font-semibold text-slate-900 normal-case tracking-tight leading-none mb-3">
+                                                <h4 className="dc-section-title text-2xl font-semibold text-slate-900 normal-case tracking-tight leading-none mb-3">
                                                     {titulo.veiculo.modelo?.nome || 'Modelo'}
                                                     <span className="text-indigo-600/50 ml-2">—</span>
                                                     <span className="text-indigo-600 ml-2">{titulo.veiculo.montadora?.nome || ''}</span>
                                                 </h4>
-                                                <div className="flex bg-white w-fit px-4 py-2 rounded-2xl border border-slate-200 shadow-inner">
+                                                <div className="flex bg-white w-fit px-4 py-2 rounded-xl border border-slate-200 shadow-inner">
                                                     <p className="text-slate-900 font-semibold text-base tracking-normal normal-case">{titulo.veiculo.placa}</p>
                                                 </div>
                                             </>
                                         ) : (
-                                            <h4 className="text-lg font-semibold text-slate-900 normal-case tracking-tight leading-snug max-w-[300px]">
+                                            <h4 className="dc-section-title text-lg font-semibold text-slate-900 normal-case tracking-tight leading-snug max-w-[300px]">
                                                 {titulo.descricao}
                                             </h4>
                                         )}
                                     </div>
-                                    <div className="w-16 h-16 rounded-2xl bg-slate-100/10 border border-slate-200/20 flex items-center justify-center text-slate-600 shadow-sm">
+                                    <div className="w-16 h-16 rounded-xl bg-slate-100/10 border border-slate-200/20 flex items-center justify-center text-slate-600 shadow-sm">
                                         <svg className="w-8 h-8 transition-transform group-hover:scale-110 duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                                         </svg>
@@ -189,12 +189,12 @@ const ModalDetalhesTitulo: React.FC<Props> = ({ titulo, onClose, onPagar }) => {
                             </div>
                         </div>
                     ) : (
-                        <div className="p-5 bg-slate-50 rounded-2xl border border-dashed border-slate-200 flex items-center justify-center">
+                        <div className="p-5 bg-slate-50 rounded-xl border border-dashed border-slate-200 flex items-center justify-center">
                             <p className="text-xs font-medium text-slate-500 normal-case tracking-normal italic">Sem veículo vinculado ao título</p>
                         </div>
                     )}
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <p className="text-xs font-medium text-slate-500 normal-case tracking-normal mb-1">Descrição / Favorecido</p>
                             <p className="text-sm font-semibold text-slate-800 normal-case">{titulo.parceiro?.nome || titulo.descricao}</p>
@@ -220,7 +220,7 @@ const ModalDetalhesTitulo: React.FC<Props> = ({ titulo, onClose, onPagar }) => {
 
                     {/* Histórico de Pagamentos */}
                     <div>
-                        <h4 className="text-xs font-semibold text-slate-900 normal-case tracking-normal mb-4 flex items-center">
+                        <h4 className="dc-section-title text-xs font-semibold text-slate-900 normal-case tracking-normal mb-4 flex items-center">
                             <svg className="w-4 h-4 mr-2 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                             Histórico de Pagamentos / Baixas
                         </h4>
@@ -228,13 +228,13 @@ const ModalDetalhesTitulo: React.FC<Props> = ({ titulo, onClose, onPagar }) => {
                         {loading ? (
                             <div className="py-10 flex justify-center"><div className="w-6 h-6 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div></div>
                         ) : pagamentos.length === 0 ? (
-                            <div className="py-10 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                            <div className="py-10 text-center bg-slate-50 rounded-xl border border-dashed border-slate-200">
                                 <p className="text-xs text-slate-500 font-medium normal-case tracking-normal">Nenhum pagamento registrado ainda</p>
                             </div>
                         ) : (
                             <div className="space-y-3">
                                 {pagamentos.map((p) => (
-                                    <div key={p.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100 group hover:border-indigo-100 transition-all">
+                                    <div key={p.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100 group hover:border-indigo-100 transition-all">
                                         <div className="flex items-center space-x-4">
                                             <div className="w-10 h-10 bg-white rounded-xl border border-slate-100 flex items-center justify-center text-indigo-500">
                                                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
@@ -245,7 +245,7 @@ const ModalDetalhesTitulo: React.FC<Props> = ({ titulo, onClose, onPagar }) => {
                                                         type="date"
                                                         value={novaData}
                                                         onChange={(e) => setNovaData(e.target.value)}
-                                                        className="text-xs bg-white border border-slate-200 rounded px-2 py-1 font-medium text-slate-700"
+                                                        className="dc-input text-xs bg-white border border-slate-200 rounded px-2 py-1 font-medium text-slate-700"
                                                     />
                                                     <p className="text-xs font-medium text-slate-800 normal-case tracking-tight">{p.conta?.banco_nome || 'Conta Direta'}</p>
                                                 </div>
@@ -306,12 +306,12 @@ const ModalDetalhesTitulo: React.FC<Props> = ({ titulo, onClose, onPagar }) => {
                                                         type="number"
                                                         value={novoValor}
                                                         onChange={(e) => setNovoValor(Number(e.target.value))}
-                                                        className="w-24 text-right bg-white border border-slate-200 rounded px-2 py-1 text-sm font-medium text-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                                                        className="dc-input w-24 text-right bg-white border border-slate-200 rounded px-2 py-1 text-sm font-medium text-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-500"
                                                     />
-                                                    <button onClick={handleSaveEdit} className="p-1.5 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors">
+                                                    <button onClick={handleSaveEdit} className="dc-button p-1.5 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors">
                                                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
                                                     </button>
-                                                    <button onClick={() => setEditandoId(null)} className="p-1.5 bg-slate-200 text-slate-600 rounded-lg hover:bg-slate-300 transition-colors">
+                                                    <button onClick={() => setEditandoId(null)} className="dc-button p-1.5 bg-slate-200 text-slate-600 rounded-lg hover:bg-slate-300 transition-colors">
                                                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
                                                     </button>
                                                 </div>
@@ -321,7 +321,7 @@ const ModalDetalhesTitulo: React.FC<Props> = ({ titulo, onClose, onPagar }) => {
                                                     <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-all">
                                                         <button
                                                             onClick={() => handleStartEdit(p)}
-                                                            className="p-2 text-indigo-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+                                                            className="dc-button p-2 text-indigo-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
                                                             title="Editar Pagamento"
                                                         >
                                                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -330,7 +330,7 @@ const ModalDetalhesTitulo: React.FC<Props> = ({ titulo, onClose, onPagar }) => {
                                                         </button>
                                                         <button
                                                             onClick={() => handleDeletePayment(p.id)}
-                                                            className="p-2 text-rose-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
+                                                            className="dc-button p-2 text-rose-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all"
                                                             title="Estornar Pagamento"
                                                         >
                                                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -349,11 +349,11 @@ const ModalDetalhesTitulo: React.FC<Props> = ({ titulo, onClose, onPagar }) => {
                 </div>
 
                 {/* Footer */}
-                <div className="p-6 bg-slate-50 border-t border-slate-100 flex justify-between items-center gap-3">
+                <div className="dc-modal-footer p-4 bg-slate-50 border-t border-slate-100 flex justify-between items-center gap-3">
                     {onPagar && titulo.status !== 'PAGO' && (
                         <button
                             onClick={onPagar}
-                            className="flex-1 px-6 py-3 bg-indigo-600 text-white rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-indigo-700 transition-all shadow-sm shadow-none active:scale-100 flex items-center justify-center gap-2"
+                            className="dc-button flex-1 px-4 py-3 bg-indigo-600 text-white rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-indigo-700 transition-all shadow-sm shadow-none active:scale-100 flex items-center justify-center gap-2"
                         >
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
                             Registrar Pagamento
@@ -361,7 +361,7 @@ const ModalDetalhesTitulo: React.FC<Props> = ({ titulo, onClose, onPagar }) => {
                     )}
                     <button
                         onClick={onClose}
-                        className="px-6 py-3 bg-indigo-600 text-white rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-indigo-700 transition-all shadow-sm active:scale-100"
+                        className="dc-button px-4 py-3 bg-indigo-600 text-white rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-indigo-700 transition-all shadow-sm active:scale-100"
                     >
                         Fechar Visualização
                     </button>

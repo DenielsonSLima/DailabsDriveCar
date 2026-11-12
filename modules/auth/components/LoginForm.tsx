@@ -37,7 +37,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, onForgotPassword, onGoo
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full bg-white border border-slate-300 rounded-lg py-3 pl-12 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-colors"
-            placeholder="exemplo@nexus.com"
+            placeholder="voce@empresa.com"
             required
           />
         </div>

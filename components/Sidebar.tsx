@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { AuthService } from '../modules/auth/auth.service';
 import ConfirmModal from './ConfirmModal';
+import { AppBrand } from './AppBrand';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -51,7 +52,6 @@ const menuItems: MenuItem[] = [
   { path: '/financeiro', label: 'Financeiro', icon: 'M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z' },
   { path: '/performance', label: 'Performance', icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6' },
   { path: '/relatorios', label: 'Relatórios', icon: 'M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
-  { path: '/marketing', label: 'Marketing', icon: 'M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z' },
   { path: '/ajustes', label: 'Ajustes', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924-1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z' },
 
 ];
@@ -101,24 +101,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
 
       <aside
         aria-label="Menu principal"
-        className={`app-sidebar fixed left-0 top-0 h-dvh bg-slate-900 text-slate-200 border-r border-slate-800 transition-[width,transform] duration-200 motion-reduce:transition-none z-[70] flex flex-col
+        style={{ fontFamily: "Outfit, Inter, system-ui, sans-serif", letterSpacing: "0.01em" }}
+        className={`app-sidebar fixed left-0 top-0 h-dvh bg-[#11151c] text-slate-200 border-r border-white/[0.06] transition-[width,transform] duration-200 motion-reduce:transition-none z-[70] flex flex-col
           ${sidebarExpanded ? 'w-60' : 'w-20'}
           ${isMobileOpen ? 'translate-x-0 md:transform-none' : '-translate-x-full md:transform-none'}
         `}
       >
-      <div className="h-16 shrink-0 px-4 flex items-center justify-between border-b border-slate-800">
+      <div className="h-20 shrink-0 px-4 flex items-center justify-between border-b border-white/[0.06]">
         <div className={`flex min-w-0 items-center space-x-2.5 overflow-hidden ${sidebarExpanded ? 'opacity-100 w-auto' : 'opacity-0 w-0'}`}>
-          <div className="flex-shrink-0">
-            <img
-              src="/logos/dailabs_logo.png"
-              alt="Dailabs Logo"
-              className="w-8 h-8 object-contain"
-            />
-          </div>
-          <div className="flex min-w-0 flex-col">
-            <span className="font-semibold text-lg tracking-tight leading-none text-white">Dailabs</span>
-            <span className="text-[11px] text-slate-400 font-medium truncate">Creative AI & Softwares</span>
-          </div>
+          <AppBrand dark />
         </div>
         <button
           onClick={() => {
@@ -130,7 +121,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
             }
           }}
           aria-label={sidebarExpanded ? "Recolher menu" : "Expandir menu"}
-          className="shrink-0 p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
+          className="shrink-0 p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300"
         >
           <svg className="w-5 h-5 md:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -145,7 +136,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
         </button>
       </div>
 
-      <nav className="flex-1 min-h-0 overflow-y-auto py-3 px-3 space-y-0.5 custom-scrollbar">
+      <nav className="flex-1 min-h-0 overflow-y-auto py-4 px-3 space-y-1 custom-scrollbar">
         {menuItems.map((item) => {
           const hasChildren = item.children && item.children.length > 0;
           const isExpanded = expanded === item.label;
@@ -153,15 +144,20 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
 
           return (
             <div key={item.path} className="flex flex-col">
+              {sidebarExpanded && ['/inicio', '/estoque', '/caixa', '/ajustes'].includes(item.path) && (
+                <p className={`px-3 pb-2 text-[11px] font-medium uppercase tracking-[0.14em] text-slate-500 ${item.path === '/inicio' ? 'pt-0' : 'pt-5'}`}>
+                  {item.path === '/inicio' ? 'Principal' : item.path === '/estoque' ? 'Operação' : item.path === '/caixa' ? 'Gestão' : 'Sistema'}
+                </p>
+              )}
               {hasChildren ? (
                 <button
                   onClick={() => toggleExpand(item.label)}
                   aria-expanded={isExpanded && sidebarExpanded}
                   title={!sidebarExpanded ? item.label : undefined}
-                  className={`flex items-center min-h-11 md:min-h-10 px-3 py-2 rounded-lg text-sm leading-5 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 group w-full text-left ${isActive ? 'bg-indigo-500/20 text-indigo-100 font-medium ring-1 ring-inset ring-indigo-400/20' : 'text-slate-300 font-normal hover:bg-slate-800 hover:text-white'
+                  className={`flex items-center min-h-11 md:min-h-10 px-3 py-2 rounded-lg text-[15px] leading-5 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 group w-full text-left ${isActive ? 'bg-white/[0.09] text-white font-medium ring-1 ring-inset ring-white/[0.08] shadow-sm' : 'text-slate-400 font-normal hover:bg-white/[0.045] hover:text-slate-100'
                     }`}
                 >
-                  <svg className={`w-5 h-5 shrink-0 ${sidebarExpanded ? 'mr-3' : 'mx-auto'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className={`w-[18px] h-[18px] shrink-0 ${sidebarExpanded ? 'mr-3' : 'mx-auto'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d={item.icon} />
                   </svg>
                   <span className={`whitespace-nowrap flex-1 ${sidebarExpanded ? 'opacity-100 w-auto block' : 'opacity-0 w-0 hidden'}`}>
@@ -185,11 +181,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
                   title={!sidebarExpanded ? item.label : undefined}
                   onClick={() => setIsMobileOpen?.(false)}
                   className={({ isActive }) =>
-                    `flex items-center min-h-11 md:min-h-10 px-3 py-2 rounded-lg text-sm leading-5 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 group ${isActive ? 'bg-indigo-500/20 text-indigo-100 font-medium ring-1 ring-inset ring-indigo-400/20' : 'text-slate-300 font-normal hover:bg-slate-800 hover:text-white'
+                    `flex items-center min-h-11 md:min-h-10 px-3 py-2 rounded-lg text-[15px] leading-5 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 group ${isActive ? 'bg-white/[0.09] text-white font-medium ring-1 ring-inset ring-white/[0.08] shadow-sm' : 'text-slate-400 font-normal hover:bg-white/[0.045] hover:text-slate-100'
                     }`
                   }
                 >
-                  <svg className={`w-5 h-5 shrink-0 ${sidebarExpanded ? 'mr-3' : 'mx-auto'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className={`w-[18px] h-[18px] shrink-0 ${sidebarExpanded ? 'mr-3' : 'mx-auto'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d={item.icon} />
                   </svg>
                   <span className={`whitespace-nowrap ${sidebarExpanded ? 'opacity-100 w-auto block' : 'opacity-0 w-0 hidden'}`}>
@@ -205,14 +201,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
               )}
 
               {hasChildren && isExpanded && sidebarExpanded && (
-                <div className="ml-5 pl-4 mt-1 space-y-0.5 border-l border-slate-700">
+                <div className="ml-5 pl-4 mt-2 space-y-0.5 border-l border-white/10">
                   {item.children?.map((child) => (
                     <NavLink
                       key={child.path}
                       to={child.path}
                       onClick={() => setIsMobileOpen?.(false)}
                       className={({ isActive }) =>
-                        `block px-2 py-2 text-xs leading-4 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 ${isActive ? 'text-indigo-200 font-medium bg-indigo-500/15' : 'text-slate-300 font-normal hover:text-white hover:bg-slate-800'
+                        `block px-2 py-2 text-[13px] leading-5 rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 ${isActive ? 'text-white font-medium bg-white/[0.07]' : 'text-slate-400 font-normal hover:text-white hover:bg-white/[0.045]'
                         }`
                       }
                     >
@@ -226,9 +222,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
         })}
       </nav>
 
-      <div className="shrink-0 p-3 border-t border-slate-800">
-        <div className={`flex items-center rounded-xl border border-slate-700/60 bg-slate-800/60 ${sidebarExpanded ? 'gap-2.5 p-2.5' : 'flex-col gap-2 py-2'}`}>
-          <div className="w-8 h-8 shrink-0 rounded-lg bg-indigo-500/20 text-indigo-200 flex items-center justify-center text-xs font-semibold normal-case">
+      <div className="shrink-0 p-3 border-t border-white/[0.06]">
+        <div className={`flex items-center rounded-xl border border-white/[0.05] bg-white/[0.025] ${sidebarExpanded ? 'gap-2.5 p-2.5' : 'flex-col gap-2 py-2'}`}>
+          <div className="w-8 h-8 shrink-0 rounded-lg bg-slate-700/60 text-slate-100 flex items-center justify-center text-xs font-semibold normal-case">
             {profile?.nome?.charAt(0) || 'U'}
           </div>
           {sidebarExpanded && (
@@ -244,7 +240,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, setIsOpen, isMobileOpen, setI
             onClick={() => setShowLogoutConfirm(true)}
             title="Sair do sistema"
             aria-label="Sair do sistema"
-            className="shrink-0 p-2 rounded-lg text-slate-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
+            className="shrink-0 p-2 rounded-lg text-slate-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />

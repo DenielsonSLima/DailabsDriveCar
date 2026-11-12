@@ -108,12 +108,12 @@ const FinanceiroPage: React.FC = () => {
     <button
       key={item.id}
       onClick={() => setActiveSub(item.id)}
-      className={`flex shrink-0 items-center whitespace-nowrap px-5 py-3.5 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all duration-200 ${activeSub === item.id
-        ? 'bg-indigo-600 text-white shadow-sm scale-100 z-10'
-        : 'bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-50 border border-slate-200'
+      className={`dc-tab flex shrink-0 items-center whitespace-nowrap px-5 py-3.5 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all duration-200 ${activeSub === item.id
+        ? 'bg-white text-indigo-600 shadow-sm scale-100 z-10'
+        : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
         }`}
     >
-      <svg className={`w-4 h-4 mr-2 ${activeSub === item.id ? 'text-white' : 'text-slate-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg className={`w-4 h-4 mr-2 ${activeSub === item.id ? 'text-indigo-600' : 'text-slate-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
       </svg>
       {item.label}
@@ -121,98 +121,106 @@ const FinanceiroPage: React.FC = () => {
   );
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200 pb-8">
+    <div className="dc-page space-y-6 animate-in fade-in duration-200 pb-8">
+      <header className="dc-page-header">
+        <div>
+          <h1 className="dc-page-title">Financeiro</h1>
+          <p className="dc-page-subtitle">Acompanhe saldos, receitas, despesas e movimentações financeiras.</p>
+        </div>
+      </header>
 
-      {/* Dashboard de KPIs – 2 linhas x 3 colunas */}
-      <div className="space-y-3">
+      {/* Indicadores em faixa única, com rolagem local quando necessário */}
+      <div className="dc-kpi-grid finance-kpi-strip" role="region" aria-label="Indicadores financeiros. Role horizontalmente para ver todos." tabIndex={0}>
         {/* Linha 1 */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+        <div className="contents">
           {/* Saldo Disponível */}
-          <div className="bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-slate-900 shadow-sm relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-20 h-20 bg-indigo-500 rounded-full blur-[60px] opacity-20"></div>
-            <p className="text-xs font-medium text-indigo-600 normal-case tracking-normal mb-0.5 relative z-10">Saldo Disponível</p>
+          <div className="dc-kpi-card bg-slate-50 border border-slate-200 rounded-xl px-5 py-4 text-slate-900 shadow-sm relative overflow-hidden">
+            <div className="hidden"></div>
+            <p className="dc-kpi-label text-xs font-medium text-indigo-600 normal-case tracking-normal mb-0.5 relative z-10">Saldo Disponível</p>
             {loading ? (
               <div className="h-7 bg-slate-200 rounded animate-pulse w-32 relative z-10"></div>
             ) : (
-              <h3 className="text-xl font-semibold tracking-tight break-words relative z-10">{formatCurrency(kpis?.saldo_disponivel || 0)}</h3>
+              <h3 className="dc-kpi-value text-xl font-semibold tracking-tight break-words relative z-10">{formatCurrency(kpis?.saldo_disponivel || 0)}</h3>
             )}
           </div>
           {/* Compra de Veículos */}
-          <div className="bg-white rounded-2xl px-5 py-4 border border-slate-200 shadow-sm">
-            <p className="text-xs font-medium text-rose-600 normal-case tracking-normal mb-0.5">Compra de Veículos</p>
+          <div className="dc-kpi-card bg-white rounded-xl px-5 py-4 border border-slate-200 shadow-sm">
+            <p className="dc-kpi-label text-xs font-medium text-rose-600 normal-case tracking-normal mb-0.5">Compra de Veículos</p>
             {loading ? (
               <div className="h-7 bg-slate-200 rounded animate-pulse w-32"></div>
             ) : (
-              <h3 className="text-xl font-semibold text-slate-900 tracking-tight break-words">{formatCurrency(kpis?.compra_veiculos || 0)}</h3>
+              <h3 className="dc-kpi-value text-xl font-semibold text-slate-900 tracking-tight break-words">{formatCurrency(kpis?.compra_veiculos || 0)}</h3>
             )}
           </div>
           {/* Despesas Fixas do Mês */}
-          <div className="bg-white rounded-2xl px-5 py-4 border border-slate-200 shadow-sm">
-            <p className="text-xs font-medium text-slate-500 normal-case tracking-normal mb-0.5">{modoDespesaUnica ? 'Despesas' : 'Despesas Fixas'}</p>
+          <div className="dc-kpi-card bg-white rounded-xl px-5 py-4 border border-slate-200 shadow-sm">
+            <p className="dc-kpi-label text-xs font-medium text-slate-500 normal-case tracking-normal mb-0.5">{modoDespesaUnica ? 'Despesas' : 'Despesas Fixas'}</p>
             {loading ? (
               <div className="h-7 bg-slate-200 rounded animate-pulse w-32"></div>
             ) : (
-              <h3 className="text-xl font-semibold text-slate-900 tracking-tight break-words">{formatCurrency(modoDespesaUnica ? totalDespesas : (kpis?.despesas_fixas || 0))}</h3>
+              <h3 className="dc-kpi-value text-xl font-semibold text-slate-900 tracking-tight break-words">{formatCurrency(modoDespesaUnica ? totalDespesas : (kpis?.despesas_fixas || 0))}</h3>
             )}
           </div>
         </div>
         {/* Linha 2 */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
+        <div className="contents">
           {/* Despesas Variáveis do Mês */}
           {!modoDespesaUnica && (
-            <div className="bg-white rounded-2xl px-5 py-4 border border-slate-200 shadow-sm">
-              <p className="text-xs font-medium text-orange-700 normal-case tracking-normal mb-0.5">Despesas Variáveis</p>
+            <div className="dc-kpi-card bg-white rounded-xl px-5 py-4 border border-slate-200 shadow-sm">
+              <p className="dc-kpi-label text-xs font-medium text-orange-700 normal-case tracking-normal mb-0.5">Despesas Variáveis</p>
               {loading ? (
                 <div className="h-7 bg-slate-200 rounded animate-pulse w-32"></div>
               ) : (
-                <h3 className="text-xl font-semibold text-slate-900 tracking-tight break-words">{formatCurrency(kpis?.despesas_variaveis || 0)}</h3>
+                <h3 className="dc-kpi-value text-xl font-semibold text-slate-900 tracking-tight break-words">{formatCurrency(kpis?.despesas_variaveis || 0)}</h3>
               )}
             </div>
           )}
           {/* Outras Receitas */}
-          <div className="bg-white rounded-2xl px-5 py-4 border border-slate-200 shadow-sm">
-            <p className="text-xs font-medium text-teal-700 normal-case tracking-normal mb-0.5">Outras Receitas</p>
+          <div className="dc-kpi-card bg-white rounded-xl px-5 py-4 border border-slate-200 shadow-sm">
+            <p className="dc-kpi-label text-xs font-medium text-teal-700 normal-case tracking-normal mb-0.5">Outras Receitas</p>
             {loading ? (
               <div className="h-7 bg-slate-200 rounded animate-pulse w-32"></div>
             ) : (
-              <h3 className="text-xl font-semibold text-slate-900 tracking-tight break-words">{formatCurrency(kpis?.outras_receitas || 0)}</h3>
+              <h3 className="dc-kpi-value text-xl font-semibold text-slate-900 tracking-tight break-words">{formatCurrency(kpis?.outras_receitas || 0)}</h3>
             )}
           </div>
           {/* Outros Débitos */}
-          <div className="bg-white rounded-2xl px-5 py-4 border border-slate-200 shadow-sm">
-            <p className="text-xs font-medium text-rose-600 normal-case tracking-normal mb-0.5">Outros Débitos</p>
+          <div className="dc-kpi-card bg-white rounded-xl px-5 py-4 border border-slate-200 shadow-sm">
+            <p className="dc-kpi-label text-xs font-medium text-rose-600 normal-case tracking-normal mb-0.5">Outros Débitos</p>
             {loading ? (
               <div className="h-7 bg-slate-200 rounded animate-pulse w-32"></div>
             ) : (
-              <h3 className="text-xl font-semibold text-slate-900 tracking-tight break-words">{formatCurrency(kpis?.outros_debitos || 0)}</h3>
+              <h3 className="dc-kpi-value text-xl font-semibold text-slate-900 tracking-tight break-words">{formatCurrency(kpis?.outros_debitos || 0)}</h3>
             )}
           </div>
           {/* Retiradas */}
-          <div className="bg-white rounded-2xl px-5 py-4 border border-slate-200 shadow-sm">
-            <p className="text-xs font-medium text-amber-700 normal-case tracking-normal mb-0.5">Retiradas</p>
+          <div className="dc-kpi-card bg-white rounded-xl px-5 py-4 border border-slate-200 shadow-sm">
+            <p className="dc-kpi-label text-xs font-medium text-amber-700 normal-case tracking-normal mb-0.5">Retiradas</p>
             {loading ? (
               <div className="h-7 bg-slate-200 rounded animate-pulse w-32"></div>
             ) : (
-              <h3 className="text-xl font-semibold text-slate-900 tracking-tight break-words">{formatCurrency(kpis?.retiradas || 0)}</h3>
+              <h3 className="dc-kpi-value text-xl font-semibold text-slate-900 tracking-tight break-words">{formatCurrency(kpis?.retiradas || 0)}</h3>
             )}
           </div>
         </div>
       </div>
 
-      {/* Menu de Navegação em Duas Linhas */}
-      <div className="min-w-0 space-y-2 md:space-y-4">
+      {/* Navegação em faixa única */}
+      <div className="dc-tabs finance-tab-strip" role="navigation" aria-label="Abas do financeiro. Role horizontalmente para ver todas." tabIndex={0}>
         {/* Linha 1 */}
-        <div className="flex flex-nowrap overflow-x-auto gap-2 pb-2 md:flex-wrap md:overflow-visible md:gap-3">
+        <div className="contents">
           {line1.map(renderMenuItem)}
         </div>
         {/* Linha 2 */}
-        <div className="flex flex-nowrap overflow-x-auto gap-2 pb-2 md:flex-wrap md:overflow-visible md:gap-3">
+        <div className="contents">
           {line2.map(renderMenuItem)}
         </div>
       </div>
 
+      <p className="finance-scroll-hint">↔ Deslize as faixas para ver todos os indicadores e abas. Com teclado, use as setas ao focar a faixa.</p>
+
       {/* Área Dinâmica de Submódulos */}
-      <div className="min-h-[600px] animate-in slide-in-from-bottom-4 duration-200">
+      <div className="min-w-0 animate-in slide-in-from-bottom-4 duration-200">
         {activeSub === 'GERAL' && <VisaoGeralPage />}
         {activeSub === 'PAGAR' && <ContasPagarPage />}
         {activeSub === 'RECEBER' && <ContasReceberPage />}

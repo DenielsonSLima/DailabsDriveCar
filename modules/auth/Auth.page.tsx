@@ -1,3 +1,4 @@
+import { AppBrand, BrandSymbol } from '../../components/AppBrand';
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -112,64 +113,62 @@ const AuthPage: React.FC = () => {
   };
 
   return (
-    <div data-drivecar-ui className="min-h-dvh bg-slate-50 text-slate-800 flex items-center justify-center relative overflow-hidden font-['Inter'] py-8">
-      {/* Background Immersive with Crossfade */}
-      <div aria-hidden="true" className="absolute inset-0 z-0 opacity-[0.04] pointer-events-none">
+    <div data-drivecar-ui className="arkhen-auth min-h-dvh bg-[#080c12] text-slate-100 relative isolate overflow-hidden flex items-center py-8 sm:py-12">
+      <style>{`
+        .arkhen-auth { color-scheme: dark; }
+        .arkhen-auth form label, .arkhen-auth form label span { color: #cbd5e1; }
+        .arkhen-auth form input:not([type="checkbox"]) { height: 48px; color: #f8fafc; background: #0d131d; border-color: #334155; box-shadow: none; }
+        .arkhen-auth form input:not([type="checkbox"]):focus { border-color: #94a3b8; box-shadow: 0 0 0 3px rgb(148 163 184 / .12); }
+        .arkhen-auth form input::placeholder { color: #64748b; }
+        .arkhen-auth form input[type="checkbox"] { accent-color: #cbd5e1; }
+        .arkhen-auth form button[type="submit"] { min-height: 48px; color: #111827; background: #e2e8f0; font-weight: 600; box-shadow: 0 3px 18px rgb(0 0 0 / .2); }
+        .arkhen-auth form button[type="submit"]:hover { background: #f8fafc; }
+        .arkhen-auth form button[type="submit"] > div { border-color: #94a3b8; border-top-color: #111827; }
+        .arkhen-auth form button[type="button"] { color: #cbd5e1; }
+        .arkhen-auth form button[type="button"]:hover { color: #fff; }
+        .arkhen-auth form button[type="button"].w-full { min-height: 48px; background: #151d28; border-color: #334155; }
+        .arkhen-auth form button[type="button"].w-full:hover { background: #1e293b; }
+        .arkhen-auth form .h-px { background: #263244; }
+        .arkhen-auth :where(button,input):focus-visible { outline-color: #cbd5e1; }
+      `}</style>
+      <div aria-hidden="true" className="absolute inset-0 -z-10 pointer-events-none">
         {backgroundImages.map((img, index) => (
-          <div
-            key={img}
-            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentBgIndex ? 'opacity-100' : 'opacity-0'}`}
-          >
-            <img
-              src={img}
-              alt="Background"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-slate-50/80"></div>
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-50 via-transparent to-slate-50/50"></div>
+          <div key={img} className={`absolute inset-0 transition-opacity duration-1000 ${index === currentBgIndex ? 'opacity-100' : 'opacity-0'}`}>
+            <img src={img} alt="" className="w-full h-full object-cover opacity-[0.12] grayscale" />
           </div>
         ))}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#080c12] via-[#080c12]/90 to-[#101a28]/90" />
+        <div className="absolute -left-40 top-1/4 h-[560px] w-[560px] rounded-full border border-white/[0.04]" />
+        <div className="absolute -left-24 top-1/3 h-[420px] w-[420px] rounded-full border border-white/[0.04]" />
       </div>
 
-      {/* Main Glass Card */}
-      <div className="relative z-10 w-full max-w-md px-5 sm:px-6">
-
-        {/* Brand Header */}
-        <div className="flex flex-col items-center mb-6">
-          <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center p-3 shadow-sm border border-slate-200 mb-4 relative overflow-hidden">
-            <div className="absolute inset-0 bg-transparent"></div>
-            <img
-              src="/logos/dailabs_logo.png"
-              alt="Dailabs DriveCar"
-              className="w-full h-full object-contain drop-shadow-md"
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-                e.currentTarget.parentElement!.innerHTML = `
-                  <svg class="w-12 h-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                `;
-              }}
-            />
+      <div className="relative mx-auto grid w-full max-w-6xl items-center gap-12 px-5 sm:px-8 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
+        <section className="hidden min-h-[560px] flex-col justify-between lg:flex" aria-label="Arkhen Drive Car">
+          <AppBrand dark />
+          <div className="py-16">
+            <div className="mb-8"><BrandSymbol className="h-20 w-20" /></div>
+            <p className="mb-5 text-xs font-medium uppercase tracking-[0.22em] text-slate-400">Gestão automotiva</p>
+            <h2 className="max-w-lg text-5xl font-medium leading-[1.12] tracking-tight text-slate-100" style={{ fontFamily: 'Outfit, Inter, sans-serif' }}>
+              Sua operação.<br /><span className="text-slate-400">Uma nova direção.</span>
+            </h2>
+            <p className="mt-6 max-w-sm text-base leading-7 text-slate-400">Estoque, vendas e finanças em um ambiente feito para decisões claras.</p>
           </div>
-          <h1 className="text-2xl font-semibold text-slate-900 tracking-tight mb-2 text-center">
-            Dailabs <span className="text-indigo-600">DriveCar</span>
-          </h1>
-          <p className="text-slate-500 text-sm font-medium tracking-normal normal-case mb-4">Sistema de Gestão Integrado</p>
-          <div className="inline-flex items-center space-x-2 bg-slate-100 border border-slate-200 rounded-full px-3 py-1">
-            <div className="w-1.5 h-1.5 rounded-full bg-indigo-500"></div>
-            <span className="text-xs font-semibold text-slate-600 normal-case tracking-normal">Acesso Restrito</span>
+          <div className="flex gap-6 border-t border-white/10 pt-5 text-xs text-slate-400">
+            <span>Estoque</span><span>Operação</span><span>Financeiro</span>
           </div>
-        </div>
+        </section>
 
-        {/* Login Container */}
-        <div className="bg-white border border-slate-200 rounded-xl p-5 sm:p-7 shadow-sm relative overflow-hidden">
-
-          {/* Shine effect */}
-          <div className="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 bg-white/20 blur-3xl rounded-full pointer-events-none"></div>
-
+        <section className="mx-auto w-full max-w-md rounded-2xl border border-white/10 bg-[#111822]/95 p-5 shadow-2xl shadow-black/30 sm:p-8" aria-label="Acesso ao sistema">
+          <div className="mb-8 flex items-center justify-between gap-3">
+            <AppBrand dark />
+            <span className="rounded-full border border-slate-600/60 px-2.5 py-1 text-[11px] font-medium text-slate-400">Acesso restrito</span>
+          </div>
+          <div className="mb-7">
+            <h1 className="text-2xl font-semibold tracking-tight text-slate-100">Bem-vindo de volta</h1>
+            <p className="mt-2 text-sm leading-6 text-slate-400">Entre para continuar no Arkhen Drive Car.</p>
+          </div>
           {error && (
-            <div role="alert" className="mb-6 p-4 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl flex items-start space-x-3 backdrop-blur-sm animate-in shake duration-300">
+            <div role="alert" className="mb-6 p-4 bg-rose-950/40 border border-rose-400/25 text-rose-200 rounded-xl flex items-start space-x-3 backdrop-blur-sm animate-in shake duration-300">
               <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
@@ -181,7 +180,7 @@ const AuthPage: React.FC = () => {
           )}
 
           {success && (
-            <div role="status" className="mb-6 p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl flex items-start space-x-3 backdrop-blur-sm animate-in fade-in duration-300">
+            <div role="status" className="mb-6 p-4 bg-emerald-950/40 border border-emerald-400/25 text-emerald-200 rounded-xl flex items-start space-x-3 backdrop-blur-sm animate-in fade-in duration-300">
               <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
@@ -201,26 +200,9 @@ const AuthPage: React.FC = () => {
             isGoogleLoading={googleLoading}
           />
 
-          {/* Link para site público removido pois o sistema é restrito */}
-        </div>
 
-        {/* Developer Footer */}
-        <div className="mt-7 flex items-center justify-center gap-3">
-          {/* Logo */}
-          <div className="h-8 w-8 flex items-center justify-center">
-            <img
-              src="/logos/dailabs_logo.png"
-              alt="Dailabs"
-              className="max-h-full max-w-full object-contain"
-            />
-          </div>
-
-          {/* Text */}
-          <div className="flex flex-col items-start leading-none text-slate-500">
-            <span className="text-xl font-semibold tracking-tight">DAILABS</span>
-            <span className="text-xs font-medium tracking-normal normal-case mt-1">Creative AI & Softwares</span>
-          </div>
-        </div>
+          <p className="mt-7 border-t border-white/[0.07] pt-5 text-center text-xs leading-5 text-slate-500">Arkhen Drive Car · Gestão integrada</p>
+        </section>
       </div>
     </div>
   );

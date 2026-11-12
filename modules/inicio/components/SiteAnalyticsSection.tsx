@@ -27,10 +27,10 @@ const SiteAnalyticsSection: React.FC<SiteAnalyticsSectionProps> = ({
       <div className="flex items-end justify-between">
         <div className="space-y-1">
           <p className="text-xs font-semibold text-slate-500 normal-case tracking-normal">Analytics Site Público</p>
-          <h2 className="text-3xl font-[900] text-slate-900 normal-case tracking-tight leading-none">Desempenho Online</h2>
+          <h2 className="dc-section-title font-[900]">Desempenho Online</h2>
         </div>
         <div className="hidden md:block text-right">
-          <p className="text-xs font-bold text-slate-500 normal-case tracking-normal">Atualizado em tempo real</p>
+          <p className="text-xs font-semibold text-slate-500 normal-case tracking-normal">Atualizado em tempo real</p>
           <div className="flex items-center gap-1 justify-end mt-1">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>

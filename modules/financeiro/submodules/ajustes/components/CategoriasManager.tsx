@@ -17,15 +17,15 @@ const CategoriasManager: React.FC = () => {
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+    <div className="dc-panel bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-sm font-semibold normal-case text-slate-400 tracking-normal">Plano de Contas / Categorias</h3>
-        <button className="text-xs font-semibold text-indigo-600 hover:underline normal-case">Nova Categoria</button>
+        <h3 className="dc-section-title text-sm font-semibold normal-case text-slate-400 tracking-normal">Plano de Contas / Categorias</h3>
+        <button className="dc-button text-xs font-semibold text-indigo-600 hover:underline normal-case">Nova Categoria</button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {cats.map(c => (
-          <div key={c.id} className="flex items-center justify-between p-4 bg-white rounded-2xl border border-slate-200 shadow-sm">
+          <div key={c.id} className="dc-panel flex items-center justify-between p-4 bg-white rounded-xl border border-slate-200 shadow-sm">
             <div className="flex items-center space-x-3">
               <div className={`w-2 h-2 rounded-full ${c.natureza === 'ENTRADA' ? 'bg-emerald-500' : 'bg-rose-500'}`}></div>
               <span className="text-xs font-medium text-slate-700 normal-case">{c.nome}</span>

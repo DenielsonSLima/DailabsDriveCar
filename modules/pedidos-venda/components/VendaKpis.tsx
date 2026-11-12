@@ -24,22 +24,22 @@ const VendaKpis: React.FC<Props> = ({ pedidos }) => {
   const fmt = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-        <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal">VGV (Faturado)</p>
-        <h3 className="text-2xl font-semibold text-slate-900 mt-1">{fmt(stats.vgv)}</h3>
+    <div className="dc-kpi-grid">
+      <div className="dc-kpi-card">
+        <p className="dc-kpi-label">VGV (Faturado)</p>
+        <h3 className="dc-kpi-value">{fmt(stats.vgv)}</h3>
       </div>
-      <div className="bg-slate-900 p-6 rounded-2xl shadow-sm">
-        <p className="text-xs font-semibold text-emerald-400 normal-case tracking-normal">Lucro Bruto Realizado</p>
-        <h3 className="text-2xl font-semibold text-white mt-1">{fmt(stats.lucro)}</h3>
+      <div className="dc-kpi-card">
+        <p className="dc-kpi-label">Lucro Bruto Realizado</p>
+        <h3 className="dc-kpi-value">{fmt(stats.lucro)}</h3>
       </div>
-      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-        <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal">Veículos Vendidos</p>
-        <h3 className="text-2xl font-semibold text-slate-900 mt-1">{stats.qtd} <span className="text-xs font-bold text-slate-400 normal-case">Unid.</span></h3>
+      <div className="dc-kpi-card">
+        <p className="dc-kpi-label">Veículos Vendidos</p>
+        <h3 className="dc-kpi-value">{stats.qtd} <span className="text-xs font-semibold text-slate-400 normal-case">Unid.</span></h3>
       </div>
-      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-        <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal">Ticket Médio Saída</p>
-        <h3 className="text-2xl font-semibold text-slate-900 mt-1">{fmt(stats.ticket)}</h3>
+      <div className="dc-kpi-card">
+        <p className="dc-kpi-label">Ticket Médio Saída</p>
+        <h3 className="dc-kpi-value">{fmt(stats.ticket)}</h3>
       </div>
     </div>
   );

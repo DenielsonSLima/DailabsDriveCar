@@ -110,16 +110,16 @@ const ContasPagarPage: React.FC = () => {
   }, [titulos, activeTab]);
 
   return (
-    <div className="space-y-6 relative pb-8">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <div className="dc-page space-y-6 relative pb-8">
+      <div className="dc-page-header flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-3xl font-semibold text-slate-900 normal-case tracking-tight leading-none">Contas a Pagar</h2>
-          <p className="text-slate-500 text-xs font-medium normal-case tracking-normal mt-2">Agenda de compromissos financeiros e liquidação de pedidos</p>
+          <h2 className="dc-page-title text-xl font-semibold text-slate-900 normal-case tracking-tight leading-none">Contas a Pagar</h2>
+          <p className="dc-page-subtitle text-slate-500 text-xs font-medium normal-case tracking-normal mt-2">Agenda de compromissos financeiros e liquidação de pedidos</p>
         </div>
-        <div className="flex items-center bg-white p-1 rounded-2xl border border-slate-200 shadow-sm">
+        <div className="dc-tabs">
           <button
             onClick={() => setViewMode('card')}
-            className={`p-2.5 rounded-xl transition-all ${viewMode === 'card' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+            className={`dc-tab p-2.5 rounded-xl transition-all ${viewMode === 'card' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
             title="Visualização em Cards"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -128,7 +128,7 @@ const ContasPagarPage: React.FC = () => {
           </button>
           <button
             onClick={() => setViewMode('table')}
-            className={`p-2.5 rounded-xl transition-all ${viewMode === 'table' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+            className={`dc-tab p-2.5 rounded-xl transition-all ${viewMode === 'table' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
             title="Visualização em Tabela"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -140,15 +140,15 @@ const ContasPagarPage: React.FC = () => {
 
       <PagarKpis kpis={kpis} />
 
-      <div className="flex bg-white p-1.5 rounded-2xl border border-slate-200 w-fit shadow-sm">
-        <button onClick={() => setActiveTab('EM_ABERTO')} className={`px-6 py-2.5 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all ${activeTab === 'EM_ABERTO' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Em Aberto</button>
-        <button onClick={() => setActiveTab('PAGOS')} className={`px-6 py-2.5 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all ${activeTab === 'PAGOS' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Pagos</button>
-        <button onClick={() => setActiveTab('TODOS')} className={`px-6 py-2.5 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all ${activeTab === 'TODOS' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Todos</button>
+      <div className="dc-tabs">
+        <button onClick={() => setActiveTab('EM_ABERTO')} className={`dc-tab px-4 py-2.5 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all ${activeTab === 'EM_ABERTO' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Em Aberto</button>
+        <button onClick={() => setActiveTab('PAGOS')} className={`dc-tab px-4 py-2.5 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all ${activeTab === 'PAGOS' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Pagos</button>
+        <button onClick={() => setActiveTab('TODOS')} className={`dc-tab px-4 py-2.5 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all ${activeTab === 'TODOS' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Todos</button>
       </div>
 
       <PagarFilters filtros={filtros} onChange={setFiltros} categorias={categorias} />
 
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden min-h-[400px]">
+      <div className="dc-panel dc-panel-frame bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden min-w-0">
         <PagarList
           items={processedData}
           loading={isLoading}
@@ -162,7 +162,7 @@ const ContasPagarPage: React.FC = () => {
 
         {/* Pagination Controls inside the card */}
         {!isLoading && totalPages > 1 && (
-          <div className="flex items-center justify-between p-6 border-t border-slate-100 bg-slate-50/50">
+          <div className="flex items-center justify-between p-4 border-t border-slate-100 bg-slate-50/50">
             <p className="text-xs text-slate-500 font-medium normal-case tracking-normal">
               Página <span className="text-slate-900">{currentPage}</span> de <span className="text-slate-900">{totalPages}</span>
               <span className="ml-2 opacity-50">({totalCount} registros)</span>
@@ -171,21 +171,21 @@ const ContasPagarPage: React.FC = () => {
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="p-2.5 rounded-xl hover:bg-white text-slate-400 hover:text-indigo-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm"
+                className="dc-button p-2.5 rounded-xl hover:bg-white text-slate-400 hover:text-indigo-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
 
-              <button className="w-8 h-8 rounded-lg text-xs font-semibold bg-indigo-600 text-white shadow-sm shadow-none flex items-center justify-center">
+              <button className="dc-button w-8 h-8 rounded-lg text-xs font-semibold bg-indigo-600 text-white shadow-sm shadow-none flex items-center justify-center">
                 {currentPage}
               </button>
 
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="p-2.5 rounded-xl hover:bg-white text-slate-400 hover:text-indigo-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm"
+                className="dc-button p-2.5 rounded-xl hover:bg-white text-slate-400 hover:text-indigo-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-sm"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

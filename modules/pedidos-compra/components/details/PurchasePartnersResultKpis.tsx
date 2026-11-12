@@ -59,10 +59,10 @@ const PurchasePartnersResultKpis: React.FC<Props> = ({ pedido }) => {
 
   return (
     <div className="bg-white border border-slate-200 rounded-2xl shadow-sm animate-in slide-in-from-top-4 duration-500 overflow-hidden">
-      <div className="bg-slate-50/50 border-b border-slate-100 px-6 py-3 flex items-center justify-between">
+      <div className="bg-slate-50/50 border-b border-slate-100 px-4 py-2.5 flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <div className="w-1 h-3 bg-indigo-600 rounded-full"></div>
-          <h3 className="text-xs font-semibold text-slate-500 normal-case tracking-normal">Composição Societária do Investimento</h3>
+          <h3 className="dc-section-title font-semibold text-slate-500 normal-case tracking-normal">Composição Societária do Investimento</h3>
         </div>
         <span className="text-xs font-semibold bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-lg normal-case tracking-normal">
           {stats.length} {stats.length === 1 ? 'Sócio' : 'Sócios'}
@@ -79,11 +79,11 @@ const PurchasePartnersResultKpis: React.FC<Props> = ({ pedido }) => {
                   {socio.nome.charAt(0)}
                 </div>
                 <div className="min-w-0">
-                  <h4 className="text-sm font-semibold text-slate-900 normal-case tracking-tight truncate">
+                  <h4 className="dc-section-title font-semibold text-slate-900 normal-case tracking-tight">
                     {socio.nome}
                   </h4>
                   <div className="flex items-center space-x-2">
-                    <p className="text-xs font-bold text-indigo-500 normal-case tracking-normal">Investidor Ativo</p>
+                    <p className="text-xs font-semibold text-indigo-500 normal-case tracking-normal">Investidor Ativo</p>
                     <span className="text-xs font-semibold text-slate-300">•</span>
                     <span className="text-xs font-semibold text-indigo-600">{Number(socio.porcentagem).toFixed(2)}%</span>
                   </div>
@@ -104,12 +104,12 @@ const PurchasePartnersResultKpis: React.FC<Props> = ({ pedido }) => {
               <div className="grid grid-cols-2 md:flex md:items-center gap-6 md:gap-8">
                 <div className="flex flex-col">
                   <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-0.5">Aporte</p>
-                  <p className="text-xs font-semibold text-slate-700">{formatCurrency(socio.investido)}</p>
+                  <p className="dc-kpi-value">{formatCurrency(socio.investido)}</p>
                 </div>
 
                 <div className="flex flex-col">
                   <p className="text-xs font-semibold text-indigo-400 normal-case tracking-normal mb-0.5">Lucro Est.</p>
-                  <p className="text-xs font-semibold text-slate-700">{formatCurrency(socio.retorno)}</p>
+                  <p className="dc-kpi-value">{formatCurrency(socio.retorno)}</p>
                 </div>
 
                 <div className="col-span-2 md:col-span-1">

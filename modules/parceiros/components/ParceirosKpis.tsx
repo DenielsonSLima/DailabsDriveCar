@@ -34,18 +34,18 @@ const ParceirosKpis: React.FC<KpiProps> = ({ stats }) => {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="dc-kpi-grid">
       {statsList.map((s, idx) => (
-        <div key={idx} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
-            <div className={`w-12 h-12 rounded-2xl bg-slate-100 text-slate-600 flex items-center justify-center shadow-sm`}>
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div key={idx} className="dc-kpi-card">
+          <div className="flex items-center justify-between mb-2">
+            <div className={`w-8 h-8 rounded-2xl bg-slate-100 text-slate-600 flex items-center justify-center shadow-sm`}>
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={s.icon} />
               </svg>
             </div>
           </div>
-          <p className="text-slate-500 text-xs font-semibold normal-case tracking-normal">{s.label}</p>
-          <h3 className="text-2xl font-semibold text-slate-900 mt-1">{s.value}</h3>
+          <p className="dc-kpi-label">{s.label}</p>
+          <h3 className="dc-kpi-value">{s.value}</h3>
         </div>
       ))}
     </div>

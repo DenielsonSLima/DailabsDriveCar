@@ -20,9 +20,9 @@ const VendaSocios: React.FC<Props> = ({ pedido }) => {
   const lucroTotal = vendaEfetiva - custoTotal;
 
   return (
-    <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm animate-in slide-in-from-bottom-8">
+    <div className="dc-panel animate-in slide-in-from-bottom-8">
       <div className="flex items-center justify-between mb-8">
-        <h3 className="text-xs font-semibold text-slate-400 normal-case tracking-normal flex items-center">
+        <h3 className="dc-section-title font-semibold text-slate-400 normal-case tracking-normal flex items-center">
           <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
           RESULTADO POR INVESTIDOR
         </h3>
@@ -50,7 +50,7 @@ const VendaSocios: React.FC<Props> = ({ pedido }) => {
                   <div className="h-1.5 w-full bg-slate-200 rounded-full mt-3 overflow-hidden p-0.5">
                      <div className="h-full bg-indigo-500 rounded-full transition-all duration-1000" style={{ width: `${socio.porcentagem}%` }}></div>
                   </div>
-                  <p className="text-xs text-slate-400 font-bold normal-case mt-2 tracking-normal">Ganhos Proporcionais</p>
+                  <p className="text-xs text-slate-400 font-semibold normal-case mt-2 tracking-normal">Ganhos Proporcionais</p>
                </div>
             </div>
           );

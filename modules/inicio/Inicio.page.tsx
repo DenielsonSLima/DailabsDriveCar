@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { InicioService } from './inicio.service';
 import { EmpresaService } from '../ajustes/empresa/empresa.service';
-import { useAuthStore } from '../../store/auth.store';
 
 // Components
 import WelcomeHeader from './components/WelcomeHeader';
@@ -15,9 +13,7 @@ import FipeUsageCard from './components/FipeUsageCard';
 import SiteAnalyticsSection from './components/SiteAnalyticsSection';
 
 const InicioPage: React.FC = () => {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { profile } = useAuthStore();
 
   // 0. Query para dados da Empresa (para obter organization_id correto do tenant)
   const { data: empresa } = useQuery({
@@ -83,81 +79,34 @@ const InicioPage: React.FC = () => {
   const loading = isLoadingStats || isLoadingRecent || isLoadingHistory;
 
   if (loading) return (
-    <div className="min-h-screen flex flex-col items-center justify-center -mt-20">
-      <div className="relative w-24 h-24">
+    <div className="min-h-[320px] flex flex-col items-center justify-center">
+      <div className="relative w-10 h-10">
         <div className="absolute inset-0 border-4 border-indigo-50/50 rounded-full"></div>
         <div className="absolute inset-0 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
       </div>
-      <p className="mt-8 text-slate-500 font-semibold normal-case text-xs tracking-normal animate-pulse">Orquestrando Dashboard...</p>
+      <p className="mt-4 text-slate-500 font-semibold normal-case text-xs tracking-normal animate-pulse">Carregando visão geral...</p>
     </div>
   );
 
   return (
-    <div className="space-y-6 pb-8 max-w-[1600px] mx-auto animate-in fade-in slide-in-from-bottom-8 duration-300">
+    <div className="dc-page pb-8 animate-in fade-in duration-200">
       {/* 1. Welcome Header (Premium) */}
       <WelcomeHeader />
 
       {/* 2. General KPIs (Full Width) */}
       {stats && <GeneralKpis stats={stats} />}
 
-      {/* 3. Main Dashboard Grid */}
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
-        {/* Left Column: Chart & Recent Arrivals */}
-        <div className="xl:col-span-8 space-y-6">
+      {/* Operações frequentes ficam próximas dos indicadores, sem promover integrações. */}
+      <QuickShortcuts />
+
+      <div className="grid min-w-0 grid-cols-1 items-start gap-4 xl:grid-cols-3">
+        <div className="min-w-0 xl:col-span-2">
           <HistoryChart data={history} />
-          <RecentStockMini veiculos={recent} />
         </div>
-
-        {/* Right Column: Tools & Shortcuts */}
-        <div className="xl:col-span-4 space-y-6 h-fit">
-          <FipeUsageCard />
-          <QuickShortcuts />
-
-          {/* Marketing Story Generator */}
-          <div
-            onClick={() => navigate('/marketing/stories')}
-            className="bg-indigo-50 rounded-xl p-5 text-indigo-950 shadow-sm relative overflow-hidden group hover:shadow-indigo-500/20 transition-all duration-500 cursor-pointer border border-slate-200"
-          >
-            <div className="hidden">
-              <svg className="w-44 h-44" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
-              </svg>
-            </div>
-            <div className="relative">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-slate-200 mb-3">
-                <div className="w-1.5 h-1.5 bg-indigo-300 rounded-full animate-pulse" />
-                <span className="text-xs font-semibold normal-case tracking-normal text-indigo-600">Marketing</span>
-              </div>
-              <h4 className="text-xl font-semibold tracking-tight leading-tight">Gerador de Stories</h4>
-              <p className="mt-2 text-slate-500 text-sm font-medium leading-relaxed">
-                Posts automáticos para Instagram com as fotos do seu estoque.
-              </p>
-            </div>
-          </div>
-
-          {/* Marketing Feed Generator */}
-          <div
-            onClick={() => navigate('/marketing/feed')}
-            className="bg-white rounded-xl p-5 text-slate-900 shadow-sm relative overflow-hidden group hover:shadow-fuchsia-500/20 transition-all duration-500 cursor-pointer border border-slate-200"
-          >
-            <div className="hidden">
-              <svg className="w-44 h-44" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-6 13h-2v-2h2v2zm0-4h-2V7h2v5z" />
-              </svg>
-            </div>
-            <div className="relative">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-slate-200 mb-3">
-                <div className="w-1.5 h-1.5 bg-fuchsia-300 rounded-full animate-pulse" />
-                <span className="text-xs font-semibold normal-case tracking-normal text-indigo-600">Social Media</span>
-              </div>
-              <h4 className="text-xl font-semibold tracking-tight leading-tight">Gerador de Feed</h4>
-              <p className="mt-2 text-slate-500 text-sm font-medium leading-relaxed">
-                Gere posts quadrados (1:1) ou verticais (4:5) personalizados.
-              </p>
-            </div>
-          </div>
-        </div>
+        <FipeUsageCard />
       </div>
+
+      <RecentStockMini veiculos={recent} />
 
       {/* 4. Analytics Section (Novidade: Rastreamento do Site Público) - Agora no FINAL da página */}
       {analyticsSummary && (

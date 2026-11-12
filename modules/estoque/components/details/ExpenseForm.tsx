@@ -183,29 +183,29 @@ const ExpenseForm: React.FC<Props> = ({ onClose, onSubmit }) => {
 
   const content = (
     <div data-drivecar-ui className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="bg-white w-full max-w-2xl rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 border border-slate-100 flex flex-col max-h-[95vh]">
+      <div className="dc-panel bg-white w-full max-w-2xl rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 border border-slate-100 flex flex-col max-h-[95vh]">
 
         <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
           <div>
-            <h2 className="text-xl font-semibold text-slate-900 normal-case tracking-normal">Lançamento de Despesa</h2>
-            <p className="text-xs text-slate-400 font-bold normal-case tracking-normal mt-1">Gestão de custos integrada ao financeiro</p>
+            <h2 className="dc-section-title text-xl font-semibold text-slate-900 normal-case tracking-normal">Lançamento de Despesa</h2>
+            <p className="text-xs text-slate-600 font-bold normal-case tracking-normal mt-1">Gestão de custos integrada ao financeiro</p>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-white rounded-full text-slate-400 hover:text-rose-500 transition-colors">
+          <button onClick={onClose} className="dc-button p-2 hover:bg-white rounded-full text-slate-600 hover:text-rose-500 transition-colors">
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
 
           {/* Identificação Básica */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="md:col-span-2">
               <label className="block text-xs font-semibold text-slate-500 normal-case mb-2 ml-1 tracking-normal">Descrição do Serviço / Compra</label>
               <input
                 autoFocus
                 value={descricao}
                 onChange={e => setDescricao(e.target.value.toUpperCase())}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-3 font-medium outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                className="dc-input w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-3 font-medium outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
                 placeholder="Ex: Troca de Pneus, Higienização, Martelinho..."
                 required
               />
@@ -217,7 +217,7 @@ const ExpenseForm: React.FC<Props> = ({ onClose, onSubmit }) => {
                 type="date"
                 value={dataOperacao}
                 onChange={e => setDataOperacao(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-3.5 font-medium outline-none focus:ring-2 focus:ring-indigo-500"
+                className="dc-input w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-3.5 font-medium outline-none focus:ring-2 focus:ring-indigo-500"
                 required
               />
             </div>
@@ -228,7 +228,7 @@ const ExpenseForm: React.FC<Props> = ({ onClose, onSubmit }) => {
                 <select
                   value={categoriaId}
                   onChange={e => setCategoriaId(e.target.value)}
-                  className="min-w-0 flex-1 bg-slate-50 border border-slate-200 rounded-xl px-5 py-3.5 font-medium outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer"
+                  className="dc-input min-w-0 flex-1 bg-slate-50 border border-slate-200 rounded-xl px-5 py-3.5 font-medium outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer"
                   required
                 >
                   <option value="">Selecione...</option>
@@ -239,7 +239,7 @@ const ExpenseForm: React.FC<Props> = ({ onClose, onSubmit }) => {
                 <button
                   type="button"
                   onClick={() => setIsAddingCategory(prev => !prev)}
-                  className="w-12 shrink-0 rounded-xl border border-slate-200 bg-white text-slate-500 hover:border-indigo-300 hover:text-indigo-600 hover:bg-indigo-50 transition-all flex items-center justify-center"
+                  className="dc-button w-12 shrink-0 rounded-xl border border-slate-200 bg-white text-slate-500 hover:border-indigo-300 hover:text-indigo-600 hover:bg-indigo-50 transition-all flex items-center justify-center"
                   title="Cadastrar nova categoria"
                   aria-label="Cadastrar nova categoria"
                 >
@@ -257,7 +257,7 @@ const ExpenseForm: React.FC<Props> = ({ onClose, onSubmit }) => {
                         handleCreateCategory();
                       }
                     }}
-                    className="w-full bg-white border border-indigo-100 rounded-xl px-4 py-3 text-xs font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="dc-input w-full bg-white border border-indigo-100 rounded-xl px-4 py-3 text-xs font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-indigo-500"
                     placeholder="NOME DA NOVA CATEGORIA"
                   />
                   <div className="flex items-center justify-end gap-2">
@@ -267,7 +267,7 @@ const ExpenseForm: React.FC<Props> = ({ onClose, onSubmit }) => {
                         setIsAddingCategory(false);
                         setNewCategoryName('');
                       }}
-                      className="px-4 py-2 rounded-xl text-xs font-semibold normal-case tracking-normal text-slate-400 hover:text-slate-700 transition-colors"
+                      className="dc-button px-4 py-2 rounded-xl text-xs font-semibold normal-case tracking-normal text-slate-600 hover:text-slate-700 transition-colors"
                     >
                       Cancelar
                     </button>
@@ -275,7 +275,7 @@ const ExpenseForm: React.FC<Props> = ({ onClose, onSubmit }) => {
                       type="button"
                       onClick={handleCreateCategory}
                       disabled={isSavingCategory}
-                      className="px-4 py-2 rounded-xl bg-indigo-600 text-white text-xs font-semibold normal-case tracking-normal shadow-sm shadow-indigo-100 disabled:opacity-50"
+                      className="dc-button px-4 py-2 rounded-xl bg-indigo-600 text-white text-xs font-semibold normal-case tracking-normal shadow-sm shadow-indigo-100 disabled:opacity-50"
                     >
                       {isSavingCategory ? 'Salvando...' : 'Salvar'}
                     </button>
@@ -288,14 +288,14 @@ const ExpenseForm: React.FC<Props> = ({ onClose, onSubmit }) => {
           <div className="h-px bg-slate-100"></div>
 
           {/* Financeiro Estrutural */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
             <div className="md:col-span-5">
               <label className="block text-xs font-semibold text-slate-500 normal-case mb-2 ml-1 tracking-normal">Valor Total Negociado</label>
               <input
                 type="text"
                 value={valorTotalStr}
                 onChange={e => handleCurrencyChange(e.target.value)}
-                className="w-full bg-slate-900 border-2 border-slate-800 rounded-xl px-5 py-3 text-2xl font-semibold text-emerald-400 outline-none focus:border-indigo-500 transition-all text-center shadow-inner"
+                className="dc-input w-full bg-slate-900 border-2 border-slate-800 rounded-xl px-5 py-3 text-2xl font-semibold text-emerald-400 outline-none focus:border-indigo-500 transition-all text-center shadow-inner"
               />
             </div>
 
@@ -304,7 +304,7 @@ const ExpenseForm: React.FC<Props> = ({ onClose, onSubmit }) => {
               <select
                 value={formaId}
                 onChange={e => { setFormaId(e.target.value); setQtdParcelas(1); }}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-3 font-medium text-slate-800 outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer"
+                className="dc-input w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-3 font-medium text-slate-800 outline-none focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer"
                 required
               >
                 <option value="">Como será pago?</option>
@@ -315,15 +315,15 @@ const ExpenseForm: React.FC<Props> = ({ onClose, onSubmit }) => {
 
           {/* Seção de Parcelamento */}
           {isPrazo && (
-            <div className="space-y-6 animate-in slide-in-from-top-4 duration-500">
+            <div className="space-y-4 animate-in slide-in-from-top-4 duration-500">
               <div className="flex items-center justify-between px-1">
                 <label className="block text-xs font-semibold text-rose-500 normal-case tracking-normal">Parcelas / Vencimentos</label>
                 <div className="flex items-center space-x-2">
-                  <span className="text-xs font-bold text-slate-400">Dividir em:</span>
+                  <span className="text-xs font-bold text-slate-600">Dividir em:</span>
                   <select
                     value={qtdParcelas}
                     onChange={e => setQtdParcelas(Number(e.target.value))}
-                    className="bg-white border border-slate-200 rounded-lg px-2 py-1 text-xs font-semibold text-indigo-600 outline-none"
+                    className="dc-input bg-white border border-slate-200 rounded-lg px-2 py-1 text-xs font-semibold text-indigo-600 outline-none"
                   >
                     {[1, 2, 3, 4, 5, 6, 10, 12].map(n => <option key={n} value={n}>{n}x</option>)}
                   </select>
@@ -333,20 +333,20 @@ const ExpenseForm: React.FC<Props> = ({ onClose, onSubmit }) => {
               <div className="grid grid-cols-1 gap-3">
                 {parcelas.map((p) => (
                   <div key={p.id_temp} className="flex items-center gap-4 bg-slate-50 border border-slate-100 p-4 rounded-2xl hover:bg-white hover:border-indigo-200 transition-all group">
-                    <div className="w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center font-semibold text-slate-400 text-xs shadow-sm">
+                    <div className="w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center font-semibold text-slate-600 text-xs shadow-sm">
                       {p.numero}º
                     </div>
                     <div className="flex-1">
-                      <p className="text-xs font-semibold text-slate-400 normal-case mb-1">Previsão Vencimento</p>
+                      <p className="text-xs font-semibold text-slate-600 normal-case mb-1">Previsão Vencimento</p>
                       <input
                         type="date"
                         value={p.vencimento}
                         onChange={(e) => updateParcelaDate(p.id_temp, e.target.value)}
-                        className="bg-transparent font-semibold text-slate-800 outline-none cursor-pointer focus:text-indigo-600 w-full"
+                        className="dc-input bg-transparent font-semibold text-slate-800 outline-none cursor-pointer focus:text-indigo-600 w-full"
                       />
                     </div>
                     <div className="text-right">
-                      <p className="text-xs font-semibold text-slate-400 normal-case mb-1">Valor Parcela</p>
+                      <p className="text-xs font-semibold text-slate-600 normal-case mb-1">Valor Parcela</p>
                       <p className="text-sm font-semibold text-slate-900">{formatCurrency(p.valor)}</p>
                     </div>
                   </div>
@@ -371,7 +371,7 @@ const ExpenseForm: React.FC<Props> = ({ onClose, onSubmit }) => {
                 required
                 value={contaId}
                 onChange={e => setContaId(e.target.value)}
-                className="w-full bg-white border-2 border-emerald-200 rounded-xl px-5 py-3 text-xs font-semibold text-emerald-700 outline-none shadow-sm"
+                className="dc-input w-full bg-white border-2 border-emerald-200 rounded-xl px-5 py-3 text-xs font-semibold text-emerald-700 outline-none shadow-sm"
               >
                 <option value="">Selecione o Caixa de Saída...</option>
                 {contas.map(c => <option key={c.id} value={c.id}>{c.banco_nome} - {c.titular} | Saldo: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(c.saldo_atual || 0)}</option>)}
@@ -386,7 +386,7 @@ const ExpenseForm: React.FC<Props> = ({ onClose, onSubmit }) => {
             type="button"
             onClick={handleSubmit}
             disabled={parcelas.length === 0}
-            className="w-full py-5 bg-slate-900 text-white rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-indigo-600 shadow-sm transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center space-x-3"
+            className="dc-button w-full py-5 bg-slate-900 text-white rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-indigo-600 shadow-sm transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center space-x-3"
           >
             {isPrazo ? (
               <>

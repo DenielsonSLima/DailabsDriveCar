@@ -79,12 +79,12 @@ const RelatorioComissoesPage: React.FC = () => {
   const formatCur = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
 
   return (
-    <div className="space-y-6 pb-20 animate-in fade-in duration-500">
+    <div className="dc-page pb-20 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center space-x-4">
           <button
             onClick={() => navigate('/relatorios')}
-            className="p-3 bg-white border border-slate-200 rounded-2xl text-slate-500 hover:text-indigo-600 hover:border-indigo-100 transition-all shadow-sm group"
+            className="dc-button bg-white border border-slate-200 text-slate-500 hover:text-indigo-600 hover:border-indigo-100 transition-all shadow-sm group"
           >
             <svg className="w-6 h-6 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -92,14 +92,14 @@ const RelatorioComissoesPage: React.FC = () => {
           </button>
           <div>
             <p className="text-xs font-semibold text-indigo-500 normal-case tracking-normal">Relatórios / Comercial</p>
-            <h1 className="text-3xl font-semibold text-slate-900 normal-case tracking-tight leading-none">Relatório de Comissões</h1>
+            <h1 className="dc-page-title">Relatório de Comissões</h1>
           </div>
         </div>
 
         {reportData && (
           <button
             onClick={() => setIsPreviewOpen(true)}
-            className="flex items-center space-x-2 px-6 py-3 bg-slate-900 text-white rounded-2xl font-semibold normal-case text-xs tracking-normal hover:bg-slate-800 transition-all shadow-sm shadow-slate-200"
+            className="dc-button flex items-center space-x-2 bg-slate-900 text-white normal-case tracking-normal hover:bg-slate-800 transition-all shadow-sm shadow-slate-200"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
             <span>Imprimir PDF</span>
@@ -107,19 +107,19 @@ const RelatorioComissoesPage: React.FC = () => {
         )}
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+      <div className="dc-panel">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10 items-end">
           <div className="md:col-span-2">
             <label className="block text-xs font-semibold text-slate-400 normal-case mb-2 tracking-normal ml-1">Período</label>
             <div className="flex items-center space-x-2 bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
-              <input type="date" value={dataInicio} onChange={e => setDataInicio(e.target.value)} className="flex-1 bg-transparent border-none px-4 py-2 text-sm font-bold focus:ring-0 outline-none" />
+              <input type="date" value={dataInicio} onChange={e => setDataInicio(e.target.value)} className="dc-input flex-1 bg-transparent border-none focus:ring-0 outline-none" />
               <span className="text-slate-300 font-semibold text-xs normal-case">até</span>
-              <input type="date" value={dataFim} onChange={e => setDataFim(e.target.value)} className="flex-1 bg-transparent border-none px-4 py-2 text-sm font-bold focus:ring-0 outline-none" />
+              <input type="date" value={dataFim} onChange={e => setDataFim(e.target.value)} className="dc-input flex-1 bg-transparent border-none focus:ring-0 outline-none" />
             </div>
           </div>
           <div>
             <label className="block text-xs font-semibold text-slate-400 normal-case mb-2 tracking-normal ml-1">Corretor</label>
-            <select value={corretorId} onChange={e => setCorretorId(e.target.value)} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3.5 text-sm font-bold focus:ring-2 focus:ring-indigo-500 outline-none appearance-none cursor-pointer">
+            <select value={corretorId} onChange={e => setCorretorId(e.target.value)} className="dc-input w-full bg-slate-50 border border-slate-100 focus:ring-2 focus:ring-indigo-500 outline-none appearance-none cursor-pointer">
               <option value="">Todos os Corretores</option>
               {corretores.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
             </select>
@@ -127,7 +127,7 @@ const RelatorioComissoesPage: React.FC = () => {
           <button
             onClick={fetchData}
             disabled={loading}
-            className="px-6 py-4 bg-indigo-600 text-white rounded-2xl font-semibold normal-case text-xs tracking-normal shadow-sm shadow-indigo-100 hover:bg-indigo-700 transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
+            className="dc-button bg-indigo-600 text-white normal-case tracking-normal shadow-sm shadow-indigo-100 hover:bg-indigo-700 transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
           >
             {loading ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : <span>Calcular Comissões</span>}
           </button>
@@ -136,22 +136,22 @@ const RelatorioComissoesPage: React.FC = () => {
         {reportData ? (
           <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* KPI GRID */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-2">Vendas Totais</p>
-                <p className="text-2xl font-semibold text-slate-900">{reportData.totalVendas}</p>
+            <div className="dc-kpi-grid">
+              <div className="dc-kpi-card">
+                <p className="dc-kpi-label">Vendas Totais</p>
+                <p className="dc-kpi-value">{reportData.totalVendas}</p>
               </div>
-              <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-2">Volume Vendido</p>
-                <p className="text-2xl font-semibold text-slate-900">{formatCur(reportData.volumeVendido)}</p>
+              <div className="dc-kpi-card">
+                <p className="dc-kpi-label">Volume Vendido</p>
+                <p className="dc-kpi-value">{formatCur(reportData.volumeVendido)}</p>
               </div>
-              <div className="bg-indigo-50 p-6 rounded-2xl border border-indigo-100 shadow-sm">
-                <p className="text-xs font-semibold text-indigo-600 normal-case tracking-normal mb-2">Total de Comissões</p>
-                <p className="text-2xl font-semibold text-indigo-700">{formatCur(reportData.totalComissoes)}</p>
+              <div className="dc-kpi-card">
+                <p className="dc-kpi-label">Total de Comissões</p>
+                <p className="dc-kpi-value">{formatCur(reportData.totalComissoes)}</p>
               </div>
-              <div className="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-sm text-white">
-                <p className="text-xs font-semibold text-indigo-300 normal-case tracking-normal mb-2 font-bold">Comissão Média</p>
-                <p className="text-2xl font-semibold">{reportData.comissaoMedia}%</p>
+              <div className="dc-kpi-card">
+                <p className="dc-kpi-label">Comissão Média</p>
+                <p className="dc-kpi-value">{reportData.comissaoMedia}%</p>
               </div>
             </div>
 
@@ -176,10 +176,10 @@ const RelatorioComissoesPage: React.FC = () => {
                   ) : (
                     reportData.items.map((item: any, i: number) => (
                       <tr key={i} className="hover:bg-slate-50/50 transition-colors">
-                        <td className="px-6 py-4 text-xs font-bold text-slate-400">{item.data}</td>
+                        <td className="px-6 py-4 text-xs font-semibold text-slate-400">{item.data}</td>
                         <td className="px-6 py-4">
                           <p className="text-sm font-semibold text-slate-900 normal-case tracking-tight leading-none mb-1">{item.veiculo}</p>
-                          <p className="text-xs font-bold text-slate-400 normal-case">{item.corretor}</p>
+                          <p className="text-xs font-semibold text-slate-400 normal-case">{item.corretor}</p>
                         </td>
                         <td className="px-6 py-4 text-sm font-semibold text-right text-slate-400 italic">{formatCur(item.valorVenda)}</td>
                         <td className="px-6 py-4 text-sm font-semibold text-right text-indigo-600">{formatCur(item.comissao)}</td>

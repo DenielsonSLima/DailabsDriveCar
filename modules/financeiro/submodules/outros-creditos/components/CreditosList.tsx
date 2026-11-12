@@ -30,7 +30,7 @@ const CreditosList: React.FC<Props> = ({ items, loading, onReceber, onEdit, onDe
   );
 
   const renderCards = (rows: ITituloCredito[]) => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 p-4">
       {rows.map((t) => (
         <CreditoCard
           key={t.id}
@@ -46,16 +46,16 @@ const CreditosList: React.FC<Props> = ({ items, loading, onReceber, onEdit, onDe
 
   const renderTable = (rows: ITituloCredito[]) => (
     <div className="overflow-x-auto">
-      <table className="w-full text-left">
+      <table className="dc-table w-full text-left">
         <thead className="bg-slate-50 border-b border-slate-100">
           <tr className="text-xs font-semibold text-slate-400 normal-case tracking-normal">
-            <th className="px-6 py-3">Vencimento</th>
-            <th className="px-6 py-3">Status</th>
-            <th className="px-6 py-3">Descrição / Origem</th>
-            <th className="px-6 py-3 text-right">Valor Total</th>
-            <th className="px-6 py-3 text-right text-emerald-600">Recebido</th>
-            <th className="px-6 py-3 text-right text-rose-600">Pendente</th>
-            <th className="px-6 py-3 text-right w-20">Ações</th>
+            <th className="px-4 py-3">Vencimento</th>
+            <th className="px-4 py-3">Status</th>
+            <th className="px-4 py-3">Descrição / Origem</th>
+            <th className="px-4 py-3 text-right">Valor Total</th>
+            <th className="px-4 py-3 text-right text-emerald-600">Recebido</th>
+            <th className="px-4 py-3 text-right text-rose-600">Pendente</th>
+            <th className="px-4 py-3 text-right w-20">Ações</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-50">
@@ -65,34 +65,34 @@ const CreditosList: React.FC<Props> = ({ items, loading, onReceber, onEdit, onDe
               className="hover:bg-slate-50/50 transition-colors group cursor-pointer"
               onClick={() => onReceber(t)}
             >
-              <td className="px-6 py-6">
+              <td className="px-4 py-4">
                 <p className="text-xs font-medium text-slate-900">{formatDate(t.data_vencimento)}</p>
               </td>
-              <td className="px-6 py-6">
+              <td className="px-4 py-4">
                 <span className={`px-2 py-1 rounded text-xs font-medium normal-case tracking-normal border ${t.status === 'PAGO' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-teal-50 text-teal-600 border-teal-100'
                   }`}>
                   {t.status}
                 </span>
               </td>
-              <td className="px-6 py-6">
+              <td className="px-4 py-4">
                 <p className="text-xs font-medium text-slate-700 normal-case truncate max-w-[200px]">{t.descricao}</p>
                 <p className="text-xs text-slate-500 font-medium normal-case mt-0.5">{t.parceiro?.nome || t.categoria?.nome}</p>
               </td>
-              <td className="px-6 py-6 text-right">
+              <td className="px-4 py-4 text-right">
                 <p className="text-sm font-semibold text-slate-900">{formatCurrency(t.valor_total)}</p>
               </td>
-              <td className="px-6 py-6 text-right">
+              <td className="px-4 py-4 text-right">
                 <p className="text-sm font-semibold text-emerald-600">{formatCurrency(t.valor_pago || 0)}</p>
               </td>
-              <td className="px-6 py-6 text-right">
+              <td className="px-4 py-4 text-right">
                 <p className="text-sm font-semibold text-rose-600">{formatCurrency(Math.max(0, t.valor_total - (t.valor_pago || 0)))}</p>
               </td>
-              <td className="px-6 py-6 text-right" onClick={(e) => e.stopPropagation()}>
+              <td className="px-4 py-4 text-right" onClick={(e) => e.stopPropagation()}>
                 <div className="flex justify-end space-x-2">
                   {t.status !== 'PAGO' && (
                     <button
                       onClick={() => onBaixa(t)}
-                      className="p-2 text-emerald-500 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors"
+                      className="dc-button p-2 text-emerald-500 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors"
                       title="Receber / Baixar"
                     >
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -100,10 +100,10 @@ const CreditosList: React.FC<Props> = ({ items, loading, onReceber, onEdit, onDe
                       </svg>
                     </button>
                   )}
-                  <button onClick={() => onEdit(t)} className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="Editar">
+                  <button onClick={() => onEdit(t)} className="dc-button p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="Editar">
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                   </button>
-                  <button onClick={() => onDelete(t.id)} className="p-2 text-slate-300 hover:text-rose-600 rounded-lg transition-colors" title="Excluir">
+                  <button onClick={() => onDelete(t.id)} className="dc-button p-2 text-slate-300 hover:text-rose-600 rounded-lg transition-colors" title="Excluir">
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                   </button>
                 </div>
@@ -122,7 +122,7 @@ const CreditosList: React.FC<Props> = ({ items, loading, onReceber, onEdit, onDe
     if (totalPages <= 1) return null;
 
     return (
-      <div className="flex items-center justify-between px-6 py-6 bg-slate-50 border-t border-slate-100">
+      <div className="flex items-center justify-between px-4 py-4 bg-slate-50 border-t border-slate-100">
         <p className="text-xs font-medium text-slate-500 normal-case tracking-normal">
           Mostrando {currentPage * pageSize + 1} a {Math.min((currentPage + 1) * pageSize, totalItems)} de {totalItems} registros
         </p>
@@ -130,7 +130,7 @@ const CreditosList: React.FC<Props> = ({ items, loading, onReceber, onEdit, onDe
           <button
             onClick={() => onPageChange(currentPage - 1)}
             disabled={currentPage === 0}
-            className="p-2 rounded-xl border border-slate-200 bg-white text-slate-400 disabled:opacity-30 enabled:hover:bg-slate-50 transition-all"
+            className="dc-button p-2 rounded-xl border border-slate-200 bg-white text-slate-400 disabled:opacity-30 enabled:hover:bg-slate-50 transition-all"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
           </button>
@@ -142,7 +142,7 @@ const CreditosList: React.FC<Props> = ({ items, loading, onReceber, onEdit, onDe
           <button
             onClick={() => onPageChange(currentPage + 1)}
             disabled={currentPage >= totalPages - 1}
-            className="p-2 rounded-xl border border-slate-200 bg-white text-slate-400 disabled:opacity-30 enabled:hover:bg-slate-50 transition-all"
+            className="dc-button p-2 rounded-xl border border-slate-200 bg-white text-slate-400 disabled:opacity-30 enabled:hover:bg-slate-50 transition-all"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
           </button>
@@ -153,7 +153,7 @@ const CreditosList: React.FC<Props> = ({ items, loading, onReceber, onEdit, onDe
 
   const content = () => {
     const list = Array.isArray(items) ? items : [];
-    if (list.length === 0) return <div className="py-32 text-center text-slate-400 font-semibold normal-case text-xs tracking-normal border-2 border-dashed border-slate-100 rounded-2xl mx-8">Nenhum crédito extraordinário encontrado</div>;
+    if (list.length === 0) return <div className="py-32 text-center text-slate-400 font-semibold normal-case text-xs tracking-normal border-2 border-dashed border-slate-100 rounded-xl mx-8">Nenhum crédito extraordinário encontrado</div>;
     return viewMode === 'card' ? renderCards(list) : renderTable(list);
   };
 

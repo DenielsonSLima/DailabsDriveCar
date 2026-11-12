@@ -213,17 +213,17 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
 
   const content = (
     <div data-drivecar-ui className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white w-full max-w-xl rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 border border-slate-100 flex flex-col max-h-[90vh]">
+      <div className="dc-modal bg-white w-full max-w-xl rounded-xl shadow-sm overflow-hidden animate-in zoom-in-95 border border-slate-100 flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="p-6 border-b border-slate-50 bg-slate-50 text-slate-900 shrink-0">
-          <h3 className="text-xl font-semibold normal-case tracking-tight">{tituloEditando ? 'Editar Custo Fixo' : 'Lançar Custo Fixo'}</h3>
+        <div className="dc-modal-header p-4 border-b border-slate-50 bg-slate-50 text-slate-900 shrink-0">
+          <h3 className="dc-modal-title text-xl font-semibold normal-case tracking-tight">{tituloEditando ? 'Editar Custo Fixo' : 'Lançar Custo Fixo'}</h3>
           <p className="text-xs font-medium normal-case tracking-normal opacity-80 mt-1">
             Custos recorrentes e manutenção estrutural
           </p>
         </div>
 
         {/* Form Scrollable Area */}
-        <div className="overflow-y-auto shrink p-6">
+        <div className="dc-modal-body overflow-y-auto shrink p-4">
           <form onSubmit={handleSubmit} className="space-y-6">
 
             {/* Grupo e Categoria */}
@@ -234,7 +234,7 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
                   <button
                     type="button"
                     onClick={() => { setIsAddingGrupo(true); setNewItemName(''); }}
-                    className="text-slate-900 hover:text-slate-700 font-semibold text-xs normal-case tracking-normal flex items-center"
+                    className="dc-button text-slate-900 hover:text-slate-700 font-semibold text-xs normal-case tracking-normal flex items-center"
                   >
                     <svg className="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -246,7 +246,7 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
                   required
                   value={formData.grupo_id}
                   onChange={e => setFormData({ ...formData, grupo_id: e.target.value, categoria_id: '' })}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-medium outline-none appearance-none focus:ring-2 focus:ring-slate-500"
+                  className="dc-input w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-medium outline-none appearance-none focus:ring-2 focus:ring-slate-500"
                 >
                   <option value="">Selecione o grupo...</option>
                   {grupos.map(g => (
@@ -264,7 +264,7 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
                     <button
                       type="button"
                       onClick={() => { setIsAddingCategoria(true); setNewItemName(''); }}
-                      className="text-slate-900 hover:text-slate-700 font-semibold text-xs normal-case tracking-normal flex items-center"
+                      className="dc-button text-slate-900 hover:text-slate-700 font-semibold text-xs normal-case tracking-normal flex items-center"
                     >
                       <svg className="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -278,7 +278,7 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
                   value={formData.categoria_id}
                   onChange={e => setFormData({ ...formData, categoria_id: e.target.value })}
                   disabled={!formData.grupo_id}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-medium outline-none appearance-none focus:ring-2 focus:ring-slate-500 disabled:opacity-50"
+                  className="dc-input w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-medium outline-none appearance-none focus:ring-2 focus:ring-slate-500 disabled:opacity-50"
                 >
                   <option value="">Selecione a categoria...</option>
                   {categoriasDoGrupo.map(c => (
@@ -299,7 +299,7 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
                 value={formData.descricao}
                 onChange={e => setFormData({ ...formData, descricao: e.target.value.toUpperCase() })}
                 placeholder="Ex: Aluguel, Internet, Contador, Seguros..."
-                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3.5 font-medium outline-none focus:ring-2 focus:ring-slate-500"
+                className="dc-input w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-3.5 font-medium outline-none focus:ring-2 focus:ring-slate-500"
                 required
               />
             </div>
@@ -313,7 +313,7 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
                 type="text"
                 value={valorFormatado}
                 onChange={handleCurrencyChange}
-                className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-xl font-medium text-slate-800 outline-none focus:border-slate-500 text-center transition-all"
+                className="dc-input w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-xl font-medium text-slate-800 outline-none focus:border-slate-500 text-center transition-all"
                 required
               />
             </div>
@@ -328,7 +328,7 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
                   required
                   value={formData.forma_pagamento_id}
                   onChange={e => setFormData({ ...formData, forma_pagamento_id: e.target.value })}
-                  className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-medium text-slate-900 outline-none focus:ring-2 focus:ring-slate-500 appearance-none cursor-pointer"
+                  className="dc-input w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-medium text-slate-900 outline-none focus:ring-2 focus:ring-slate-500 appearance-none cursor-pointer"
                 >
                   <option value="">Selecione a forma de pagamento...</option>
                   {formas.map(f => <option key={f.id} value={f.id}>{f.nome}</option>)}
@@ -347,7 +347,7 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
                     type="date"
                     value={formData.data_vencimento}
                     onChange={e => setFormData({ ...formData, data_vencimento: e.target.value })}
-                    className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3.5 font-medium outline-none focus:ring-2 focus:ring-slate-500"
+                    className="dc-input w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 font-medium outline-none focus:ring-2 focus:ring-slate-500"
                     required
                   />
                 </div>
@@ -363,7 +363,7 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
                       max={formaSelecionada?.qtd_max_parcelas || 120}
                       value={formData.qtd_parcelas}
                       onChange={e => setFormData({ ...formData, qtd_parcelas: Number(e.target.value) })}
-                      className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3.5 font-medium outline-none focus:ring-2 focus:ring-slate-500"
+                      className="dc-input w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 font-medium outline-none focus:ring-2 focus:ring-slate-500"
                       required
                     />
                   </div>
@@ -379,7 +379,7 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
                 <select
                   value={formData.dias_intervalo}
                   onChange={e => setFormData({ ...formData, dias_intervalo: Number(e.target.value) })}
-                  className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-medium outline-none appearance-none focus:ring-2 focus:ring-slate-500 cursor-pointer"
+                  className="dc-input w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-sm font-medium outline-none appearance-none focus:ring-2 focus:ring-slate-500 cursor-pointer"
                 >
                   <option value={30}>Mensal (30 dias)</option>
                   <option value={15}>Quinzenal (15 dias)</option>
@@ -390,7 +390,7 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
             )}
 
             {formData.pago_avista && !tituloEditando && (
-              <div className="space-y-4 p-5 bg-emerald-50 rounded-2xl border border-emerald-100">
+              <div className="space-y-4 p-5 bg-emerald-50 rounded-xl border border-emerald-100">
                 <div>
                   <label className="block text-xs font-medium text-emerald-700 normal-case mb-2 ml-1">
                     Conta Bancária / Caixa Origem
@@ -399,7 +399,7 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
                     required={formData.pago_avista}
                     value={formData.conta_id}
                     onChange={e => setFormData({ ...formData, conta_id: e.target.value })}
-                    className="w-full bg-white border border-emerald-200 rounded-xl px-4 py-3 text-sm font-medium text-emerald-900 outline-none focus:ring-2 focus:ring-emerald-500 appearance-none cursor-pointer"
+                    className="dc-input w-full bg-white border border-emerald-200 rounded-xl px-4 py-3 text-sm font-medium text-emerald-900 outline-none focus:ring-2 focus:ring-emerald-500 appearance-none cursor-pointer"
                   >
                     <option value="">Selecione a conta...</option>
                     {contas.map(c => <option key={c.id} value={c.id}>{formatContaBancaria(c)}</option>)}
@@ -418,7 +418,7 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
                 value={formData.documento_ref}
                 onChange={e => setFormData({ ...formData, documento_ref: e.target.value })}
                 placeholder="Ex: NF-1234, Boleto-5678..."
-                className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3.5 font-medium outline-none focus:ring-2 focus:ring-slate-500"
+                className="dc-input w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-3.5 font-medium outline-none focus:ring-2 focus:ring-slate-500"
               />
             </div>
 
@@ -427,14 +427,14 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 py-4 text-slate-500 font-semibold text-xs normal-case bg-slate-50 rounded-2xl hover:bg-slate-100 transition-all"
+                className="dc-button flex-1 py-4 text-slate-500 font-semibold text-xs normal-case bg-slate-50 rounded-xl hover:bg-slate-100 transition-all"
               >
                 Cancelar
               </button>
               <button
                 type="submit"
                 disabled={isSaving}
-                className={`flex-1 py-4 text-white font-semibold text-xs normal-case tracking-normal rounded-2xl shadow-sm transition-all flex items-center justify-center ${formData.pago_avista ? 'bg-emerald-600 hover:bg-emerald-700 shadow-none' : 'bg-indigo-600 hover:bg-indigo-700'
+                className={`dc-button flex-1 py-4 text-white font-semibold text-xs normal-case tracking-normal rounded-xl shadow-sm transition-all flex items-center justify-center ${formData.pago_avista ? 'bg-emerald-600 hover:bg-emerald-700 shadow-none' : 'bg-indigo-600 hover:bg-indigo-700'
                   }`}
               >
                 {isSaving ? 'Gravando...' : (tituloEditando ? 'Salvar Alterações' : (formData.pago_avista ? 'Liquidar Lançamento' : 'Confirmar Lançamento'))}
@@ -447,8 +447,8 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
       {/* Quick Add Modal */}
       {(isAddingGrupo || isAddingCategoria) && (
         <div data-drivecar-ui className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white w-full max-w-sm rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 border border-slate-100 p-6">
-            <h4 className="text-lg font-semibold normal-case tracking-tight text-slate-900 mb-2">
+          <div className="dc-modal bg-white w-full max-w-sm rounded-xl shadow-sm overflow-hidden animate-in zoom-in-95 border border-slate-100 p-4">
+            <h4 className="dc-section-title text-lg font-semibold normal-case tracking-tight text-slate-900 mb-2">
               {isAddingGrupo ? 'Novo Grupo' : 'Nova Categoria'}
             </h4>
             <p className="text-xs font-medium normal-case tracking-normal text-slate-500 mb-6">
@@ -466,7 +466,7 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
                   value={newItemName}
                   onChange={e => setNewItemName(e.target.value)}
                   placeholder="EX: ALUGUEL, MANUTENÇÃO..."
-                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3.5 font-medium outline-none focus:ring-2 focus:ring-slate-500 normal-case"
+                  className="dc-input w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-3.5 font-medium outline-none focus:ring-2 focus:ring-slate-500 normal-case"
                 />
               </div>
 
@@ -474,14 +474,14 @@ const DespesaFixaForm: React.FC<Props> = ({ onClose, onSuccess, tituloEditando }
                 <button
                   type="button"
                   onClick={() => { setIsAddingGrupo(false); setIsAddingCategoria(false); setNewItemName(''); }}
-                  className="flex-1 py-3.5 text-slate-500 font-semibold text-xs normal-case bg-slate-50 rounded-xl hover:bg-slate-100 transition-all"
+                  className="dc-button flex-1 py-3.5 text-slate-500 font-semibold text-xs normal-case bg-slate-50 rounded-xl hover:bg-slate-100 transition-all"
                 >
                   Cancelar
                 </button>
                 <button
                   type="button"
                   onClick={isAddingGrupo ? handleAddGrupo : handleAddCategoria}
-                  className="flex-1 py-3.5 text-white font-semibold text-xs normal-case tracking-normal bg-indigo-600 rounded-xl hover:bg-indigo-700 shadow-sm shadow-none transition-all"
+                  className="dc-button flex-1 py-3.5 text-white font-semibold text-xs normal-case tracking-normal bg-indigo-600 rounded-xl hover:bg-indigo-700 shadow-sm shadow-none transition-all"
                 >
                   Cadastrar
                 </button>

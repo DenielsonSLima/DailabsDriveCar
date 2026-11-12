@@ -27,7 +27,7 @@ const ListSocios: React.FC<ListSociosProps> = ({ socios, onEdit, onDelete, onTog
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {socios.map((socio) => (
-        <div key={socio.id} className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-sm transition-all group relative hover:translate-y-0 duration-200">
+        <div key={socio.id} className="dc-panel hover:shadow-sm transition-all group relative hover:translate-y-0 duration-200">
           
           <div className="flex items-start justify-between mb-6">
             <div className="flex items-center space-x-4">

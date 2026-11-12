@@ -126,7 +126,7 @@ const MontadorasPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200 relative pb-8">
+    <div className="dc-page animate-in fade-in duration-200 relative pb-8">
       {toast && (
         <div data-drivecar-ui className={`fixed top-6 right-6 z-[210] px-6 py-3 rounded-2xl shadow-sm flex items-center space-x-3 animate-in slide-in-from-right duration-200 ${toast.type === 'success' ? 'bg-slate-900 text-white border-l-4 border-emerald-500' : 'bg-rose-600 text-white'
           }`}>
@@ -141,8 +141,8 @@ const MontadorasPage: React.FC = () => {
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-semibold text-slate-900">Montadoras</h1>
-          <p className="text-slate-500 mt-1">Gestão de fabricantes e marcas globais.</p>
+          <h1 className="dc-page-title">Montadoras</h1>
+          <p className="dc-page-subtitle">Gestão de fabricantes e marcas globais.</p>
         </div>
         <button
           onClick={handleOpenAdd}
@@ -157,7 +157,7 @@ const MontadorasPage: React.FC = () => {
 
       <MontadorasKpis total={totalCount} />
 
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden p-6 min-h-[500px]">
+      <div className="dc-panel overflow-hidden min-h-[500px]">
         {/* Header da Listagem - Busca e Tabs */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-10">
           <div className="relative flex-1 max-w-md">

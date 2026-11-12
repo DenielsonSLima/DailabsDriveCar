@@ -10,10 +10,10 @@ const ResumoFinanceiro: React.FC<Props> = ({ pedido }) => {
   const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
   return (
-    <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm h-full flex flex-col justify-between group hover:border-indigo-300 transition-all">
+    <div className="dc-panel h-full flex flex-col justify-between group hover:border-indigo-300 transition-all">
        <div>
          <div className="flex items-center justify-between mb-8">
-            <h3 className="text-xs font-semibold text-slate-400 normal-case tracking-normal flex items-center">
+            <h3 className="dc-section-title font-semibold text-slate-400 normal-case tracking-normal flex items-center">
               <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
               Termos de Quitação
             </h3>
@@ -29,12 +29,12 @@ const ResumoFinanceiro: React.FC<Props> = ({ pedido }) => {
                <span className="text-sm font-medium text-slate-500">Valor Negociado</span>
                <span className="text-xl font-semibold text-slate-900">{formatCurrency(pedido.valor_negociado)}</span>
             </div>
-            
+
             <div className="flex justify-between items-center pb-6 border-b border-slate-50">
                <span className="text-sm font-medium text-slate-500">Modalidade</span>
                <div className="text-right">
-                  <p className="text-sm font-bold text-slate-700 normal-case">{pedido.forma_pagamento?.nome || 'A COMBINAR'}</p>
-                  <p className="text-xs text-slate-400 font-bold normal-case tracking-normal">
+                  <p className="text-sm font-semibold text-slate-700 normal-case">{pedido.forma_pagamento?.nome || 'A COMBINAR'}</p>
+                  <p className="text-xs text-slate-400 font-semibold normal-case tracking-normal">
                     {pedido.forma_pagamento?.destino_lancamento === 'CONSIGNACAO' ? 'ACERTO PÓS-VENDA' : 'MOVIMENTAÇÃO DIRETA'}
                   </p>
                </div>
@@ -48,7 +48,7 @@ const ResumoFinanceiro: React.FC<Props> = ({ pedido }) => {
           </div>
           <div>
              <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal leading-none">Previsão</p>
-             <p className="text-xs font-bold text-slate-700 mt-1 normal-case">
+             <p className="text-xs font-semibold text-slate-700 mt-1 normal-case">
                 {pedido.previsao_pagamento ? new Date(pedido.previsao_pagamento).toLocaleDateString('pt-BR') : 'DATA NÃO INFORMADA'}
              </p>
           </div>

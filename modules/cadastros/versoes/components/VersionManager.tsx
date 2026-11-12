@@ -149,7 +149,7 @@ const VersionManager: React.FC<Props> = ({ modelo, onBack }) => {
       )}
 
       {/* Top Navigation Bar */}
-      <div className="flex items-center justify-between bg-white p-4 rounded-2xl border border-slate-200 shadow-sm sticky top-0 z-50">
+      <div className="dc-panel flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center space-x-4 min-w-0">
           <button 
             onClick={onBack} 
@@ -169,7 +169,7 @@ const VersionManager: React.FC<Props> = ({ modelo, onBack }) => {
                 )}
              </div>
              <div className="truncate">
-               <h2 className="text-xl font-semibold text-slate-900 normal-case tracking-tight leading-none truncate">{modelo.nome}</h2>
+               <h2 className="dc-section-title truncate">{modelo.nome}</h2>
                <p className="text-xs text-slate-500 font-medium normal-case tracking-normal mt-1 truncate">Gerenciamento de Versões</p>
              </div>
           </div>
@@ -206,7 +206,7 @@ const VersionManager: React.FC<Props> = ({ modelo, onBack }) => {
                </div>
             </div>
 
-            <div className="p-6 space-y-6">
+            <div className="p-4 space-y-6">
                <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <div className="w-12 h-12 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center p-2 shadow-inner overflow-hidden">
@@ -236,7 +236,7 @@ const VersionManager: React.FC<Props> = ({ modelo, onBack }) => {
 
         {/* Lado Direito: Lista e Filtros */}
         <div className="lg:col-span-8 xl:col-span-8 min-w-0">
-          <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-6 shadow-sm min-h-[600px] flex flex-col overflow-hidden">
+          <div className="dc-panel min-h-[600px] flex flex-col overflow-hidden">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8 gap-4 border-b border-slate-50 pb-6">
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                 <h3 className="text-lg font-semibold text-slate-900 normal-case tracking-tight flex items-center shrink-0">
@@ -308,7 +308,7 @@ const VersionManager: React.FC<Props> = ({ modelo, onBack }) => {
                 </div>
               ) : (
                 paginatedVersoes.map(v => (
-                  <div key={v.id} className="group bg-white border border-slate-100 hover:border-indigo-100 rounded-2xl p-5 transition-all duration-200 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm hover:shadow-sm overflow-hidden">
+                  <div key={v.id} className="dc-panel group hover:border-indigo-100 transition-all duration-200 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:shadow-sm overflow-hidden">
                     <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center gap-6">
                       <div className="min-w-0 md:w-56">
                         <p className="text-xs font-medium text-indigo-500 normal-case tracking-normal mb-1">Acabamento</p>
@@ -317,15 +317,15 @@ const VersionManager: React.FC<Props> = ({ modelo, onBack }) => {
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 sm:flex sm:items-center gap-3 sm:gap-6">
                         <div className="bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100/50">
-                          <p className="text-[7px] font-medium text-slate-500 normal-case mb-0.5">Propulsão</p>
+                          <p className="text-xs font-medium text-slate-500 normal-case mb-0.5">Propulsão</p>
                           <p className="text-xs font-medium text-slate-700 truncate">{v.motorizacao} • {v.combustivel}</p>
                         </div>
                         <div className="bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100/50">
-                          <p className="text-[7px] font-medium text-slate-500 normal-case mb-0.5">Câmbio</p>
+                          <p className="text-xs font-medium text-slate-500 normal-case mb-0.5">Câmbio</p>
                           <p className="text-xs font-medium text-slate-700 truncate">{v.transmissao}</p>
                         </div>
                         <div className="bg-indigo-50/50 px-3 py-1.5 rounded-xl text-center min-w-[75px]">
-                          <p className="text-[7px] font-semibold text-indigo-400 normal-case mb-0.5">Ano/Mod</p>
+                          <p className="text-xs font-semibold text-indigo-400 normal-case mb-0.5">Ano/Mod</p>
                           <div className="text-indigo-700 text-xs font-semibold">{v.ano_fabricacao}/{v.ano_modelo}</div>
                         </div>
                       </div>

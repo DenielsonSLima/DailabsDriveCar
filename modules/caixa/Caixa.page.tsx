@@ -137,9 +137,9 @@ const CaixaPage: React.FC = () => {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center h-full py-20 space-y-4">
-        <div className="bg-rose-50 text-rose-600 p-6 rounded-2xl border border-rose-100 max-w-md text-center">
-          <h2 className="text-lg font-semibold normal-case tracking-normal mb-2">Erro ao carregar Caixa</h2>
-          <p className="text-xs font-bold leading-relaxed">{(error as any).message || 'Ocorreu um erro inesperado ao processar os dados financeiros.'}</p>
+        <div className="bg-rose-50 text-rose-600 p-4 rounded-2xl border border-rose-100 max-w-md text-center">
+          <h2 className="dc-section-title mb-2">Erro ao carregar Caixa</h2>
+          <p className="text-xs font-semibold leading-relaxed">{(error as any).message || 'Ocorreu um erro inesperado ao processar os dados financeiros.'}</p>
         </div>
         <button
           onClick={() => refetch()}
@@ -156,8 +156,8 @@ const CaixaPage: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex items-center gap-4">
           <div>
-            <h1 className="text-3xl font-semibold text-slate-900 normal-case tracking-normal">Fluxo de Caixa & Patrimônio</h1>
-            <p className="text-slate-500 text-xs font-bold normal-case tracking-normal mt-1">Consolidação de ativos, passivos e lucros</p>
+            <h1 className="dc-page-title">Fluxo de Caixa & Patrimônio</h1>
+            <p className="dc-page-subtitle">Consolidação de ativos, passivos e lucros</p>
           </div>
           {isFetching && !isLoadingData && (
             <div className="w-5 h-5 border-2 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
@@ -177,7 +177,7 @@ const CaixaPage: React.FC = () => {
             <select
               value={selectedMonth}
               onChange={(e) => setSelectedMonth(e.target.value)}
-              className="bg-slate-50 border-none text-[11px] font-medium text-slate-900 rounded-xl px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none transition-all cursor-pointer appearance-none min-w-[160px]"
+              className="bg-slate-50 border-none text-xs font-medium text-slate-900 rounded-xl px-4 py-2 focus:ring-2 focus:ring-indigo-500 outline-none transition-all cursor-pointer appearance-none min-w-[160px]"
             >
               {allMonths.length === 0 ? (
                 <option value={selectedMonth}>{formatMonthOption(selectedMonth)}</option>
@@ -194,10 +194,10 @@ const CaixaPage: React.FC = () => {
       </div>
 
       {data && performanceHistory && (
-        <div className="space-y-8">
+        <div className="space-y-6">
           <CaixaKpis data={data} />
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
               <PerformanceChart history={performanceHistory} />
             </div>
@@ -208,8 +208,8 @@ const CaixaPage: React.FC = () => {
 
           <div className="pt-4">
             <div className="mb-6">
-              <h2 className="text-lg font-semibold text-slate-900 normal-case tracking-normal">Resumo de Sócios</h2>
-              <p className="text-slate-500 text-xs font-bold normal-case tracking-normal mt-0.5">Visão consolidada de exposição e lucro por investidor</p>
+              <h2 className="dc-section-title">Resumo de Sócios</h2>
+              <p className="text-slate-500 text-xs font-semibold normal-case tracking-normal mt-0.5">Visão consolidada de exposição e lucro por investidor</p>
             </div>
             <SocioSummary socios={data.investimento_socios || []} />
           </div>
@@ -220,8 +220,8 @@ const CaixaPage: React.FC = () => {
 
           <div className="pt-4">
             <div className="mb-6">
-              <h2 className="text-lg font-semibold text-slate-900 normal-case tracking-normal">Detalhamento do Estoque</h2>
-              <p className="text-slate-500 text-xs font-bold normal-case tracking-normal mt-0.5">Participação individual e exposição de capital por veículo</p>
+              <h2 className="dc-section-title">Detalhamento do Estoque</h2>
+              <p className="text-slate-500 text-xs font-semibold normal-case tracking-normal mt-0.5">Participação individual e exposição de capital por veículo</p>
             </div>
             <SocioStockTable socios={data.investimento_socios || []} />
           </div>

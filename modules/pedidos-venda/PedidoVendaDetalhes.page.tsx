@@ -289,7 +289,7 @@ const PedidoVendaDetalhesPage: React.FC = () => {
       {toast && (
         <div className={`fixed top-6 right-6 z-[300] px-6 py-4 rounded-2xl shadow-sm flex items-center space-x-3 animate-in slide-in-from-right duration-300 border backdrop-blur-sm ${toast.type === 'success' ? 'bg-slate-900/95 text-white border-emerald-500/50' : 'bg-rose-600 text-white border-rose-400/50'
           }`}>
-          <span className="font-bold text-sm tracking-tight">{toast.message}</span>
+          <span className="font-semibold text-sm tracking-tight">{toast.message}</span>
         </div>
       )}
 
@@ -315,7 +315,7 @@ const PedidoVendaDetalhesPage: React.FC = () => {
       <VendaAnalyticsKpis pedido={pedido} />
 
       {/* 5. Ativo Negociado (Padrão Grid Fixo 380px) */}
-      <section ref={vehicleSectionRef} className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 md:p-6">
+      <section ref={vehicleSectionRef} className="dc-panel md:p-6">
         <VeiculosVendaList
           pedido={pedido}
           veiculosDisponiveis={veiculosDisponiveis}
@@ -340,7 +340,7 @@ const PedidoVendaDetalhesPage: React.FC = () => {
 
       {/* 7. Notas e Observações */}
       {pedido.lote_id ? (
-        <div className="p-6 bg-white border border-slate-200 rounded-2xl text-sm whitespace-pre-wrap">{pedido.observacoes || 'Sem observações.'}</div>
+        <div className="dc-panel text-sm whitespace-pre-wrap">{pedido.observacoes || 'Sem observações.'}</div>
       ) : <ObservationsCard
         observacoes={pedido.observacoes}
         onSave={async (v) => {

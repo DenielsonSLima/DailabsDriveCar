@@ -15,8 +15,8 @@ const FixasFilters: React.FC<Props> = ({ filtros, onChange, categorias, groupBy,
   };
 
   return (
-    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6 animate-in fade-in duration-200">
-      <div className="flex flex-col xl:flex-row gap-6 items-end">
+    <div className="dc-filterbar bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-6 animate-in fade-in duration-200">
+      <div className="flex flex-col xl:flex-row gap-4 items-end">
 
         <div className="flex-1 w-full relative">
           <label className="block text-xs font-medium text-slate-500 normal-case mb-1.5 ml-1 tracking-normal">Busca estrutural</label>
@@ -31,7 +31,7 @@ const FixasFilters: React.FC<Props> = ({ filtros, onChange, categorias, groupBy,
               placeholder="Ex: Aluguel, Pro-labore, Contador..."
               value={filtros.busca}
               onChange={(e) => handleChange('busca', e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-2xl py-3 pl-10 pr-4 text-sm font-medium text-[#111827] focus:ring-2 focus:ring-slate-500/20 outline-none transition-all"
+              className="dc-input w-full bg-white border border-slate-200 rounded-xl py-3 pl-10 pr-4 text-sm font-medium text-[#111827] focus:ring-2 focus:ring-slate-500/20 outline-none transition-all"
             />
           </div>
         </div>
@@ -41,7 +41,7 @@ const FixasFilters: React.FC<Props> = ({ filtros, onChange, categorias, groupBy,
           <select
             value={filtros.categoriaId}
             onChange={e => handleChange('categoriaId', e.target.value)}
-            className="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3 text-xs font-medium text-[#111827] outline-none cursor-pointer appearance-none"
+            className="dc-input w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-xs font-medium text-[#111827] outline-none cursor-pointer appearance-none"
           >
             <option value="">Todas</option>
             {categorias.map(c => <option key={c.id} value={c.id}>{c.nome}</option>)}
@@ -50,16 +50,16 @@ const FixasFilters: React.FC<Props> = ({ filtros, onChange, categorias, groupBy,
 
         <div className="w-full xl:w-auto">
           <label className="block text-xs font-medium text-slate-500 normal-case mb-1.5 ml-1 tracking-normal">Organizar por</label>
-          <div className="flex bg-slate-100 p-1 rounded-2xl">
-            <button onClick={() => setGroupBy('nenhum')} className={`px-4 py-2 rounded-xl text-xs font-semibold normal-case transition-all ${groupBy === 'nenhum' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Lista</button>
-            <button onClick={() => setGroupBy('mes')} className={`px-4 py-2 rounded-xl text-xs font-semibold normal-case transition-all ${groupBy === 'mes' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Mês</button>
-            <button onClick={() => setGroupBy('categoria')} className={`px-4 py-2 rounded-xl text-xs font-semibold normal-case transition-all ${groupBy === 'categoria' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Categoria</button>
+          <div className="flex bg-slate-100 p-1 rounded-xl">
+            <button onClick={() => setGroupBy('nenhum')} className={`dc-button px-4 py-2 rounded-xl text-xs font-semibold normal-case transition-all ${groupBy === 'nenhum' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Lista</button>
+            <button onClick={() => setGroupBy('mes')} className={`dc-button px-4 py-2 rounded-xl text-xs font-semibold normal-case transition-all ${groupBy === 'mes' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Mês</button>
+            <button onClick={() => setGroupBy('categoria')} className={`dc-button px-4 py-2 rounded-xl text-xs font-semibold normal-case transition-all ${groupBy === 'categoria' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Categoria</button>
           </div>
         </div>
 
         <button
           onClick={() => onChange({ busca: '', dataInicio: '', dataFim: '', categoriaId: '', status: '' })}
-          className="px-6 py-3 bg-slate-100 text-slate-400 text-xs font-semibold normal-case tracking-normal rounded-2xl hover:bg-slate-200 transition-all active:scale-100"
+          className="dc-button px-4 py-3 bg-slate-100 text-slate-400 text-xs font-semibold normal-case tracking-normal rounded-xl hover:bg-slate-200 transition-all active:scale-100"
         >
           Reset
         </button>

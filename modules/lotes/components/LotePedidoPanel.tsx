@@ -16,8 +16,8 @@ export default function LotePedidoPanel({ pedido }: { pedido: IPedidoCompra }) {
     mutationFn: () => LotesService.criar({ veiculoId: vehicle!.id!, quantidade, descricao: descricao.trim() }),
     onSuccess: async () => { await queryClient.invalidateQueries(); setOpen(false); },
   });
-  return <section className="overflow-hidden rounded-2xl border border-indigo-100 bg-white shadow-sm">
-    <div className="flex flex-wrap items-center justify-between gap-4 p-6 sm:p-6"><div><p className="text-xs font-bold normal-case tracking-normal text-indigo-600">Gestão por lote</p><h2 className="mt-1 text-xl font-semibold tracking-tight text-slate-900">Uma compra, várias unidades</h2><p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-500">Acompanhe as unidades, os custos e os recebimentos desta compra em um único lugar.</p></div>
+  return <section className="dc-panel overflow-hidden rounded-2xl border border-indigo-100 bg-white shadow-sm">
+    <div className="flex flex-wrap items-center justify-between gap-4 p-6 sm:p-6"><div><p className="text-xs font-bold normal-case tracking-normal text-indigo-600">Gestão por lote</p><h2 className="dc-section-title mt-1 text-xl font-semibold tracking-tight text-slate-900">Uma compra, várias unidades</h2><p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-500">Acompanhe as unidades, os custos e os recebimentos desta compra em um único lugar.</p></div>
       {!query.isPending && !query.isError && !query.data?.length && vehicle && pedido.status === 'CONCLUIDO' && <button className={primaryClass} onClick={() => { setDescricao([vehicle.montadora?.nome, vehicle.modelo?.nome].filter(Boolean).join(' ')); create.reset(); setOpen(true); }}>Controlar como lote</button>}
     </div>
     {query.isPending && <p role="status" className="px-8 pb-6 text-sm text-slate-500">Consultando lotes do pedido…</p>}

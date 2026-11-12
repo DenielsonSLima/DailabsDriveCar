@@ -45,7 +45,7 @@ const VehicleMediaSaleColumn: React.FC<Props> = ({ veiculo, allCaracteristicas, 
       </div>
 
       {/* Seção de Tags (Ocupa o resto da altura sem esticar a imagem) */}
-      <div className="p-6 flex-1 overflow-y-auto custom-scrollbar bg-white/50 backdrop-blur-sm">
+      <div className="p-4 flex-1 overflow-y-auto custom-scrollbar bg-white/50 backdrop-blur-sm">
         <div className="space-y-5">
           {/* Características */}
           {tagsCar.length > 0 && (
@@ -71,7 +71,7 @@ const VehicleMediaSaleColumn: React.FC<Props> = ({ veiculo, allCaracteristicas, 
               </p>
               <div className="flex flex-wrap gap-1.5">
                 {tagsOp.map(o => (
-                  <span key={o.id} className="px-2 py-1 bg-white text-slate-600 rounded-lg text-xs font-bold border border-slate-200 normal-case tracking-normal shadow-sm">{o.nome}</span>
+                  <span key={o.id} className="px-2 py-1 bg-white text-slate-600 rounded-lg text-xs font-semibold border border-slate-200 normal-case tracking-normal shadow-sm">{o.nome}</span>
                 ))}
               </div>
             </div>

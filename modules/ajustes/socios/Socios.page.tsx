@@ -100,7 +100,7 @@ const SociosPage: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200 relative">
+    <div className="dc-page animate-in fade-in duration-200 relative">
       {/* Toast Notification */}
       {toast && (
         <div data-drivecar-ui className={`fixed top-6 right-6 z-[200] px-6 py-4 rounded-2xl shadow-sm flex items-center space-x-3 animate-in slide-in-from-right duration-200 border backdrop-blur-md ${
@@ -126,8 +126,8 @@ const SociosPage: React.FC = () => {
             </svg>
           </button>
           <div>
-            <h1 className="text-3xl font-semibold text-slate-900">Quadro de Sócios</h1>
-            <p className="text-slate-500 mt-1">Gerencie os administradores e proprietários do sistema.</p>
+            <h1 className="dc-page-title">Quadro de Sócios</h1>
+            <p className="dc-page-subtitle">Gerencie os administradores e proprietários do sistema.</p>
           </div>
         </div>
 

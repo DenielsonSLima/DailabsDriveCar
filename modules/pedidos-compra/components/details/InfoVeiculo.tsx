@@ -23,7 +23,7 @@ const InfoVeiculo: React.FC<Props> = ({ pedido }) => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
           </div>
-          <h3 className="text-2xl font-semibold text-slate-900 normal-case tracking-normal mb-2">Adicionar Veículo ao Pedido</h3>
+          <h3 className="dc-section-title font-semibold text-slate-900 normal-case tracking-normal mb-2">Adicionar Veículo ao Pedido</h3>
           <p className="text-slate-500 max-w-md mx-auto text-sm font-medium">
             Este pedido ainda não possui um veículo vinculado. Cadastre o veículo para habilitar a confirmação e entrada no estoque.
           </p>
@@ -54,23 +54,23 @@ const InfoVeiculo: React.FC<Props> = ({ pedido }) => {
           </div>
         </div>
 
-        <div className="lg:col-span-7 p-6 lg:p-6 flex flex-col justify-center">
+        <div className="lg:col-span-7 p-4 lg:p-6 flex flex-col justify-center">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-2">
               {vAny.montadora?.logo_url && <img src={vAny.montadora.logo_url} className="h-6 w-auto" alt="" />}
-              <span className="text-xs font-bold text-slate-400 normal-case tracking-normal">{vAny.montadora?.nome}</span>
+              <span className="text-xs font-semibold text-slate-400 normal-case tracking-normal">{vAny.montadora?.nome}</span>
               <span className="bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded text-xs font-semibold normal-case ml-2 border border-indigo-100">{vAny.tipo_veiculo?.nome || 'N/D'}</span>
             </div>
             <button
               onClick={() => navigate(pedido.id ? `/pedidos-compra/${pedido.id}/veiculo/editar/${v.id}` : `/estoque/editar/${v.id}`)}
-              className="text-xs font-semibold normal-case tracking-normal text-indigo-600 hover:bg-indigo-50 px-3 py-1.5 rounded-lg transition-colors border border-transparent hover:border-indigo-100 flex items-center"
+              className="dc-button text-xs font-semibold normal-case tracking-normal text-indigo-600 hover:bg-indigo-50 px-3 py-1.5 rounded-lg transition-colors border border-transparent hover:border-indigo-100 flex items-center"
             >
               <svg className="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
               Editar Veículo
             </button>
           </div>
 
-          <h2 className="text-2xl sm:text-3xl font-semibold text-slate-900 normal-case tracking-normal leading-tight mb-2">
+          <h2 className="dc-section-title font-semibold text-slate-900 normal-case tracking-normal mb-2">
             {vAny.modelo?.nome}
           </h2>
           <p className="text-sm font-medium text-slate-500 mb-8 border-l-2 border-indigo-500 pl-3">
@@ -80,19 +80,19 @@ const InfoVeiculo: React.FC<Props> = ({ pedido }) => {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
               <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-1">Motorização</p>
-              <p className="text-sm font-bold text-slate-800 truncate">{v.motorizacao}</p>
+              <p className="text-sm font-semibold text-slate-800 truncate">{v.motorizacao}</p>
             </div>
             <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
               <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-1">Combustível</p>
-              <p className="text-sm font-bold text-slate-800 truncate">{v.combustivel}</p>
+              <p className="text-sm font-semibold text-slate-800 truncate">{v.combustivel}</p>
             </div>
             <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
               <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-1">Transmissão</p>
-              <p className="text-sm font-bold text-slate-800 truncate">{v.transmissao}</p>
+              <p className="text-sm font-semibold text-slate-800 truncate">{v.transmissao}</p>
             </div>
             <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
               <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-1">Ano/Mod</p>
-              <p className="text-sm font-bold text-slate-800">{v.ano_fabricacao}/{v.ano_modelo}</p>
+              <p className="text-sm font-semibold text-slate-800">{v.ano_fabricacao}/{v.ano_modelo}</p>
             </div>
           </div>
         </div>

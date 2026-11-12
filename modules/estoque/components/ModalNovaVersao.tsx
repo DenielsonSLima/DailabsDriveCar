@@ -119,7 +119,7 @@ const ModalNovaVersao: React.FC<Props> = ({ modeloId, modeloNome, onClose, onSuc
 
     return createPortal(
         <div data-drivecar-ui className="fixed inset-0 z-[200] flex items-center justify-center p-3 sm:p-4 bg-slate-900/70 backdrop-blur-sm animate-in fade-in duration-200">
-            <div className="bg-white w-full max-w-lg rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="dc-modal bg-white w-full max-w-lg rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 duration-200">
                 {/* Header */}
                 <div className="px-5 sm:px-6 pt-6 pb-5 flex items-center justify-between border-b border-slate-100">
                     <div>
@@ -129,12 +129,12 @@ const ModalNovaVersao: React.FC<Props> = ({ modeloId, modeloNome, onClose, onSuc
                             </span>
                         )}
                         <span className="block text-xs font-semibold text-indigo-500 normal-case tracking-normal">Cadastro {isFromAPI ? 'Automático' : 'Rápido'}</span>
-                        <h2 className="text-xl font-semibold text-slate-900 normal-case tracking-normal">Nova Versão</h2>
+                        <h2 className="dc-modal-title text-xl font-semibold text-slate-900 normal-case tracking-normal">Nova Versão</h2>
                         {modeloNome && (
                             <p className="text-xs text-slate-500 font-medium mt-0.5">Modelo: <span className="font-semibold text-indigo-600">{modeloNome}</span></p>
                         )}
                     </div>
-                    <button onClick={onClose} disabled={mutation.isPending} className="p-2 hover:bg-slate-100 rounded-full transition-all text-slate-400">
+                    <button onClick={onClose} disabled={mutation.isPending} className="dc-button p-2 hover:bg-slate-100 rounded-full transition-all text-slate-600">
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
@@ -170,7 +170,7 @@ const ModalNovaVersao: React.FC<Props> = ({ modeloId, modeloNome, onClose, onSuc
                                     </svg>
                                 </div>
                                 <div>
-                                    <h3 className="text-sm font-semibold text-indigo-950 normal-case tracking-normal">Versão Selecionada</h3>
+                                    <h3 className="dc-modal-title text-sm font-semibold text-indigo-950 normal-case tracking-normal">Versão Selecionada</h3>
                                     <p className="text-xs font-bold text-indigo-600/70 normal-case tracking-normal mt-0.5">Pronta para uso interligado</p>
                                 </div>
                             </div>
@@ -181,19 +181,19 @@ const ModalNovaVersao: React.FC<Props> = ({ modeloId, modeloNome, onClose, onSuc
                                 return (
                                     <div className="space-y-3 bg-white/60 p-4 rounded-xl">
                                         <div className="flex justify-between items-center border-b border-indigo-100/50 pb-2">
-                                            <span className="text-xs font-semibold text-slate-400 normal-case tracking-normal">Nome</span>
+                                            <span className="text-xs font-semibold text-slate-600 normal-case tracking-normal">Nome</span>
                                             <span className="text-xs font-bold text-slate-900">{v.nome}</span>
                                         </div>
                                         <div className="flex justify-between items-center border-b border-indigo-100/50 pb-2">
-                                            <span className="text-xs font-semibold text-slate-400 normal-case tracking-normal">Motorização</span>
+                                            <span className="text-xs font-semibold text-slate-600 normal-case tracking-normal">Motorização</span>
                                             <span className="text-xs font-bold text-slate-900">{v.motorizacao} • {v.combustivel}</span>
                                         </div>
                                         <div className="flex justify-between items-center border-b border-indigo-100/50 pb-2">
-                                            <span className="text-xs font-semibold text-slate-400 normal-case tracking-normal">Transmissão</span>
+                                            <span className="text-xs font-semibold text-slate-600 normal-case tracking-normal">Transmissão</span>
                                             <span className="text-xs font-bold text-slate-900">{v.transmissao}</span>
                                         </div>
                                         <div className="flex justify-between items-center">
-                                            <span className="text-xs font-semibold text-slate-400 normal-case tracking-normal">Ano</span>
+                                            <span className="text-xs font-semibold text-slate-600 normal-case tracking-normal">Ano</span>
                                             <span className="text-xs font-bold text-slate-900">{v.ano_fabricacao} / {v.ano_modelo}</span>
                                         </div>
                                     </div>
@@ -235,7 +235,7 @@ const ModalNovaVersao: React.FC<Props> = ({ modeloId, modeloNome, onClose, onSuc
                                                 <option key={m.id} value={m.nome}>{m.nome}</option>
                                             ))}
                                         </select>
-                                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-600">
                                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                             </svg>
@@ -244,7 +244,7 @@ const ModalNovaVersao: React.FC<Props> = ({ modeloId, modeloNome, onClose, onSuc
                                     <button
                                         type="button"
                                         onClick={() => setShowModalMotor(true)}
-                                        className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center hover:bg-indigo-100 transition-all border border-indigo-100 shrink-0"
+                                        className="dc-button w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center hover:bg-indigo-100 transition-all border border-indigo-100 shrink-0"
                                         title="Nova Motorização"
                                     >
                                         <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -282,7 +282,7 @@ const ModalNovaVersao: React.FC<Props> = ({ modeloId, modeloNome, onClose, onSuc
                                         onChange={e => set('transmissao', e.target.value)}
                                         required
                                         disabled={mutation.isPending}
-                                        className={`${inputCls} appearance-none ${isFromAPI && !form.transmissao
+                                        className={`dc-input ${inputCls} appearance-none ${isFromAPI && !form.transmissao
                                             ? 'border-rose-400 ring-2 ring-rose-200 bg-rose-50'
                                             : ''
                                             }`}
@@ -353,14 +353,14 @@ const ModalNovaVersao: React.FC<Props> = ({ modeloId, modeloNome, onClose, onSuc
                             type="button"
                             onClick={onClose}
                             disabled={mutation.isPending}
-                            className="px-6 py-3 text-slate-500 text-xs font-semibold normal-case tracking-normal hover:bg-slate-50 rounded-xl transition-all"
+                            className="dc-button px-6 py-3 text-slate-500 text-xs font-semibold normal-case tracking-normal hover:bg-slate-50 rounded-xl transition-all"
                         >
                             Cancelar
                         </button>
                         <button
                             type="submit"
                             disabled={mutation.isPending || (!selectedVersaoId && (!form.nome.trim() || !form.motorizacao.trim() || !form.transmissao))}
-                            className="px-8 py-3 bg-indigo-600 text-white text-xs font-semibold normal-case tracking-normal rounded-xl shadow-sm shadow-indigo-200 hover:bg-indigo-700 transition-all disabled:opacity-50 flex items-center gap-2"
+                            className="dc-button px-8 py-3 bg-indigo-600 text-white text-xs font-semibold normal-case tracking-normal rounded-xl shadow-sm shadow-indigo-200 hover:bg-indigo-700 transition-all disabled:opacity-50 flex items-center gap-2"
                         >
                             {mutation.isPending ? (
                                 <><div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" /> Salvando...</>

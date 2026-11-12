@@ -56,7 +56,7 @@ const ModalVendaPaymentForm: React.FC<Props> = ({ pedido, onClose, onSubmit, isS
       ]);
       // Filtra apenas recebimentos ou ambos
       setFormas(fData.filter(f => (f.tipo_movimentacao !== 'PAGAMENTO') && f.ativo));
-      
+
       const activeContas = cData.filter(c => c.ativo);
       setContas(activeContas);
       if (activeContas.length === 1) {
@@ -169,19 +169,19 @@ const ModalVendaPaymentForm: React.FC<Props> = ({ pedido, onClose, onSubmit, isS
 
   const content = (
     <div data-drivecar-ui className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="bg-white w-full max-w-2xl rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 border border-slate-100 flex flex-col max-h-[95vh]">
+      <div className="dc-modal bg-white w-full max-w-2xl rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 border border-slate-100 flex flex-col max-h-[95vh]">
 
-        <div className="p-6 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
+        <div className="dc-modal-header flex justify-between items-center">
           <div>
-            <h3 className="text-xl font-semibold text-slate-900 normal-case tracking-normal">{isConsignado ? 'Comissão da Consignação' : 'Estruturar Recebimento'}</h3>
-            <p className="text-xs text-slate-400 font-bold normal-case tracking-normal mt-1">{isConsignado ? 'Registrar lucro/comissão da loja' : 'Configurar cronograma de entrada financeira'}</p>
+            <h3 className="dc-modal-title">{isConsignado ? 'Comissão da Consignação' : 'Estruturar Recebimento'}</h3>
+            <p className="text-xs text-slate-400 font-semibold normal-case tracking-normal mt-1">{isConsignado ? 'Registrar lucro/comissão da loja' : 'Configurar cronograma de entrada financeira'}</p>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-white rounded-full text-slate-400 hover:text-rose-500 transition-colors">
+          <button onClick={onClose} className="dc-button p-2 hover:bg-white rounded-full text-slate-400 hover:text-rose-500 transition-colors">
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
+        <form onSubmit={handleSubmit} className="dc-modal-body flex-1 overflow-y-auto p-4 space-y-8 custom-scrollbar">
 
           {isConsignado && (
             <div className="rounded-2xl border border-violet-100 bg-violet-50 p-5 space-y-4">
@@ -193,7 +193,7 @@ const ModalVendaPaymentForm: React.FC<Props> = ({ pedido, onClose, onSubmit, isS
                 <button
                   type="button"
                   onClick={() => setDeduzirComissao(prev => !prev)}
-                  className={`px-4 py-2 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all ${deduzirComissao ? 'bg-violet-700 text-white' : 'bg-white text-violet-700 border border-violet-200'}`}
+                  className={`dc-button px-4 py-2 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all ${deduzirComissao ? 'bg-violet-700 text-white' : 'bg-white text-violet-700 border border-violet-200'}`}
                 >
                   {deduzirComissao ? 'Deduz da venda' : 'Não deduz'}
                 </button>
@@ -203,14 +203,14 @@ const ModalVendaPaymentForm: React.FC<Props> = ({ pedido, onClose, onSubmit, isS
                 <button
                   type="button"
                   onClick={() => setCommissionMode('VALOR')}
-                  className={`py-2 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all ${commissionMode === 'VALOR' ? 'bg-violet-700 text-white shadow-md' : 'text-violet-400 hover:text-violet-700'}`}
+                  className={`dc-button py-2 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all ${commissionMode === 'VALOR' ? 'bg-violet-700 text-white shadow-md' : 'text-violet-400 hover:text-violet-700'}`}
                 >
                   Valor
                 </button>
                 <button
                   type="button"
                   onClick={() => setCommissionMode('PERCENTUAL')}
-                  className={`py-2 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all ${commissionMode === 'PERCENTUAL' ? 'bg-violet-700 text-white shadow-md' : 'text-violet-400 hover:text-violet-700'}`}
+                  className={`dc-button py-2 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all ${commissionMode === 'PERCENTUAL' ? 'bg-violet-700 text-white shadow-md' : 'text-violet-400 hover:text-violet-700'}`}
                 >
                   Porcentagem
                 </button>
@@ -227,7 +227,7 @@ const ModalVendaPaymentForm: React.FC<Props> = ({ pedido, onClose, onSubmit, isS
                       step="0.01"
                       value={commissionPercent}
                       onChange={e => handleCommissionPercentChange(e.target.value)}
-                      className="w-full bg-white border-2 border-violet-100 rounded-xl px-4 py-3 pr-10 text-xl font-semibold text-violet-900 outline-none focus:border-violet-500 transition-all text-center shadow-sm"
+                      className="dc-input w-full bg-white border-2 border-violet-100 rounded-xl px-4 py-2.5 pr-10 text-xl font-semibold text-violet-900 outline-none focus:border-violet-500 transition-all text-center shadow-sm"
                       placeholder="0"
                     />
                     <span className="absolute right-4 top-1/2 -translate-y-1/2 text-violet-400 font-semibold">%</span>
@@ -249,7 +249,7 @@ const ModalVendaPaymentForm: React.FC<Props> = ({ pedido, onClose, onSubmit, isS
                 type="text"
                 value={valorTotalACompor}
                 onChange={handleCurrencyChange}
-                className="w-full bg-white border-2 border-emerald-100 rounded-xl px-4 py-3 text-xl font-semibold text-emerald-600 outline-none focus:border-emerald-500 transition-all text-center shadow-sm hover:shadow-md"
+                className="dc-input w-full bg-white border-2 border-emerald-100 rounded-xl px-4 py-2.5 text-xl font-semibold text-emerald-600 outline-none focus:border-emerald-500 transition-all text-center shadow-sm hover:shadow-md"
               />
             </div>
 
@@ -259,7 +259,7 @@ const ModalVendaPaymentForm: React.FC<Props> = ({ pedido, onClose, onSubmit, isS
                 required
                 value={formaId}
                 onChange={e => setFormaId(e.target.value)}
-                className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-xs font-medium text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 appearance-none shadow-sm hover:shadow-md transition-all"
+                className="dc-input w-full bg-white border border-slate-200 rounded-xl px-4 py-3.5 text-xs font-medium text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 appearance-none shadow-sm hover:shadow-md transition-all"
               >
                 <option value="">Selecione...</option>
                 {formas.map(f => <option key={f.id} value={f.id}>{f.nome}</option>)}
@@ -276,7 +276,7 @@ const ModalVendaPaymentForm: React.FC<Props> = ({ pedido, onClose, onSubmit, isS
                 disabled={!formaId}
                 value={condicaoId}
                 onChange={e => setCondicaoId(e.target.value)}
-                className="w-full bg-white border border-indigo-100 rounded-xl px-4 py-3.5 text-xs font-medium text-indigo-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 appearance-none shadow-sm hover:shadow-md transition-all disabled:opacity-30"
+                className="dc-input w-full bg-white border border-indigo-100 rounded-xl px-4 py-3.5 text-xs font-medium text-indigo-700 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 appearance-none shadow-sm hover:shadow-md transition-all disabled:opacity-30"
               >
                 <option value="">{loadingCondicoes ? 'Buscando...' : 'Escolha a regra...'}</option>
                 {condicoes.map(c => <option key={c.id} value={c.id}>{c.nome} — {c.qtd_parcelas}x, primeira em {c.dias_primeira_parcela} dias</option>)}
@@ -287,7 +287,7 @@ const ModalVendaPaymentForm: React.FC<Props> = ({ pedido, onClose, onSubmit, isS
           {parcelas.length > 0 && (
             <div className="space-y-4 animate-in slide-in-from-bottom-4 duration-500">
               <div className="flex items-center justify-between px-1">
-                <h4 className="text-xs font-semibold text-slate-400 normal-case tracking-normal">Cronograma de Entradas</h4>
+                <h4 className="dc-section-title font-semibold text-slate-400 normal-case tracking-normal">Cronograma de Entradas</h4>
                 <span className="text-xs font-semibold bg-emerald-500 text-white px-2 py-0.5 rounded normal-case shadow-sm">Estrutura de {parcelas.length}x</span>
               </div>
 
@@ -303,7 +303,7 @@ const ModalVendaPaymentForm: React.FC<Props> = ({ pedido, onClose, onSubmit, isS
                         type="date"
                         value={p.data_vencimento}
                         onChange={(e) => updateParcelaDate(p.id_temporario, e.target.value)}
-                        className="bg-transparent font-semibold text-slate-800 outline-none cursor-pointer focus:text-emerald-600"
+                        className="dc-input bg-transparent font-semibold text-slate-800 outline-none cursor-pointer focus:text-emerald-600"
                       />
                     </div>
                     <div className="text-right">
@@ -319,7 +319,7 @@ const ModalVendaPaymentForm: React.FC<Props> = ({ pedido, onClose, onSubmit, isS
           )}
 
           {hasRecebimentoHoje && (
-            <div className="bg-emerald-50 border border-emerald-100 p-6 rounded-2xl space-y-4 animate-in slide-in-from-left duration-500">
+            <div className="bg-emerald-50 border border-emerald-100 p-4 rounded-2xl space-y-4 animate-in slide-in-from-left duration-500">
               <div className="flex items-start space-x-3">
                 <div className="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center shadow-sm shadow-emerald-200 shrink-0">
                   {/* Fixed malformed SVG tag on line 231 */}
@@ -328,7 +328,7 @@ const ModalVendaPaymentForm: React.FC<Props> = ({ pedido, onClose, onSubmit, isS
                   </svg>
                 </div>
                 <div>
-                  <h4 className="text-xs font-semibold text-emerald-800 normal-case tracking-normal leading-none mb-1">Crédito Imediato</h4>
+                  <h4 className="dc-section-title font-semibold text-emerald-800 normal-case tracking-normal mb-1">Crédito Imediato</h4>
                   <p className="text-xs text-emerald-600 font-medium">Lançamentos à vista ou com data retroativa alimentarão o saldo da conta selecionada abaixo.</p>
                 </div>
               </div>
@@ -336,7 +336,7 @@ const ModalVendaPaymentForm: React.FC<Props> = ({ pedido, onClose, onSubmit, isS
                 required
                 value={contaBancariaId}
                 onChange={e => setContaBancariaId(e.target.value)}
-                className="w-full bg-white border-2 border-emerald-200 rounded-xl px-5 py-3 text-xs font-semibold text-emerald-700 outline-none focus:ring-2 focus:ring-emerald-500 appearance-none cursor-pointer shadow-sm"
+                className="dc-input w-full bg-white border-2 border-emerald-200 rounded-xl px-5 py-2.5 text-xs font-semibold text-emerald-700 outline-none focus:ring-2 focus:ring-emerald-500 appearance-none cursor-pointer shadow-sm"
               >
                 <option value="">Onde o dinheiro cairá?</option>
                 {contas.map(c => <option key={c.id} value={c.id}>{c.banco_nome} - {c.titular} | Saldo: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(c.saldo_atual || 0)}</option>)}
@@ -351,17 +351,17 @@ const ModalVendaPaymentForm: React.FC<Props> = ({ pedido, onClose, onSubmit, isS
               onChange={e => setObservacao(e.target.value)}
               placeholder="Ex: Entrada via PIX efetuada no ato da assinatura..."
               rows={2}
-              className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 text-xs font-medium text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none shadow-sm hover:shadow-md transition-all"
+              className="dc-input w-full bg-white border border-slate-200 rounded-xl px-5 py-2.5 text-xs font-medium text-slate-900 outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none shadow-sm hover:shadow-md transition-all"
             />
           </div>
         </form>
 
-        <div className="p-6 border-t border-slate-100 bg-slate-50">
+        <div className="dc-modal-footer p-4 border-t border-slate-100 bg-slate-50">
           <button
             type="button"
             onClick={handleSubmit}
             disabled={isSaving || parcelas.length === 0}
-            className="w-full py-5 bg-emerald-600 text-white rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-emerald-700 shadow-sm shadow-emerald-100 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center space-x-3"
+            className="dc-button w-full py-2.5 bg-emerald-600 text-white rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-emerald-700 shadow-sm shadow-emerald-100 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center space-x-3"
           >
             {isSaving ? (
               <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>

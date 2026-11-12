@@ -27,7 +27,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
         const labelTitle = date.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
 
         return (
-            <div className="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm backdrop-blur-sm bg-opacity-95">
+            <div className="dc-panel bg-opacity-95">
                 <p className="text-xs font-semibold text-slate-500 normal-case tracking-normal mb-3 border-b border-slate-200 pb-2">
                     {labelTitle}
                 </p>
@@ -67,51 +67,51 @@ export const HistoryChart = ({ data }: { data: IHistoryData[] }) => {
     }, [data]);
 
     return (
-        <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/60 shadow-sm overflow-hidden group">
-            <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
-                <div className="min-w-0 max-w-full flex-[1_0_18rem]">
-                    <h3 className="text-lg font-semibold text-slate-900 tracking-tight normal-case">Histórico de Performance</h3>
-                    <p className="text-xs font-bold text-slate-500 normal-case tracking-normal mt-1">Análise consolidada dos últimos 3 meses</p>
+        <div className="dc-panel overflow-hidden group">
+            <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
+                <div className="min-w-0 max-w-full">
+                    <h3 className="dc-section-title">Histórico de Performance</h3>
+                    <p className="dc-section-subtitle mt-1">Análise consolidada dos últimos 3 meses</p>
                 </div>
-                <div className="flex max-w-full flex-wrap items-center gap-2 bg-slate-50 p-1.5 rounded-xl border border-slate-100">
-                    <div className="flex shrink-0 items-center gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg bg-white shadow-sm border border-slate-100">
+                <div className="flex max-w-full flex-wrap items-center gap-x-4 gap-y-2">
+                    <div className="flex shrink-0 items-center gap-1.5 whitespace-nowrap">
                         <div className="w-2 h-2 rounded-full bg-slate-400" />
                         <span className="text-xs font-semibold text-slate-600 normal-case tracking-normal">Patrimônio</span>
                     </div>
-                    <div className="flex shrink-0 items-center gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg bg-white shadow-sm border border-slate-100">
+                    <div className="flex shrink-0 items-center gap-1.5 whitespace-nowrap">
                         <div className="w-2 h-2 rounded-full bg-indigo-500" />
                         <span className="text-xs font-semibold text-slate-600 normal-case tracking-normal">Vendas</span>
                     </div>
-                    <div className="flex shrink-0 items-center gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg bg-white shadow-sm border border-slate-100">
+                    <div className="flex shrink-0 items-center gap-1.5 whitespace-nowrap">
                         <div className="w-2 h-2 rounded-full bg-emerald-500" />
                         <span className="text-xs font-semibold text-slate-600 normal-case tracking-normal">Compras</span>
                     </div>
-                    <div className="flex shrink-0 items-center gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg bg-white shadow-sm border border-slate-100">
+                    <div className="flex shrink-0 items-center gap-1.5 whitespace-nowrap">
                         <div className="w-2 h-2 rounded-full bg-rose-500" />
                         <span className="text-xs font-semibold text-slate-600 normal-case tracking-normal">Despesas Ob.</span>
                     </div>
-                    <div className="flex shrink-0 items-center gap-2 whitespace-nowrap px-3 py-1.5 rounded-lg bg-indigo-600 shadow-sm shadow-indigo-200">
-                        <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
-                        <span className="text-xs font-semibold text-white normal-case tracking-normal">Resultado</span>
+                    <div className="flex shrink-0 items-center gap-1.5 whitespace-nowrap">
+                        <div className="w-2 h-2 rounded-full bg-indigo-600" />
+                        <span className="text-xs font-semibold text-slate-600 normal-case tracking-normal">Resultado</span>
                     </div>
                 </div>
             </div>
 
-            <div className="h-[380px] w-full">
+            <div className="h-[280px] sm:h-[300px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                    <ComposedChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }} barGap={2}>
+                    <ComposedChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 18 }} barGap={2}>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                         <XAxis
                             dataKey="displayDate"
                             axisLine={false}
                             tickLine={false}
-                            tick={{ fill: '#94a3b8', fontSize: 9, fontWeight: 700 }}
+                            tick={{ fill: '#64748b', fontSize: 11, fontWeight: 500 }}
                             dy={15}
                         />
                         <YAxis
                             axisLine={false}
                             tickLine={false}
-                            tick={{ fill: '#94a3b8', fontSize: 9, fontWeight: 700 }}
+                            tick={{ fill: '#64748b', fontSize: 11, fontWeight: 500 }}
                             tickFormatter={(val) => `R$ ${val / 1000}k`}
                         />
                         <Tooltip content={<CustomTooltip />} cursor={{ fill: '#f8fafc', radius: 8 }} />

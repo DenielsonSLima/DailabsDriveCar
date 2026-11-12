@@ -74,12 +74,12 @@ const RelatorioFinanceiroPage: React.FC = () => {
   const formatCur = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
 
   return (
-    <div className="space-y-6 pb-20 animate-in fade-in duration-500">
+    <div className="dc-page pb-20 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center space-x-4">
           <button
             onClick={() => navigate('/relatorios')}
-            className="p-3 bg-white border border-slate-200 rounded-2xl text-slate-500 hover:text-indigo-600 hover:border-indigo-100 transition-all shadow-sm group"
+            className="dc-button bg-white border border-slate-200 text-slate-500 hover:text-indigo-600 hover:border-indigo-100 transition-all shadow-sm group"
           >
             <svg className="w-6 h-6 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -87,14 +87,14 @@ const RelatorioFinanceiroPage: React.FC = () => {
           </button>
           <div>
             <p className="text-xs font-semibold text-rose-500 normal-case tracking-normal">Relatórios / Gestão</p>
-            <h1 className="text-3xl font-semibold text-slate-900 normal-case tracking-tight leading-none">Movimentação Financeira</h1>
+            <h1 className="dc-page-title">Movimentação Financeira</h1>
           </div>
         </div>
 
         {reportData && (
           <button
             onClick={() => setIsPreviewOpen(true)}
-            className="flex items-center space-x-2 px-6 py-3 bg-slate-900 text-white rounded-2xl font-semibold normal-case text-xs tracking-normal hover:bg-slate-800 transition-all shadow-sm shadow-slate-200"
+            className="dc-button flex items-center space-x-2 bg-slate-900 text-white normal-case tracking-normal hover:bg-slate-800 transition-all shadow-sm shadow-slate-200"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
             <span>Exportar PDF</span>
@@ -102,19 +102,19 @@ const RelatorioFinanceiroPage: React.FC = () => {
         )}
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+      <div className="dc-panel">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10 items-end">
           <div className="md:col-span-2">
             <label className="block text-xs font-semibold text-slate-400 normal-case mb-2 tracking-normal ml-1">Intervalo Financeiro</label>
             <div className="flex items-center space-x-2 bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
-              <input type="date" value={dataInicio} onChange={e => setDataInicio(e.target.value)} className="flex-1 bg-transparent border-none px-4 py-2 text-sm font-bold focus:ring-0 outline-none" />
+              <input type="date" value={dataInicio} onChange={e => setDataInicio(e.target.value)} className="dc-input flex-1 bg-transparent border-none focus:ring-0 outline-none" />
               <span className="text-slate-300 font-semibold text-xs normal-case">até</span>
-              <input type="date" value={dataFim} onChange={e => setDataFim(e.target.value)} className="flex-1 bg-transparent border-none px-4 py-2 text-sm font-bold focus:ring-0 outline-none" />
+              <input type="date" value={dataFim} onChange={e => setDataFim(e.target.value)} className="dc-input flex-1 bg-transparent border-none focus:ring-0 outline-none" />
             </div>
           </div>
           <div>
             <label className="block text-xs font-semibold text-slate-400 normal-case mb-2 tracking-normal ml-1">Modalidade</label>
-            <select value={tipoFluxo} onChange={e => setTipoFluxo(e.target.value)} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3.5 text-sm font-bold focus:ring-2 focus:ring-rose-500 outline-none appearance-none cursor-pointer">
+            <select value={tipoFluxo} onChange={e => setTipoFluxo(e.target.value)} className="dc-input w-full bg-slate-50 border border-slate-100 focus:ring-2 focus:ring-rose-500 outline-none appearance-none cursor-pointer">
               <option value="">Fluxo Completo (Tudo)</option>
               <option value="ENTRADA">Apenas Entradas</option>
               <option value="SAIDA">Apenas Saídas</option>
@@ -123,7 +123,7 @@ const RelatorioFinanceiroPage: React.FC = () => {
           <button
             onClick={fetchData}
             disabled={loading}
-            className="px-6 py-4 bg-rose-600 text-white rounded-2xl font-semibold normal-case text-xs tracking-normal shadow-sm shadow-rose-100 hover:bg-rose-700 transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
+            className="dc-button bg-rose-600 text-white normal-case tracking-normal shadow-sm shadow-rose-100 hover:bg-rose-700 transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
           >
             {loading ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : <span>Processar Fluxo</span>}
           </button>
@@ -132,26 +132,26 @@ const RelatorioFinanceiroPage: React.FC = () => {
         {reportData ? (
           <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* KPI GRID */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-emerald-50 p-6 rounded-2xl border border-emerald-100">
-                <p className="text-xs font-semibold text-emerald-600 normal-case tracking-normal mb-1">Entradas (Realizado)</p>
-                <p className="text-xl font-semibold text-emerald-700">{formatCur(reportData.entradasRealizadas)}</p>
-                <p className="text-xs font-bold text-emerald-500 mt-1 normal-case tracking-tight">+ {formatCur(reportData.aReceber)} Pendente</p>
+            <div className="dc-kpi-grid">
+              <div className="dc-kpi-card">
+                <p className="dc-kpi-label">Entradas (Realizado)</p>
+                <p className="dc-kpi-value">{formatCur(reportData.entradasRealizadas)}</p>
+                <p className="dc-kpi-hint">+ {formatCur(reportData.aReceber)} Pendente</p>
               </div>
-              <div className="bg-rose-50 p-6 rounded-2xl border border-rose-100">
-                <p className="text-xs font-semibold text-rose-600 normal-case tracking-normal mb-1">Saídas (Realizado)</p>
-                <p className="text-xl font-semibold text-rose-700">{formatCur(reportData.saidasRealizadas)}</p>
-                <p className="text-xs font-bold text-rose-500 mt-1 normal-case tracking-tight">+ {formatCur(reportData.aPagar)} Pendente</p>
+              <div className="dc-kpi-card">
+                <p className="dc-kpi-label">Saídas (Realizado)</p>
+                <p className="dc-kpi-value">{formatCur(reportData.saidasRealizadas)}</p>
+                <p className="dc-kpi-hint">+ {formatCur(reportData.aPagar)} Pendente</p>
               </div>
-              <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-1">Saldo em Caixa</p>
-                <p className="text-xl font-semibold text-slate-900">{formatCur(reportData.entradasRealizadas - reportData.saidasRealizadas)}</p>
-                <p className="text-xs font-bold text-slate-400 mt-1 normal-case">Líquido Realizado</p>
+              <div className="dc-kpi-card">
+                <p className="dc-kpi-label">Saldo em Caixa</p>
+                <p className="dc-kpi-value">{formatCur(reportData.entradasRealizadas - reportData.saidasRealizadas)}</p>
+                <p className="dc-kpi-hint">Líquido Realizado</p>
               </div>
-              <div className="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-sm text-white">
-                <p className="text-xs font-semibold text-rose-300 normal-case tracking-normal mb-1">Projeção Final</p>
-                <p className="text-xl font-semibold">{formatCur(reportData.totalEntradas - reportData.totalSaidas)}</p>
-                <p className="text-xs font-bold text-rose-400 mt-1 normal-case">Saldo Projetado</p>
+              <div className="dc-kpi-card">
+                <p className="dc-kpi-label">Projeção Final</p>
+                <p className="dc-kpi-value">{formatCur(reportData.totalEntradas - reportData.totalSaidas)}</p>
+                <p className="dc-kpi-hint">Saldo Projetado</p>
               </div>
             </div>
 
@@ -176,10 +176,10 @@ const RelatorioFinanceiroPage: React.FC = () => {
                   ) : (
                     reportData.items.map((item: any, i: number) => (
                       <tr key={i} className="hover:bg-slate-50/50 transition-colors">
-                        <td className="px-6 py-4 text-xs font-bold text-slate-400">{item.data}</td>
+                        <td className="px-6 py-4 text-xs font-semibold text-slate-400">{item.data}</td>
                         <td className="px-6 py-4">
                           <p className="text-sm font-semibold text-slate-900 normal-case tracking-tight">{item.descricao}</p>
-                          <p className="text-xs font-bold text-slate-400 normal-case">{item.categoria}</p>
+                          <p className="text-xs font-semibold text-slate-400 normal-case">{item.categoria}</p>
                         </td>
                         <td className={`px-6 py-4 text-sm font-semibold text-right ${item.tipo === 'ENTRADA' ? 'text-emerald-600' : 'text-rose-600'}`}>
                           {item.tipo === 'ENTRADA' ? '+' : '-'} {formatCur(item.valor)}

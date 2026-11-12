@@ -82,17 +82,14 @@ const VendaAnalyticsKpis: React.FC<Props> = ({ pedido }) => {
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 animate-in slide-in-from-bottom-3 duration-500">
+    <div className="dc-kpi-grid animate-in slide-in-from-bottom-3 duration-500">
       {kpis.filter((_, index) => !pedido.lote_id || index !== 1).map((kpi, idx) => (
         <div
           key={idx}
-          className={`p-3.5 rounded-2xl border transition-all hover:shadow-sm ${kpi.isSpecial
-              ? `${kpi.bg} border-transparent shadow-sm`
-              : `${kpi.bg} border-slate-100`
-            }`}
+          className="dc-kpi-card"
         >
           <div className="flex items-center justify-between mb-1.5">
-            <p className={`text-[7px] font-semibold normal-case tracking-normal ${kpi.isSpecial ? 'text-white/70' : 'text-slate-400'}`}>
+            <p className="dc-kpi-label">
               {kpi.label}
             </p>
             <div className={`w-5 h-5 rounded-lg flex items-center justify-center ${kpi.isSpecial ? 'bg-white/20 text-white' : 'bg-white text-slate-300 shadow-sm'}`}>
@@ -102,7 +99,7 @@ const VendaAnalyticsKpis: React.FC<Props> = ({ pedido }) => {
             </div>
           </div>
 
-          <h3 className={`text-sm font-semibold tracking-tight leading-none ${kpi.text}`}>
+          <h3 className="dc-kpi-value">
             {kpi.isPercent ? `${kpi.value.toFixed(1)}%` : formatCurrency(kpi.value as number)}
           </h3>
         </div>

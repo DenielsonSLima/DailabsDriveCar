@@ -36,7 +36,7 @@ const CategoryForm: React.FC<Props> = ({ grupo, initialData, onClose, onSubmit, 
   const content = (
     <div data-drivecar-ui className="fixed inset-0 z-[160] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-white w-full max-w-sm rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 duration-200 border-2 border-indigo-100">
-        <div className="p-6 border-b border-slate-100 bg-indigo-50/50">
+        <div className="p-4 border-b border-slate-100 bg-indigo-50/50">
           <h3 className="text-lg font-semibold text-slate-900 normal-case tracking-tight">
             {initialData ? 'Editar Categoria' : 'Nova Categoria'}
           </h3>
@@ -44,7 +44,7 @@ const CategoryForm: React.FC<Props> = ({ grupo, initialData, onClose, onSubmit, 
             Grupo: {grupo.nome}
           </p>
         </div>
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-4 space-y-4">
           <div>
             <label className="block text-xs font-medium text-slate-500 normal-case mb-2 ml-1 tracking-normal">Nome da Despesa</label>
             <input 

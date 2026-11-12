@@ -14,7 +14,7 @@ const VendaCard: React.FC<Props> = ({ pedido, onClick }) => {
   const fmt = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
 
   return (
-    <div 
+    <div
       onClick={onClick}
       className="group bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-sm transition-all cursor-pointer flex flex-col h-full"
     >
@@ -28,11 +28,11 @@ const VendaCard: React.FC<Props> = ({ pedido, onClick }) => {
           {pedido.status}
         </div>
       </div>
-      <div className="p-6">
+      <div className="p-4">
         <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-1">Pedido #{pedido.numero_venda}</p>
-        <h3 className="text-lg font-semibold text-slate-900 normal-case truncate">{pedido.lote_id ? `${getVendaUnits(pedido)} unidades do lote` : `${v?.modelo?.nome || ''} ${v?.versao?.nome || ''}`}</h3>
-        <p className="text-xs font-bold text-slate-500 mt-1">{pedido.cliente?.nome}</p>
-        
+        <h3 className="dc-section-title font-semibold text-slate-900 normal-case">{pedido.lote_id ? `${getVendaUnits(pedido)} unidades do lote` : `${v?.modelo?.nome || ''} ${v?.versao?.nome || ''}`}</h3>
+        <p className="text-xs font-semibold text-slate-500 mt-1">{pedido.cliente?.nome}</p>
+
         <div className="mt-6 pt-4 border-t border-slate-100 flex justify-between items-end">
           <div>
             <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal">Preço de Venda</p>

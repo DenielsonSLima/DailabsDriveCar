@@ -107,7 +107,7 @@ const SaldoInicialPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200 max-w-5xl mx-auto relative">
+    <div className="dc-page animate-in fade-in duration-200 max-w-5xl mx-auto relative">
       
       {/* Toast Notification Component */}
       {toast && (
@@ -133,13 +133,13 @@ const SaldoInicialPage: React.FC = () => {
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
           </button>
           <div>
-            <h1 className="text-3xl font-semibold text-slate-900 tracking-tight">Saldo Inicial</h1>
-            <p className="text-slate-500 mt-1">Defina o ponto de partida financeiro para cada conta.</p>
+            <h1 className="dc-page-title">Saldo Inicial</h1>
+            <p className="dc-page-subtitle">Defina o ponto de partida financeiro para cada conta.</p>
           </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden p-6">
+      <div className="dc-panel overflow-hidden">
         {loading ? (
           <div className="flex justify-center py-20"><div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div></div>
         ) : contas.length === 0 ? (
@@ -184,12 +184,12 @@ const SaldoInicialPage: React.FC = () => {
       {selectedConta && (
         <div data-drivecar-ui className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white w-full max-w-md rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="p-6 border-b border-slate-100 bg-slate-50">
-              <h2 className="text-xl font-semibold text-slate-900 normal-case tracking-tight">Definir Saldo Inicial</h2>
+            <div className="p-4 border-b border-slate-100 bg-slate-50">
+              <h2 className="dc-section-title">Definir Saldo Inicial</h2>
               <p className="text-slate-500 text-xs mt-1 font-medium">{selectedConta.banco_nome} • {selectedConta.conta}</p>
             </div>
             
-            <form onSubmit={handleSave} className="p-6 space-y-6">
+            <form onSubmit={handleSave} className="p-4 space-y-6">
               <div>
                 <label className="block text-xs font-medium text-slate-500 normal-case mb-2 tracking-normal ml-1">Data de Referência (Corte)</label>
                 <input 
@@ -210,7 +210,7 @@ const SaldoInicialPage: React.FC = () => {
                   required
                   value={formData.valor}
                   onChange={handleCurrencyChange}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-mono font-medium text-2xl text-slate-800 outline-none focus:ring-2 focus:ring-indigo-500 transition-all placeholder:text-slate-300"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-mono font-medium text-2xl text-slate-800 outline-none focus:ring-2 focus:ring-indigo-500 transition-all placeholder:text-slate-300 dc-input"
                   placeholder="R$ 0,00"
                 />
               </div>

@@ -100,22 +100,22 @@ const PerformanceContent: React.FC<Props> = ({ data, periodoLabel, isFetching = 
       </div>
 
       {/* ================== CARDS DESTAQUE ================== */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-slate-900 rounded-2xl p-6 text-white relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500 rounded-full blur-[60px] opacity-20"></div>
-          <p className="text-xs font-semibold text-indigo-400 normal-case tracking-normal mb-3">Saldo Total Contas</p>
-          <h3 className="text-2xl font-semibold tracking-tight">{formatCurrency(r.saldo_contas_bancarias)}</h3>
-          <p className="text-xs text-slate-500 font-bold normal-case mt-2">{data.contas_bancarias.length} conta{data.contas_bancarias.length !== 1 ? 's' : ''} ativa{data.contas_bancarias.length !== 1 ? 's' : ''}</p>
+      <div className="dc-kpi-grid">
+        <div className="dc-kpi-card">
+          <div className="hidden"></div>
+          <p className="dc-kpi-label">Saldo Total Contas</p>
+          <h3 className="dc-kpi-value">{formatCurrency(r.saldo_contas_bancarias)}</h3>
+          <p className="dc-kpi-hint">{data.contas_bancarias.length} conta{data.contas_bancarias.length !== 1 ? 's' : ''} ativa{data.contas_bancarias.length !== 1 ? 's' : ''}</p>
         </div>
-        <div className="bg-white rounded-2xl p-6 border border-slate-200/80">
-          <p className="text-xs font-semibold text-rose-500 normal-case tracking-normal mb-3">Despesas Veículos</p>
-          <h3 className="text-2xl font-semibold text-slate-900 tracking-tight">{formatCurrency(r.despesas_veiculos)}</h3>
-          <p className="text-xs text-slate-400 font-bold normal-case mt-2">{data.despesas_veiculos.length} lançamento{data.despesas_veiculos.length !== 1 ? 's' : ''}</p>
+        <div className="dc-kpi-card">
+          <p className="dc-kpi-label">Despesas Veículos</p>
+          <h3 className="dc-kpi-value">{formatCurrency(r.despesas_veiculos)}</h3>
+          <p className="dc-kpi-hint">{data.despesas_veiculos.length} lançamento{data.despesas_veiculos.length !== 1 ? 's' : ''}</p>
         </div>
-        <div className="bg-white rounded-2xl p-6 border border-slate-200/80">
-          <p className="text-xs font-semibold text-amber-500 normal-case tracking-normal mb-3">Retiradas Sócios</p>
-          <h3 className="text-2xl font-semibold text-slate-900 tracking-tight">{formatCurrency(r.retiradas_socios)}</h3>
-          <p className="text-xs text-slate-400 font-bold normal-case mt-2">{data.retiradas.length} retirada{data.retiradas.length !== 1 ? 's' : ''}</p>
+        <div className="dc-kpi-card">
+          <p className="dc-kpi-label">Retiradas Sócios</p>
+          <h3 className="dc-kpi-value">{formatCurrency(r.retiradas_socios)}</h3>
+          <p className="dc-kpi-hint">{data.retiradas.length} retirada{data.retiradas.length !== 1 ? 's' : ''}</p>
         </div>
       </div>
 
@@ -234,14 +234,14 @@ const PerformanceContent: React.FC<Props> = ({ data, periodoLabel, isFetching = 
         {secaoAberta === 'contas' && (
           <div className="bg-white rounded-2xl border border-slate-200/80 overflow-hidden animate-in slide-in-from-top-2 duration-300">
             {data.contas_bancarias.length === 0 ? (
-              <p className="text-sm text-slate-400 font-bold text-center py-10">Nenhuma conta bancária ativa.</p>
+              <p className="text-sm text-slate-400 font-semibold text-center py-10">Nenhuma conta bancária ativa.</p>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-5">
                 {data.contas_bancarias.map(c => (
                   <div key={c.id} className="bg-slate-50 rounded-xl p-5 border border-slate-100">
                     <div className="flex items-center justify-between mb-3">
                       <p className="text-xs font-semibold text-slate-800 normal-case tracking-tight">{c.banco_nome}</p>
-                      <span className="text-xs font-bold text-slate-400 normal-case px-2 py-0.5 bg-white rounded border border-slate-200">{c.tipo}</span>
+                      <span className="text-xs font-semibold text-slate-400 normal-case px-2 py-0.5 bg-white rounded border border-slate-200">{c.tipo}</span>
                     </div>
                     <h4 className={`text-lg font-semibold tracking-tight ${c.saldo_atual >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
                       {formatCurrency(c.saldo_atual)}

@@ -9,7 +9,7 @@ const SocioSummary: React.FC<Props> = ({ socios }) => {
     const fmt = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="dc-partners">
             {socios.map((socio, idx) => {
                 // Cálculo de métricas baseado na regra de 33.3% para sócios Klecio, Newton e Yuri
                 // O valor_investido vindo do RPC já é o valor individual
@@ -20,18 +20,18 @@ const SocioSummary: React.FC<Props> = ({ socios }) => {
                 return (
                     <div
                         key={socio.socio_id || idx}
-                        className="bg-white/60 backdrop-blur-sm border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-sm hover:bg-white transition-all duration-300 group"
+                        className="dc-panel hover:shadow-sm hover:bg-white transition-all duration-300 group"
                     >
-                        <div className="flex items-center justify-between mb-8">
+                        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
                             <div className="flex items-center gap-4">
-                                <div className="w-14 h-14 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform">
+                                <div className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center text-slate-600 shadow-sm transition-transform">
                                     <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                     </svg>
                                 </div>
                                 <div>
                                     <h3 className="text-lg font-semibold text-slate-900 normal-case tracking-normal leading-none">{socio.nome.split(' ')[0]}</h3>
-                                    <p className="text-xs font-bold text-slate-400 normal-case tracking-normal mt-1">Sócio</p>
+                                    <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mt-1">Sócio</p>
                                 </div>
                             </div>
                             <div className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-xs font-semibold normal-case tracking-normal border border-emerald-100 italic">
@@ -45,7 +45,7 @@ const SocioSummary: React.FC<Props> = ({ socios }) => {
                                 <div className="flex justify-between items-end">
                                     <div>
                                         <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-1">Exposição de Capital</p>
-                                        <h4 className="text-xl font-semibold text-slate-900 tracking-normal">{fmt(socio.valor_investido)}</h4>
+                                        <h4 className="dc-kpi-value">{fmt(socio.valor_investido)}</h4>
                                     </div>
                                     <div className="w-8 h-8 rounded-lg bg-white shadow-sm flex items-center justify-center text-slate-600">
                                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -61,7 +61,7 @@ const SocioSummary: React.FC<Props> = ({ socios }) => {
                                     <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-1">Ativos Envolv.</p>
                                     <div className="flex items-center gap-2">
                                         <span className="text-lg font-semibold text-slate-900 leading-none">{socio.quantidade_carros}</span>
-                                        <span className="text-xs font-bold text-slate-500 normal-case tracking-normal">Veículos</span>
+                                        <span className="text-xs font-semibold text-slate-500 normal-case tracking-normal">Veículos</span>
                                     </div>
                                 </div>
 
@@ -81,17 +81,17 @@ const SocioSummary: React.FC<Props> = ({ socios }) => {
                             <div className="pt-6 border-t border-slate-100 flex flex-col gap-4">
                                 <div className="flex justify-between items-center bg-slate-50/80 px-4 py-2 rounded-2xl border border-slate-100/50">
                                     <span className="text-xs font-semibold text-slate-400 normal-case tracking-normal">Lucro a Receber</span>
-                                    <span className="text-sm font-semibold text-indigo-500 tracking-normal">{fmt(socio.lucro_pendente)}</span>
+                                    <span className="dc-kpi-value">{fmt(socio.lucro_pendente)}</span>
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
                                         <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-1">Lucro Gerado</p>
-                                        <p className="text-sm font-semibold text-slate-900 tracking-normal opacity-80">{fmt(socio.lucro_periodo)}</p>
+                                        <p className="dc-kpi-value">{fmt(socio.lucro_periodo)}</p>
                                     </div>
                                     <div className="text-right">
                                         <p className="text-xs font-semibold text-emerald-600 normal-case tracking-normal mb-1">Dinheiro em Caixa</p>
-                                        <p className="text-lg font-semibold text-emerald-600 tracking-normal">{fmt(socio.lucro_caixa)}</p>
+                                        <p className="dc-kpi-value">{fmt(socio.lucro_caixa)}</p>
                                     </div>
                                 </div>
                             </div>

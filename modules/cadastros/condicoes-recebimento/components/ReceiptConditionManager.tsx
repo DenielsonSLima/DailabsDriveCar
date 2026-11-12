@@ -126,7 +126,7 @@ const ReceiptConditionManager: React.FC<Props> = ({ forma, onBack }) => {
           <p className="text-xs font-medium text-slate-500 normal-case tracking-normal">
             {isAtivoOrNone ? 'Condições de Entrega/Entrada' : 'Condições de Recebimento'}
           </p>
-          <h2 className="text-3xl font-semibold text-slate-900 leading-none mt-1">{forma.nome}</h2>
+          <h2 className="dc-section-title mt-1">{forma.nome}</h2>
         </div>
       </div>
 
@@ -137,7 +137,7 @@ const ReceiptConditionManager: React.FC<Props> = ({ forma, onBack }) => {
           {loading ? (
             <div className="text-center py-10"><div className="animate-spin w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full mx-auto"></div></div>
           ) : condicoes.length === 0 ? (
-            <div className="bg-white rounded-2xl p-6 text-center border border-slate-200 border-dashed">
+            <div className="dc-panel text-center border-dashed">
               <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
                 <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
               </div>
@@ -197,7 +197,7 @@ const ReceiptConditionManager: React.FC<Props> = ({ forma, onBack }) => {
 
         {/* Formulário */}
         <div className="lg:col-span-5">
-          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm sticky top-6">
+          <div className="dc-panel sticky top-6">
 
             {/* Form Header */}
             <div className="flex justify-between items-start mb-6">

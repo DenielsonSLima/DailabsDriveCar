@@ -30,7 +30,7 @@ export default function LoteDespesas({ detalhes, stats, canCreate, onPagar, onAd
       <LoteSection title="Despesas do lote" subtitle="Fretes, mecânica e demais custos vinculados ao lote ou a uma unidade." action={<button type="button" className={primaryClass} disabled={!canCreate} onClick={onAdicionar}>Adicionar despesa</button>}>
         {detalhes.despesas.length === 0 ? <LoteEmpty>Nenhuma despesa registrada. Adicione frete, mecânica ou outros custos para acompanhar o investimento completo.</LoteEmpty> : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[760px]">
+            <table className="dc-table w-full min-w-[760px]">
               <caption className="sr-only">Despesas e situação de pagamento</caption>
               <thead className="bg-slate-50"><tr>{['Descrição', 'Aplicação', 'Vencimento', 'Valor', 'Pago', 'Em aberto', ''].map((label, index) => <th key={index} scope="col" className={tableThClass}>{label}</th>)}</tr></thead>
               <tbody className="divide-y divide-slate-100">{detalhes.despesas.map(despesa => {

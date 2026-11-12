@@ -65,7 +65,7 @@ const MarcaDaguaPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-200 relative">
+    <div className="dc-page animate-in fade-in duration-200 relative">
       {/* Toast Notification */}
       {toast && (
         <div data-drivecar-ui className={`fixed top-6 right-6 z-[200] px-6 py-4 rounded-2xl shadow-sm flex items-center space-x-3 animate-in slide-in-from-right duration-200 border backdrop-blur-md ${
@@ -91,8 +91,8 @@ const MarcaDaguaPage: React.FC = () => {
             </svg>
           </button>
           <div>
-            <h1 className="text-3xl font-semibold text-slate-900 tracking-tight">Marca D'água</h1>
-            <p className="text-slate-500 mt-1">Personalize a identidade visual de seus documentos e PDFs.</p>
+            <h1 className="dc-page-title">Marca D'água</h1>
+            <p className="dc-page-subtitle">Personalize a identidade visual de seus documentos e PDFs.</p>
           </div>
         </div>
       </div>
@@ -101,7 +101,7 @@ const MarcaDaguaPage: React.FC = () => {
         {/* Lado Esquerdo: Configurações */}
         <div className="lg:col-span-5 h-full">
           {loading ? (
-            <div className="bg-white rounded-2xl border border-slate-200 p-6 h-[600px] flex flex-col items-center justify-center space-y-4">
+            <div className="dc-panel h-[600px] flex flex-col items-center justify-center space-y-4">
                <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
                <p className="text-slate-500 font-medium normal-case text-xs tracking-normal">Carregando...</p>
             </div>

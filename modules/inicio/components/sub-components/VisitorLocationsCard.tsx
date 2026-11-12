@@ -7,7 +7,7 @@ interface Props {
 
 const VisitorLocationsCard: React.FC<Props> = ({ locations }) => {
   return (
-    <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/60 shadow-sm flex flex-col h-full">
+    <div className="dc-panel flex flex-col h-full">
       <h3 className="text-sm font-semibold text-slate-900 normal-case tracking-normal flex items-center mb-8">
         <span className="w-1.5 h-5 bg-slate-500 rounded-full mr-3"></span>
         Origem dos Clientes
@@ -23,7 +23,7 @@ const VisitorLocationsCard: React.FC<Props> = ({ locations }) => {
           <div className="space-y-4">
             {locations.map((loc, idx) => (
               <div key={`${loc.city}-${loc.region}`} className="space-y-2">
-                <div className="flex items-center justify-between text-[11px] font-semibold text-slate-700 normal-case tracking-normal">
+                <div className="flex items-center justify-between text-xs font-semibold text-slate-700 normal-case tracking-normal">
                   <span>{loc.city || 'Desconhecido'}, {loc.region || '--'}</span>
                   <span className="text-orange-600">{loc.view_count}</span>
                 </div>
@@ -43,7 +43,7 @@ const VisitorLocationsCard: React.FC<Props> = ({ locations }) => {
       </div>
 
       <div className="mt-8 pt-6 border-t border-slate-100">
-        <p className="text-xs font-bold text-slate-500 normal-case tracking-normal leading-relaxed">
+        <p className="text-xs font-semibold text-slate-500 normal-case tracking-normal leading-relaxed">
           * Dados aproximados com base no provedor de internet do visitante.
         </p>
       </div>

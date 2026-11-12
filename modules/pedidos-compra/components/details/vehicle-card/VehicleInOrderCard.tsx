@@ -53,7 +53,7 @@ const VehicleInOrderCard: React.FC<Props> = ({ veiculo, pedidoId, isConcluido, o
         {!isConcluido && (
           <button
             onClick={handleEdit}
-            className="p-3 bg-white border border-slate-200 text-indigo-500 rounded-xl hover:bg-indigo-600 hover:text-white transition-all shadow-sm active:scale-95"
+            className="dc-button p-3 bg-white border border-slate-200 text-indigo-500 rounded-xl hover:bg-indigo-600 hover:text-white transition-all shadow-sm active:scale-95"
             title="Editar Ficha Técnica"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -65,7 +65,7 @@ const VehicleInOrderCard: React.FC<Props> = ({ veiculo, pedidoId, isConcluido, o
         {!isConcluido && (
           <button
             onClick={(e) => { e.stopPropagation(); onUnlink(veiculo.id); }}
-            className="p-3 bg-white border border-slate-200 text-rose-500 rounded-xl hover:bg-rose-500 hover:text-white transition-all shadow-sm active:scale-95"
+            className="dc-button p-3 bg-white border border-slate-200 text-rose-500 rounded-xl hover:bg-rose-500 hover:text-white transition-all shadow-sm active:scale-95"
             title="Remover do Pedido"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>

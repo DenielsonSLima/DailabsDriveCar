@@ -69,7 +69,7 @@ const PedidoCompraCard: React.FC<Props> = ({ pedido, onClick }) => {
       className="group bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-sm hover:border-indigo-300 transition-all duration-500 cursor-pointer flex flex-col h-full animate-in fade-in"
     >
       {/* 1. Área de Mídia (Carrossel) */}
-      <div className="aspect-[16/10] bg-slate-900 relative overflow-hidden shrink-0">
+      <div className="aspect-[16/10] bg-slate-100 relative overflow-hidden shrink-0">
         {hasVeiculos ? (
           <>
             {capaUrl ? (
@@ -83,8 +83,8 @@ const PedidoCompraCard: React.FC<Props> = ({ pedido, onClick }) => {
 
             {veiculos.length > 1 && (
               <div className="absolute inset-0 flex items-center justify-between px-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button onClick={handlePrev} className="p-2 rounded-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/40 transition-all"><svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M15 19l-7-7m0 0l7-7m-7 7h18" /></svg></button>
-                <button onClick={handleNext} className="p-2 rounded-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/40 transition-all"><svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M9 5l7 7-7 7" /></svg></button>
+                <button onClick={handlePrev} className="dc-button p-2 rounded-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/40 transition-all"><svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M15 19l-7-7m0 0l7-7m-7 7h18" /></svg></button>
+                <button onClick={handleNext} className="dc-button p-2 rounded-full bg-white/20 backdrop-blur-sm text-white hover:bg-white/40 transition-all"><svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path d="M9 5l7 7-7 7" /></svg></button>
               </div>
             )}
 
@@ -133,14 +133,14 @@ const PedidoCompraCard: React.FC<Props> = ({ pedido, onClick }) => {
         <div className="flex justify-between items-start mb-4">
           <div>
             <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-1">Pedido #{pedido.numero_pedido || '---'}</p>
-            <p className="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md inline-block normal-case">{formatDate(pedido.data_compra)}</p>
+            <p className="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md inline-block normal-case">{formatDate(pedido.data_compra)}</p>
           </div>
           {hasVeiculos && (
             <div className="text-right">
-              <h4 className="text-xs font-semibold text-slate-800 normal-case truncate max-w-[110px] leading-none">
+              <h4 className="dc-section-title font-semibold text-slate-800 normal-case max-w-[110px]">
                 {v?.modelo?.nome}
               </h4>
-              <p className="text-xs font-bold text-slate-400 normal-case mt-1">
+              <p className="text-xs font-semibold text-slate-400 normal-case mt-1">
                 {v?.montadora?.nome}
               </p>
             </div>
@@ -153,27 +153,27 @@ const PedidoCompraCard: React.FC<Props> = ({ pedido, onClick }) => {
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
             </div>
             <div className="min-w-0">
-              <p className="text-[11px] font-semibold text-slate-900 normal-case truncate leading-none mb-1">{pedido.fornecedor?.nome || 'Fornecedor N/D'}</p>
+              <p className="text-xs font-semibold text-slate-900 normal-case truncate leading-none mb-1">{pedido.fornecedor?.nome || 'Fornecedor N/D'}</p>
               <p className="text-xs font-mono text-slate-500 truncate mb-2">{pedido.fornecedor?.documento || 'Sem documento'}</p>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-slate-400 normal-case tracking-normal">{pedido.fornecedor?.cidade}/{pedido.fornecedor?.uf}</span>
+                <span className="text-xs font-semibold text-slate-400 normal-case tracking-normal">{pedido.fornecedor?.cidade}/{pedido.fornecedor?.uf}</span>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-2 mb-4">
-          <div className="bg-slate-50 border border-slate-100 rounded-xl p-3">
-            <p className="text-[11px] font-semibold text-slate-400 normal-case tracking-normal mb-1">Custo Base</p>
-            <p className="text-sm font-semibold text-slate-700 tabular-nums break-words">{formatCurrency(custoAquisicao)}</p>
+        <div className="grid grid-cols-1 gap-2 mb-4">
+          <div className="bg-slate-50 border border-slate-100 rounded-xl p-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+            <p className="text-xs font-semibold text-slate-600 normal-case tracking-normal mb-1">Custo Base</p>
+            <p className="text-sm font-semibold text-slate-700 tabular-nums whitespace-nowrap">{formatCurrency(custoAquisicao)}</p>
           </div>
-          <div className="bg-indigo-50/50 border border-indigo-100 rounded-xl p-3">
-            <p className="text-[11px] font-semibold text-indigo-400 normal-case tracking-normal mb-1">Serviços</p>
-            <p className="text-sm font-semibold text-indigo-600 tabular-nums break-words">+{formatCurrency(custoServicos)}</p>
+          <div className="bg-indigo-50/50 border border-indigo-100 rounded-xl p-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+            <p className="text-xs font-semibold text-slate-600 normal-case tracking-normal mb-1">Serviços</p>
+            <p className="text-sm font-semibold text-indigo-600 tabular-nums whitespace-nowrap">+{formatCurrency(custoServicos)}</p>
           </div>
-          <div className="col-span-2 bg-slate-900 rounded-xl p-3 shadow-sm">
-            <p className="text-[11px] font-semibold text-slate-400 normal-case tracking-normal mb-1">Total Ativo</p>
-            <p className="text-sm font-semibold text-emerald-400 tabular-nums break-words">{formatCurrency(totalInvestido)}</p>
+          <div className="bg-slate-900 rounded-xl p-3 shadow-sm">
+            <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-1">Total Ativo</p>
+            <p className="text-sm font-semibold text-emerald-400 tabular-nums whitespace-nowrap">{formatCurrency(totalInvestido)}</p>
           </div>
         </div>
 
@@ -186,7 +186,7 @@ const PedidoCompraCard: React.FC<Props> = ({ pedido, onClick }) => {
               <div key={idx} className="flex items-center justify-between bg-slate-50 border border-slate-100 rounded-lg px-2 py-1.5 shadow-sm w-full">
                 <div className="flex items-center min-w-0">
                   <div className="w-5 h-5 bg-indigo-600 text-white rounded flex items-center justify-center text-xs font-semibold normal-case shrink-0 mr-2">{s.nome.charAt(0)}</div>
-                  <span className="text-sm font-semibold text-slate-700 tabular-nums break-words max-w-[90px]">{s.nome.split(' ')[0]}</span>
+                  <span title={s.nome} className="text-sm font-semibold text-slate-700 tabular-nums break-words max-w-[90px]">{s.nome.split(' ')[0]}</span>
                 </div>
                 <div className="flex items-center gap-2 text-xs font-semibold flex-wrap justify-end">
                   <span className="text-indigo-500 bg-indigo-50 px-1.5 py-0.5 rounded">{s.porcentagem.toFixed(0)}%</span>

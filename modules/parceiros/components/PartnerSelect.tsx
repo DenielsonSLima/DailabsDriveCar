@@ -58,9 +58,9 @@ const PartnerSelect: React.FC<Props> = ({ parceiros, selectedId, onChange, disab
         className={`w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 flex items-center justify-between transition-all shadow-sm ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:border-emerald-300 hover:shadow-md'}`}
       >
         {selectedPartner ? (
-          <span className="font-bold text-slate-900 normal-case">{selectedPartner.nome}</span>
+          <span className="font-semibold text-slate-900 normal-case">{selectedPartner.nome}</span>
         ) : (
-          <span className="text-slate-400 font-bold italic">Clique para selecionar...</span>
+          <span className="text-slate-400 font-semibold italic">Clique para selecionar...</span>
         )}
         {!disabled && (
           <svg className={`w-5 h-5 text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>

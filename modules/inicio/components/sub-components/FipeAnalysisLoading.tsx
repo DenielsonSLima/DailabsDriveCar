@@ -20,7 +20,7 @@ const FipeAnalysisLoading: React.FC<FipeAnalysisLoadingProps> = ({
   return (
     <div className="max-w-md mx-auto py-10 space-y-6 animate-in fade-in zoom-in-95 duration-500">
       <div className="text-center space-y-1">
-        <h2 className="text-2xl font-semibold text-slate-900 tracking-tight normal-case">Análise em Curso</h2>
+        <h2 className="dc-section-title">Análise em Curso</h2>
         <p className="text-xs text-slate-500 font-medium">Aguarde enquanto processamos os dados.</p>
       </div>
 

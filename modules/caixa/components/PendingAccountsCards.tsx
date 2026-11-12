@@ -24,17 +24,17 @@ const PendingAccountsCards: React.FC<Props> = ({ startDate, endDate }) => {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 animate-pulse">
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm h-64"></div>
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm h-64"></div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-pulse">
+        <div className="dc-panel h-64"></div>
+        <div className="dc-panel h-64"></div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="bg-rose-50 rounded-2xl border border-rose-100 p-6 text-center">
-        <p className="text-rose-600 font-bold text-xs">Erro ao carregar contas pendentes</p>
+      <div className="bg-rose-50 rounded-2xl border border-rose-100 p-4 text-center">
+        <p className="text-rose-600 font-semibold text-xs">Erro ao carregar contas pendentes</p>
       </div>
     );
   }
@@ -78,10 +78,10 @@ const PendingAccountsCards: React.FC<Props> = ({ startDate, endDate }) => {
                       {item.veiculo ? (
                         <div className="flex flex-col">
                           <span className="text-xs font-semibold text-slate-700 leading-tight normal-case tracking-normal truncate max-w-[120px]" title={item.veiculo.modelo}>{item.veiculo.modelo}</span>
-                          <span className="text-xs font-bold text-slate-400 normal-case">{item.veiculo.placa}</span>
+                          <span className="text-xs font-semibold text-slate-400 normal-case">{item.veiculo.placa}</span>
                         </div>
                       ) : (
-                        <span className="text-xs text-slate-300 font-bold normal-case">—</span>
+                        <span className="text-xs text-slate-300 font-semibold normal-case">—</span>
                       )}
                     </td>
                     <td className="px-4 py-3 bg-slate-50 border-y border-r border-slate-100 rounded-r-2xl group-hover:bg-white transition-colors text-right whitespace-nowrap">
@@ -90,7 +90,7 @@ const PendingAccountsCards: React.FC<Props> = ({ startDate, endDate }) => {
                            {fmt(pendente)}
                          </span>
                          {item.valor_pago > 0 && (
-                            <span className="text-xs font-bold text-slate-400 normal-case mt-0.5">Pago: {fmt(item.valor_pago)}</span>
+                            <span className="text-xs font-semibold text-slate-400 normal-case mt-0.5">Pago: {fmt(item.valor_pago)}</span>
                          )}
                       </div>
                     </td>
@@ -99,7 +99,7 @@ const PendingAccountsCards: React.FC<Props> = ({ startDate, endDate }) => {
               })}
               {items.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="py-8 text-center text-slate-400 text-xs font-bold normal-case tracking-normal bg-slate-50 rounded-2xl border border-slate-100">
+                  <td colSpan={4} className="py-8 text-center text-slate-400 text-xs font-semibold normal-case tracking-normal bg-slate-50 rounded-2xl border border-slate-100">
                     {emptyMsg}
                   </td>
                 </tr>
@@ -119,9 +119,9 @@ const PendingAccountsCards: React.FC<Props> = ({ startDate, endDate }) => {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Contas a Pagar (Débitos) */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col h-full overflow-hidden">
+      <div className="dc-panel flex flex-col h-full overflow-hidden">
         <div className="mb-6 flex items-center justify-between">
             <div>
                 <h3 className="text-sm font-semibold text-slate-900 normal-case tracking-normal flex items-center gap-2">
@@ -130,7 +130,7 @@ const PendingAccountsCards: React.FC<Props> = ({ startDate, endDate }) => {
                     </div>
                     Contas a Pagar
                 </h3>
-                <p className="text-xs text-slate-400 font-bold normal-case mt-1.5 tracking-normal">Débitos pendentes do período</p>
+                <p className="text-xs text-slate-400 font-semibold normal-case mt-1.5 tracking-normal">Débitos pendentes do período</p>
             </div>
             {contasPagar.length > 0 && (
               <div className="bg-rose-50 text-rose-600 px-3 py-1 rounded-full text-xs font-semibold normal-case tracking-normal">
@@ -144,7 +144,7 @@ const PendingAccountsCards: React.FC<Props> = ({ startDate, endDate }) => {
       </div>
 
       {/* Contas a Receber (Créditos) */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col h-full overflow-hidden">
+      <div className="dc-panel flex flex-col h-full overflow-hidden">
         <div className="mb-6 flex items-center justify-between">
             <div>
                 <h3 className="text-sm font-semibold text-slate-900 normal-case tracking-normal flex items-center gap-2">
@@ -153,7 +153,7 @@ const PendingAccountsCards: React.FC<Props> = ({ startDate, endDate }) => {
                     </div>
                     Contas a Receber
                 </h3>
-                <p className="text-xs text-slate-400 font-bold normal-case mt-1.5 tracking-normal">Créditos pendentes do período</p>
+                <p className="text-xs text-slate-400 font-semibold normal-case mt-1.5 tracking-normal">Créditos pendentes do período</p>
             </div>
             {contasReceber.length > 0 && (
               <div className="bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-xs font-semibold normal-case tracking-normal">

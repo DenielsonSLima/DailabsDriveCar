@@ -69,21 +69,21 @@ const FormCardFinance: React.FC<Props> = ({ formData, onChange, isConsignacao = 
   const margem = investimento > 0 ? (lucro / investimento * 100) : 0;
 
   return (
-    <div className={`bg-white rounded-2xl border shadow-sm overflow-hidden animate-in slide-in-from-bottom-3 ${isConsignacao ? 'border-violet-200' : 'border-slate-200'}`}>
-      <div className={`${isConsignacao ? 'bg-violet-900' : 'bg-slate-900'} p-6 text-white flex items-center justify-between transition-colors`}>
+    <div className={`dc-panel dc-panel-frame bg-white rounded-2xl border shadow-sm overflow-hidden animate-in slide-in-from-bottom-3 ${isConsignacao ? 'border-violet-200' : 'border-slate-200'}`}>
+      <div className={`${isConsignacao ? 'border-violet-100' : 'border-slate-200'} bg-slate-50 p-4 text-slate-900 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b transition-colors`}>
         <div className="flex items-center space-x-3">
-          <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-semibold text-lg border ${isConsignacao ? 'bg-white/20 border-white/20 text-violet-100' : 'bg-white/10 border-white/10 text-indigo-400'}`}>2</div>
-          <h2 className="text-xl font-semibold normal-case tracking-normal">Financeiro & Investimento</h2>
+          <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-semibold text-lg border ${isConsignacao ? 'bg-violet-50 border-violet-100 text-violet-700' : 'bg-white border-slate-200 text-slate-600'}`}>2</div>
+          <h2 className="dc-section-title text-xl font-semibold normal-case tracking-normal">Financeiro & Investimento</h2>
         </div>
 
         {/* Badge de Lucro Rápido */}
         {!isConsignacao && venda > 0 && (
-          <div className={`flex items-center space-x-4 px-6 py-3 rounded-2xl backdrop-blur-sm border animate-in zoom-in-95 duration-500 ${lucro >= 0 ? 'bg-emerald-500/20 border-emerald-500/30 text-emerald-100' : 'bg-rose-500/20 border-rose-500/30 text-rose-100'}`}>
+          <div className={`flex items-center gap-3 px-3 py-2 rounded-2xl border animate-in zoom-in-95 duration-500 ${lucro >= 0 ? 'bg-emerald-50 border-emerald-100 text-emerald-700' : 'bg-rose-50 border-rose-100 text-rose-700'}`}>
             <div className="text-right">
               <p className="text-xs font-semibold normal-case tracking-normal opacity-70">Resultado Previsto</p>
               <p className="text-lg font-semibold leading-none">{lucro.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
             </div>
-            <div className="h-8 w-[1px] bg-white/20" />
+            <div className="h-8 w-[1px] bg-slate-200" />
             <div className="text-center">
               <p className="text-xs font-semibold normal-case tracking-normal opacity-70">Margem</p>
               <p className="text-lg font-semibold leading-none">{margem.toFixed(1)}%</p>
@@ -91,10 +91,10 @@ const FormCardFinance: React.FC<Props> = ({ formData, onChange, isConsignacao = 
           </div>
         )}
       </div>
-      <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-5 space-y-6">
+      <div className="p-4 grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <div className="lg:col-span-5 space-y-4">
           {isConsignacao ? (
-            <div className="space-y-6 animate-in fade-in duration-300">
+            <div className="space-y-4 animate-in fade-in duration-300">
               <div className="p-5 bg-violet-50 rounded-2xl border border-violet-100">
                 <p className="text-xs font-semibold text-violet-400 normal-case tracking-normal mb-2">Entrada por Consignação</p>
                 <p className="text-xs font-bold text-violet-800 leading-relaxed">
@@ -108,12 +108,12 @@ const FormCardFinance: React.FC<Props> = ({ formData, onChange, isConsignacao = 
                 Custo de Compra
               </label>
               <div className="relative">
-                <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xl">R$</span>
+                <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-600 font-bold text-xl">R$</span>
                 <input
                   type="text"
                   value={custoRaw}
                   onChange={e => handleCurrencyChange(e.target.value, 'valor_custo')}
-                  className="w-full bg-white border-2 border-slate-100 rounded-xl px-6 py-5 pl-14 text-2xl font-semibold text-[#111827] outline-none focus:border-indigo-500 transition-all shadow-inner"
+                  className="dc-input w-full bg-white border-2 border-slate-100 rounded-xl px-6 py-5 pl-14 text-2xl font-semibold text-[#111827] outline-none focus:border-indigo-500 transition-all shadow-inner"
                 />
               </div>
             </div>
@@ -126,34 +126,34 @@ const FormCardFinance: React.FC<Props> = ({ formData, onChange, isConsignacao = 
                 type="text"
                 value={vendaRaw}
                 onChange={e => handleCurrencyChange(e.target.value, 'valor_venda')}
-                className="w-full bg-white border-2 border-emerald-100 rounded-xl px-6 py-5 pl-14 text-2xl font-semibold text-[#111827] outline-none focus:border-emerald-500 transition-all shadow-sm"
+                className="dc-input w-full bg-white border-2 border-emerald-100 rounded-xl px-6 py-5 pl-14 text-2xl font-semibold text-[#111827] outline-none focus:border-emerald-500 transition-all shadow-sm"
               />
             </div>
           </div>
 
           {/* Card Detalhado de Performance */}
           {!isConsignacao && venda > 0 && (
-            <div className={`mt-8 p-6 rounded-2xl border-2 animate-in slide-in-from-top-4 duration-500 ${lucro >= 0 ? 'bg-emerald-50 border-emerald-100' : 'bg-rose-50 border-rose-100'}`}>
+            <div className={`mt-4 p-6 rounded-2xl border-2 animate-in slide-in-from-top-4 duration-500 ${lucro >= 0 ? 'bg-emerald-50 border-emerald-100' : 'bg-rose-50 border-rose-100'}`}>
               <div className="flex justify-between items-end">
                 <div>
-                  <h3 className={`text-xs font-semibold normal-case tracking-normal mb-1 ${lucro >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>Performance de Venda</h3>
-                  <p className={`text-3xl font-semibold tracking-normal ${lucro >= 0 ? 'text-emerald-700' : 'text-rose-700'}`}>
+                  <h3 className={`dc-section-title text-xs font-semibold normal-case tracking-normal mb-1 ${lucro >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>Performance de Venda</h3>
+                  <p className={`dc-kpi-value ${lucro >= 0 ? 'text-emerald-700' : 'text-rose-700'}`}>
                     {lucro.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                   </p>
                 </div>
-                <div className={`px-4 py-2 rounded-2xl font-semibold text-lg ${lucro >= 0 ? 'bg-emerald-500 text-white shadow-sm shadow-emerald-200' : 'bg-rose-500 text-white shadow-sm shadow-rose-200'}`}>
+                <div className={`px-4 py-2 rounded-lg font-semibold text-sm ${lucro >= 0 ? 'bg-emerald-500 text-white shadow-sm shadow-emerald-200' : 'bg-rose-500 text-white shadow-sm shadow-rose-200'}`}>
                   {margem.toFixed(1)}%
                 </div>
               </div>
 
-              <div className="mt-6 pt-6 border-t border-black/5 grid grid-cols-2 gap-4">
+              <div className="mt-4 pt-6 border-t border-black/5 grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-xs font-bold text-slate-400 normal-case tracking-normal">Investimento Total</p>
+                  <p className="text-xs font-bold text-slate-600 normal-case tracking-normal">Investimento Total</p>
                   <p className="text-sm font-semibold text-slate-700 normal-case">{investimento.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
                 </div>
                 {servicos > 0 && (
                   <div>
-                    <p className="text-xs font-bold text-slate-400 normal-case tracking-normal">Custo de Serviços</p>
+                    <p className="text-xs font-bold text-slate-600 normal-case tracking-normal">Custo de Serviços</p>
                     <p className="text-sm font-semibold text-slate-700 normal-case">{servicos.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
                   </div>
                 )}
@@ -163,9 +163,9 @@ const FormCardFinance: React.FC<Props> = ({ formData, onChange, isConsignacao = 
         </div>
         <div className="lg:col-span-7">
           {isConsignacao ? (
-            <div className="h-full min-h-[260px] rounded-2xl border border-violet-100 bg-violet-50/60 p-6 flex flex-col justify-center">
+            <div className="h-full min-h-0 rounded-2xl border border-violet-100 bg-violet-50/60 p-6 flex flex-col justify-center">
               <p className="text-xs font-semibold text-violet-400 normal-case tracking-normal mb-3">Comissão na Venda</p>
-              <h3 className="text-2xl font-semibold text-violet-950 normal-case tracking-normal">Sem custo de aquisição neste cadastro</h3>
+              <h3 className="dc-section-title text-sm font-semibold text-violet-950 normal-case tracking-normal">Sem custo de aquisição neste cadastro</h3>
               <p className="text-sm font-semibold text-violet-700/80 leading-relaxed mt-3">
                 Para consignação, o financeiro da loja será composto pelo lucro/comissão informado no pedido de venda.
               </p>

@@ -17,10 +17,10 @@ export function LoteMetric({ label, value, hint, tone = 'neutral' }: {
   tone?: keyof typeof metricTones;
 }) {
   return (
-    <div className="min-w-0 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-      <p className="text-xs font-semibold normal-case tracking-normal text-slate-500">{label}</p>
-      <p className={`mt-1.5 break-words text-xl font-semibold tracking-tight tabular-nums ${metricTones[tone]}`}>{value}</p>
-      {hint && <p className="mt-1.5 text-xs leading-relaxed text-slate-500">{hint}</p>}
+    <div className="dc-kpi-card">
+      <p className="dc-kpi-label">{label}</p>
+      <p className={`dc-kpi-value mt-1.5 break-words text-xl font-semibold tracking-tight tabular-nums ${metricTones[tone]}`}>{value}</p>
+      {hint && <p className="dc-kpi-hint">{hint}</p>}
     </div>
   );
 }
@@ -32,10 +32,10 @@ export function LoteSection({ title, subtitle, action, children }: {
   children: React.ReactNode;
 }) {
   return (
-    <section className="min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+    <section className="dc-panel dc-panel-frame min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 px-4 py-3.5">
         <div className="min-w-0">
-          <h2 className="text-base font-semibold tracking-tight text-slate-900">{title}</h2>
+          <h2 className="dc-section-title text-base font-semibold tracking-tight text-slate-900">{title}</h2>
           {subtitle && <p className="mt-1 text-xs leading-relaxed text-slate-500">{subtitle}</p>}
         </div>
         {action}

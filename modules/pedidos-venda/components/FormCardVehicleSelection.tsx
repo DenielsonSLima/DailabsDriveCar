@@ -13,13 +13,13 @@ const FormCardVehicleSelection: React.FC<Props> = ({ veiculos, selectedId, onSel
   const selectedVehicle = veiculos.find(v => v.id === selectedId) as any;
 
   return (
-    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm animate-in slide-in-from-bottom-3">
-      <h3 className="text-lg font-semibold text-slate-900 normal-case tracking-normal mb-6 flex items-center">
+    <div className="dc-panel animate-in slide-in-from-bottom-3">
+      <h3 className="dc-section-title font-semibold text-slate-900 normal-case tracking-normal mb-6 flex items-center">
         <span className="w-8 h-8 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mr-3 text-sm font-semibold">02</span>
         Veículo do Estoque
       </h3>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
         <div className="lg:col-span-12">
           <label className="block text-xs font-semibold text-slate-500 normal-case mb-2 ml-1 tracking-normal">Selecione uma Unidade Disponível</label>
           <select
@@ -29,7 +29,7 @@ const FormCardVehicleSelection: React.FC<Props> = ({ veiculos, selectedId, onSel
               const v = veiculos.find(x => x.id === e.target.value);
               if (v) onSelect(v);
             }}
-            className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 font-medium text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 appearance-none cursor-pointer shadow-sm hover:shadow-md transition-all"
+            className="dc-input w-full bg-white border border-slate-200 rounded-xl px-5 py-2.5 font-medium text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 appearance-none cursor-pointer shadow-sm hover:shadow-md transition-all"
           >
             <option value="">Buscar veículo no pátio...</option>
             {veiculos.map((v: any) => (
@@ -41,7 +41,7 @@ const FormCardVehicleSelection: React.FC<Props> = ({ veiculos, selectedId, onSel
         </div>
 
         {selectedVehicle && (
-          <div className="lg:col-span-12 bg-slate-50 rounded-2xl p-6 border border-slate-100 flex items-center gap-6 animate-in zoom-in-95">
+          <div className="lg:col-span-12 bg-slate-50 rounded-2xl p-4 border border-slate-100 flex items-center gap-6 animate-in zoom-in-95">
             <div className="w-24 h-24 bg-white rounded-2xl border border-slate-200 p-2 shrink-0">
               {selectedVehicle.fotos?.[0] ? (
                 <img src={selectedVehicle.fotos[0].url} className="w-full h-full object-cover rounded-xl" alt="" />
@@ -51,13 +51,13 @@ const FormCardVehicleSelection: React.FC<Props> = ({ veiculos, selectedId, onSel
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-xs font-semibold text-emerald-600 normal-case tracking-normal">{selectedVehicle.placa}</p>
-              <h4 className="text-xl font-semibold text-slate-900 normal-case tracking-normal truncate">
+              <h4 className="dc-section-title font-semibold text-slate-900 normal-case tracking-normal">
                 {selectedVehicle.montadora?.nome} {selectedVehicle.modelo?.nome}
               </h4>
               <div className="flex items-center gap-4 mt-2">
-                <span className="text-xs font-bold text-slate-500 normal-case">{selectedVehicle.km.toLocaleString()} KM</span>
-                <span className="text-xs font-bold text-slate-500 normal-case">{selectedVehicle.combustivel}</span>
-                <span className="text-xs font-bold text-slate-500 normal-case">{selectedVehicle.transmissao}</span>
+                <span className="text-xs font-semibold text-slate-500 normal-case">{selectedVehicle.km.toLocaleString()} KM</span>
+                <span className="text-xs font-semibold text-slate-500 normal-case">{selectedVehicle.combustivel}</span>
+                <span className="text-xs font-semibold text-slate-500 normal-case">{selectedVehicle.transmissao}</span>
               </div>
             </div>
           </div>

@@ -12,10 +12,10 @@ const AccountBalances: React.FC<Props> = ({ contas }) => {
     const totalGeral = contas.reduce((acc, c) => acc + (c.saldo_atual || 0), 0);
 
     return (
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col h-full overflow-hidden">
+        <div className="dc-panel flex flex-col h-full overflow-hidden">
             <div className="mb-6">
-                <h3 className="text-sm font-semibold text-slate-400 normal-case tracking-normal">Saldos das Contas</h3>
-                <p className="text-xs text-slate-400 font-bold normal-case mt-1 tracking-normal">Disponibilidade por carteira</p>
+                <h3 className="dc-section-title">Saldos das Contas</h3>
+                <p className="text-xs text-slate-400 font-semibold normal-case mt-1 tracking-normal">Disponibilidade por carteira</p>
             </div>
 
             <div className="flex-1 space-y-2 overflow-y-auto pr-2 custom-scrollbar">
@@ -29,13 +29,13 @@ const AccountBalances: React.FC<Props> = ({ contas }) => {
                                 {c.banco_nome ? c.banco_nome.substring(0, 2).toUpperCase() : '??'}
                             </div>
                             <div className="min-w-0">
-                                <h4 className="text-[11px] font-semibold text-slate-900 normal-case leading-none mb-1 truncate" title={c.banco_nome}>{c.banco_nome}</h4>
+                                <h4 className="text-xs font-semibold text-slate-900 normal-case leading-none mb-1 truncate" title={c.banco_nome}>{c.banco_nome}</h4>
                                 {c.titular && (
-                                    <p className="text-xs font-bold text-slate-500 normal-case tracking-normal mb-1 opacity-80">{c.titular}</p>
+                                    <p className="text-xs font-semibold text-slate-500 normal-case tracking-normal mb-1 opacity-80">{c.titular}</p>
                                 )}
                                 <div className="flex items-center gap-1.5">
                                     <div className={`w-1 h-1 rounded-full ${c.ativo ? 'bg-emerald-500' : 'bg-slate-300'}`}></div>
-                                    <span className="text-xs font-bold text-slate-400 normal-case tracking-normal">
+                                    <span className="text-xs font-semibold text-slate-400 normal-case tracking-normal">
                                         {c.ativo ? 'Ativa' : 'Inativa'}
                                     </span>
                                 </div>
@@ -43,8 +43,8 @@ const AccountBalances: React.FC<Props> = ({ contas }) => {
                         </div>
 
                         <div className="text-right">
-                            <p className="text-xs font-semibold text-slate-900">{fmt(c.saldo_atual || 0)}</p>
-                            <p className="text-[7px] font-bold text-slate-400 normal-case tracking-normal mt-0.5">Saldo Atual</p>
+                            <p className="dc-kpi-value">{fmt(c.saldo_atual || 0)}</p>
+                            <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mt-0.5">Saldo Atual</p>
                         </div>
                     </div>
                 ))}
@@ -59,7 +59,7 @@ const AccountBalances: React.FC<Props> = ({ contas }) => {
             <div className="mt-6 pt-5 border-t border-slate-100">
                 <div className="flex items-center justify-between">
                     <span className="text-xs font-semibold text-slate-400 normal-case tracking-normal">Disponibilidade Total</span>
-                    <p className="text-lg font-semibold text-indigo-600 tracking-normal">{fmt(totalGeral)}</p>
+                    <p className="dc-kpi-value">{fmt(totalGeral)}</p>
                 </div>
             </div>
         </div>

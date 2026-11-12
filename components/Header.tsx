@@ -35,8 +35,8 @@ const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
         {/* Perfil Simplificado */}
         <div className="flex items-center space-x-3 pl-2">
           <div className="text-right hidden sm:block">
-            <p className="text-sm font-medium text-slate-900 leading-tight">DriveCar Admin</p>
-            <p className="text-xs text-slate-500 font-semibold normal-case tracking-normal">Gestão Dailabs</p>
+            <p className="text-sm font-medium text-slate-900 leading-tight">Arkhen Drive Car</p>
+            <p className="text-xs text-slate-500 font-semibold normal-case tracking-normal">Gestão de veículos</p>
           </div>
           <div className="w-9 h-9 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center font-semibold text-sm border border-indigo-100 shadow-sm">
             AD

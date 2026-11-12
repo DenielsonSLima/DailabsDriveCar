@@ -100,18 +100,18 @@ const AnotacoesPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="dc-page space-y-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="dc-page-header flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-semibold text-slate-900 normal-case tracking-tight">Anotações</h2>
+          <h2 className="dc-page-title text-2xl font-semibold text-slate-900 normal-case tracking-tight">Anotações</h2>
           <p className="text-slate-500 text-xs font-medium normal-case tracking-normal mt-0.5">
             Registros livres — sem movimentação financeira • Aparecem no PDF do Caixa
           </p>
         </div>
         <button
           onClick={handleOpenNew}
-          className="flex items-center space-x-2 px-6 py-2.5 bg-violet-600 text-white rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-violet-700 transition-all shadow-sm active:scale-100"
+          className="dc-button flex items-center space-x-2 px-4 py-2.5 bg-violet-600 text-white rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-violet-700 transition-all shadow-sm active:scale-100"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -121,7 +121,7 @@ const AnotacoesPage: React.FC = () => {
       </div>
 
       {/* Info badge */}
-      <div className="flex items-start gap-3 bg-violet-50 border border-violet-200 rounded-2xl px-5 py-4">
+      <div className="flex items-start gap-3 bg-violet-50 border border-violet-200 rounded-xl px-5 py-4">
         <svg className="w-5 h-5 text-slate-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
         </svg>
@@ -135,8 +135,8 @@ const AnotacoesPage: React.FC = () => {
 
       {/* Formulário inline */}
       {showForm && (
-        <div className="bg-white border border-violet-200 rounded-2xl p-6 shadow-sm animate-in slide-in-from-top-4 duration-200">
-          <h3 className="text-xs font-semibold text-violet-600 normal-case tracking-normal mb-5">
+        <div className="dc-panel bg-white border border-violet-200 rounded-xl p-4 shadow-sm animate-in slide-in-from-top-4 duration-200">
+          <h3 className="dc-section-title text-xs font-semibold text-violet-600 normal-case tracking-normal mb-5">
             {editingId ? '✏️ Editar Anotação' : '+ Nova Anotação'}
           </h3>
           <form onSubmit={handleSave} className="space-y-4">
@@ -151,7 +151,7 @@ const AnotacoesPage: React.FC = () => {
                   value={form.data}
                   onChange={e => setForm(f => ({ ...f, data: e.target.value }))}
                   required
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-[12px] font-medium text-slate-800 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all"
+                  className="dc-input w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-[12px] font-medium text-slate-800 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all"
                 />
               </div>
               {/* Valor (opcional) */}
@@ -167,7 +167,7 @@ const AnotacoesPage: React.FC = () => {
                     value={form.valor}
                     onChange={e => setForm(f => ({ ...f, valor: e.target.value }))}
                     placeholder="0,00"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-4 py-2.5 text-[12px] font-medium text-slate-800 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all"
+                    className="dc-input w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-4 py-2.5 text-[12px] font-medium text-slate-800 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all"
                   />
                 </div>
               </div>
@@ -183,7 +183,7 @@ const AnotacoesPage: React.FC = () => {
                 required
                 rows={3}
                 placeholder="Descreva a anotação com detalhes..."
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-[12px] font-medium text-slate-800 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all resize-none"
+                className="dc-input w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-[12px] font-medium text-slate-800 focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all resize-none"
               />
             </div>
 
@@ -197,7 +197,7 @@ const AnotacoesPage: React.FC = () => {
               <button
                 type="submit"
                 disabled={saving || !form.descricao.trim()}
-                className="flex items-center space-x-2 px-6 py-2.5 bg-violet-600 text-white rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-violet-700 transition-all active:scale-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="dc-button flex items-center space-x-2 px-4 py-2.5 bg-violet-600 text-white rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-violet-700 transition-all active:scale-100 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {saving ? (
                   <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -214,7 +214,7 @@ const AnotacoesPage: React.FC = () => {
               <button
                 type="button"
                 onClick={handleCancel}
-                className="px-6 py-2.5 bg-slate-100 text-slate-600 rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-slate-200 transition-all"
+                className="dc-button px-4 py-2.5 bg-slate-100 text-slate-600 rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-slate-200 transition-all"
               >
                 Cancelar
               </button>
@@ -227,7 +227,7 @@ const AnotacoesPage: React.FC = () => {
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map(i => (
-            <div key={i} className="bg-white rounded-2xl border border-slate-100 p-5 animate-pulse">
+            <div key={i} className="bg-white rounded-xl border border-slate-100 p-5 animate-pulse">
               <div className="flex gap-4">
                 <div className="w-16 h-14 bg-slate-100 rounded-xl" />
                 <div className="flex-1 space-y-2">
@@ -241,12 +241,12 @@ const AnotacoesPage: React.FC = () => {
         </div>
       ) : anotacoes.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
-          <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mb-4">
+          <div className="w-16 h-16 bg-slate-100 rounded-xl flex items-center justify-center mb-4">
             <svg className="w-8 h-8 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
             </svg>
           </div>
-          <h3 className="text-xs font-semibold text-slate-400 normal-case tracking-normal">Nenhuma anotação</h3>
+          <h3 className="dc-section-title text-xs font-semibold text-slate-400 normal-case tracking-normal">Nenhuma anotação</h3>
           <p className="text-xs text-slate-300 mt-1">Clique em "Nova Anotação" para começar</p>
         </div>
       ) : (
@@ -254,7 +254,7 @@ const AnotacoesPage: React.FC = () => {
           {anotacoes.map(a => (
             <div
               key={a.id}
-              className="group bg-white rounded-2xl border border-slate-100 hover:border-violet-200 hover:shadow-sm transition-all duration-200 px-5 py-4"
+              className="dc-panel group bg-white rounded-xl border border-slate-100 hover:border-violet-200 hover:shadow-sm transition-all duration-200 px-5 py-4"
             >
               <div className="flex items-start gap-4">
                 {/* Data badge */}
@@ -269,7 +269,7 @@ const AnotacoesPage: React.FC = () => {
                 {/* Conteúdo */}
                 <div className="flex-1 min-w-0">
                   <p className="text-[13px] font-semibold text-slate-800 leading-snug">{a.descricao}</p>
-                  <p className="text-xs font-medium text-slate-500 normal-case tracking-normal mt-1">
+                  <p className="dc-page-subtitle text-xs font-medium text-slate-500 normal-case tracking-normal mt-1">
                     Registrado em {new Date(a.created_at).toLocaleDateString('pt-BR')}
                   </p>
                 </div>
@@ -285,7 +285,7 @@ const AnotacoesPage: React.FC = () => {
                   <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button
                       onClick={() => handleEdit(a)}
-                      className="p-1.5 bg-slate-100 text-slate-500 rounded-lg hover:bg-violet-100 hover:text-violet-600 transition-colors"
+                      className="dc-button p-1.5 bg-slate-100 text-slate-500 rounded-lg hover:bg-violet-100 hover:text-violet-600 transition-colors"
                       title="Editar"
                     >
                       <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -295,7 +295,7 @@ const AnotacoesPage: React.FC = () => {
                     <button
                       onClick={() => handleDelete(a.id)}
                       disabled={deletingId === a.id}
-                      className="p-1.5 bg-slate-100 text-slate-500 rounded-lg hover:bg-rose-100 hover:text-rose-600 transition-colors disabled:opacity-50"
+                      className="dc-button p-1.5 bg-slate-100 text-slate-500 rounded-lg hover:bg-rose-100 hover:text-rose-600 transition-colors disabled:opacity-50"
                       title="Excluir"
                     >
                       {deletingId === a.id ? (

@@ -9,11 +9,11 @@ interface Props {
 const InfoNegociacaoSidebar: React.FC<Props> = ({ pedido }) => {
   return (
     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden transition-all">
-      <div className="p-6 bg-slate-900 text-white">
-        <h3 className="text-xs font-semibold normal-case tracking-normal opacity-60">Parceiros de Negócio</h3>
+      <div className="p-4 bg-white text-slate-900 border-b border-slate-200">
+        <h3 className="dc-section-title font-semibold normal-case tracking-normal">Parceiros de Negócio</h3>
       </div>
 
-      <div className="p-6 space-y-8">
+      <div className="p-4 space-y-8">
         {/* Fornecedor */}
         <div className="flex items-start space-x-4">
           <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-500 font-semibold text-lg shrink-0 border border-slate-200">
@@ -21,10 +21,10 @@ const InfoNegociacaoSidebar: React.FC<Props> = ({ pedido }) => {
           </div>
           <div className="min-w-0">
             <p className="text-xs font-semibold text-indigo-500 normal-case tracking-normal leading-none mb-1">Origem / Fornecedor</p>
-            <h4 className="text-sm font-semibold text-slate-900 normal-case truncate">{pedido.fornecedor?.nome || 'NÃO IDENTIFICADO'}</h4>
+            <h4 className="dc-section-title font-semibold text-slate-900 normal-case">{pedido.fornecedor?.nome || 'NÃO IDENTIFICADO'}</h4>
             <p className="text-xs text-slate-400 font-mono mt-1">{pedido.fornecedor?.documento || 'Sem doc'}</p>
             <div className="flex flex-col mt-3 space-y-1">
-               <span className="text-xs font-bold text-slate-500 flex items-center gap-1.5">
+               <span className="text-xs font-semibold text-slate-500 flex items-center gap-1.5">
                   <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /></svg>
                   {pedido.fornecedor?.cidade} / {pedido.fornecedor?.uf}
                </span>
@@ -45,7 +45,7 @@ const InfoNegociacaoSidebar: React.FC<Props> = ({ pedido }) => {
           </div>
           <div className="min-w-0">
             <p className="text-xs font-semibold text-indigo-400 normal-case tracking-normal leading-none mb-1">Intermediação</p>
-            <h4 className="text-sm font-semibold text-slate-900 normal-case truncate">
+            <h4 className="dc-section-title font-semibold text-slate-900 normal-case">
               {pedido.corretor ? `${pedido.corretor.nome} ${pedido.corretor.sobrenome}` : 'VENDA DIRETA'}
             </h4>
             {pedido.corretor ? (
@@ -53,7 +53,7 @@ const InfoNegociacaoSidebar: React.FC<Props> = ({ pedido }) => {
                 Comissionável
               </span>
             ) : (
-              <p className="text-xs text-slate-300 font-bold normal-case mt-1">Sem corretor vinculado</p>
+              <p className="text-xs text-slate-300 font-semibold normal-case mt-1">Sem corretor vinculado</p>
             )}
           </div>
         </div>

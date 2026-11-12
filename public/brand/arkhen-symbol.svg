@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 115 120" fill="none">
+  <title>Arkhen Drive Car</title>
+  <defs>
+    <linearGradient id="left" x1="19" y1="18" x2="55" y2="91" gradientUnits="userSpaceOnUse"><stop stop-color="#f8f7f3"/><stop offset=".43" stop-color="#bdbcb8"/><stop offset="1" stop-color="#777873"/></linearGradient>
+    <linearGradient id="right" x1="96" y1="17" x2="60" y2="92" gradientUnits="userSpaceOnUse"><stop stop-color="#f5f4ef"/><stop offset=".5" stop-color="#b9b8b4"/><stop offset="1" stop-color="#757672"/></linearGradient>
+    <linearGradient id="lower" x1="30" y1="63" x2="72" y2="105" gradientUnits="userSpaceOnUse"><stop stop-color="#deded9"/><stop offset="1" stop-color="#8c8d88"/></linearGradient>
+  </defs>
+  <path d="M17.5 17.5 54.5 55.8 54.5 91.7 44.8 72.1 24.2 52.8Z" fill="url(#left)"/>
+  <path d="M17.5 17.5 49.8 57.7 50.1 80.6 54.5 91.7 54.5 55.8Z" fill="#eeeee9" fill-opacity=".36"/>
+  <path d="M97.4 17.5 60.1 55.8 59.8 91.7 69.6 72.1 90.2 52.8Z" fill="url(#right)"/>
+  <path d="M97.4 17.5 65.1 57.7 64.8 80.6 59.8 91.7 60.1 55.8Z" fill="#f6f5ef" fill-opacity=".45"/>
+  <path d="M27 63.1 42.7 77.4 54.2 104 31.4 76.5Z" fill="url(#lower)"/>
+  <path d="M87.6 63.1 72.2 77.4 60.2 104 83.2 76.5Z" fill="url(#lower)"/>
+  <path d="M27 63.1 42.7 77.4 54.2 104 40.6 79.1Z" fill="#efefeb" fill-opacity=".3"/>
+  <path d="M87.6 63.1 72.2 77.4 60.2 104 74.1 79.1Z" fill="#efefeb" fill-opacity=".25"/>
+</svg>

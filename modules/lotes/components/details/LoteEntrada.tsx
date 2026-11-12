@@ -28,9 +28,9 @@ export default function LoteEntrada({ detalhes, stats, canCreate, onPagar, onIde
       </div>
       <LoteSection title="Entrada do lote" subtitle="Compra que originou as unidades e o custo de aquisição.">
         <dl className="grid gap-4 p-4 sm:grid-cols-3">
-          <div><dt className="text-xs font-semibold normal-case tracking-normal text-slate-400">Descrição</dt><dd className="mt-2 text-sm font-bold text-slate-900">{detalhes.lote.descricao}</dd></div>
-          <div><dt className="text-xs font-semibold normal-case tracking-normal text-slate-400">Registro do lote</dt><dd className="mt-2 text-sm font-bold text-slate-900">{new Date(detalhes.lote.created_at).toLocaleDateString('pt-BR')}</dd></div>
-          <div><dt className="text-xs font-semibold normal-case tracking-normal text-slate-400">Pedido de origem</dt><dd className="mt-2"><Link to={`/pedidos-compra/${detalhes.lote.pedido_id}`} className="text-sm font-bold text-indigo-600 hover:underline">Ver pedido de compra →</Link></dd></div>
+          <div><dt className="text-xs font-semibold normal-case tracking-normal text-slate-600">Descrição</dt><dd className="mt-2 text-sm font-bold text-slate-900">{detalhes.lote.descricao}</dd></div>
+          <div><dt className="text-xs font-semibold normal-case tracking-normal text-slate-600">Registro do lote</dt><dd className="mt-2 text-sm font-bold text-slate-900">{new Date(detalhes.lote.created_at).toLocaleDateString('pt-BR')}</dd></div>
+          <div><dt className="text-xs font-semibold normal-case tracking-normal text-slate-600">Pedido de origem</dt><dd className="mt-2"><Link to={`/pedidos-compra/${detalhes.lote.pedido_id}`} className="text-sm font-bold text-indigo-600 hover:underline">Ver pedido de compra →</Link></dd></div>
         </dl>
       </LoteSection>
       <LoteContas title="Contas da compra" titulos={contas} canCreate={canCreate} onBaixar={onPagar} />

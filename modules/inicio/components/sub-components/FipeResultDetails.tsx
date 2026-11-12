@@ -98,7 +98,7 @@ const FipeResultDetails: React.FC<FipeResultDetailsProps> = ({ vehicle, placa, f
         </div>
         <div className="text-right">
           <span className="text-xs font-semibold text-slate-500 normal-case tracking-normal block mb-0.5">Ano Fabr.</span>
-          <div className="text-lg font-bold">{vehicle?.anoFabricacao}</div>
+          <div className="text-lg font-semibold">{vehicle?.anoFabricacao}</div>
         </div>
       </div>
 

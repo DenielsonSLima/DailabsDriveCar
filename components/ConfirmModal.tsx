@@ -42,12 +42,12 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   const content = (
     <div data-drivecar-ui role="dialog" aria-modal="true" aria-label={title} className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/35 backdrop-blur-sm animate-in fade-in duration-300">
       <div
-        className="bg-white w-full max-w-md max-h-[90dvh] overflow-y-auto rounded-xl shadow-lg overflow-hidden animate-in zoom-in-95 duration-300 border border-slate-100"
+        className="dc-modal bg-white w-full max-w-md max-h-[90dvh] overflow-y-auto rounded-xl shadow-lg overflow-hidden animate-in zoom-in-95 duration-300 border border-slate-100"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="p-6 text-center">
+        <div className="dc-modal-body text-center">
           {/* Ícone */}
-          <div className={`w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-6 shadow-sm ${variant === 'danger' ? 'bg-rose-50 text-rose-500' : 'bg-indigo-50 text-indigo-500'
+          <div className={`w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-sm ${variant === 'danger' ? 'bg-rose-50 text-rose-500' : 'bg-indigo-50 text-indigo-500'
             }`}>
             {variant === 'danger' ? (
               <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -60,7 +60,7 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
             )}
           </div>
 
-          <h3 className="text-xl font-semibold text-slate-900 normal-case tracking-tight mb-2">
+          <h3 className="dc-modal-title text-xl font-semibold text-slate-900 normal-case tracking-tight mb-2">
             {title}
           </h3>
 
@@ -69,18 +69,18 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
           </p>
         </div>
 
-        <div className="p-4 bg-slate-50 border-t border-slate-100 flex space-x-3">
+        <div className="dc-modal-footer flex gap-3">
           <button
             onClick={onClose}
             disabled={isLoading}
-            className="flex-1 py-3 bg-white border border-slate-200 text-slate-600 rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-slate-50 transition-all disabled:opacity-50"
+            className="dc-button flex-1 py-3 bg-white border border-slate-200 text-slate-600 rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-slate-50 transition-all disabled:opacity-50"
           >
             {cancelText}
           </button>
           <button
             onClick={onConfirm}
             disabled={isLoading}
-            className={`flex-1 py-3 text-white rounded-xl text-xs font-semibold normal-case tracking-normal shadow-lg transition-all flex items-center justify-center disabled:opacity-50 ${variant === 'danger'
+            className={`dc-button flex-1 py-3 text-white rounded-xl text-xs font-semibold normal-case tracking-normal shadow-lg transition-all flex items-center justify-center disabled:opacity-50 ${variant === 'danger'
               ? 'bg-rose-600 hover:bg-rose-700 shadow-none'
               : 'bg-indigo-600 hover:bg-indigo-700 shadow-none'
               }`}

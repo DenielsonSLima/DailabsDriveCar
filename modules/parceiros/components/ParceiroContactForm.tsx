@@ -35,7 +35,7 @@ const ParceiroContactForm: React.FC<Props> = ({ formData, onChange }) => {
                         id="email"
                         value={formData.email || ''}
                         onChange={onChange}
-                        className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-slate-900"
+                        className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3  focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-slate-900 dc-input"
                     />
                 </div>
                 <div>
@@ -46,7 +46,7 @@ const ParceiroContactForm: React.FC<Props> = ({ formData, onChange }) => {
                         id="telefone"
                         value={formData.telefone || ''}
                         onChange={onChange}
-                        className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-slate-900"
+                        className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3  focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-slate-900 dc-input"
                     />
                 </div>
                 <div>
@@ -57,7 +57,7 @@ const ParceiroContactForm: React.FC<Props> = ({ formData, onChange }) => {
                         id="whatsapp"
                         value={formData.whatsapp || ''}
                         onChange={onChange}
-                        className="w-full bg-emerald-50/10 border border-emerald-100 rounded-xl px-5 py-3 text-sm focus:ring-2 focus:ring-emerald-500 outline-none transition-all font-medium text-emerald-700 shadow-sm"
+                        className="w-full bg-emerald-50/10 border border-emerald-100 rounded-xl px-5 py-3  focus:ring-2 focus:ring-emerald-500 outline-none transition-all font-medium text-emerald-700 shadow-sm dc-input"
                     />
                 </div>
             </div>

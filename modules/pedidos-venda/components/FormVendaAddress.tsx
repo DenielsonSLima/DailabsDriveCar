@@ -13,7 +13,7 @@ const FormVendaAddress: React.FC<Props> = ({ formData, onToggle, onChange, disab
   const isLocked = formData.endereco_igual_cadastro || disabled;
 
   return (
-    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm animate-in slide-in-from-bottom-2 duration-500">
+    <div className="dc-panel animate-in slide-in-from-bottom-2 duration-500">
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-slate-100 text-slate-600 rounded-2xl flex items-center justify-center">
@@ -21,7 +21,7 @@ const FormVendaAddress: React.FC<Props> = ({ formData, onToggle, onChange, disab
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
             </svg>
           </div>
-          <h3 className="text-xl font-semibold text-slate-900 normal-case tracking-normal">03. Endereço de Entrega</h3>
+          <h3 className="dc-section-title font-semibold text-slate-900 normal-case tracking-normal">03. Endereço de Entrega</h3>
         </div>
 
         <label className={`flex items-center space-x-3 group bg-slate-50 px-4 py-2 rounded-2xl border border-slate-200 transition-all ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-emerald-50'}`}>
@@ -47,7 +47,7 @@ const FormVendaAddress: React.FC<Props> = ({ formData, onToggle, onChange, disab
             placeholder="00000-000"
             value={formData.cep || ''}
             onChange={e => onChange({ cep: e.target.value })}
-            className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 font-medium text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-sm hover:shadow-md"
+            className="dc-input w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 font-medium text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-sm hover:shadow-md"
           />
         </div>
         <div className="md:col-span-9">
@@ -57,7 +57,7 @@ const FormVendaAddress: React.FC<Props> = ({ formData, onToggle, onChange, disab
             placeholder="Rua, Avenida..."
             value={formData.logradouro || ''}
             onChange={e => onChange({ logradouro: e.target.value })}
-            className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 font-medium text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-sm hover:shadow-md"
+            className="dc-input w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 font-medium text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-sm hover:shadow-md"
           />
         </div>
 
@@ -68,7 +68,7 @@ const FormVendaAddress: React.FC<Props> = ({ formData, onToggle, onChange, disab
             placeholder="S/N"
             value={formData.numero || ''}
             onChange={e => onChange({ numero: e.target.value })}
-            className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 font-medium text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-sm hover:shadow-md text-center"
+            className="dc-input w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 font-medium text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-sm hover:shadow-md text-center"
           />
         </div>
         <div className="md:col-span-4">
@@ -78,7 +78,7 @@ const FormVendaAddress: React.FC<Props> = ({ formData, onToggle, onChange, disab
             placeholder="Seu Bairro"
             value={formData.bairro || ''}
             onChange={e => onChange({ bairro: e.target.value.toUpperCase() })}
-            className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 font-medium text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-sm hover:shadow-md"
+            className="dc-input w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 font-medium text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-sm hover:shadow-md"
           />
         </div>
         <div className="md:col-span-4">
@@ -88,7 +88,7 @@ const FormVendaAddress: React.FC<Props> = ({ formData, onToggle, onChange, disab
             placeholder="Nome da Cidade"
             value={formData.cidade || ''}
             onChange={e => onChange({ cidade: e.target.value.toUpperCase() })}
-            className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 font-medium text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-sm hover:shadow-md"
+            className="dc-input w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 font-medium text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-sm hover:shadow-md"
           />
         </div>
         <div className="md:col-span-2">
@@ -99,7 +99,7 @@ const FormVendaAddress: React.FC<Props> = ({ formData, onToggle, onChange, disab
             value={formData.uf || ''}
             onChange={e => onChange({ uf: e.target.value.toUpperCase() })}
             maxLength={2}
-            className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 font-semibold text-slate-900 text-center outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-sm hover:shadow-md"
+            className="dc-input w-full bg-white border border-slate-200 rounded-xl px-5 py-3.5 font-semibold text-slate-900 text-center outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-sm hover:shadow-md"
           />
         </div>
       </div>

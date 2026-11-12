@@ -14,7 +14,7 @@ const TituloCard: React.FC<Props> = ({ titulo, onPagar }) => {
   const isPagar = titulo.tipo === 'PAGAR';
 
   return (
-    <div className={`bg-white border rounded-2xl p-6 shadow-sm hover:shadow-sm transition-all duration-200 relative overflow-hidden group ${titulo.status === 'PAGO' ? 'border-emerald-100 opacity-75' : 'border-slate-200'}`}>
+    <div className={`dc-panel bg-white border rounded-xl p-4 shadow-sm hover:shadow-sm transition-all duration-200 relative overflow-hidden group ${titulo.status === 'PAGO' ? 'border-emerald-100 opacity-75' : 'border-slate-200'}`}>
       
       {/* Indicador de Status lateral */}
       <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${
@@ -26,7 +26,7 @@ const TituloCard: React.FC<Props> = ({ titulo, onPagar }) => {
       <div className="flex justify-between items-start mb-4">
         <div>
           <p className="text-xs font-medium text-slate-500 normal-case tracking-normal">{titulo.categoria?.nome || 'Diversos'} • {titulo.parcela_numero}/{titulo.parcela_total}</p>
-          <h4 className="text-lg font-semibold text-slate-900 normal-case tracking-tight truncate max-w-[180px]">{titulo.descricao}</h4>
+          <h4 className="dc-section-title text-lg font-semibold text-slate-900 normal-case tracking-tight truncate max-w-[180px]">{titulo.descricao}</h4>
         </div>
         <div className={`px-2 py-1 rounded text-xs font-semibold normal-case tracking-normal ${
            titulo.status === 'PAGO' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'
@@ -70,7 +70,7 @@ const TituloCard: React.FC<Props> = ({ titulo, onPagar }) => {
            {titulo.status !== 'PAGO' && (
              <button 
                onClick={onPagar}
-               className={`px-4 py-2 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all ${
+               className={`dc-button px-4 py-2 rounded-xl text-xs font-semibold normal-case tracking-normal transition-all ${
                  isPagar ? 'bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white'
                }`}
              >

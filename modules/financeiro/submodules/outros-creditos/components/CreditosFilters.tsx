@@ -18,8 +18,8 @@ const CreditosFilters: React.FC<Props> = ({ filtros, onChange, sortBy, setSortBy
   };
 
   return (
-    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6 animate-in fade-in duration-200">
-      <div className="flex flex-col xl:flex-row gap-6 items-end">
+    <div className="dc-filterbar bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-6 animate-in fade-in duration-200">
+      <div className="flex flex-col xl:flex-row gap-4 items-end">
 
         <div className="flex-1 w-full relative">
           <label className="block text-xs font-medium text-slate-500 normal-case mb-1.5 ml-1 tracking-normal">Pesquisar Crédito</label>
@@ -34,37 +34,37 @@ const CreditosFilters: React.FC<Props> = ({ filtros, onChange, sortBy, setSortBy
               placeholder="Ex: Aporte Sócio, Rendimento CDI..."
               value={filtros.busca}
               onChange={(e) => handleChange('busca', e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-2xl py-3 pl-10 pr-4 text-sm font-medium text-[#111827] focus:ring-2 focus:ring-teal-500/20 outline-none transition-all"
+              className="dc-input w-full bg-white border border-slate-200 rounded-xl py-3 pl-10 pr-4 text-sm font-medium text-[#111827] focus:ring-2 focus:ring-teal-500/20 outline-none transition-all"
             />
           </div>
         </div>
 
         <div className="w-full xl:w-auto">
           <label className="block text-xs font-medium text-slate-500 normal-case mb-1.5 ml-1 tracking-normal">Período</label>
-          <div className="flex items-center space-x-2 bg-white border border-slate-200 rounded-2xl p-1">
+          <div className="flex items-center space-x-2 bg-white border border-slate-200 rounded-xl p-1">
             <input
               type="date"
               value={filtros.dataInicio}
               onChange={e => handleChange('dataInicio', e.target.value)}
-              className="bg-transparent text-xs font-medium text-[#111827] px-3 py-2 outline-none cursor-pointer"
+              className="dc-input bg-transparent text-xs font-medium text-[#111827] px-3 py-2 outline-none cursor-pointer"
             />
             <span className="text-slate-300 font-medium text-xs">ATÉ</span>
             <input
               type="date"
               value={filtros.dataFim}
               onChange={e => handleChange('dataFim', e.target.value)}
-              className="bg-transparent text-xs font-medium text-[#111827] px-3 py-2 outline-none cursor-pointer"
+              className="dc-input bg-transparent text-xs font-medium text-[#111827] px-3 py-2 outline-none cursor-pointer"
             />
           </div>
         </div>
 
         <div className="w-full xl:w-auto">
           <label className="block text-xs font-medium text-slate-500 normal-case mb-1.5 ml-1 tracking-normal">Visualização</label>
-          <div className="flex bg-slate-100 p-1 rounded-2xl">
-            <button onClick={() => setViewMode('list')} className={`p-2 rounded-xl transition-all ${viewMode === 'list' ? 'bg-white text-teal-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`} title="Lista">
+          <div className="flex bg-slate-100 p-1 rounded-xl">
+            <button onClick={() => setViewMode('list')} className={`dc-tab p-2 rounded-xl transition-all ${viewMode === 'list' ? 'bg-white text-teal-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`} title="Lista">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
             </button>
-            <button onClick={() => setViewMode('card')} className={`p-2 rounded-xl transition-all ${viewMode === 'card' ? 'bg-white text-teal-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`} title="Cards">
+            <button onClick={() => setViewMode('card')} className={`dc-tab p-2 rounded-xl transition-all ${viewMode === 'card' ? 'bg-white text-teal-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`} title="Cards">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
             </button>
           </div>
@@ -72,16 +72,16 @@ const CreditosFilters: React.FC<Props> = ({ filtros, onChange, sortBy, setSortBy
 
         <div className="w-full xl:w-auto">
           <label className="block text-xs font-medium text-slate-500 normal-case mb-1.5 ml-1 tracking-normal">Organizar por</label>
-          <div className="flex bg-slate-100 p-1 rounded-2xl items-center">
-            <button onClick={() => setSortBy('alfabeto')} className={`px-4 py-2 rounded-xl text-xs font-semibold normal-case transition-all ${sortBy === 'alfabeto' ? 'bg-white text-teal-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Alfabeto</button>
-            <button onClick={() => setSortBy('data')} className={`px-4 py-2 rounded-xl text-xs font-semibold normal-case transition-all ${sortBy === 'data' ? 'bg-white text-teal-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Data</button>
-            <button onClick={() => setSortBy('valor')} className={`px-4 py-2 rounded-xl text-xs font-semibold normal-case transition-all ${sortBy === 'valor' ? 'bg-white text-teal-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Valor</button>
+          <div className="flex bg-slate-100 p-1 rounded-xl items-center">
+            <button onClick={() => setSortBy('alfabeto')} className={`dc-button px-4 py-2 rounded-xl text-xs font-semibold normal-case transition-all ${sortBy === 'alfabeto' ? 'bg-white text-teal-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Alfabeto</button>
+            <button onClick={() => setSortBy('data')} className={`dc-button px-4 py-2 rounded-xl text-xs font-semibold normal-case transition-all ${sortBy === 'data' ? 'bg-white text-teal-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Data</button>
+            <button onClick={() => setSortBy('valor')} className={`dc-button px-4 py-2 rounded-xl text-xs font-semibold normal-case transition-all ${sortBy === 'valor' ? 'bg-white text-teal-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Valor</button>
 
             <div className="w-[1px] h-4 bg-slate-200 mx-1" />
 
             <button
               onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-              className="p-2 rounded-xl text-slate-400 hover:text-teal-600 hover:bg-white transition-all flex items-center justify-center"
+              className="dc-button p-2 rounded-xl text-slate-400 hover:text-teal-600 hover:bg-white transition-all flex items-center justify-center"
               title={sortOrder === 'asc' ? 'Crescente' : 'Decrescente'}
             >
               <svg className={`w-4 h-4 transition-transform duration-200 ${sortOrder === 'desc' ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>

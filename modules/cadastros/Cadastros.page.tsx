@@ -80,12 +80,12 @@ const CadastrosPage: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-200 pb-8">
+    <div className="dc-page animate-in fade-in slide-in-from-bottom-8 duration-200 pb-8">
 
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-semibold text-slate-900 tracking-tight">Cadastros Gerais</h1>
-        <p className="text-slate-500 mt-2 max-w-2xl text-sm leading-relaxed">
+        <h1 className="dc-page-title">Cadastros Gerais</h1>
+        <p className="dc-page-subtitle">
           Gerencie a base de dados principal do seu ecossistema. Selecione uma categoria abaixo para visualizar e editar as tabelas de domínio que alimentam os módulos operacionais.
         </p>
       </div>
@@ -96,7 +96,7 @@ const CadastrosPage: React.FC = () => {
             <div className={`p-2.5 rounded-xl border transition-colors bg-slate-100 text-slate-600 border-slate-200`}>
               {category.icon}
             </div>
-            <h2 className="text-2xl font-semibold text-slate-900 tracking-tight normal-case">{category.title}</h2>
+            <h2 className="dc-section-title">{category.title}</h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">

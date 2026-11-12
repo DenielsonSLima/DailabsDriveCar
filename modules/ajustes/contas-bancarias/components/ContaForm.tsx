@@ -78,12 +78,12 @@ const ContaForm: React.FC<Props> = ({ initialData, onClose, onSubmit }) => {
 
   const content = (
     <div data-drivecar-ui className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white w-full max-w-2xl rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
+      <div className="bg-white w-full max-w-2xl rounded-2xl shadow-sm overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[90vh] dc-modal">
 
         {/* Header */}
-        <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+        <div className="p-4 border-b border-slate-100 flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-semibold text-slate-900 normal-case tracking-tight">
+            <h2 className="dc-modal-title">
               {initialData ? 'Editar Conta' : 'Nova Conta Bancária'}
             </h2>
             <p className="text-slate-500 text-xs font-medium normal-case tracking-normal mt-1">Dados Bancários</p>
@@ -119,7 +119,7 @@ const ContaForm: React.FC<Props> = ({ initialData, onClose, onSubmit }) => {
         </div>
 
         <div className="flex-1 overflow-y-auto">
-          <form onSubmit={handleSubmit} className="p-6 space-y-6">
+          <form onSubmit={handleSubmit} className="p-4 space-y-6">
 
             {/* 1. Instituição */}
             <div>
@@ -171,7 +171,7 @@ const ContaForm: React.FC<Props> = ({ initialData, onClose, onSubmit }) => {
                   name="agencia"
                   value={formData.agencia}
                   onChange={handleChange}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-mono font-medium outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-mono font-medium outline-none focus:ring-2 focus:ring-indigo-500 transition-all dc-input"
                   placeholder="0000"
                 />
               </div>
@@ -181,7 +181,7 @@ const ContaForm: React.FC<Props> = ({ initialData, onClose, onSubmit }) => {
                   name="conta"
                   value={formData.conta}
                   onChange={handleChange}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-mono font-medium outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 font-mono font-medium outline-none focus:ring-2 focus:ring-indigo-500 transition-all dc-input"
                   placeholder="00000-0"
                 />
               </div>
@@ -223,7 +223,7 @@ const ContaForm: React.FC<Props> = ({ initialData, onClose, onSubmit }) => {
           </form>
         </div>
 
-        <div className="p-6 border-t border-slate-100 flex justify-end space-x-3 bg-white">
+        <div className="p-4 border-t border-slate-100 flex justify-end space-x-3 bg-white">
           <button type="button" onClick={onClose} className="px-6 py-3 text-slate-500 font-semibold normal-case text-xs tracking-normal hover:bg-slate-50 rounded-xl transition-all">Cancelar</button>
           <button
             onClick={handleSubmit}

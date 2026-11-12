@@ -122,7 +122,7 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ initialData, onSubmit, onCons
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 sm:p-6 rounded-2xl border border-slate-200 shadow-sm animate-in slide-in-from-bottom-4 duration-200">
+    <form onSubmit={handleSubmit} className="dc-panel space-y-6 animate-in slide-in-from-bottom-4 duration-200">
 
       <div className="flex items-center space-x-3 mb-4">
         <div className="w-10 h-10 bg-slate-100 text-slate-600 rounded-xl flex items-center justify-center">
@@ -202,7 +202,7 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ initialData, onSubmit, onCons
                 value={formData.cnpj}
                 onChange={handleChange}
                 maxLength={18}
-                className="flex-1 bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-mono"
+                className="flex-1 bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4  font-medium focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-mono dc-input"
                 placeholder="00.000.000/0000-00"
               />
               <button
@@ -233,7 +233,7 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ initialData, onSubmit, onCons
               name="razao_social"
               value={formData.razao_social}
               onChange={handleChange}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4  focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium dc-input"
             />
           </div>
 
@@ -244,7 +244,7 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ initialData, onSubmit, onCons
               name="nome_fantasia"
               value={formData.nome_fantasia}
               onChange={handleChange}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4  focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium dc-input"
             />
           </div>
 
@@ -256,7 +256,7 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ initialData, onSubmit, onCons
               value={formData.inscricao_estadual || ''}
               onChange={handleChange}
               placeholder="Isento"
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4  focus:ring-2 focus:ring-indigo-500 outline-none transition-all dc-input"
             />
           </div>
         </div>
@@ -281,7 +281,7 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ initialData, onSubmit, onCons
               value={formData.email || ''}
               onChange={handleChange}
               placeholder="fiscal@empresa.com"
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4  focus:ring-2 focus:ring-indigo-500 outline-none transition-all dc-input"
             />
           </div>
           <div className="sm:col-span-1">
@@ -291,7 +291,7 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ initialData, onSubmit, onCons
               name="telefone"
               value={formData.telefone || ''}
               onChange={handleChange}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4  focus:ring-2 focus:ring-indigo-500 outline-none transition-all font-medium dc-input"
             />
           </div>
           <div className="sm:col-span-1">
@@ -302,7 +302,7 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ initialData, onSubmit, onCons
               value={formData.website || ''}
               onChange={handleChange}
               placeholder="www.site.com"
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-indigo-500 font-medium"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4  focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-indigo-500 font-medium dc-input"
             />
           </div>
 
@@ -313,7 +313,7 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ initialData, onSubmit, onCons
               name="cep"
               value={formData.cep}
               onChange={handleChange}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4  focus:ring-2 focus:ring-indigo-500 outline-none transition-all dc-input"
             />
           </div>
           <div className="sm:col-span-2">
@@ -323,7 +323,7 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ initialData, onSubmit, onCons
               name="logradouro"
               value={formData.logradouro}
               onChange={handleChange}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4  focus:ring-2 focus:ring-indigo-500 outline-none transition-all dc-input"
             />
           </div>
           <div className="sm:col-span-1">
@@ -333,7 +333,7 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ initialData, onSubmit, onCons
               name="numero"
               value={formData.numero}
               onChange={handleChange}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4  focus:ring-2 focus:ring-indigo-500 outline-none transition-all dc-input"
             />
           </div>
           <div className="sm:col-span-1">
@@ -343,7 +343,7 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ initialData, onSubmit, onCons
               name="bairro"
               value={formData.bairro}
               onChange={handleChange}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4  focus:ring-2 focus:ring-indigo-500 outline-none transition-all dc-input"
             />
           </div>
           <div className="sm:col-span-1">
@@ -353,7 +353,7 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ initialData, onSubmit, onCons
               name="cidade"
               value={formData.cidade}
               onChange={handleChange}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4  focus:ring-2 focus:ring-indigo-500 outline-none transition-all dc-input"
             />
           </div>
           <div className="sm:col-span-1">
@@ -364,7 +364,7 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ initialData, onSubmit, onCons
               value={formData.uf}
               onChange={handleChange}
               maxLength={2}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-center font-medium normal-case"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4  focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-center font-medium normal-case dc-input"
             />
           </div>
           <div className="sm:col-span-1">
@@ -374,7 +374,7 @@ const FormEmpresa: React.FC<FormEmpresaProps> = ({ initialData, onSubmit, onCons
               name="complemento"
               value={formData.complemento || ''}
               onChange={handleChange}
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+              className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4  focus:ring-2 focus:ring-indigo-500 outline-none transition-all dc-input"
             />
           </div>
         </div>

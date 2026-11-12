@@ -36,14 +36,14 @@ const AjustesFinanceiroPage: React.FC = () => {
    };
 
    return (
-      <div className="space-y-6">
-         <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-            <div className="flex items-center space-x-4 mb-8">
+      <div className="dc-page space-y-6">
+         <div className="dc-panel bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+            <div className="dc-page-header flex items-center space-x-4 mb-4">
                {openedFromAjustes && (
                   <button
                      type="button"
                      onClick={() => navigate('/ajustes')}
-                     className="p-2 bg-white border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-all shadow-sm group"
+                     className="dc-button p-2 bg-white border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-all shadow-sm group"
                      aria-label="Voltar para ajustes"
                   >
                      <svg className="w-5 h-5 transform group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -51,18 +51,18 @@ const AjustesFinanceiroPage: React.FC = () => {
                      </svg>
                   </button>
                )}
-               <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400">
+               <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400">
                   <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924-1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /></svg>
                </div>
                <div>
-                  <h2 className="text-2xl font-semibold text-slate-900 normal-case tracking-tight leading-none">Configurações Financeiras</h2>
-                  <p className="text-slate-500 text-xs mt-2 normal-case font-medium tracking-normal">Plano de Contas e Regras de Negócio</p>
+                  <h2 className="dc-page-title text-2xl font-semibold text-slate-900 normal-case tracking-tight leading-none">Configurações Financeiras</h2>
+                  <p className="dc-page-subtitle text-slate-500">Plano de Contas e Regras de Negócio</p>
                </div>
             </div>
 
-            <div className="mb-8 rounded-2xl border border-slate-200 bg-slate-50 p-6 flex flex-col md:flex-row md:items-center justify-between gap-5">
+            <div className="mb-4 rounded-xl border border-slate-200 bg-slate-50 p-4 flex flex-col md:flex-row md:items-center justify-between gap-5">
                <div>
-                  <h4 className="text-sm font-semibold text-slate-800 normal-case tracking-tight">Módulo único de despesas</h4>
+                  <h4 className="dc-section-title text-sm font-semibold text-slate-800 normal-case tracking-tight">Módulo único de despesas</h4>
                   <p className="text-xs text-slate-500 font-medium normal-case mt-1 leading-relaxed">Desativa os submódulos separados de despesas fixas e variáveis e mostra um único módulo chamado Despesas.</p>
                </div>
                <button
@@ -76,10 +76,10 @@ const AjustesFinanceiroPage: React.FC = () => {
                </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                {['Categorias de Despesa', 'Plano de Contas', 'Limites de Operação', 'Regras de Juros', 'Alertas de Vencimento'].map((cfg, i) => (
-                  <div key={i} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:border-indigo-300 transition-all cursor-pointer group">
-                     <h4 className="text-sm font-semibold text-slate-700 normal-case tracking-tight group-hover:text-indigo-600">{cfg}</h4>
+                  <div key={i} className="dc-panel bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:border-indigo-300 transition-all cursor-pointer group">
+                     <h4 className="dc-section-title text-sm font-semibold text-slate-700 normal-case tracking-tight group-hover:text-indigo-600">{cfg}</h4>
                      <p className="text-xs text-slate-500 font-medium normal-case mt-1">Configurar Parâmetros</p>
                   </div>
                ))}

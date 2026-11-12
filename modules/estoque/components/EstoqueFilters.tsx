@@ -30,10 +30,10 @@ const EstoqueFilters: React.FC<Props> = ({
   searchPlaceholder = 'Buscar por montadora, modelo, placa ou versão...'
 }) => {
   return (
-    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col xl:flex-row gap-6 mb-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+    <div className="dc-filterbar bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col xl:flex-row xl:items-end gap-4 mb-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
 
       <div className="flex-1 relative min-w-0">
-        <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+        <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-slate-600">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
@@ -44,7 +44,7 @@ const EstoqueFilters: React.FC<Props> = ({
           aria-label={searchPlaceholder}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full bg-white border border-slate-200 rounded-xl py-3.5 pl-10 pr-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all placeholder:font-medium text-[#111827]"
+          className="dc-input w-full bg-white border border-slate-200 rounded-xl py-3.5 pl-10 pr-4 text-sm font-medium focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all placeholder:font-medium text-[#111827]"
         />
       </div>
 
@@ -54,7 +54,7 @@ const EstoqueFilters: React.FC<Props> = ({
           <select
             value={filterMontadora}
             onChange={(e) => setFilterMontadora(e.target.value)}
-            className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-medium outline-none focus:ring-2 focus:ring-indigo-500/20 cursor-pointer text-[#111827]"
+            className="dc-input w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-medium outline-none focus:ring-2 focus:ring-indigo-500/20 cursor-pointer text-[#111827]"
           >
             <option value="">Todas</option>
             {montadoras.map(m => <option key={m.id} value={m.id}>{m.nome}</option>)}
@@ -66,7 +66,7 @@ const EstoqueFilters: React.FC<Props> = ({
           <select
             value={filterTipo}
             onChange={(e) => setFilterTipo(e.target.value)}
-            className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-medium outline-none focus:ring-2 focus:ring-indigo-500/20 cursor-pointer text-[#111827]"
+            className="dc-input w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-medium outline-none focus:ring-2 focus:ring-indigo-500/20 cursor-pointer text-[#111827]"
           >
             <option value="">Todas</option>
             {tipos.map(t => <option key={t.id} value={t.id}>{t.nome}</option>)}
@@ -77,22 +77,22 @@ const EstoqueFilters: React.FC<Props> = ({
 
         {showGrouping && <div className="flex flex-col w-full md:w-auto">
           <label className="block text-xs font-semibold text-slate-500 normal-case mb-1.5 ml-1 tracking-normal">Agrupar Visualização</label>
-          <div className="flex bg-slate-100 p-1 rounded-xl">
+          <div className="dc-tabs">
             <button
               onClick={() => setGroupBy('none')}
-              className={`flex-1 md:flex-none px-4 py-2 rounded-lg text-xs font-semibold normal-case tracking-normal transition-all ${groupBy === 'none' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+              className={`dc-tab flex-1 md:flex-none px-4 py-2 rounded-lg text-xs font-semibold normal-case tracking-normal transition-all ${groupBy === 'none' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
             >
               Lista
             </button>
             <button
               onClick={() => setGroupBy('montadora')}
-              className={`flex-1 md:flex-none px-4 py-2 rounded-lg text-xs font-semibold normal-case tracking-normal transition-all ${groupBy === 'montadora' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+              className={`dc-tab flex-1 md:flex-none px-4 py-2 rounded-lg text-xs font-semibold normal-case tracking-normal transition-all ${groupBy === 'montadora' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
             >
               Marca
             </button>
             <button
               onClick={() => setGroupBy('tipo')}
-              className={`flex-1 md:flex-none px-4 py-2 rounded-lg text-xs font-semibold normal-case tracking-normal transition-all ${groupBy === 'tipo' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+              className={`dc-tab flex-1 md:flex-none px-4 py-2 rounded-lg text-xs font-semibold normal-case tracking-normal transition-all ${groupBy === 'tipo' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
             >
               Tipo
             </button>

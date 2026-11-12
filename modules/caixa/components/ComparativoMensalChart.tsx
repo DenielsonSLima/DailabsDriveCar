@@ -51,12 +51,12 @@ const ComparativoMensalChart: React.FC<Props> = ({ comparativo, mesAtualLabel, m
     const maxLucro = Math.max(Math.abs(lucroAtual), Math.abs(lucroAnterior), 1);
 
     return (
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+        <div className="dc-panel">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-8">
                 <div>
                     <h3 className="text-sm font-semibold text-slate-400 normal-case tracking-normal">Comparativo Mensal</h3>
-                    <p className="text-xs text-slate-400 font-bold normal-case mt-1 tracking-normal">
+                    <p className="text-xs text-slate-400 font-semibold normal-case mt-1 tracking-normal">
                         {mesAnteriorLabel} vs {mesAtualLabel} • Despesas, Compras & Lucro
                     </p>
                 </div>
@@ -64,12 +64,12 @@ const ComparativoMensalChart: React.FC<Props> = ({ comparativo, mesAtualLabel, m
                     {METRIC_CONFIG.map(m => (
                         <div key={m.key} className="flex items-center gap-1.5">
                             <div className={`w-3 h-3 rounded-sm ${m.bgClass}`}></div>
-                            <span className="text-xs font-bold text-slate-500 normal-case tracking-normal">{m.label}</span>
+                            <span className="text-xs font-semibold text-slate-500 normal-case tracking-normal">{m.label}</span>
                         </div>
                     ))}
                     <div className="flex items-center gap-1.5">
                         <div className="w-5 h-0.5 rounded-full bg-emerald-500"></div>
-                        <span className="text-xs font-bold text-slate-500 normal-case tracking-normal">Lucro</span>
+                        <span className="text-xs font-semibold text-slate-500 normal-case tracking-normal">Lucro</span>
                     </div>
                 </div>
             </div>
@@ -99,7 +99,7 @@ const ComparativoMensalChart: React.FC<Props> = ({ comparativo, mesAtualLabel, m
                         const val = maxBarValue - (i * stepValue);
                         return (
                             <div key={i} className="absolute left-0 right-0 flex items-center" style={{ top: yPos }}>
-                                <span className="text-xs font-bold text-slate-300 w-14 text-right pr-3 shrink-0">
+                                <span className="text-xs font-semibold text-slate-300 w-14 text-right pr-3 shrink-0">
                                     {fmtK(val)}
                                 </span>
                                 <div className="flex-1 border-t border-dashed border-slate-100"></div>
@@ -130,11 +130,11 @@ const ComparativoMensalChart: React.FC<Props> = ({ comparativo, mesAtualLabel, m
                                     <div className="absolute -top-2 left-1/2 -translate-x-1/2 z-30 bg-slate-900 text-white rounded-2xl px-4 py-3 shadow-sm min-w-[200px] animate-in fade-in zoom-in-95 duration-200">
                                         <p className="text-xs font-semibold normal-case tracking-normal text-slate-400 mb-2">{metric.label}</p>
                                         <div className="flex items-center justify-between mb-1">
-                                            <span className="text-xs text-slate-300 font-bold">{mesAnteriorLabel}</span>
+                                            <span className="text-xs text-slate-300 font-semibold">{mesAnteriorLabel}</span>
                                             <span className="text-xs font-semibold text-white">{fmt(valAnterior)}</span>
                                         </div>
                                         <div className="flex items-center justify-between">
-                                            <span className="text-xs text-slate-300 font-bold">{mesAtualLabel}</span>
+                                            <span className="text-xs text-slate-300 font-semibold">{mesAtualLabel}</span>
                                             <span className="text-xs font-semibold text-white">{fmt(valAtual)}</span>
                                         </div>
                                         {valAnterior > 0 && (
@@ -263,7 +263,7 @@ const ComparativoMensalChart: React.FC<Props> = ({ comparativo, mesAtualLabel, m
             </div>
 
             {/* Month legend */}
-            <div className="flex items-center justify-center gap-8 mt-4 pt-4 border-t border-slate-100">
+            <div className="flex items-center justify-center gap-6 mt-4 pt-4 border-t border-slate-100">
                 <div className="flex items-center gap-2">
                     <div className="w-4 h-3 rounded bg-slate-300"></div>
                     <span className="text-xs font-semibold text-slate-400 normal-case tracking-normal">{mesAnteriorLabel}</span>
@@ -284,13 +284,13 @@ const ComparativoMensalChart: React.FC<Props> = ({ comparativo, mesAtualLabel, m
                             <div key={m.key} className="flex items-center justify-between">
                                 <div className="flex items-center gap-1.5">
                                     <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: m.color }}></div>
-                                    <span className="text-xs font-bold text-slate-400 normal-case">{m.label}</span>
+                                    <span className="text-xs font-semibold text-slate-400 normal-case">{m.label}</span>
                                 </div>
                                 <span className="text-xs font-semibold text-slate-700">{fmt(Number(mes_anterior[m.key as MetricKey]) || 0)}</span>
                             </div>
                         ))}
                         <div className="border-t border-slate-200 pt-2 flex items-center justify-between">
-                            <span className="text-xs font-bold text-slate-400 normal-case">Lucro</span>
+                            <span className="text-xs font-semibold text-slate-400 normal-case">Lucro</span>
                             <span className={`text-xs font-semibold ${lucroAnterior >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
                                 {lucroAnterior > 0 ? '+' : ''}{fmt(lucroAnterior)}
                             </span>
@@ -306,13 +306,13 @@ const ComparativoMensalChart: React.FC<Props> = ({ comparativo, mesAtualLabel, m
                             <div key={m.key} className="flex items-center justify-between">
                                 <div className="flex items-center gap-1.5">
                                     <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: m.color }}></div>
-                                    <span className="text-xs font-bold text-slate-400 normal-case">{m.label}</span>
+                                    <span className="text-xs font-semibold text-slate-400 normal-case">{m.label}</span>
                                 </div>
                                 <span className="text-xs font-semibold text-slate-700">{fmt(Number(mes_atual[m.key as MetricKey]) || 0)}</span>
                             </div>
                         ))}
                         <div className="border-t border-indigo-100 pt-2 flex items-center justify-between">
-                            <span className="text-xs font-bold text-slate-400 normal-case">Lucro</span>
+                            <span className="text-xs font-semibold text-slate-400 normal-case">Lucro</span>
                             <span className={`text-xs font-semibold ${lucroAtual >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
                                 {lucroAtual > 0 ? '+' : ''}{fmt(lucroAtual)}
                             </span>

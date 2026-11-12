@@ -11,8 +11,8 @@ interface Props {
 
 const FormCardGeneral: React.FC<Props> = ({ formData, corretores, onChange }) => {
   return (
-    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm animate-in slide-in-from-bottom-2 duration-500">
-      <h3 className="text-lg font-semibold text-slate-900 normal-case tracking-normal mb-8 flex items-center">
+    <div className="dc-panel animate-in slide-in-from-bottom-2 duration-500">
+      <h3 className="dc-section-title font-semibold text-slate-900 normal-case tracking-normal mb-8 flex items-center">
         <span className="w-8 h-8 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center mr-3 text-sm">01</span>
         Dados da Negociação
       </h3>
@@ -24,9 +24,9 @@ const FormCardGeneral: React.FC<Props> = ({ formData, corretores, onChange }) =>
             value={formData.descricao_veiculo || ''}
             onChange={(e) => onChange({ descricao_veiculo: e.target.value })}
             placeholder="Ex: Compra Lote 02 - João Silva"
-            className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 font-medium text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+            className="dc-input w-full bg-white border border-slate-200 rounded-xl px-5 py-2.5 font-medium text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
           />
-          <p className="text-xs text-slate-400 mt-2 ml-1 font-bold normal-case tracking-normal">Identificador único para este contrato de compra.</p>
+          <p className="text-xs text-slate-400 mt-2 ml-1 font-semibold normal-case tracking-normal">Identificador único para este contrato de compra.</p>
         </div>
 
         <div>
@@ -35,7 +35,7 @@ const FormCardGeneral: React.FC<Props> = ({ formData, corretores, onChange }) =>
             type="date"
             value={formData.data_compra || ''}
             onChange={(e) => onChange({ data_compra: e.target.value })}
-            className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 font-medium text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+            className="dc-input w-full bg-white border border-slate-200 rounded-xl px-5 py-2.5 font-medium text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
           />
         </div>
 
@@ -44,7 +44,7 @@ const FormCardGeneral: React.FC<Props> = ({ formData, corretores, onChange }) =>
           <select
             value={formData.corretor_id || ''}
             onChange={(e) => onChange({ corretor_id: e.target.value })}
-            className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 font-medium text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 appearance-none transition-all cursor-pointer"
+            className="dc-input w-full bg-white border border-slate-200 rounded-xl px-5 py-2.5 font-medium text-[#111827] outline-none focus:ring-2 focus:ring-indigo-500 appearance-none transition-all cursor-pointer"
           >
             <option value="">Nenhum / Compra Direta</option>
             {corretores.map(c => <option key={c.id} value={c.id}>{c.nome} {c.sobrenome}</option>)}

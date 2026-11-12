@@ -21,7 +21,7 @@ const CreditoCard: React.FC<Props> = ({ titulo, onReceber, onEdit, onDelete, onB
     return (
         <div
             onClick={() => onReceber(titulo)}
-            className="group bg-white border border-slate-200 rounded-2xl p-6 hover:shadow-sm hover:border-teal-300 transition-all duration-200 cursor-pointer flex flex-col h-full animate-in fade-in"
+            className="dc-panel group bg-white border border-slate-200 rounded-xl p-4 hover:shadow-sm hover:border-teal-300 transition-all duration-200 cursor-pointer flex flex-col h-full animate-in fade-in"
         >
             <div className="flex justify-between items-start mb-4">
                 <span className={`px-3 py-1 rounded-xl text-xs font-medium normal-case tracking-normal border ${isPago ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-teal-50 text-teal-600 border-teal-100'
@@ -32,7 +32,7 @@ const CreditoCard: React.FC<Props> = ({ titulo, onReceber, onEdit, onDelete, onB
                     {titulo.status !== 'PAGO' && (
                         <button
                             onClick={() => onBaixa(titulo)}
-                            className="p-2 text-emerald-500 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors"
+                            className="dc-button p-2 text-emerald-500 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors"
                             title="Receber / Baixar"
                         >
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -40,17 +40,17 @@ const CreditoCard: React.FC<Props> = ({ titulo, onReceber, onEdit, onDelete, onB
                             </svg>
                         </button>
                     )}
-                    <button onClick={() => onEdit(titulo)} className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="Editar">
+                    <button onClick={() => onEdit(titulo)} className="dc-button p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="Editar">
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                     </button>
-                    <button onClick={() => onDelete(titulo.id)} className="p-2 text-slate-300 hover:text-rose-600 rounded-lg transition-colors" title="Excluir">
+                    <button onClick={() => onDelete(titulo.id)} className="dc-button p-2 text-slate-300 hover:text-rose-600 rounded-lg transition-colors" title="Excluir">
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                     </button>
                 </div>
             </div>
 
             <div className="mb-4 min-w-0">
-                <h4 className="text-xs font-semibold text-slate-800 normal-case truncate leading-tight group-hover:text-teal-700 transition-colors">
+                <h4 className="dc-section-title text-xs font-semibold text-slate-800 normal-case truncate leading-tight group-hover:text-teal-700 transition-colors">
                     {titulo.descricao || 'Sem Descrição'}
                 </h4>
                 <p className="text-xs font-medium text-slate-500 normal-case tracking-normal mt-1">
@@ -58,7 +58,7 @@ const CreditoCard: React.FC<Props> = ({ titulo, onReceber, onEdit, onDelete, onB
                 </p>
             </div>
 
-            <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100 mb-6 flex-1">
+            <div className="bg-slate-50 rounded-xl p-4 border border-slate-100 mb-6 flex-1">
                 <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center space-x-2">
                         <div className="w-8 h-8 bg-white rounded-lg border border-slate-200 flex items-center justify-center shrink-0 shadow-sm text-slate-400">

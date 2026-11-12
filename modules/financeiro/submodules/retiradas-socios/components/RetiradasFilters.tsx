@@ -12,8 +12,8 @@ interface Props {
 
 const RetiradasFilters: React.FC<Props> = ({ filtros, onChange, socios, groupBy, setGroupBy }) => {
   return (
-    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6 animate-in fade-in duration-200">
-      <div className="flex flex-col xl:flex-row gap-6 items-end">
+    <div className="dc-filterbar bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-6 animate-in fade-in duration-200">
+      <div className="flex flex-col xl:flex-row gap-4 items-end">
         <div className="flex-1 w-full relative">
           <label className="block text-xs font-medium text-slate-500 normal-case mb-1.5 ml-1 tracking-normal">Busca por Descrição</label>
           <div className="relative">
@@ -25,7 +25,7 @@ const RetiradasFilters: React.FC<Props> = ({ filtros, onChange, socios, groupBy,
               placeholder="Pesquisar histórico..."
               value={filtros.busca}
               onChange={e => onChange({ ...filtros, busca: e.target.value })}
-              className="w-full bg-white border border-slate-200 rounded-2xl py-3 pl-10 pr-4 text-sm font-medium text-[#111827] focus:ring-2 focus:ring-amber-500/20 outline-none transition-all"
+              className="dc-input w-full bg-white border border-slate-200 rounded-xl py-3 pl-10 pr-4 text-sm font-medium text-[#111827] focus:ring-2 focus:ring-amber-500/20 outline-none transition-all"
             />
           </div>
         </div>
@@ -35,7 +35,7 @@ const RetiradasFilters: React.FC<Props> = ({ filtros, onChange, socios, groupBy,
           <select
             value={filtros.socioId}
             onChange={e => onChange({ ...filtros, socioId: e.target.value })}
-            className="w-full bg-white border border-slate-200 rounded-2xl px-4 py-3 text-xs font-medium text-[#111827] outline-none appearance-none"
+            className="dc-input w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-xs font-medium text-[#111827] outline-none appearance-none"
           >
             <option value="">Todos os Sócios</option>
             {socios.map(s => <option key={s.id} value={s.id}>{s.nome}</option>)}
@@ -44,10 +44,10 @@ const RetiradasFilters: React.FC<Props> = ({ filtros, onChange, socios, groupBy,
 
         <div className="w-full xl:w-auto">
           <label className="block text-xs font-medium text-slate-500 normal-case mb-1.5 ml-1 tracking-normal">Agrupar Visão</label>
-          <div className="flex bg-slate-100 p-1 rounded-2xl">
-            <button onClick={() => setGroupBy('nenhum')} className={`px-4 py-2 rounded-xl text-xs font-semibold normal-case transition-all ${groupBy === 'nenhum' ? 'bg-white text-amber-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Lista</button>
-            <button onClick={() => setGroupBy('mes')} className={`px-4 py-2 rounded-xl text-xs font-semibold normal-case transition-all ${groupBy === 'mes' ? 'bg-white text-amber-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Mês</button>
-            <button onClick={() => setGroupBy('socio')} className={`px-4 py-2 rounded-xl text-xs font-semibold normal-case transition-all ${groupBy === 'socio' ? 'bg-white text-amber-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Sócio</button>
+          <div className="flex bg-slate-100 p-1 rounded-xl">
+            <button onClick={() => setGroupBy('nenhum')} className={`dc-button px-4 py-2 rounded-xl text-xs font-semibold normal-case transition-all ${groupBy === 'nenhum' ? 'bg-white text-amber-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Lista</button>
+            <button onClick={() => setGroupBy('mes')} className={`dc-button px-4 py-2 rounded-xl text-xs font-semibold normal-case transition-all ${groupBy === 'mes' ? 'bg-white text-amber-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Mês</button>
+            <button onClick={() => setGroupBy('socio')} className={`dc-button px-4 py-2 rounded-xl text-xs font-semibold normal-case transition-all ${groupBy === 'socio' ? 'bg-white text-amber-600 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>Sócio</button>
           </div>
         </div>
       </div>

@@ -61,12 +61,12 @@ const RelatorioEstoquePage: React.FC = () => {
   const formatCur = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
 
   return (
-    <div className="space-y-6 pb-20 animate-in fade-in duration-500">
+    <div className="dc-page pb-20 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center space-x-4">
           <button
             onClick={() => navigate('/relatorios')}
-            className="p-3 bg-white border border-slate-200 rounded-2xl text-slate-500 hover:text-indigo-600 hover:border-indigo-100 transition-all shadow-sm group"
+            className="dc-button bg-white border border-slate-200 text-slate-500 hover:text-indigo-600 hover:border-indigo-100 transition-all shadow-sm group"
           >
             <svg className="w-6 h-6 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -74,14 +74,14 @@ const RelatorioEstoquePage: React.FC = () => {
           </button>
           <div>
             <p className="text-xs font-semibold text-blue-500 normal-case tracking-normal">Relatórios / Operacional</p>
-            <h1 className="text-3xl font-semibold text-slate-900 normal-case tracking-tight leading-none">Posição de Estoque</h1>
+            <h1 className="dc-page-title">Posição de Estoque</h1>
           </div>
         </div>
 
         {reportData && (
           <button
             onClick={() => setIsPreviewOpen(true)}
-            className="flex items-center space-x-2 px-6 py-3 bg-slate-900 text-white rounded-2xl font-semibold normal-case text-xs tracking-normal hover:bg-slate-800 transition-all shadow-sm shadow-slate-200"
+            className="dc-button flex items-center space-x-2 bg-slate-900 text-white normal-case tracking-normal hover:bg-slate-800 transition-all shadow-sm shadow-slate-200"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
             <span>Imprimir Inventário</span>
@@ -89,11 +89,11 @@ const RelatorioEstoquePage: React.FC = () => {
         )}
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+      <div className="dc-panel">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10 items-end">
           <div className="md:col-span-2">
             <label className="block text-xs font-semibold text-slate-400 normal-case mb-2 tracking-normal ml-1">Filtro de Status</label>
-            <select value={statusFiltro} onChange={e => setStatusFiltro(e.target.value)} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3.5 text-sm font-bold text-[#111827] focus:ring-2 focus:ring-blue-500 outline-none appearance-none cursor-pointer">
+            <select value={statusFiltro} onChange={e => setStatusFiltro(e.target.value)} className="dc-input w-full bg-slate-50 border border-slate-100 text-[#111827] focus:ring-2 focus:ring-blue-500 outline-none appearance-none cursor-pointer">
               <option value="DISPONIVEL">Apenas Veículos em Estoque (Disponíveis)</option>
               <option value="VENDIDO">Apenas Veículos Vendidos</option>
               <option value="TODOS">Histórico Completo (Todos)</option>
@@ -101,14 +101,14 @@ const RelatorioEstoquePage: React.FC = () => {
           </div>
           <div>
             <label className="block text-xs font-semibold text-slate-400 normal-case mb-2 tracking-normal ml-1">Categoria/Marca</label>
-            <select className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3.5 text-sm font-bold text-[#111827] focus:ring-2 focus:ring-blue-500 outline-none appearance-none cursor-pointer">
+            <select className="dc-input w-full bg-slate-50 border border-slate-100 text-[#111827] focus:ring-2 focus:ring-blue-500 outline-none appearance-none cursor-pointer">
               <option value="">Todas as Categorias</option>
             </select>
           </div>
           <button
             onClick={fetchData}
             disabled={loading}
-            className="px-6 py-4 bg-blue-600 text-white rounded-2xl font-semibold normal-case text-xs tracking-normal shadow-sm shadow-blue-100 hover:bg-blue-700 transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
+            className="dc-button bg-blue-600 text-white normal-case tracking-normal shadow-sm shadow-blue-100 hover:bg-blue-700 transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
           >
             {loading ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : <span>Atualizar Lista</span>}
           </button>
@@ -117,18 +117,18 @@ const RelatorioEstoquePage: React.FC = () => {
         {reportData ? (
           <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* KPI GRID */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-2">Unidades em Estoque</p>
-                <p className="text-2xl font-semibold text-slate-900">{reportData.totalUnidades} <span className="text-xs text-slate-400 font-bold ml-1 normal-case">Veículos</span></p>
+            <div className="dc-kpi-grid">
+              <div className="dc-kpi-card">
+                <p className="dc-kpi-label">Unidades em Estoque</p>
+                <p className="dc-kpi-value">{reportData.totalUnidades} <span className="text-xs text-slate-400 font-semibold ml-1 normal-case">Veículos</span></p>
               </div>
-              <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal mb-2">Valor Total de Custo</p>
-                <p className="text-2xl font-semibold text-slate-900">{formatCur(reportData.valorTotalCusto)}</p>
+              <div className="dc-kpi-card">
+                <p className="dc-kpi-label">Valor Total de Custo</p>
+                <p className="dc-kpi-value">{formatCur(reportData.valorTotalCusto)}</p>
               </div>
-              <div className="bg-blue-600 p-6 rounded-2xl border border-blue-500 shadow-sm shadow-blue-100 text-white">
-                <p className="text-xs font-semibold text-blue-200 normal-case tracking-normal mb-2">Valor de Venda (Estimado)</p>
-                <p className="text-2xl font-semibold">{formatCur(reportData.valorTotalVenda)}</p>
+              <div className="dc-kpi-card">
+                <p className="dc-kpi-label">Valor de Venda (Estimado)</p>
+                <p className="dc-kpi-value">{formatCur(reportData.valorTotalVenda)}</p>
               </div>
             </div>
 
@@ -159,10 +159,10 @@ const RelatorioEstoquePage: React.FC = () => {
                         </td>
                         <td className="px-6 py-4">
                           <p className="text-sm font-semibold text-slate-900 normal-case tracking-tight leading-none mb-1">{item.modelo}</p>
-                          <p className="text-xs font-bold text-slate-400 normal-case truncate max-w-[200px]">{item.versao}</p>
+                          <p className="text-xs font-semibold text-slate-400 normal-case truncate max-w-[200px]">{item.versao}</p>
                         </td>
                         <td className="px-6 py-4">
-                          <p className="text-xs font-bold text-slate-600">{item.ano}</p>
+                          <p className="text-xs font-semibold text-slate-600">{item.ano}</p>
                           <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal">{item.cor}</p>
                         </td>
                         <td className="px-6 py-4 text-sm font-semibold text-right text-slate-400 italic">{formatCur(item.custo)}</td>

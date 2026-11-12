@@ -7,19 +7,19 @@ const formatCurrency = (val: number) =>
 export const KpiCard = ({ label, valor, sub, color = 'slate', isCurrency = true, icon }: {
     label: string; valor: number; sub?: string; color?: string; isCurrency?: boolean; icon: string;
 }) => (
-    <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md transition-all group">
-        <div className="flex items-start justify-between mb-3">
-            <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal leading-tight">{label}</p>
+    <div className="dc-kpi-card">
+        <div className="flex items-start justify-between mb-2">
+            <p className="dc-kpi-label">{label}</p>
             <div className={`w-8 h-8 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center`}>
                 <svg className={`w-4 h-4 text-slate-600`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d={icon} />
                 </svg>
             </div>
         </div>
-        <h3 className="text-xl font-semibold text-slate-900 tracking-tight">
+        <h3 className="dc-kpi-value">
             {isCurrency ? formatCurrency(valor) : valor}
         </h3>
-        {sub && <p className="text-xs font-bold text-slate-400 normal-case mt-1.5">{sub}</p>}
+        {sub && <p className="dc-kpi-hint">{sub}</p>}
     </div>
 );
 

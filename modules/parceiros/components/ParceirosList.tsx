@@ -17,7 +17,7 @@ const ParceirosList: React.FC<ListProps> = ({ parceiros, loading, onEdit, onDele
     return (
       <div className="py-20 flex flex-col items-center justify-center space-y-4">
         <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-        <p className="text-slate-500 font-bold text-xs normal-case tracking-normal">Carregando parceiros...</p>
+        <p className="text-slate-500 font-semibold text-xs normal-case tracking-normal">Carregando parceiros...</p>
       </div>
     );
   }
@@ -30,7 +30,7 @@ const ParceirosList: React.FC<ListProps> = ({ parceiros, loading, onEdit, onDele
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0" />
           </svg>
         </div>
-        <h3 className="text-slate-900 font-bold text-lg">Nenhum parceiro encontrado</h3>
+        <h3 className="text-slate-900 font-semibold text-lg">Nenhum parceiro encontrado</h3>
         <p className="text-slate-500 text-sm mt-1">Ajuste os filtros ou cadastre um novo parceiro.</p>
       </div>
     );
