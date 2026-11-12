@@ -28,22 +28,26 @@ const CaixaKpis: React.FC<Props> = ({ data }) => {
     return (
       <div
         key={i}
-        className="dc-kpi-card flex items-start gap-3 group"
+        className={`relative p-4 rounded-2xl border transition-all flex items-center gap-3 group 
+          ${isMain
+            ? `bg-${k.color}-600 border-${k.color}-700 shadow-sm`
+            : 'bg-white/60 backdrop-blur-sm border-slate-200 shadow-sm hover:bg-white hover:border-slate-300'
+          } hover:shadow-sm hover:-translate-y-0.5`}
       >
-        <div className="w-8 h-8 bg-slate-100 text-slate-600 rounded-lg flex items-center justify-center shrink-0">
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+        <div className={`${isMain ? 'w-11 h-11 bg-white/20 text-white' : `w-9 h-9 ${k.color === 'rose' || k.color === 'amber' || k.color === 'emerald' ? `bg-${k.color}-500/10 text-${k.color}-600` : 'bg-slate-100 text-slate-600'}`} rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-105`}>
+          <svg className={`${isMain ? 'w-6 h-6' : 'w-5 h-5'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d={k.icon} />
           </svg>
         </div>
         <div className="min-w-0 flex-1">
-          <p className="dc-kpi-label">
+          <p className={`text-xs font-semibold normal-case tracking-normal truncate ${isMain ? 'text-white/80' : 'text-slate-400'}`}>
             {k.label}
           </p>
-          <h4 className="dc-kpi-value">
+          <h4 className={`text-[15px] font-semibold tracking-normal truncate leading-tight ${isMain ? 'text-white' : (k.color === 'rose' || k.label.includes('Despesa') ? 'text-rose-600' : 'text-slate-900')}`}>
             {fmt(k.val)}
           </h4>
           {k.sub && (
-            <div className="dc-kpi-hint" aria-label="Composição do estoque">
+            <div className="mt-1.5 space-y-1 text-xs font-bold normal-case leading-snug text-slate-500" aria-label="Composição do estoque">
               {k.sub.join(' | ')}
             </div>
           )}
@@ -56,7 +60,7 @@ const CaixaKpis: React.FC<Props> = ({ data }) => {
   };
 
   return (
-    <div className="dc-kpi-grid">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
       {kpis.map(renderKpiCard)}
     </div>
   );
