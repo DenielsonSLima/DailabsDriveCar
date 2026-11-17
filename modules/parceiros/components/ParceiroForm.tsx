@@ -159,7 +159,7 @@ const ParceiroForm: React.FC<FormProps> = ({ initialData, onClose, onSubmit }) =
     }
 
     try {
-      onSubmit(formData);
+      onSubmit(validation.data);
     } catch (error) {
       showNotification('error', 'Erro ao salvar parceiro. Verifique os dados.');
     }
@@ -185,7 +185,7 @@ const ParceiroForm: React.FC<FormProps> = ({ initialData, onClose, onSubmit }) =
               <h2 className="dc-modal-title">
                 {initialData ? 'Editar Parceiro' : 'Novo Parceiro'}
               </h2>
-              <p className="text-slate-500 text-xs text-slate-400">Configure os dados de identificação e localização.</p>
+              <p className="text-slate-500 text-xs text-slate-400">Somente o nome é obrigatório. Os demais dados podem ser preenchidos depois.</p>
             </div>
           </div>
           <button onClick={onClose} className="p-3 hover:bg-white rounded-full transition-all text-slate-400 hover:text-rose-500 shadow-sm border border-transparent hover:border-slate-100">

@@ -7,7 +7,7 @@ const window = new Window({url:'http://localhost/scratch/lote-preview.html', set
 window.structuredClone=structuredClone;
 window.fetch=()=>{throw new Error('Network forbidden in local test')};
 window.document.body.innerHTML='<div id="lote-preview"></div>';
-window.eval((await readFile(new URL('../scratch/lote-preview.js',import.meta.url),'utf8')).replace(/import\.meta\.hot/g,'false'));
+await window.eval('(async () => {' + (await readFile(new URL('../scratch/lote-preview.js',import.meta.url),'utf8')).replace(/import\.meta\.hot/g,'false') + '\n})()');
 const doc=window.document;
 const flush=()=>new Promise(resolve=>setTimeout(resolve,40));
 const text=()=>doc.body.textContent;
@@ -30,8 +30,9 @@ try{
  await input('input[name=nome]','Cancelado');doc.dispatchEvent(new window.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));await flush();
  assert.match(text(),/Registrar venda do lote/);assert.equal(field('Quantidade').value,'2');assert.equal(field('Preço por unidade (R$)').value,'9900');
  await click('Cadastrar novo cliente');await click('Voltar à venda');await click('Cadastrar novo cliente');
- await input('input[name=nome]','José Ávila');await input('input[name=documento]','12345678901');await submit();assert.match(doc.querySelector('[role=alert]').textContent,/CEP é obrigatório/);
- for(const [name,value] of Object.entries({cep:'49000000',logradouro:'Rua Teste',numero:'10',bairro:'Centro',cidade:'Aracaju',uf:'SE'}))await input('input[name='+name+']',value);
+ await input('input[name=nome]','   ');await submit();assert.match(doc.querySelector('[role=alert]').textContent,/nome é obrigatório/);
+ await input('input[name=nome]','José Ávila');
+ // Save using the name only. Address, document and contact stay blank.
  window.__lotesClienteTest={calls:[],error:'Falha simulada',delay:0};await submit();assert.match(doc.querySelector('[role=alert]').textContent,/Falha simulada/);
  assert.equal(doc.querySelector('input[name=nome]').value,'JOSÉ ÁVILA');
  window.__lotesClienteTest.error=null;window.__lotesClienteTest.delay=150;await submit();assert.equal(button('Salvando…').disabled,true);

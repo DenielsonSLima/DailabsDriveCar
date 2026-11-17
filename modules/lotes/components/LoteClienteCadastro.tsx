@@ -38,7 +38,7 @@ export default function LoteClienteCadastro({ onSave, onSaved, onClose, onBusyCh
     catch (err) { setError(err); }
     finally { saving.current = false; setBusy(false); onBusyChange(false); }
   }}>
-    <p className="text-sm text-slate-500">Cadastre o cliente aqui. Os dados da venda serão mantidos e o novo cliente ficará selecionado.</p>
+    <p className="text-sm text-slate-500">Somente o nome é obrigatório. Os demais dados podem ser preenchidos depois. Os dados da venda serão mantidos e o novo cliente ficará selecionado.</p>
     <fieldset disabled={busy} className="space-y-5">
       <Field label="Tipo de pessoa"><select className={fieldClass} value={data.pessoa_tipo} onChange={event => setData(current => ({ ...current, pessoa_tipo: event.target.value as PessoaTipo, documento: '' }))}><option value={PessoaTipo.FISICA}>Pessoa física</option><option value={PessoaTipo.JURIDICA}>Pessoa jurídica</option></select></Field>
       <Field label={data.pessoa_tipo === PessoaTipo.FISICA ? 'Nome completo' : 'Nome / Razão social'}><input autoFocus required maxLength={200} name="nome" className={fieldClass} value={data.nome || ''} onChange={change} /></Field>
