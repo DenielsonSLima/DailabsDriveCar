@@ -9,12 +9,26 @@ const title = (id, extra = {}) => ({ id, lote_id: 'lote', venda_pedido_id: 'vend
 const details = { lote: { id: 'lote', organization_id: 'org', descricao: 'Lote teste' }, unidades: [], despesas: [], vendas: [{ id: 'venda', lote_id: 'lote', status: 'CONCLUIDO', cliente_nome: 'Cliente teste', numero_venda: '10' }, { id: 'rascunho', lote_id: 'lote', status: 'RASCUNHO' }], titulos: [title('aberto'), title('pago', { valor_pago: 100, status: 'PAGO' }), title('estranho', { lote_id: 'outro' }), title('sem-lote', { lote_id: null }), title('cancelado', { status: 'CANCELADO' }), title('compra', { tipo: 'PAGAR' }), title('rascunho', { venda_pedido_id: 'rascunho' }), title('manual', { origem_tipo: 'MANUAL' })] };
 try {
   await build({ entryPoints: ['modules/lotes/lotes.financeiro.ts'], bundle: true, platform: 'node', format: 'cjs', outfile: join(temp, 'model.cjs'), logLevel: 'silent' });
-  const { getRecebiveisLote } = (await import(pathToFileURL(join(temp, 'model.cjs')))).default;
+  const { getRecebiveisLote, getVendasRecebiveisLote } = (await import(pathToFileURL(join(temp, 'model.cjs')))).default;
   assert.deepEqual(getRecebiveisLote(details).map(x => x.titulo.id), ['aberto']);
   assert.deepEqual(getRecebiveisLote(details, 'QUITADOS').map(x => x.titulo.id), ['pago']);
   assert.equal(getRecebiveisLote(details, 'TODOS').length, 2);
+  const grupos = getVendasRecebiveisLote(details);
+  assert.equal(grupos.length, 1); assert.equal(grupos[0].parcelas.length, 2);
+  assert.equal(grupos[0].pendente, 100); assert.equal(grupos[0].recebido, 100);
+  assert.equal(getVendasRecebiveisLote(details, 'QUITADOS').length, 0);
+  const sameName = {...details, vendas: [...details.vendas, {...details.vendas[0], id: 'venda2'}], titulos: [...details.titulos, title('outra-venda', {venda_pedido_id:'venda2'})]};
+  assert.equal(getVendasRecebiveisLote(sameName).length, 2);
+  assert.equal(getVendasRecebiveisLote({...details, vendas: details.vendas.map(v => ({...v, quantidade_lote: 2}))})[0].pendente, 100);
   assert.equal(getRecebiveisLote({ ...details, titulos: [title('parcial', { valor_pago: 40, valor_acrescimo: 10, valor_desconto: 5 })] })[0].pendente, 65);
   assert.equal(getRecebiveisLote({ ...details, titulos: [title('servidor', { valor_pendente: 12 })] })[0].pendente, 12);
+  const perMoto = {...details, vendas: [{...details.vendas[0], quantidade_lote: 2, modo_financeiro:'POR_UNIDADE'}], titulos: [title('m1-a', {veiculo_id:'m1'}), title('m1-b', {veiculo_id:'m1', valor_pago:100}), title('m2-a', {veiculo_id:'m2'})]};
+  const motos = getVendasRecebiveisLote(perMoto);
+  assert.equal(motos.length, 2); assert.equal(motos[0].parcelas.length, 2);
+  assert.equal(motos[0].pendente, 100); assert.equal(motos[1].pendente, 100);
+  assert.notEqual(motos[0].id, motos[1].id);
+  const legado = getVendasRecebiveisLote({...perMoto, vendas:[{...perMoto.vendas[0], modo_financeiro:null}]});
+  assert.equal(legado.length, 1); assert.equal(legado[0].compartilhada, true); assert.equal(legado[0].pendente, 200);
   const { Window } = await import(process.env.HAPPY_DOM_MODULE || 'happy-dom');
   const window = new Window({ url: 'http://localhost', settings: { disableCSSFileLoading: true, disableJavaScriptFileLoading: true } });
   window.fetch = () => { throw new Error('Network forbidden'); };
@@ -40,13 +54,14 @@ try {
   const click = async text => { const btn = [...window.document.querySelectorAll('button')].find(b => b.textContent.includes(text)); assert.ok(btn, text); btn.click(); await flush(); };
   const text = () => window.document.body.textContent;
   await flush(); assert.match(text(), /Em aberto/); assert.equal(window.document.querySelectorAll('section > div.grid > button').length, 1);
-  await click('Cliente teste'); assert.match(window.__location,/recebimento=aberto/); assert.equal(window.document.activeElement.tagName, 'H3'); assert.match(text(), /Voltar ao financeiro/); assert.match(text(), /Caminho|Venda #10/);
+  await click('Cliente teste'); assert.match(window.__location,/vendaFinanceiro=venda/); assert.equal(window.document.querySelectorAll('section > div.grid > button').length, 2); await click('Cliente teste'); assert.match(window.__location,/recebimento=aberto/); assert.equal(window.document.activeElement.tagName, 'H3'); assert.match(text(), /Voltar às parcelas/); assert.match(text(), /Caminho|Venda #10/);
   await flush(); assert.match(text(), /Histórico de recebimentos/); assert.deepEqual(Array.from(window.__history), ['lote','aberto']);
-  await click('Baixar título'); assert.match(window.__location,/acao=baixar/); window.__navigate(-1); await flush(); assert.equal(window.document.querySelector('[role=dialog]'),null); window.__navigate(1); await flush(); assert.ok(window.document.querySelector('[role=dialog]')); await click('Cancelar teste'); assert.doesNotMatch(window.__location,/acao=baixar/); assert.match(text(), /Voltar ao financeiro/); assert.equal(window.__refresh, 0);
+  await click('Baixar título'); assert.match(window.__location,/acao=baixar/); window.__navigate(-1); await flush(); assert.equal(window.document.querySelector('[role=dialog]'),null); window.__navigate(1); await flush(); assert.ok(window.document.querySelector('[role=dialog]')); await click('Cancelar teste'); assert.doesNotMatch(window.__location,/acao=baixar/); assert.match(text(), /Voltar às parcelas/); assert.equal(window.__refresh, 0);
   window.__failRefresh = true; await click('Baixar título'); await click('Confirmar teste'); assert.equal(window.__refresh, 0);
+  for(let i=0; i<40 && !text().includes('Atualize o saldo'); i++) await flush();
   assert.match(text(), /Atualize o saldo/); assert.equal([...window.document.querySelectorAll('button')].find(b => b.textContent.includes('Baixar título')).disabled, true);
   window.__failRefresh = false; await click('Atualizar saldo'); assert.equal(window.__refresh, 1); assert.doesNotMatch(text(), /Baixar título/);
-  await click('Voltar ao financeiro'); assert.doesNotMatch(window.__location,/recebimento=/); assert.match(text(), /Nenhum recebimento em aberto/); await click('Quitados'); assert.equal(window.document.querySelectorAll('section > div.grid > button').length, 2);
+  await click('Voltar às parcelas'); assert.doesNotMatch(window.__location,/recebimento=/); await click('Voltar às motos'); assert.match(text(), /Nenhum recebimento em aberto/); await click('Quitados'); assert.equal(window.document.querySelectorAll('section > div.grid > button').length, 1); await click('Cliente teste'); assert.equal(window.document.querySelectorAll('section > div.grid > button').length, 2);
   window.happyDOM.abort();
   console.log('PASS: lote financeiro isolation, balances, navigation, history, cancel and post-payment refresh (offline).');
 } finally { await rm(temp, { recursive: true, force: true }); }

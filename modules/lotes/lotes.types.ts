@@ -42,6 +42,7 @@ export interface ILoteVendaItem {
 }
 
 export interface ILoteVenda {
+  modo_financeiro?: 'POR_UNIDADE' | 'LEGADO' | null;
   id: string;
   lote_id: string;
   numero_venda: string;
@@ -69,6 +70,7 @@ export interface ILoteResumo extends ILote {
 }
 
 export interface ILotePagamentoInput {
+  unidade_indice?: number;
   valor: number;
   data_recebimento: string;
   forma_pagamento_id: string;
@@ -76,6 +78,7 @@ export interface ILotePagamentoInput {
 }
 
 export interface ILoteVendaInput {
+  modo_financeiro?: 'POR_UNIDADE';
   cliente_id: string;
   quantidade: number;
   valor_total: number;
