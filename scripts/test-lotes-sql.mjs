@@ -19,6 +19,7 @@ await db.exec(readFileSync(new URL('../supabase/migrations/20261024163146_lotes_
 await db.exec(readFileSync(new URL('../supabase/migrations/20261024163638_index_lotes_foreign_keys.sql', import.meta.url), 'utf8'));
 await db.exec(readFileSync(new URL('../supabase/migrations/20261109181558_ajustar_quantidade_lote.sql', import.meta.url), 'utf8'));
 await db.exec(readFileSync(new URL('../supabase/migrations/20261111181906_juros_baixa_lote.sql', import.meta.url), 'utf8'));
+await db.exec(readFileSync(new URL('../supabase/migrations/20261117145256_lote_financeiro_por_unidade.sql', import.meta.url), 'utf8'));
 console.log('PASS migrations applied to isolated fixture');
 const q = async (sql, params = []) => (await db.query(sql, params)).rows;
 const columns = await q(`SELECT table_name,column_name,data_type,is_nullable,column_default,is_generated
