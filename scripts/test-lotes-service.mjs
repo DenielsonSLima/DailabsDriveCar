@@ -116,6 +116,18 @@ try {
     assert.equal(duplicateCheck.url.searchParams.get('documento'), 'eq.12345678901');
     assert.match(requests.at(-1).method, /POST/);
   }
+  // A name-only customer is valid and does not run a CPF/CNPJ duplicate lookup.
+  requests = []; handler = request => ({ body: request.body });
+  const minimalClient = { id: clientInput.id, nome: '  SOMENTE NOME  ', pessoa_tipo: 'FISICA' };
+  const minimalSaved = await LotesService.criarCliente(minimalClient);
+  assert.equal(minimalSaved.nome, 'SOMENTE NOME');
+  assert.equal(minimalSaved.documento, null);
+  assert.equal(minimalSaved.organization_id, globalThis.__lotesOrg);
+  assert.equal(requests.length, 1); assert.equal(requests[0].method, 'POST');
+  assert.equal(requests[0].body.cep, undefined);
+  requests = [];
+  await assert.rejects(() => LotesService.criarCliente({ ...minimalClient, nome: '   ' }), /nome é obrigatório/);
+  assert.equal(requests.length, 0);
   requests = []; handler = () => ({ body: [{ id: 'duplicate' }] });
   await assert.rejects(() => LotesService.criarCliente(clientInput), /Já existe um parceiro/);
   assert.equal(requests.length, 1); assert.equal(requests[0].method, 'GET');
