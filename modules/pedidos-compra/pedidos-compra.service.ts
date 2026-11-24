@@ -5,6 +5,7 @@ import {
   IPedidoFiltros,
   IPedidoPagamento,
   IPedidoCompraResponse,
+  EntradaLoteInput,
   PedidoCompraSchema,
   PedidoPagamentoSchema
 } from './pedidos-compra.types';
@@ -207,6 +208,17 @@ export const PedidosCompraService = {
     });
     if (error) throw error;
     return data || [];
+  },
+
+  async confirmOrderAsLot(pedidoId: string, lote: EntradaLoteInput): Promise<string> {
+    const { data, error } = await supabase.rpc('confirmar_pedido_compra_em_lote', {
+      p_pedido_id: pedidoId,
+      p_quantidade: lote.quantidade,
+      p_descricao: lote.descricao.trim(),
+    });
+    if (error) throw new Error(error.message);
+    if (typeof data !== 'string' || !data) throw new Error('O servidor não retornou o lote. Confira a entrada antes de tentar novamente.');
+    return data;
   },
 
   async reopenOrder(id: string): Promise<void> {

@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { PedidosCompraService } from './pedidos-compra.service';
 import { PedidosCompraRealtime } from './pedidos-compra.realtime';
@@ -11,7 +11,7 @@ import {
   invalidatePedidosCompraOverview,
   invalidatePedidosCompraStock,
 } from './pedidos-compra.query-invalidation';
-import { IPedidoCompra, IPedidoPagamento } from './pedidos-compra.types';
+import { EntradaLoteInput, IPedidoCompra, IPedidoPagamento } from './pedidos-compra.types';
 import { EmpresaService } from '../ajustes/empresa/empresa.service';
 import { MarcaDaguaService } from '../ajustes/marca-dagua/marca-dagua.service';
 import { CaracteristicasService } from '../cadastros/caracteristicas/caracteristicas.service';
@@ -37,6 +37,7 @@ import QuickPreviewModal from './components/details/QuickPreviewModal';
 const PedidoCompraDetalhesPage: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
   const queryClient = useQueryClient();
 
   // Controle de Preview e Toast
@@ -76,13 +77,25 @@ const PedidoCompraDetalhesPage: React.FC = () => {
 
   // Mutations
   const confirmMutation = useMutation({
-    mutationFn: (params: { condicao: any, contaId?: string }) =>
-      PedidosCompraService.confirmOrder({
+    mutationFn: async (params: { condicao: any, contaId?: string, lote?: EntradaLoteInput }) => {
+      if (params.lote) return { loteId: await PedidosCompraService.confirmOrderAsLot(id!, params.lote), titulos: [] };
+      const titulos = await PedidosCompraService.confirmOrder({
         pedido: { ...pedido, valor_negociado: valorMasterPedido },
         condicao: params.condicao,
         contaBancariaId: params.contaId
-      }),
-    onSuccess: (titulos) => {
+      });
+      return { loteId: null, titulos };
+    },
+    onSuccess: async ({ loteId, titulos }, params) => {
+      invalidatePedidoCompraFullChange(queryClient, id);
+      if (loteId) {
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ['lotes'] }),
+          queryClient.invalidateQueries({ queryKey: ['lotes_pedido', id] }),
+        ]);
+        navigate('/estoque?aba=lotes', { replace: true, state: { novoLote: params.lote?.descricao } });
+        return;
+      }
       let successMsg = 'Pedido confirmado! Veículo agora disponível no estoque.';
       if (titulos && titulos.length > 0) {
         const vencimento = new Date(titulos[0].data_vencimento);
@@ -91,9 +104,10 @@ const PedidoCompraDetalhesPage: React.FC = () => {
       }
       showNotification('success', successMsg);
       setShowConfirm(false);
-      invalidatePedidoCompraFullChange(queryClient, id);
     },
-    onError: (e: any) => showNotification('error', "Erro ao confirmar entrada: " + e.message)
+    onError: (e, params) => {
+      if (!params.lote) showNotification('error', "Erro ao confirmar entrada: " + e.message);
+    },
   });
 
   const reopenMutation = useMutation({
@@ -201,6 +215,7 @@ const PedidoCompraDetalhesPage: React.FC = () => {
           if (isConsignacao) {
             confirmMutation.mutate({ condicao: { nome: 'AVULSO', qtd_parcelas: 1, dias_primeira_parcela: 0, dias_entre_parcelas: 0 } });
           } else {
+            confirmMutation.reset();
             setShowConfirm(true);
           }
         }}
@@ -298,6 +313,8 @@ const PedidoCompraDetalhesPage: React.FC = () => {
       {showConfirm && (
         <ModalConfirmacaoFinanceira
           pedido={{ ...pedido, valor_negociado: valorMasterPedido }}
+          initialMode={searchParams.get('tipo') === 'lote' ? 'lote' : 'individual'}
+          error={confirmMutation.variables?.lote ? confirmMutation.error?.message : undefined}
           onClose={() => setShowConfirm(false)}
           onConfirm={(params) => confirmMutation.mutate(params)}
           isLoading={confirmMutation.isPending}

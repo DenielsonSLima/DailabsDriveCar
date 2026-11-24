@@ -9,6 +9,14 @@ import { ITitulo } from '../financeiro/financeiro.types';
 
 export type StatusPedidoCompra = 'RASCUNHO' | 'CONCLUIDO' | 'CANCELADO';
 
+export interface EntradaLoteInput {
+  quantidade: number;
+  descricao: string;
+}
+
+export const ENTRADA_LOTE_MAX = 1000;
+export const ENTRADA_LOTE_DESCRICAO_MAX = 200;
+
 export interface IPedidoPagamento {
   id: string;
   pedido_id: string;

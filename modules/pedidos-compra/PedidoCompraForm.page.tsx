@@ -19,6 +19,7 @@ import FormCardNotes from './components/FormCardNotes';
 const PedidoCompraFormPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const novaEntradaEmLote = new URLSearchParams(location.search).get('tipo') === 'lote';
   const { id } = useParams();
   const queryClient = useQueryClient();
 
@@ -73,7 +74,7 @@ const PedidoCompraFormPage: React.FC = () => {
       invalidatePedidosCompraOverview(queryClient);
       invalidatePedidoCompraDetails(queryClient, result.id);
       if (!id && result.status === 'RASCUNHO') {
-        navigate(`/pedidos-compra/${result.id}/adicionar-veiculo`);
+        navigate(`/pedidos-compra/${result.id}/adicionar-veiculo${novaEntradaEmLote ? '?tipo=lote' : ''}`);
         return;
       }
       navigate(`/pedidos-compra/${result.id}`);
@@ -130,6 +131,10 @@ const PedidoCompraFormPage: React.FC = () => {
       alert("Selecione a Forma de Pagamento deste pedido nas Condições Financeiras.");
       return;
     }
+    if (novaEntradaEmLote && formas.find(forma => forma.id === formData.forma_pagamento_id)?.nome?.toLowerCase().includes('consigna')) {
+      alert('A entrada em lote é exclusiva para compra própria. Para consignação, use Novo Pedido.');
+      return;
+    }
 
     if (isConcluido) {
       if (!confirm("Este pedido já está CONCLUÍDO. Alterar os dados cadastrais agora pode causar divergências com o financeiro já gerado. Deseja continuar?")) {
@@ -158,6 +163,10 @@ const PedidoCompraFormPage: React.FC = () => {
         onBack={() => navigate(-1)}
         onSave={handleSubmit}
       />
+
+      {novaEntradaEmLote && <p className="rounded-xl border border-indigo-100 bg-indigo-50 p-4 text-sm text-indigo-950">
+        <strong>Nova entrada em lote.</strong> Salve o pedido e cadastre uma ficha para representar o lote com o valor total da compra. Em <strong>Confirmar Entrada</strong>, informe quantas unidades chegaram.
+      </p>}
 
       {isConcluido && (
         <div className="bg-amber-50 border border-amber-200 p-4 rounded-2xl flex items-center space-x-4 animate-in zoom-in-95 shadow-sm">
