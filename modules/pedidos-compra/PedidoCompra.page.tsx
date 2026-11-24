@@ -87,13 +87,21 @@ const PedidoCompraPage: React.FC = () => {
           <h1 className="dc-page-title">Pedidos de Compra</h1>
           <p className="dc-page-subtitle">Gestão de aquisições de frota</p>
         </div>
-        <button
-          onClick={() => navigate('/pedidos-compra/novo')}
-          className="dc-button px-4 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-semibold normal-case tracking-normal hover:bg-indigo-700 transition-all shadow-sm active:scale-95 flex items-center"
-        >
-          <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
-          Novo Pedido
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          <button type="button"
+            onClick={() => navigate('/pedidos-compra/novo?tipo=lote')}
+            className="dc-button rounded-xl border border-indigo-200 bg-white px-4 py-2.5 text-sm font-semibold text-indigo-700 hover:bg-indigo-50"
+          >
+            Nova entrada em lote
+          </button>
+          <button type="button"
+            onClick={() => navigate('/pedidos-compra/novo')}
+            className="dc-button px-4 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-semibold normal-case tracking-normal hover:bg-indigo-700 transition-all shadow-sm active:scale-95 flex items-center"
+          >
+            <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+            Novo Pedido
+          </button>
+        </div>
       </div>
 
       <PedidosKpis pedidos={statsPedidos} />

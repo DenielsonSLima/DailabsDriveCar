@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { EstoqueService } from './estoque.service';
 import { IVeiculo } from './estoque.types';
@@ -23,13 +24,22 @@ import { LotesService } from '../lotes/lotes.service';
 
 const EstoquePage: React.FC = () => {
   const queryClient = useQueryClient();
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // Paginação e Filtros
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 12;
 
   const [activeTab, setActiveTab] = useState<'DISPONIVEL' | 'RASCUNHO' | 'TODOS'>('DISPONIVEL');
-  const [isLotesTab, setIsLotesTab] = useState(false);
+  const isLotesTab = searchParams.get('aba') === 'lotes';
+  const setIsLotesTab = (isActive: boolean) => {
+    const next = new URLSearchParams(searchParams);
+    if (isActive) next.set('aba', 'lotes');
+    else next.delete('aba');
+    setSearchParams(next, { replace: true });
+  };
+  const novoLote = typeof location.state?.novoLote === 'string' ? location.state.novoLote : null;
   const [searchTerm, setSearchTerm] = useState('');
   const [filterMontadora, setFilterMontadora] = useState('');
   const [filterTipo, setFilterTipo] = useState('');
@@ -136,6 +146,11 @@ const EstoquePage: React.FC = () => {
           <p className="dc-page-subtitle">{isLotesTab ? 'Acompanhe as unidades, despesas e vendas de cada lote.' : 'Gerencie seu inventário e analise a participação societária.'}</p>
         </div>
 
+        {isLotesTab && <Link to="/pedidos-compra/novo?tipo=lote"
+          className="dc-button inline-flex items-center rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700">
+          <span aria-hidden="true" className="mr-2 text-base">+</span> Nova entrada em lote
+        </Link>}
+
         {!isLotesTab && <div className="flex items-center gap-3">
           <button
             onClick={async () => {
@@ -204,6 +219,10 @@ const EstoquePage: React.FC = () => {
           </button>
         </div>}
       </div>
+
+      {isLotesTab && novoLote && <div role="status" className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
+        Entrada confirmada. <strong>{novoLote}</strong> foi registrado como um novo lote.
+      </div>}
 
       {!isLotesTab && <EstoqueDashboard stats={statsDashboard} socios={socios} />}
 

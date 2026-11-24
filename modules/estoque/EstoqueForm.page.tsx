@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { IVeiculo } from './estoque.types';
 import { EstoqueService } from './estoque.service';
@@ -176,6 +176,9 @@ const normalizeVehicleName = (value?: string | null) =>
 const EstoqueFormPage: React.FC = () => {
   const navigate = useNavigate();
   const { id, pedidoId } = useParams();
+  const [searchParams] = useSearchParams();
+  const entradaEmLote = !!pedidoId && searchParams.get('tipo') === 'lote';
+  const sufixoEntrada = entradaEmLote ? '?tipo=lote' : '';
   const queryClient = useQueryClient();
 
   const [loading, setLoading] = useState(true);
@@ -261,7 +264,7 @@ const EstoqueFormPage: React.FC = () => {
 
   const handleBack = () => {
     if (pedidoId) {
-      navigate(`/pedidos-compra/${pedidoId}`);
+      navigate(`/pedidos-compra/${pedidoId}${sufixoEntrada}`);
     } else {
       navigate(-1);
     }
@@ -368,6 +371,10 @@ const EstoqueFormPage: React.FC = () => {
       showToast('error', "Preencha todos os campos obrigatórios (Marca, Modelo, Tipo e Versão).");
       return;
     }
+    if (entradaEmLote && !(Number(formData.valor_custo) > 0)) {
+      showToast('error', 'Informe o custo total da compra para cadastrar o lote.');
+      return;
+    }
 
     const totalSocios = (formData.socios || []).reduce((acc, s) => acc + (s.porcentagem || 0), 0);
     const totalArredondado = parseFloat(totalSocios.toFixed(2));
@@ -385,7 +392,7 @@ const EstoqueFormPage: React.FC = () => {
 
       const targetPedidoId = pedidoId || formData.pedido_id;
       if (location.pathname.includes('/pedidos-compra/')) {
-        navigate(`/pedidos-compra/${targetPedidoId}`);
+        navigate(`/pedidos-compra/${targetPedidoId}${sufixoEntrada}`);
       } else if (location.pathname.includes('/pedidos-venda/')) {
         navigate(`/pedidos-venda/${targetPedidoId}`);
       } else {
@@ -459,6 +466,9 @@ const EstoqueFormPage: React.FC = () => {
       </div>
 
       <div className="min-w-0 max-w-7xl mx-auto mt-6 space-y-4">
+        {entradaEmLote && <p className="mx-4 rounded-xl border border-indigo-100 bg-indigo-50 p-4 text-sm text-indigo-950">
+          <strong>Ficha representativa do lote.</strong> Cadastre o modelo uma vez e informe o custo total, não o valor de uma única unidade.
+        </p>}
         <FormCardIdentification formData={formData} onChange={handleUpdateField} onConsultaPlaca={handleConsultaPlaca} onNotification={showToast} />
         <FormCardGallery formData={formData} onChange={handleUpdateField} onNotification={showToast} />
         <FormCardFinance formData={formData} onChange={handleUpdateField} onNotification={showToast} isConsignacao={isConsignacao} />

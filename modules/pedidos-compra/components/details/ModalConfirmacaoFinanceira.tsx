@@ -1,6 +1,11 @@
 
 import React, { useState, useEffect } from 'react';
-import { IPedidoCompra } from '../../pedidos-compra.types';
+import {
+  ENTRADA_LOTE_DESCRICAO_MAX,
+  ENTRADA_LOTE_MAX,
+  type EntradaLoteInput,
+  type IPedidoCompra,
+} from '../../pedidos-compra.types';
 import { CondicoesPagamentoService } from '../../../cadastros/condicoes-pagamento/condicoes-pagamento.service';
 import { ContasBancariasService } from '../../../ajustes/contas-bancarias/contas.service';
 import { FinanceiroService } from '../../../financeiro/financeiro.service';
@@ -8,16 +13,21 @@ import { FinanceiroService } from '../../../financeiro/financeiro.service';
 interface Props {
   pedido: IPedidoCompra;
   onClose: () => void;
-  onConfirm: (params: { condicao: any, contaId?: string }) => void;
+  onConfirm: (params: { condicao: any, contaId?: string, lote?: EntradaLoteInput }) => void;
   isLoading: boolean;
+  initialMode?: 'individual' | 'lote';
+  error?: string;
 }
 
-const ModalConfirmacaoFinanceira: React.FC<Props> = ({ pedido, onClose, onConfirm, isLoading }) => {
+const ModalConfirmacaoFinanceira: React.FC<Props> = ({ pedido, onClose, onConfirm, isLoading, initialMode = 'individual', error }) => {
   const [condicoes, setCondicoes] = useState<any[]>([]);
   const [contas, setContas] = useState<any[]>([]);
   const [selectedCondicaoId, setSelectedCondicaoId] = useState('');
   const [selectedContaId, setSelectedContaId] = useState('');
   const [parcelasPrevia, setParcelasPrevia] = useState<any[]>([]);
+  const [entrada, setEntrada] = useState(initialMode);
+  const [quantidade, setQuantidade] = useState('');
+  const [descricao, setDescricao] = useState('');
 
   const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
@@ -83,18 +93,69 @@ const ModalConfirmacaoFinanceira: React.FC<Props> = ({ pedido, onClose, onConfir
   const requiresAccount = parcelasPrevia.some(p => p.data_vencimento === new Date().toISOString().split('T')[0]) &&
     pedido.forma_pagamento?.destino_lancamento === 'CAIXA';
 
+  const veiculo = pedido.veiculos?.length === 1 ? pedido.veiculos[0] : null;
+  const compraPropria = !pedido.forma_pagamento?.nome?.toLowerCase().includes('consigna');
+  const lotePermitido = pedido.status === 'RASCUNHO' && compraPropria && !!veiculo?.id &&
+    !veiculo.lote_id && !veiculo.is_consignado;
+  const totalUnidades = Number(quantidade);
+  const quantidadeValida = Number.isInteger(totalUnidades) && totalUnidades >= 2 && totalUnidades <= ENTRADA_LOTE_MAX;
+  const descricaoValida = descricao.trim().length > 0 && descricao.trim().length <= ENTRADA_LOTE_DESCRICAO_MAX;
+  const finalizarEmLote = entrada === 'lote';
+  const confirmarHabilitado = !isLoading && !!selectedCondicaoId && (!requiresAccount || !!selectedContaId) &&
+    (!finalizarEmLote || (lotePermitido && quantidadeValida && descricaoValida));
+
   return (
     <div data-drivecar-ui className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
-      <div className="dc-modal bg-white w-full max-w-2xl rounded-2xl shadow-sm overflow-hidden flex flex-col max-h-[90vh]">
+      <div role="dialog" aria-modal="true" aria-labelledby="finalizar-compra-titulo" className="dc-modal bg-white w-full max-w-2xl rounded-2xl shadow-sm overflow-hidden flex flex-col max-h-[90vh]">
         <div className="dc-modal-header flex justify-between items-center bg-white text-slate-900 border-b border-slate-200">
           <div>
-            <h3 className="dc-modal-title">Finalizar Compra</h3>
+            <h3 id="finalizar-compra-titulo" className="dc-modal-title">Finalizar Compra</h3>
             <p className="text-xs text-indigo-400 font-semibold normal-case tracking-normal mt-1">Geração de Obrigações Financeiras</p>
           </div>
-          <button onClick={onClose} className="dc-button p-2 hover:bg-white/10 rounded-full transition-colors"><svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M6 18L18 6M6 6l12 12" /></svg></button>
+          <button type="button" aria-label="Fechar" disabled={isLoading} onClick={onClose} className="dc-button p-2 hover:bg-white/10 rounded-full transition-colors"><svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M6 18L18 6M6 6l12 12" /></svg></button>
         </div>
 
         <div className="dc-modal-body flex-1 overflow-y-auto p-4 space-y-6">
+          <fieldset disabled={isLoading} className="space-y-3">
+            <legend className="mb-2 text-sm font-semibold text-slate-800">Tipo de entrada</legend>
+            <div className="grid grid-cols-2 gap-3">
+              <label className={`flex cursor-pointer items-center gap-2 rounded-xl border p-3 text-sm font-semibold ${!finalizarEmLote ? 'border-indigo-400 bg-indigo-50 text-indigo-900' : 'border-slate-200 text-slate-700'}`}>
+                <input type="radio" name="tipo-entrada" value="individual" checked={!finalizarEmLote} onChange={() => setEntrada('individual')} className="accent-indigo-600" />
+                Individual
+              </label>
+              <label className={`flex items-center gap-2 rounded-xl border p-3 text-sm font-semibold ${finalizarEmLote ? 'border-indigo-400 bg-indigo-50 text-indigo-900' : 'border-slate-200 text-slate-700'} ${lotePermitido ? 'cursor-pointer' : 'opacity-60'}`}>
+                <input type="radio" name="tipo-entrada" value="lote" checked={finalizarEmLote} disabled={!lotePermitido} onChange={() => setEntrada('lote')} className="accent-indigo-600" />
+                Lote
+              </label>
+            </div>
+            {!lotePermitido && (
+              <p className="text-sm text-amber-800">
+                Para lançar um lote, use um pedido em rascunho de compra própria com só uma ficha representando todas as unidades.
+              </p>
+            )}
+            {finalizarEmLote && lotePermitido && (
+              <div className="space-y-3 rounded-xl border border-indigo-100 bg-indigo-50 p-3 sm:p-4">
+                <p className="text-sm text-indigo-950">Esta compra cria um novo card em <strong>Estoque → Lotes</strong>. O valor total será dividido entre as unidades sem alterar lotes anteriores.</p>
+                <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
+                  <label className="block space-y-1 text-sm font-semibold text-slate-700">
+                    <span>Quantidade de unidades</span>
+                    <input type="number" inputMode="numeric" min={2} max={ENTRADA_LOTE_MAX} step={1} required aria-invalid={quantidade !== '' && !quantidadeValida} aria-describedby="limite-quantidade-lote"
+                      className="dc-input w-full rounded-xl border border-slate-200 bg-white p-2.5" placeholder="Ex.: 12" value={quantidade} onChange={event => setQuantidade(event.target.value)} />
+                  </label>
+                  <label className="block space-y-1 text-sm font-semibold text-slate-700">
+                    <span>Descrição do lote</span>
+                    <input type="text" required maxLength={ENTRADA_LOTE_DESCRICAO_MAX}
+                      className="dc-input w-full rounded-xl border border-slate-200 bg-white p-2.5" placeholder="Ex.: Motos elétricas · Novembro" value={descricao} onChange={event => setDescricao(event.target.value)} />
+                  </label>
+                </div>
+                <p id="limite-quantidade-lote" className={`text-xs ${quantidade !== '' && !quantidadeValida ? 'font-semibold text-rose-700' : 'text-indigo-900'}`}>
+                  Informe um número inteiro entre 2 e {ENTRADA_LOTE_MAX.toLocaleString('pt-BR')}.
+                  {quantidadeValida && ` Custo médio: ${formatCurrency(pedido.valor_negociado / totalUnidades)} por unidade.`}
+                </p>
+              </div>
+            )}
+          </fieldset>
+
           <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 grid grid-cols-2 gap-4">
             <div>
               <p className="text-xs font-semibold text-slate-400 normal-case tracking-normal">Valor Negociado</p>
@@ -156,20 +217,25 @@ const ModalConfirmacaoFinanceira: React.FC<Props> = ({ pedido, onClose, onConfir
         </div>
 
         <div className="dc-modal-footer p-4 border-t border-slate-100 bg-slate-50">
+          {error && <p role="alert" className="mb-3 rounded-lg bg-rose-50 p-3 text-sm text-rose-700">{error}</p>}
           <button
+            type="button"
             onClick={() => {
-              if (!selectedCondicaoId) return alert('Selecione uma condição.');
-              if (requiresAccount && !selectedContaId) return alert('Selecione a conta bancária.');
+              if (!confirmarHabilitado) return;
               // Se for condição virtual "À VISTA", envia o objeto diretamente (sem ID fake)
               const condicaoParaEnviar = selectedCondicaoId === '__auto_avista__'
                 ? { nome: 'À VISTA', qtd_parcelas: 1, dias_primeira_parcela: 0, dias_entre_parcelas: 0 }
                 : selectedCondicao!;
-              onConfirm({ condicao: condicaoParaEnviar, contaId: selectedContaId });
+              onConfirm({
+                condicao: condicaoParaEnviar,
+                contaId: selectedContaId,
+                ...(finalizarEmLote ? { lote: { quantidade: totalUnidades, descricao: descricao.trim() } } : {}),
+              });
             }}
-            disabled={isLoading || !selectedCondicaoId}
+            disabled={!confirmarHabilitado}
             className="dc-button w-full py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-indigo-700 shadow-sm transition-all disabled:opacity-30 flex items-center justify-center"
           >
-            {isLoading ? 'Confirmando Operação...' : 'Gerar Títulos e Confirmar Pedido'}
+            {isLoading ? 'Confirmando Operação...' : finalizarEmLote ? 'Confirmar entrada em lote' : 'Gerar Títulos e Confirmar Pedido'}
           </button>
         </div>
       </div>
