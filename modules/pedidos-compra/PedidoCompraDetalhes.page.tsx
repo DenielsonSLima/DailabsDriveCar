@@ -11,6 +11,7 @@ import {
   invalidatePedidosCompraOverview,
   invalidatePedidosCompraStock,
 } from './pedidos-compra.query-invalidation';
+import { getEntradaLote } from './entrada-lote';
 import { EntradaLoteInput, IPedidoCompra, IPedidoPagamento } from './pedidos-compra.types';
 import { EmpresaService } from '../ajustes/empresa/empresa.service';
 import { MarcaDaguaService } from '../ajustes/marca-dagua/marca-dagua.service';
@@ -178,6 +179,13 @@ const PedidoCompraDetalhesPage: React.FC = () => {
 
   const isConsignacao = pedido?.forma_pagamento?.nome?.toLowerCase().includes('consigna') || false;
 
+  const fichas = pedido?.veiculos || [];
+  const loteNaFicha = fichas.find(v => !!getEntradaLote(v));
+  const lote = getEntradaLote(loteNaFicha);
+  const configuracaoLoteValida = !lote || (!isConsignacao && fichas.length === 1 && !loteNaFicha?.is_consignado);
+  const lotePendenteDaVersaoAnterior = searchParams.get('tipo') === 'lote' && !lote && fichas.length === 1 && !isConsignacao &&
+    pedido?.status === 'RASCUNHO' && !fichas[0]?.lote_id && !fichas[0]?.is_consignado;
+
   const valorMasterPedido = totalCustoVeiculos > 0 ? totalCustoVeiculos : (pedido?.valor_negociado || 0);
   const isFinanceiroOK = totalCustoVeiculos > 0 && (isConsignacao || Math.abs(totalCustoVeiculos - totalPagamentosLancados) < 0.05);
 
@@ -212,6 +220,7 @@ const PedidoCompraDetalhesPage: React.FC = () => {
         onBack={() => navigate('/pedidos-compra')}
         onEdit={() => navigate(`/pedidos-compra/editar/${pedido.id}`)}
         onConfirm={() => {
+          if (!configuracaoLoteValida || lotePendenteDaVersaoAnterior) return;
           if (isConsignacao) {
             confirmMutation.mutate({ condicao: { nome: 'AVULSO', qtd_parcelas: 1, dias_primeira_parcela: 0, dias_entre_parcelas: 0 } });
           } else {
@@ -224,7 +233,7 @@ const PedidoCompraDetalhesPage: React.FC = () => {
         onPrintSupplier={() => setPreviewType('supplier')}
         onPrintInternal={() => setPreviewType('internal')}
         loadingAction={actionLoading}
-        canConfirm={isFinanceiroOK}
+        canConfirm={isFinanceiroOK && configuracaoLoteValida && !lotePendenteDaVersaoAnterior}
       />
 
       <InfoNegociacaoHeader pedido={pedido} />
@@ -232,6 +241,15 @@ const PedidoCompraDetalhesPage: React.FC = () => {
       <OrderCostKpis pedido={pedido} isConsignacao={isConsignacao} />
 
       <LotePedidoPanel pedido={pedido} />
+      {(lotePendenteDaVersaoAnterior || !configuracaoLoteValida) && pedido.status === 'RASCUNHO' && (
+        <div role="alert" className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950">
+          {lotePendenteDaVersaoAnterior ? 'Informe a quantidade na ficha do veículo antes de confirmar a entrada.' :
+            'A entrada em lote exige compra própria com uma única ficha. Revise a ficha antes de confirmar.'}
+          <button type="button" className="ml-2 font-semibold underline" onClick={() =>
+            navigate(`/pedidos-compra/${pedido.id}/veiculo/editar/${loteNaFicha?.id || fichas[0]?.id}${lotePendenteDaVersaoAnterior ? '?tipo=lote' : ''}`)
+          }>Editar ficha</button>
+        </div>
+      )}
 
       {(!pedido.veiculos?.length || pedido.veiculos.some(v => !v.lote_id)) && <section className="dc-panel">
         <VeiculosPedidoList
@@ -313,10 +331,10 @@ const PedidoCompraDetalhesPage: React.FC = () => {
       {showConfirm && (
         <ModalConfirmacaoFinanceira
           pedido={{ ...pedido, valor_negociado: valorMasterPedido }}
-          initialMode={searchParams.get('tipo') === 'lote' ? 'lote' : 'individual'}
+          lote={lote}
           error={confirmMutation.variables?.lote ? confirmMutation.error?.message : undefined}
           onClose={() => setShowConfirm(false)}
-          onConfirm={(params) => confirmMutation.mutate(params)}
+          onConfirm={(params) => { if (configuracaoLoteValida && !lotePendenteDaVersaoAnterior) confirmMutation.mutate(params); }}
           isLoading={confirmMutation.isPending}
         />
       )}

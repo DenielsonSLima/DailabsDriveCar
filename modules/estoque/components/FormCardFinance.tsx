@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useId } from 'react';
 import { IVeiculo } from '../estoque.types';
 import { SociosService } from '../../ajustes/socios/socios.service';
 import { ISocio } from '../../ajustes/socios/socios.types';
@@ -10,9 +10,11 @@ interface Props {
   onChange: (updates: Partial<IVeiculo>) => void;
   onNotification: (msg: string, type: any) => void;
   isConsignacao?: boolean;
+  entradaEmLote?: boolean;
 }
 
-const FormCardFinance: React.FC<Props> = ({ formData, onChange, isConsignacao = false }) => {
+const FormCardFinance: React.FC<Props> = ({ formData, onChange, isConsignacao = false, entradaEmLote = false }) => {
+  const custoId = useId();
   const [sociosDisponiveis, setSociosDisponiveis] = useState<ISocio[]>([]);
   const [custoRaw, setCustoRaw] = useState('');
   const [vendaRaw, setVendaRaw] = useState('');
@@ -104,13 +106,14 @@ const FormCardFinance: React.FC<Props> = ({ formData, onChange, isConsignacao = 
             </div>
           ) : (
             <div>
-              <label className="block text-xs font-semibold text-slate-500 normal-case mb-3 ml-1 tracking-normal">
-                Custo de Compra
+              <label htmlFor={custoId} className="block text-xs font-semibold text-slate-500 normal-case mb-3 ml-1 tracking-normal">
+                {entradaEmLote ? 'Custo total do lote' : 'Custo de Compra'}
               </label>
               <div className="relative">
                 <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-600 font-bold text-xl">R$</span>
                 <input
                   type="text"
+                  id={custoId}
                   value={custoRaw}
                   onChange={e => handleCurrencyChange(e.target.value, 'valor_custo')}
                   className="dc-input w-full bg-white border-2 border-slate-100 rounded-xl px-6 py-5 pl-14 text-2xl font-semibold text-[#111827] outline-none focus:border-indigo-500 transition-all shadow-inner"

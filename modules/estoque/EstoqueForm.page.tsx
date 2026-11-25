@@ -5,6 +5,9 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { IVeiculo } from './estoque.types';
 import { EstoqueService } from './estoque.service';
+import { getEntradaLote, isQuantidadeLoteValida, isDescricaoLoteValida } from '../pedidos-compra/entrada-lote';
+import type { IPedidoCompra } from '../pedidos-compra/pedidos-compra.types';
+import FormCardTipoEntrada from './components/FormCardTipoEntrada';
 import { PedidosCompraService } from '../pedidos-compra/pedidos-compra.service';
 import { CoresService } from '../cadastros/cores/cores.service';
 import { ICor } from '../cadastros/cores/cores.types';
@@ -177,8 +180,12 @@ const EstoqueFormPage: React.FC = () => {
   const navigate = useNavigate();
   const { id, pedidoId } = useParams();
   const [searchParams] = useSearchParams();
-  const entradaEmLote = !!pedidoId && searchParams.get('tipo') === 'lote';
-  const sufixoEntrada = entradaEmLote ? '?tipo=lote' : '';
+  const isEntradaCompra = !!pedidoId && location.pathname.startsWith('/pedidos-compra/');
+  const veioDoAtalhoLote = isEntradaCompra && searchParams.get('tipo') === 'lote';
+  const [pedidoCompra, setPedidoCompra] = useState<IPedidoCompra | null>(null);
+  const [tipoEntrada, setTipoEntrada] = useState<'individual' | 'lote'>('individual');
+  const [quantidadeLote, setQuantidadeLote] = useState('');
+  const [descricaoLote, setDescricaoLote] = useState('');
   const queryClient = useQueryClient();
 
   const [loading, setLoading] = useState(true);
@@ -196,7 +203,7 @@ const EstoqueFormPage: React.FC = () => {
   const [tiposVeiculos, setTiposVeiculos] = useState<ITipoVeiculo[]>([]);
   const [montadoras, setMontadoras] = useState<IMontadora[]>([]);
 
-  const [formData, setFormData] = useState<Partial<IVeiculo>>({
+  const initialVehicle = (): Partial<IVeiculo> => ({
     status: 'PREPARACAO',
     fotos: [],
     km: 0,
@@ -212,46 +219,64 @@ const EstoqueFormPage: React.FC = () => {
     ano_modelo: new Date().getFullYear(),
     ...(pedidoId ? { pedido_id: pedidoId } : {})
   });
+  const [formData, setFormData] = useState<Partial<IVeiculo>>(initialVehicle);
+
+  const veiculosDoPedido = pedidoCompra?.veiculos || [];
+  const outroVeiculo = veiculosDoPedido.some(v => v.id !== id);
+  const outroLote = veiculosDoPedido.some(v => v.id !== id && (v.lote_id || v.entrada_lote_quantidade));
+  const lotePermitido = isEntradaCompra && pedidoCompra?.status === 'RASCUNHO' && !isConsignacao && !outroVeiculo;
+  const entradaEmLote = lotePermitido && tipoEntrada === 'lote';
+  const fichaDestePedido = !id || veiculosDoPedido.some(v => v.id === id && formData.id === id);
+  const podeSalvar = (!id || formData.id === id) && (!isEntradaCompra ||
+    (pedidoCompra?.status === 'RASCUNHO' && !outroLote && fichaDestePedido));
 
   useEffect(() => {
+    let ativo = true;
     async function loadInitialData() {
+      setLoading(true);
+      setPedidoCompra(null);
+      setTipoEntrada('individual');
+      setQuantidadeLote('');
+      setDescricaoLote('');
       try {
-        const [coresData, tiposData, montadorasData] = await Promise.all([
+        const [coresData, tiposData, montadorasData, pedido, veiculo] = await Promise.all([
           CoresService.getAll(),
           TiposVeiculosService.getAll(),
-          MontadorasService.getAll()
+          MontadorasService.getAll(),
+          isEntradaCompra ? PedidosCompraService.getById(pedidoId!) : null,
+          id ? EstoqueService.getById(id) : null,
         ]);
+        if (!ativo) return;
         setCores(coresData);
         setTiposVeiculos(tiposData);
         setMontadoras(montadorasData);
 
-        if (pedidoId) {
-          try {
-            const pedido = await PedidosCompraService.getById(pedidoId);
-            if (pedido && pedido.forma_pagamento?.nome?.toLowerCase().includes('consigna')) {
-              setIsConsignacao(true);
-            }
-          } catch (e) {
-            console.error('Erro ao verificar pedido', e);
-          }
+        const consignacao = pedido?.forma_pagamento?.nome?.toLowerCase().includes('consigna') || false;
+        setPedidoCompra(pedido);
+        setIsConsignacao(consignacao);
+        if (veiculo?.lote_id) {
+          navigate(`/lotes/${veiculo.lote_id}`, { replace: true });
+          return;
         }
-
-        if (id) {
-          const veiculo = await EstoqueService.getById(id);
-          if (veiculo?.lote_id) {
-            navigate(`/lotes/${veiculo.lote_id}`, { replace: true });
-            return;
-          }
-          if (veiculo) setFormData(veiculo);
+        setFormData(veiculo ?? initialVehicle());
+        const lote = getEntradaLote(veiculo);
+        if (lote) {
+          setTipoEntrada('lote');
+          setQuantidadeLote(String(lote.quantidade));
+          setDescricaoLote(lote.descricao);
+        } else if (veioDoAtalhoLote && pedido?.status === 'RASCUNHO' && !consignacao &&
+          !pedido.veiculos?.some(v => v.id !== id)) {
+          setTipoEntrada('lote');
         }
       } catch (error) {
-        showToast('error', 'Erro ao carregar dados iniciais.');
+        if (ativo) showToast('error', 'Erro ao carregar dados iniciais.');
       } finally {
-        setLoading(false);
+        if (ativo) setLoading(false);
       }
     }
     loadInitialData();
-  }, [id, pedidoId]);
+    return () => { ativo = false; };
+  }, [id, pedidoId, isEntradaCompra, veioDoAtalhoLote, navigate]);
 
   const showToast = (type: 'success' | 'error' | 'warning', message: string) => {
     setToast({ type, message });
@@ -264,7 +289,7 @@ const EstoqueFormPage: React.FC = () => {
 
   const handleBack = () => {
     if (pedidoId) {
-      navigate(`/pedidos-compra/${pedidoId}${sufixoEntrada}`);
+      navigate(`/pedidos-compra/${pedidoId}${veioDoAtalhoLote ? '?tipo=lote' : ''}`);
     } else {
       navigate(-1);
     }
@@ -367,6 +392,11 @@ const EstoqueFormPage: React.FC = () => {
   // ============================================================
 
   const handleSubmit = async () => {
+    if (isSaving || !podeSalvar) return;
+    if (entradaEmLote && (!isQuantidadeLoteValida(Number(quantidadeLote)) || !isDescricaoLoteValida(descricaoLote))) {
+      showToast('error', 'Informe uma quantidade inteira de 2 a 1.000 e a descrição do lote.');
+      return;
+    }
     if (!formData.montadora_id || !formData.modelo_id || !formData.tipo_veiculo_id || !formData.versao_id) {
       showToast('error', "Preencha todos os campos obrigatórios (Marca, Modelo, Tipo e Versão).");
       return;
@@ -385,14 +415,24 @@ const EstoqueFormPage: React.FC = () => {
 
     setIsSaving(true);
     try {
-      const saved = await EstoqueService.save(formData);
+      await EstoqueService.save({
+        ...formData,
+        ...(isEntradaCompra && {
+          pedido_id: pedidoId,
+          entrada_lote_quantidade: entradaEmLote ? Number(quantidadeLote) : null,
+          entrada_lote_descricao: entradaEmLote ? descricaoLote.trim() : null,
+        }),
+      });
+      if (isEntradaCompra) {
+        await queryClient.invalidateQueries({ queryKey: ['pedido_compra_detalhes', pedidoId], refetchType: 'all' });
+      }
 
       queryClient.invalidateQueries({ queryKey: ['estoque_list'] });
       queryClient.invalidateQueries({ queryKey: ['estoque_stats'] });
 
       const targetPedidoId = pedidoId || formData.pedido_id;
       if (location.pathname.includes('/pedidos-compra/')) {
-        navigate(`/pedidos-compra/${targetPedidoId}${sufixoEntrada}`);
+        navigate(`/pedidos-compra/${targetPedidoId}`);
       } else if (location.pathname.includes('/pedidos-venda/')) {
         navigate(`/pedidos-venda/${targetPedidoId}`);
       } else {
@@ -457,21 +497,27 @@ const EstoqueFormPage: React.FC = () => {
           </div>
           <button
             onClick={handleSubmit}
-            disabled={isSaving}
+            disabled={isSaving || !podeSalvar}
             className="dc-button px-8 py-3 bg-indigo-600 text-white font-semibold text-xs normal-case tracking-normal rounded-xl hover:bg-indigo-700 shadow-sm transition-all active:scale-95 disabled:opacity-50"
           >
-            {isSaving ? 'Salvando...' : 'Salvar Ficha'}
+            {isSaving ? 'Salvando...' : entradaEmLote ? 'Salvar ficha do lote' : 'Salvar Ficha'}
           </button>
         </div>
       </div>
 
       <div className="min-w-0 max-w-7xl mx-auto mt-6 space-y-4">
-        {entradaEmLote && <p className="mx-4 rounded-xl border border-indigo-100 bg-indigo-50 p-4 text-sm text-indigo-950">
-          <strong>Ficha representativa do lote.</strong> Cadastre o modelo uma vez e informe o custo total, não o valor de uma única unidade.
+        {isEntradaCompra && !podeSalvar && <p role="alert" className="mx-4 rounded-xl bg-amber-50 p-4 text-sm text-amber-900">
+          {!fichaDestePedido ? 'Não foi possível carregar uma ficha vinculada a este pedido.' : outroLote ? 'Este pedido já tem uma ficha de lote. Edite essa ficha ou abra uma nova entrada para outro lote.' : 'A ficha só pode ser alterada em um pedido em preparação.'}
         </p>}
+        {isEntradaCompra && podeSalvar && <FormCardTipoEntrada
+          entradaEmLote={entradaEmLote} lotePermitido={lotePermitido} consignacao={isConsignacao}
+          onTipoChange={setTipoEntrada} quantidade={quantidadeLote} onQuantidadeChange={setQuantidadeLote}
+          descricao={descricaoLote} onDescricaoChange={setDescricaoLote} custoTotal={Number(formData.valor_custo || 0)}
+          disabled={isSaving}
+        />}
         <FormCardIdentification formData={formData} onChange={handleUpdateField} onConsultaPlaca={handleConsultaPlaca} onNotification={showToast} />
         <FormCardGallery formData={formData} onChange={handleUpdateField} onNotification={showToast} />
-        <FormCardFinance formData={formData} onChange={handleUpdateField} onNotification={showToast} isConsignacao={isConsignacao} />
+        <FormCardFinance formData={formData} onChange={handleUpdateField} onNotification={showToast} isConsignacao={isConsignacao} entradaEmLote={entradaEmLote} />
         <FormCardTechnical formData={formData} cores={cores} onChange={handleUpdateField} />
         <FormCardChecklist formData={formData} onChange={handleUpdateField} />
         <FormCardObservations formData={formData} onChange={handleUpdateField} />

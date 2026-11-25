@@ -48,6 +48,8 @@ export const VeiculoSchema = z.object({
   user_id: z.string().uuid().optional(),
   organization_id: z.string().uuid().optional(),
   lote_id: z.string().uuid().optional().nullable(),
+  entrada_lote_quantidade: z.number().int().min(2).max(1000).optional().nullable(),
+  entrada_lote_descricao: z.string().trim().min(1).max(200).optional().nullable(),
   lote_ordem: z.number().int().optional().nullable(),
   custo_lote_servicos: z.coerce.number().optional(),
   montadora_id: z.string().uuid(),

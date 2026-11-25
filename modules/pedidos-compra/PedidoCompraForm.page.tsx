@@ -165,7 +165,7 @@ const PedidoCompraFormPage: React.FC = () => {
       />
 
       {novaEntradaEmLote && <p className="rounded-xl border border-indigo-100 bg-indigo-50 p-4 text-sm text-indigo-950">
-        <strong>Nova entrada em lote.</strong> Salve o pedido e cadastre uma ficha para representar o lote com o valor total da compra. Em <strong>Confirmar Entrada</strong>, informe quantas unidades chegaram.
+        <strong>Nova entrada em lote.</strong> Salve o pedido. Na tela <strong>Adicionar Veículo</strong>, informe a quantidade e o custo total do lote.
       </p>}
 
       {isConcluido && (
