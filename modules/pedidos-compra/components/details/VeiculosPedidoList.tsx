@@ -13,6 +13,7 @@ interface Props {
 const VeiculosPedidoList: React.FC<Props> = ({ pedido, onUnlink, isConcluido }) => {
   const navigate = useNavigate();
   const veiculosList = pedido.veiculos || [];
+  const loteConfigurado = veiculosList.some(v => !!v.entrada_lote_quantidade);
 
   return (
     <div className="space-y-8">
@@ -28,7 +29,7 @@ const VeiculosPedidoList: React.FC<Props> = ({ pedido, onUnlink, isConcluido }) 
           <p className="text-xs text-slate-400 font-semibold normal-case tracking-normal mt-1">Ativos vinculados a este contrato</p>
         </div>
 
-        {!isConcluido && (
+        {!isConcluido && !loteConfigurado && (
           <button
             onClick={() => navigate(`/pedidos-compra/${pedido.id}/adicionar-veiculo`)}
             className="dc-button px-4 py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-semibold normal-case tracking-normal hover:bg-indigo-700 transition-all shadow-sm shadow-indigo-100 flex items-center active:scale-95 group"

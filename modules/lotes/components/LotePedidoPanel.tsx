@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { getEntradaLote } from '../../pedidos-compra/entrada-lote';
 import { IPedidoCompra } from '../../pedidos-compra/pedidos-compra.types';
 import { LotesService } from '../lotes.service';
 import { ErrorMessage, Field, fieldClass, LoteModal, money, primaryClass, secondaryClass } from './LoteUi';
@@ -10,6 +11,7 @@ export default function LotePedidoPanel({ pedido }: { pedido: IPedidoCompra }) {
   const [open, setOpen] = useState(false);
   const [descricao, setDescricao] = useState('');
   const [quantidade, setQuantidade] = useState(50);
+  const entrada = pedido.veiculos?.length === 1 ? getEntradaLote(pedido.veiculos[0]) : undefined;
   const query = useQuery({ queryKey: ['lotes_pedido', pedido.id], queryFn: () => LotesService.listar(pedido.id) });
   const vehicle = pedido.veiculos?.length === 1 && pedido.veiculos[0].status === 'DISPONIVEL' ? pedido.veiculos[0] : null;
   const create = useMutation({
@@ -25,9 +27,14 @@ export default function LotePedidoPanel({ pedido }: { pedido: IPedidoCompra }) {
     {!!query.data?.length && <div className="grid gap-4 px-6 pb-6 sm:px-8 sm:pb-8">{query.data.map(lote => <Link key={lote.id} to={`/lotes/${lote.id}`} className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 transition-colors hover:border-indigo-300 hover:bg-indigo-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-600"><div><p className="font-bold text-slate-900">{lote.descricao}</p><p className="mt-1 text-sm text-slate-500">{lote.quantidade_inicial} unidades · {lote.encerrado ? 'Encerrado' : `${lote.quantidade_disponivel} disponíveis`}</p></div><span className="text-sm font-bold text-indigo-600">Abrir controle →</span></Link>)}</div>}
     {!query.isPending && !query.isError && !query.data?.length && (!vehicle || pedido.status !== 'CONCLUIDO') && <p className="px-6 pb-6 text-sm text-slate-500">
       {pedido.status === 'RASCUNHO'
-        ? 'Para uma compra própria em lote, adicione apenas uma ficha com o custo total. Em Confirmar Entrada, escolha Lote e informe a quantidade.'
+        ? entrada
+          ? `Lote configurado: ${entrada.descricao} · ${entrada.quantidade} unidades. O card de estoque será criado ao confirmar a entrada.`
+          : 'Defina o lote e a quantidade na tela Adicionar Veículo (ou edite a ficha já cadastrada).'
         : 'A conversão de uma compra já concluída exige um único veículo disponível representando o conjunto.'}
     </p>}
+    {entrada && pedido.status === 'RASCUNHO' && <div className="px-6 pb-6">
+      <Link className={secondaryClass} to={`/pedidos-compra/${pedido.id}/veiculo/editar/${pedido.veiculos?.[0]?.id}`}>Editar ficha e quantidade</Link>
+    </div>}
     {open && vehicle && <LoteModal title="Controlar esta compra como lote" busy={create.isPending} onClose={() => setOpen(false)}><form className="space-y-5" onSubmit={event => { event.preventDefault(); create.mutate(); }}><p className="rounded-xl bg-indigo-50 p-4 text-sm leading-relaxed text-indigo-900">A compra de <strong>{money(vehicle.valor_custo)}</strong> será distribuída entre as unidades. Os pagamentos existentes permanecem vinculados ao pedido.</p><Field label="Descrição do lote"><input className={fieldClass} required maxLength={200} value={descricao} onChange={event => setDescricao(event.target.value)} /></Field><Field label="Quantidade de unidades" hint={quantidade > 0 ? `Custo inicial por unidade: ${money(vehicle.valor_custo / quantidade)}` : undefined}><input className={fieldClass} type="number" min="2" max="1000" step="1" required value={quantidade} onChange={event => setQuantidade(Number(event.target.value))} /></Field><ErrorMessage error={create.error} /><div className="flex justify-end gap-3"><button type="button" disabled={create.isPending} className={secondaryClass} onClick={() => setOpen(false)}>Voltar</button><button disabled={create.isPending || !descricao.trim()} className={primaryClass}>{create.isPending ? 'Criando lote…' : 'Criar controle de lote'}</button></div></form></LoteModal>}
   </section>;
 }

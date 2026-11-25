@@ -247,7 +247,7 @@ export const PedidosCompraService = {
   async unlinkVehicle(vehicleId: string): Promise<void> {
     const { error } = await supabase
       .from('est_veiculos')
-      .update({ pedido_id: null })
+      .update({ pedido_id: null, entrada_lote_quantidade: null, entrada_lote_descricao: null })
       .eq('id', vehicleId);
     if (error) throw error;
   }
